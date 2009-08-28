@@ -102,13 +102,12 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
     SetEnvironmentVariable ("PATH", buf);
 
     /* If HOME is not set, set it as "C:\Documents and Settings\username" */
-    if (!GetEnvironmentVariable("HOME", buf, nchars) || !*buf)
+    if (!GetEnvironmentVariable ("HOME", buf, nchars) || !*buf)
       {
 	HRESULT hr = SHGetFolderPath (NULL, CSIDL_PROFILE, NULL, 0, buf);
 	if (SUCCEEDED (hr))
 	  {
 	    SetEnvironmentVariable ("HOME", buf);
-	    MessageBox (NULL, buf, "HOME", MB_OK);
 	  }
       }
 
