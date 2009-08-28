@@ -1,0 +1,536 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename pov-mode.info
+@settitle The pov-mode manual, version 02
+@set VERSION 3.2
+@set UPDATED 26 May 2008
+@c @syncodeindex pg cp
+@c %**end of header
+
+
+@dircategory Emacs
+@direntry
+* Pov-mode: (pov-mode.info). A major mode for editing POV-Ray scene
+@end direntry
+
+@copying
+This is the manual for pov-mode.el (version @value{VERSION},
+@value{UPDATED}),
+
+
+Copyright @copyright{} 2008 Marco Pessotto
+
+@quotation
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License''.
+
+@end quotation
+@end copying
+
+@titlepage
+@title The pov-mode.el manual
+@subtitle for version @value{VERSION}, @value{UPDATED}
+@author Marco Pessotto (@email{marco.erika@@gmail.com})
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top, Installation, (dir), (dir)
+@top The pov-mode.el manual 
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Installation::                
+* Getting started::             
+* The menu-bar::                
+* tools  ::                     
+* Copying This Manual::         
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Installation
+
+* load-path::                   
+* Compilation::                 
+* InsertMenu::                  
+* Include and docs::            
+
+The menu-bar
+
+* Imenu::                       
+* Insert menu::                 
+* Render menu::                 
+* The View Menu::               
+* Misc menu::                   
+
+Tools
+
+* keyword-help::                
+* include-file::                
+* universal::                   
+
+Copying This Manual
+
+* GNU Free Documentation License::  License for copying this manual.
+
+@end detailmenu
+@end menu
+
+@node Installation, Getting started, Top, Top
+@chapter Installation
+
+@menu
+* load-path::                   
+* Compilation::                 
+* InsertMenu::                  
+* Include and docs::            
+@end menu
+
+@section Getting @file{pov-mode.el}
+
+You can get the latest tarball at
+@uref{http://xahlee.org/3d/povray_emacs.html}. At this site you can
+get the auxiliary files for the @file{InsertMenu} hierarchy.
+
+You have a second option, that can save your time. Use the
+@file{package.el}, that can be retrieve at
+@uref{http://tromey.com/elpa/index.html}. Install @file{package.el},
+type @kbd{M-x package-list-packages}, find @file{pov-mode}, mark it
+with @kbd{i} and install with @kbd{x}. This will fetch the tarball,
+unpack it in @file{~/.emacs.d/elpa}, compile it, add the autoloads and
+you're ready to start, so can skip to @xref{InsertMenu}.
+
+
+
+@node load-path, Compilation, Installation, Installation
+@section  Add @file{pov-mode.el} to your @code{load-path}
+
+Assuming you have unpacked the tarball in
+@file{~/elisp/pov-mode-@value{VERSION}}, and the file
+@file{pov-mode.el} resides there, you should add these lines to your
+@file{.emacs}:
+
+@lisp
+
+
+(add-to-list 'load-path "~/elisp/pov-mode-3.2") 
+(autoload 'pov-mode "pov-mode" "PoVray scene file mode" t) 
+(add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode)) 
+(add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
+
+
+@end lisp
+
+These four line will tell Emacs to add @file{pov-mode.el} to the
+@env{load-path} and to load it dynamically when you visit any
+@file{.pov} or @file{.inc} files with the POV-Ray scene or include
+scripts.
+
+If you installed @file{pov-mode.el} via @file{package.el} you don't
+need this step.
+
+Then restart Emacs, or evaluate the lines by selecting them and type
+@kbd{M-x eval-region}
+
+
+If you know what this mean, evaluate these 4 lines, if it's not so,
+save your .emacs and restart Emacs
+
+
+
+@node  Compilation, InsertMenu, load-path, Installation
+@section Compilation
+
+If you want to @code{pov-mode} run faster, please byte-compile it with
+@kbd{M-x byte-compile-file @key{RET} pov-mode.el}. You should do so.
+
+If you installed @file{pov-mode.el} via @file{package.el} you don't
+need this step.
+
+
+
+@node InsertMenu, Include and docs, Compilation, Installation
+@section Get the InsertMenu tree (optional)
+
+@file{pov-mode} provides a GUI menu @samp{InsertMenu} with over 200
+templates files (inc files, and templates for color, lighting, shape,
+transformation ...etc). However, these templates are not bundled for
+licening issues.
+
+I suggest you to unpack the tarball in the same directory of
+@file{pov-mode.el}, so you don't need anything else.
+ 
+If you don't have the permission to install the @file{InsertMenu} in
+the same directory of @file{pov-mode.el} then you should start Emacs,
+load @file{pov-mode.el} visiting a file @file{.pov} (even void) and
+customize the variable @code{pov-insertmenu-location}. You can do this
+in two way: adding the line
+
+@lisp
+
+(setq pov-insertmenu-location "/path/to/the/InsertMenu")
+
+@end lisp
+
+to your @file{.emacs} or using @code{customize}: type @kbd{M-x
+customize-group @key{RET} pov @key{RET}}, scroll down to @samp{Pov
+Insertmenu Location} and indicate the correct path. Then press @samp{Save
+for Future Sessions}. In both case restart Emacs. @xref{Insert menu}.
+
+@node Include and docs,  , InsertMenu, Installation
+@section Setting the Include and Documentation directories
+
+To use @file{pov-mode.el} at its full power you need to tell it where
+can find the includes and the documentation of POV-Ray. You can do this
+as you have done for the @code{pov-insertmenu-location}, by writing
+the code yourself or by using @kbd{customize-group @key{RET} pov @key{RET}}. The variable are:
+
+@table @code
+@item pov-include-dir
+      by default set to
+@file{"/usr/local/share/povray-3.6/include"}, and
+
+@item pov-documentation-directory
+      by default set to @file{/usr/local/share/doc/povray-3.6/html"}.
+
+@end table
+
+Once you're done, restart Emacs. You're ready to write and render!
+
+
+@node Getting started, The menu-bar, Installation, Top
+@chapter Getting started
+
+In this mode, @key{TAB} and @kbd{M-x indent-region}, usually bound to
+@kbd{M-C-\}, attempt to indent code based on the position of @{ @}
+pairs and @code{#-type} directives. The variable
+@code{pov-indent-level} controls the amount of indentation used inside
+arrays and begin/end pairs. The variable
+@code{pov-indent-under-declare} determines the indent level when you
+have something like this:
+
+@example 
+#declare foo = some_object @{
+@end example
+
+This mode also provides POV-Ray keyword fontification using font-lock.
+Set @code{pov-fontify-insanely} to @code{nil} to disable (recommended
+for very large files, for example a long include file with the mesh
+generated by a modeller).
+
+All the faces (and the other options) are customizable via
+@code{customize}. Type @kbd{M-x customize-group @key{RET} pov
+@key{RET}}. Please see the documentation of the faces' customization:
+we provide some alternatives to the default faces. These are set to be
+consistent with the Emacs' look and fill. However you are free to
+change it. 
+
+@kbd{M-x pov-complete-word}, bound to @kbd{M-@key{TAB}}, will try to
+complete the word you are typing, according to the POV-Ray's keywords.
+
+
+@node The menu-bar, tools  , Getting started, Top
+@chapter The menu-bar
+
+This major mode has 5 menus.
+
+@menu
+* Imenu::                       
+* Insert menu::                 
+* Render menu::                 
+* The View Menu::               
+* Misc menu::                   
+@end menu
+
+@node Imenu, Insert menu, The menu-bar, The menu-bar
+@section The @code{PoV} menu 
+
+The first, the @samp{PoV} menu, can look strange. It tries to find
+the @code{#declare}, @code{#macro}, @code{#include},
+@code{light_source} and @code{camera}.
+
+If you made a lot of change please press the menu entry
+@code{*Rescan*} to get it right.
+
+One click on a item will move the point to that. It can be useful
+editing large files with a lot of declarations and macros, or to jump
+fast to the camera.
+
+It's safe to use but can be disable by setting
+@code{pov-imenu-only-macros} to @code{t} (e.g. via @kbd{customize-group @key{RET} pov @key{RET}}), which
+disable everything but the macros; @code{pov-imenu-in-menu} to
+@code{nil} will disable this feature at all.
+
+It use the library @file{imenu.el}.
+
+
+@node Insert menu, Render menu, Imenu, The menu-bar
+@section The @code{Insert} menu
+
+The @code{Insert} menu exists only if you installed the
+@file{InsertMenu} tree somewhere. @xref{InsertMenu}. It contains a
+large collection of shapes, objects, whole scenes templates, etc. Just
+click to insert the object. 
+
+I'll provide you just a pair of sample files. However you can use this
+feature for recycling code you often use. Simply name your template
+file in the same way other files are named, and use a different
+number.
+
+For example, suppose @file{myscene_template.pov} is your template
+file, and you want to add it under the menu "Insert:Scene Template".
+Rename your file to @file{01 - my scene.txt} (please note the spaces
+and the digits), then place it in the directory @file{InsertMenu/00 - Scene
+templates}, then restart Emacs. Then, your scene template file will
+appear as the first item in the menu @samp{Insert:Scene Template}.
+
+You can add how many menus and items you need. Just follow the syntax
+@samp{2-digits space name} for subdirectories of @file{InsertMenu} and
+@samp{2-digits space name.txt} for files with templates, code, and so
+on. Just look at the sample files. I suggest to remove them, get the
+@file{povray-imenu-3.6.tar.gz} (by Christoph Hormann and others) at
+@uref{http://www.imagico.de/imenu/povray-imenu-3.6.tar.gz} or
+@uref{http://xahlee.org/emacs/povray-imenu-3.6.tar.gz}, or build your
+own templates.
+
+
+
+
+@node Render menu, The View Menu, Insert menu, The menu-bar
+@section The @code{Render} menu
+
+This menu is dedicated to the rendering. Each item checks if the
+current buffer has been saved and calls the executable set by
+@code{povray-command}, usually @command{povray}, and starts an
+asynchronous process, so you can go on editing while the rendering is
+in progress.
+
+The arguments passed to @command{povray} are fully customizable and
+have an incremental quality. So these command are self-explanatory.
+Use @kbd{customize-group @key{RET} pov @key{RET}} to change the value of the quality, e.g. adding
+switches, please remember to preserve the @code{%s}, which will be
+substituted by the file name. The menu-bar items are also bound to a
+keystroke:
+
+@table @kbd  
+
+@item C-c C-c r
+(@kbd{M-x pov-tool-bar-command-render})
+
+Run @command{povray} without argument (default quality depending on
+your settings.
+
+@item C-c C-c 1 
+(@kbd{M-x pov-menu-render-test})
+
+Run @command{povray} at test quality.
+
+@item C-c C-c 2 
+(@kbd{M-x pov-menu-render-low})
+
+Run @command{povray} at low quality.
+
+@item C-c C-c 3
+(@kbd{M-x pov-menu-render-mid}) 
+
+Run @command{povray} at middle quality.
+
+@item C-c C-c 4 
+(@kbd{M-x pov-menu-render-high})
+
+Run @command{povray} at high quality.
+
+@item C-c C-c 5 
+(@kbd{M-x pov-menu-render-highest})
+
+Run @command{povray} at the highest quality.
+
+@end table
+
+@node The View Menu, Misc menu, Render menu, The menu-bar
+@section The @code{View} menu
+
+The @code{View} menu offer you two options: internal (in a Emacs
+buffer) or external (using an external command). 
+
+@table @kbd  
+
+@item C-c C-c e	
+      (@code{pov-menu-external-viewer})
+
+      Use the program set by @samp{Pov External Viewer Command} in
+      @kbd{customize-group @key{RET} pov @key{RET}} (@code{pov-external-viewer-command})
+
+@item C-c C-c v	
+      (@kbd{M-x pov-menu-internal-viewer})
+      
+      Emacs will display the image, if it is capable. 
+
+@end table
+
+Please note that first it try to locate the image by the
+@command{povray} output, then by its basename
+(name of the @code{.pov} you are editing with @code{.png}). If this
+fails Emacs will prompt you for a filename. 
+
+If you're outputting the rendered image into a different basename
+@strong{and} your current directory has a @strong{very long} name the
+@command{povray}'s output will be wrapped and @code{pov-mode} will not
+be able to find the correct image (make a symlink instead, or use the
+same basename). 
+
+@node Misc menu,  , The View Menu, The menu-bar
+@section The @code{Misc} menu
+
+The @code{Misc} menu offer some things you can find useful. Two items
+are bound to a keystroke:
+
+@table @kbd
+
+@item  C-c C-c h
+      (@kbd{M-x pov-keyword-help})
+      
+      @xref{keyword-help}.
+
+@item C-c C-c i	
+      (@kbd{M-x pov-open-include-file})
+      
+      @xref{include-file}.
+
+@end table
+
+The following items are not bound because are command shared with
+other modes, so someone would like to bound it globally. You can use
+the @kbd{M-x comment-dwim} to comment or uncomment region). Usually is
+bound to @kbd{M-;}.
+
+@table @samp
+
+@item Comment out region
+      is self-explaining and run the standard @kbd{M-x comment-region}
+      command
+
+@item Uncomment the region
+      is self-explaining too and run the standard
+      @kbd{M-x uncomment-region} command
+
+@end table
+
+
+@node tools  , Copying This Manual, The menu-bar, Top
+@chapter Tools
+
+This major mode provides some other tools useful when editing the
+POV-Ray scenes.   
+
+@menu
+* keyword-help::                
+* include-file::                
+* universal::                   
+@end menu
+
+@node keyword-help, include-file, tools  , tools
+@section The keyword lookup
+
+The command @kbd{M-x pov-keyword-help}, bound to @kbd{C-c C-c h} will
+open an external browser using the @file{browse-url.el} library
+(installed in every GNU Emacs distribution) and try to point to the
+documentation of POV-Ray. It prompts for a keyword and default to the
+current word. The browser is set by @code{browse-url}, so it depends
+on its customization.
+
+@strong{Caution}: you have to set these variable:
+
+@table @code
+
+@item pov-documentation-directory
+      The directory that contains the html documentation of POV-Ray, default
+@file{/usr/local/share/doc/povray-3.6/html}.
+
+@item pov-documentation-index
+      Edit this only if the search-keyword function doesn't work! This
+file should contain the general index for @strong{all} the
+documentation (default @file{idx.html})
+
+@item  pov-documentation-keyword-index
+      Edit this only if the search-keyword function doesn't work! This
+file (tested on povlinux-3.6) should contain the index for the
+keywords (section 3). Default @file{s_97.html}.
+
+@end table
+
+
+The default paths are the default in the installation of the binary
+distribution of POV-Ray. So, if you have POV-Ray installed somewhere
+else you have to set these variables to a valid location.
+
+Please use @kbd{customize-group @key{RET} pov @key{RET}} to set these variables.
+      
+@node include-file, universal, keyword-help, tools
+@section Opening the include files
+
+Sometimes you need to open the standard include files provided by
+POV-Ray. The critical variable is @code{pov-include-dir}, by default
+set to @file{/usr/local/share/povray-3.6/include}. If you installed
+POV-Ray somewhere else set this according to the valid path.
+
+@kbd{M-x pov-open-include-file}, bound to @kbd{C-c C-c i}, will prompt
+for a word, defaulting to the current word. Using @key{TAB}
+(completion) you will see the include files available in the POV's
+include directory.
+
+
+@node universal,  , include-file, tools
+@section The @emph{universal} command and the view log
+
+@kbd{C-c C-c c} (@kbd{M-x pov-command-query}) is a sort of
+@emph{universal} command: it opens the rendered image or render the
+current file according to what you have done so far. (If previous
+action was a render command it display the image, if the buffer has
+been modified it will render).  
+
+@kbd{C-c C-c l} (@kbd{M-x pov-show-render-output}) will set the
+current buffer to the @command{povray} output.
+
+
+
+
+
+
+
+
+
+@node Copying This Manual,  , tools  , Top
+@appendix Copying This Manual
+
+@menu
+* GNU Free Documentation License::  License for copying this manual.
+@end menu
+ 
+@node GNU Free Documentation License,  , Copying This Manual, Copying This Manual
+@appendixsec GNU Free Documentation License
+
+@include fdl.texi
+
+
+
+@c @node Index,  , Copying This Manual, Top
+@c @unnumbered Index
+
+@c @printindex cp
+@c @end comment 
+
+@bye
+

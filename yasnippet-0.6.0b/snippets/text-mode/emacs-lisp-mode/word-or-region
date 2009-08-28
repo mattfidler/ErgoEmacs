@@ -1,0 +1,18 @@
+#name : Command that works on region or word
+#contributor : Xah Lee
+# --
+(defun downcase-word-or-region ()
+  "Downcase current word or region."
+(interactive)
+(let (pos1 pos2 bds)
+  (if (and transient-mark-mode
+           mark-active)
+      (setq pos1 (region-beginning) pos2 (region-end))
+    (progn
+      (setq bds (bounds-of-thing-at-point 'symbol))
+      (setq pos1 (car bds) pos2 (cdr bds))))
+
+  ;; now, pos1 and pos2 are the starting and ending positions of the current word, or current text selection if exist. Sample code:
+  (downcase-region pos1 pos2)
+  $0
+  ))

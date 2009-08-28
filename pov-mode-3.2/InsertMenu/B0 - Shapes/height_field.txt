@@ -1,0 +1,10 @@
+// uses image color index as height, extends along X-Z axes
+// from <0 0 0> to <1 1 1>
+height_field {
+  png               // the file type to read (tga/pot/pgm/ppm/png/sys)
+  "plasma3.png"     // the file name to read
+//  [smooth]        // smooth surface normal
+//  [water_level N] // truncate/clip below N (0.0 ... 1.0)
+//  texture {...}
+//  translate VECTOR | rotate VECTOR | scale VECTOR
+}

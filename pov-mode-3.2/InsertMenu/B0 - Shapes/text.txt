@@ -1,0 +1,8 @@
+// create a TrueType text shape
+text {
+  ttf             // font type (only TrueType format for now)
+  "crystal.ttf",  // Microsoft Windows-format TrueType font file name
+  "POV-Ray",      // the string to create
+  2,              // the extrusion depth
+  0               // inter-character spacing
+}

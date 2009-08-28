@@ -1,0 +1,108 @@
+DOCUMENTATION
+
+To access the pov-mode.info file, start Emacs and type C-u C-h i RET.
+This will prompt you for a file: give the pov-mode.info file that you
+can find in the pov-mode.el directory. Or install it somewhere in your
+INFOPATH and run install-info pov-mode.info dir.
+
+The source of pov-mode.info is in the info directory. So, if you have
+a decent TeX installation you can give the command
+
+texi2pdf --clean pov-mode.texi
+
+and print it as pdf. Or 
+
+makeinfo  --html pov-mode.texi
+
+and create a HTML doc directory.
+So you can skip the rest of this file and read
+the *real* documentation.
+
+
+
+INSTALLATION
+
+Step 1: Adding the load-path and auto-mode setup.
+
+Add the following code to your emacs customization file (at
+"~/.emacs").
+
+(add-to-list 'load-path "~/john/pov-mode-3.x")
+(autoload 'pov-mode "pov-mode" "PoVray scene file mode" t)
+(add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
+(add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
+
+The "~/john/pov-mode-3.x" should be the path to the file
+pov-mode.el .
+
+Now, restart emacs.
+
+Now, if you open POV-Ray file (file ending in ".pov"), emacs will
+automagically load the pov-mode.
+
+Step 2: Download and install somewhere the InsertMenu directory, I'd
+recommend you to unpack it in the same directory of pov-mode.el.
+It is possible that <http://www.imagico.de/> has a fresher version.
+
+
+Step 3: Adding POV-Ray documentation path and include dir path.
+
+Type
+    M-x customize-group RET pov RET
+
+Move your cursor to 
+
+    Pov Include Dir
+
+If its value is not correct, enter the correct path.
+
+Now, move your cursor to 
+
+    Pov Documentation Directory
+
+If its value is not correct, enter the correct path.
+
+Move your cursor to 
+
+    Pov Insertmenu Location
+
+If its value is not correct, enter the correct path.
+
+Once you have the correct path, scroll to the top and click the button
+"Save for Future Sessions" then click "Finish". Emacs will now create
+elisp code in your emacs init file.
+
+Now, restart emacs.
+
+This step tells pov-mode where is your POV-Ray include path so that
+you can view a include file in a POV-Ray file by placing your cursor
+on the path and type C-c C-c i. And if your cursor is on a keyword,
+type C-c C-c h will open its documentation in a browser.
+
+----------------------
+CUSTOMIZATION
+
+* If you have a slow computer, you can speed up loading pov-mode by
+  byte-compile this package. To byte-compile, type M-x
+  byte-compile-file and then enter the path to the pov-mode.el file.
+
+* You can customize the behaviour of pov-mode via typing M-x
+  customize-group pov. So, try this!
+
+* You can customize the Insert menu by adding your template file in
+  the directory InsertMenu. Simply name your template file in the same
+  way other files are named, and use a different number.
+
+For example, suppose myscene_template.txt is your template file, and
+you want to add it under the menu "Insert:Scene Template". Rename your
+file to "01 - my scene.txt", then place it in the directory
+"InsertMenu/00 - Scene templates", then restart emacs. Then, your
+scene template file will appear as the first item in the menu
+"Insert:Scene Template".
+
+----------------------
+FEATURES
+
+To learn about the basics of using pov-mode, open a pov file and press
+C-h m.
+

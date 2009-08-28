@@ -1,0 +1,11 @@
+// clipped conical shape
+// cone { <END1>, RADIUS1, <END2>, RADIUS2 [open] }
+// Where <END1> and <END2> are vectors defining the x,y,z
+// coordinates of the center of each end of the cone
+// and RADIUS1 and RADIUS2 are float values for the radii
+// of those ends.  open, if present, cone is hollow, else capped
+cone {
+  1*y,  0.0,
+  -1*y, 1.0
+  // open
+}

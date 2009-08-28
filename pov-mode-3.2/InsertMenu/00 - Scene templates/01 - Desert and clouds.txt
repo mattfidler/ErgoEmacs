@@ -1,0 +1,82 @@
+// Persistence of Vision Ray Tracer Scene Description File
+// File: ?.pov
+// Vers: 3.6
+// Desc: Basic Scene Template with desert and clouds
+// Date: mm/dd/yy
+// Auth: ?
+//
+
+#version 3.6;
+#include "colors.inc"
+
+global_settings { assumed_gamma 1.0 
+  max_trace_level 20 
+  noise_generator 1
+}
+
+camera { angle 80
+  location <0,3,-15>
+  look_at <0,6,0>
+}
+
+light_source { <3000,5000,-3500> White }
+
+plane { y,10000 hollow
+  texture { pigment 
+    {color rgb < 0.05, 0.25, 0.6> }
+    finish 
+    {ambient 1 diffuse 0}
+  }
+}
+
+plane {
+  y,-3
+  texture {
+    pigment { Coral }
+    normal { agate  }
+    finish { phong 0.1 }
+  }
+}
+
+plane { y, 1 hollow
+  texture { 
+    pigment { 
+      bozo turbulence 0.65
+      octaves 6 omega 0.7 lambda 2
+      color_map {
+	[0 color rgbt <0.95,0.95,0.95, 0.2>]
+	[0.1 color rgbt <0.8,0.86,0.86,0.3>]
+	[0.5 color rgbt 1]
+	[1 color rgbt 1]
+      }
+      rotate <10,20,0>
+      scale <0.9,1.2,0.6>
+    }
+    finish { ambient 1 diffuse 0 }
+  }
+  scale 1000 
+}
+
+plane { y, 1  hollow
+  texture { 
+    pigment {
+      bozo turbulence 0.85
+      octaves 7 omega .65 lambda 2.5
+      color_map {
+	[0 color rgbt <0.95,0.95,0.95,0.5>]
+	[0.1 color rgbt <0.85,0.85,0.85,0.4>]
+	[0.3 color rgbt 1]
+	[1 color rgbt 1]
+      }
+      rotate <10,20,0>
+      scale <1.9,1.2,0.6>
+    }
+    finish { ambient 1 diffuse 0 }
+    scale 2
+  }
+  scale 900
+}
+fog {  distance 300000 color White }  // a bit of fog
+
+
+

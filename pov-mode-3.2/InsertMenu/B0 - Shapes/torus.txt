@@ -1,0 +1,10 @@
+// torus {MAJOR, MINOR} // (in the X-Z plane)
+// MAJOR = float value giving the major radius
+// MINOR = float specifying the minor radius
+// The major radius extends from the center of the hole
+// to the mid-line of the rim while the minor radius
+// is the radius of the cross-section of the rim.
+torus {
+  0.8,
+  0.2
+}

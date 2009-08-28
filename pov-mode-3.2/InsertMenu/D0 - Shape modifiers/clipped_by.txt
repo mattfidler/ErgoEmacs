@@ -1,0 +1,3 @@
+// set clipping shape for parent object.
+// (parent shape will not extend beyond ClipShape bounds)
+clipped_by { sphere { 0*x, 1.0 } }

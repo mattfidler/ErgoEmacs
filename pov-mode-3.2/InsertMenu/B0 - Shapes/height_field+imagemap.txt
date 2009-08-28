@@ -1,0 +1,11 @@
+// uses image color index as height, extends along X-Z axes
+// from <0 0 0> to <1 1 1>
+height_field {
+  png "plasma3.png"
+  texture {
+    pigment {
+      image_map { png "plasma3.png" map_type 0 interpolate 2 once }
+      rotate x*90 // lay X-Y image map down onto X-Z height field plane
+    }
+  }
+}

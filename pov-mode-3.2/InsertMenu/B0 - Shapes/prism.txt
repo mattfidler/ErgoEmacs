@@ -1,0 +1,15 @@
+// extrude a closed 2-D shape along an axis
+prism {                                
+  linear_sweep  // or conic_sweep for tapering to a point
+  linear_spline // linear_spline | quadratic_spline | cubic_spline | bezier_spline 
+  -0.5,         // height 1
+   0.5,         // height 2
+  10,           // number of points
+  // (--- the <u,v> points ---)
+  < 0.2, -1.0>, < 0.2,  0.2>, < 1.0, -0.2>, < 1.0,  0.2>, < 0.2,  1.0>, 
+  <-0.2,  1.0>, <-1.0,  0.2>, <-1.0, -0.2>, <-0.2,  0.2>, <-0.2, -1.0>
+  // , <0.2,   0.2> // match 2nd point, if quadratic_spline add this
+  // , <0.2,  -1.0> // match 1st point, if cubic_spline add this as well as the other
+  // [open]
+  // [sturm]
+}

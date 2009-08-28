@@ -1,0 +1,114 @@
+-*- coding: utf-8; mode: org; mode: visual-line -*-
+
+(If you are viewing this file in emacs, type Tab to open/close a section.  Type Shift+Tab to open/close all levels.  (type Shift+Tab 3 times for the first time to expand all.)  )
+
+HISTORY
+
+* Version 1.4.6: 2009-08-27.
+
+  • updated xlsl-mode to 1.5.11. (very minor)
+  • Renamed this dir from emacs2 to ErgoEmacs.
+  • updated a bit on the _INSTALL.txt and _READ_ME.txt files. Also updated a bit on the init files.
+  • fixed the init load from loading the Dvorak to QWERTY. (am dvorak user, was too lazy to make it default qwerty before as it should.)
+  • thanks to David Capello for helping out, preparing SVN use, preparing to create a Windows binary with installer.
+
+* Version 1.4.5: 2009-08-27.
+
+  • Some re-organization of init files. The structure is still pretty alpha stage. (haven't spend much time on this really) The init.el is the start init file. It loads the other init files:
+
+  ergonomic_keybinding_dvorak (or ergonomic_keybinding_qwerty)
+  init_load_packages.el
+  init_settings.el
+  init_clean_menus.el
+
+  next todo is to move all packages into one single dir. So the top level dir is clean.
+
+* Version 1.4.4: 2009-08-12.
+
+  • removed nxml-mode and css-mode, because they are in emacs 23.
+  • Added xlsl-mode.el.
+
+* Version 1.4.3: 2009-08-10.
+
+  • Added “espresso.el” but not loaded. It is a simple JavaScript mode than the full parser js2-mode.
+
+* Version 1.4.2: 2009-08-04.
+
+  • Added redo mode for having redo. Press Alt+Shift+z for redo.
+
+* Version 1.4.1: 2009-08-02.
+
+  • Added autoload for php mode.
+
+* Version 1.4: 2009-07-25.
+
+  • upgraded yasnippet-0.5.10 to yasnippet-0.6.0b.
+
+* Version 1.3: 2009-07-15. Added lots of packages
+
+  • powershell-mode.el for PowerShell scripting.
+  • powershell.el for interactive shell.
+  • visual-basic.mode.el
+  • speck-mode (for spell checking, better than emacs's default spell checking mode)
+  • php-mode.el
+
+* Version 1.2: 2009-05-26. Added lots packages
+
+  • Added ahk-mode (AutoHotKey).
+  • Added UnicodeData.txt file.
+  • Stop emacs from making backup by default.
+  • Added yasnippet template system.
+  • stop loading css mode if emacs 23. (it is bundled)
+  • new version of ergonomic_keybinding_dvorak and ergonomic_keybinding_qwerty.
+  • Added pov-mode for POV-Ray.
+  • Added tuareg-mode for ML/Caml/OCaml lang.
+  • Added js2 mode, for javascript.
+  • Added dictionary client for dict.org. Type Alt+x dictionary-lookup-definition etc.
+
+* Version 1.1.4: 2009-03-01.
+
+  • Added css-mode.
+
+* Version 1.1.3: 2009-03-01.
+
+  • A new version of ergoemacs keybinding.
+  • More fix to the menus.
+  • Quite a few misc fixes.
+
+* Version 1.1.2: 2009-02-28.
+
+  • Turned on CUA mode by default.
+  • Removed cua mode from menu.
+  • Removed transient-mark-mode from menu.
+
+* Version 1.1.1: 2009-02-28.
+
+  • Added a menu for major modes.
+
+* Version 1.1: 2009-02-28. First draft.
+
+  • ergoemacs keybinding set. See http://xahlee.org/emacs/ergonomic_emacs_keybinding.html The ergoemacs keybindings fixes several of emacs's problems:
+
+  • Ergonomic editing keybindings. (fixes emacs RSI inducing pinky problem) Rationale: http://xahlee.org/emacs/emacs_kb_shortcuts_pain.html
+
+  • compatible with standard keyboard shortcuts. e.g. Standard shortcuts for New, Open, Close, Save, Save As, Print, Select All. (fixes emacs's keyboard shortcut incompatibility with Windows, Mac, Linux)
+
+  • The “New” (new-empty-buffer) command (shortcut Ctrl+n) will open a empty buffer titled “untitled”. (fixes emacs's problem of difficult to create a new buffer) Rationale: http://xahlee.org/emacs/modernization_scratch_buffer.html
+
+  • The new-empty-buffer can be called multiple times to create many scratch buffers. This fixes “*scratch*” buffer problem of single scratch.
+
+  • Closing a buffer not associated with a file (such as invoking new-empty-buffer) will ask user to save. (This fixes a emacs problem where *scratch* or other buffer not associated with file will close without asking for save.)
+
+  • Has commands to switch next/previous user buffer and next/previous macs buffer. With shortcuts. (This fixes emacs's problem of next-buffer that goes thru tens of emacs's “internal” buffers. i.e. buffer names starting with “*”)
+
+  • Fixed emacs mark-word problem, with extend-selection command. Rationale: http://xahlee.org/emacs/modernization_mark-word.html
+
+  • Fixed emacs's toggle letter case problem, with toggle-letter-case cammand. Rationale: http://xahlee.org/emacs/modernization_upcase-word.html
+
+  • Fixed's the usability of emacs fill-paragraph related commands. Rationale: http://xahlee.org/emacs/modernization_fill-paragraph.html
+
+  • Fixed emacs describe-mode usability. Rationale: http://xahlee.org/emacs/modernization_mode_doc.html
+
+  • Fixed the ^L display problem so it displays a horizontal line instead.
+
+  • Fixed Emacs's Menu Usability Problem. Rationale: http://xahlee.org/emacs/modernization_menu.html

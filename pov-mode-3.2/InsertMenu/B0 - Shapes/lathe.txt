@@ -1,0 +1,6 @@
+// rotate a 2-D outline of points around the Y axis to create a 3-D shape
+lathe {
+  linear_spline // linear_spline | quadratic_spline | cubic_spline
+  5, // number of points
+  <2, 0>, <3, 0>, <3, 5>, <2, 5>, <2, 0> // the list of <u,v> points
+}

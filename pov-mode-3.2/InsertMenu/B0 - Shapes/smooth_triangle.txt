@@ -1,0 +1,6 @@
+// rounded-surface FINITE (no CSG) triangle shape
+smooth_triangle {
+  <  0,  30, 0> <0,  0.7071, -0.7071>  // <Vertex1>  <SurfaceNormal1>
+  < 40, -20, 0> <0, -0.8664, -0.5>     // <Vertex2>  <SurfaceNormal2>
+  <  0,   0, 0> <0, -0.5,    -0.8664>  // <Vertex3>  <SurfaceNormal3>
+}

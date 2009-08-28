@@ -1,0 +1,7 @@
+// Create an infinite sphere around scene and allow any pigment on it
+sky_sphere {
+  pigment {
+    gradient y
+    color_map { [0.0 color rgb <0.7,0.7,1.0>] [1.0 color blue 0.5] }
+  }
+}

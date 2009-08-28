@@ -1,0 +1,2 @@
+// used in global_settings, sets the maximum ray tracing intersection depth (1 or more) [64]
+ max_intersections 64

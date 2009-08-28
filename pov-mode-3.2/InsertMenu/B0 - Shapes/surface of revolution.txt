@@ -1,0 +1,12 @@
+// create a Surface of Revolution shape (like lathe, but faster)
+sor {
+    7, // # of points
+    <0.000000, 0.000000> // list of <u,v> points
+    <0.118143, 0.000000>
+    <0.620253, 0.540084>
+    <0.210970, 0.827004>
+    <0.194093, 0.962025>
+    <0.286920, 1.000000>
+    <0.468354, 1.033755>
+    // [open]
+}

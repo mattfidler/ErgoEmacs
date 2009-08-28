@@ -1,0 +1,7 @@
+// flat circular FINITE (no CSG) shape, center hole cutout is optional
+disc {
+  <0, 1, 0>  // center position
+  z,         // normal vector
+  1.0,       // outer radius
+  0.2        // optional hole radius
+}

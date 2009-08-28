@@ -1,0 +1,14 @@
+// create a smooth blobby shape
+#declare RadiusVal   = 1.0; // (0 < RadiusVal) outer sphere of influence on other components
+#declare StrengthVal = 1.0; // (+ or -) strength of component's radiating density
+
+blob {
+  // threshold (0.0 < threshold <= StrengthVal) surface falloff threshold #
+  threshold 0.6
+  sphere { < 0.75,   0,    0>, RadiusVal, StrengthVal }
+  sphere { <-0.375,  0.65, 0>, RadiusVal, StrengthVal }
+  sphere { <-0.375, -0.65, 0>, RadiusVal, StrengthVal }
+  cylinder { -z, +z, RadiusVal, StrengthVal }
+  // [sturm]
+  scale 2
+}

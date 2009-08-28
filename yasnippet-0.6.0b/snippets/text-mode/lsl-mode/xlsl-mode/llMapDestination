@@ -1,0 +1,2 @@
+# --
+llMapDestination(string simname, vector pos, vector look_at)

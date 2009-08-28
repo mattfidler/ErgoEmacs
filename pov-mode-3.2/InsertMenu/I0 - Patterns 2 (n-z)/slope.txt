@@ -1,0 +1,9 @@
+// pattern for use in texture/pigment
+// this pattern can only be used when applied to an object
+// value is influenced by the slope of the object
+  slope
+    y,              // direction vector for slope
+    //y,            // optional: dependency from altitude
+    //<0.5,1.0>,    // optional: range of slope values
+    //<0.75,1.0>    // optional: range of altitude values
+

@@ -1,0 +1,6 @@
+// create a superquadric ellipsoid shape
+// As the exponents approach 1.0, the edges get rounder
+superellipsoid {
+  <0.5,  // east-west exponent (0.0 ... 1.0)
+  1.0>   // north-south exponent (0.0 ... 1.0)
+}

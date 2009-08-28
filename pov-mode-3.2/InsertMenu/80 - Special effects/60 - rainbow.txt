@@ -1,0 +1,22 @@
+// create a rainbow arc
+rainbow {                      
+  angle 30         // degrees
+  width 6          // degrees
+  distance 1000
+  direction <0,-0.5,1>    
+  jitter 0.01
+  arc_angle 180    // degrees
+  falloff_angle 60 // degrees
+  // up <UP>
+  color_map {
+    [0.000 color rgbf <1.0, 0.5, 1.0, 1.0> ]
+    [0.100 color rgbf <1.0, 0.5, 1.0, 0.8> ]
+    [0.214 color rgbf <0.5, 0.5, 1.0, 0.8> ]
+    [0.328 color rgbf <0.2, 0.2, 1.0, 0.8> ]
+    [0.442 color rgbf <0.2, 1.0, 1.0, 0.8> ]
+    [0.556 color rgbf <0.2, 1.0, 0.2, 0.8> ]
+    [0.670 color rgbf <1.0, 1.0, 0.2, 0.8> ]
+    [0.784 color rgbf <1.0, 0.5, 0.2, 0.8> ]
+    [0.900 color rgbf <1.0, 0.2, 0.2, 0.8> ]
+  }
+}

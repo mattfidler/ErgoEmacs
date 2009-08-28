@@ -1,0 +1,7 @@
+// create a quadratic (2nd order) infinite polynomial surface
+quadric {
+  <0, 1, 1> //  A x^2  + B y^2  + C z^2  +
+  <1, 0, 0> //  D xy   + E xz   + F yz   +
+  <0, 3, 0> //  G x    + H y    + I z    +
+  2         //  J
+}

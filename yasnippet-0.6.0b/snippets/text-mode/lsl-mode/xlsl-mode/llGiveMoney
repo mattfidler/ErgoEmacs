@@ -1,0 +1,2 @@
+# --
+llGiveMoney(key destination, integer amount)

@@ -1,0 +1,13 @@
+// create a curved tube object translating a sphere along a certain path
+sphere_sweep {
+  linear_spline                 // linear curve
+  //cubic_spline                // alternative spline curves
+  //b_spline
+  4,                            // number of specified sphere positions
+  <-5, -5, 0>, 1                // position, radius
+  <-5, 5, 0>, 1                 // ...
+  < 5, -5, 0>, 1
+  < 5, 5, 0>, 1
+  //tolerance 0.001             // optional
+}
+

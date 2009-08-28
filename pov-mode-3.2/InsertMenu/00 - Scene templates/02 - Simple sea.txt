@@ -1,0 +1,39 @@
+// Persistence of Vision Ray Tracer Scene Description File
+// File: ?.pov
+// Vers: 3.6
+// Desc: Basic Scene Example with sky and sea
+// Date: mm/dd/yy
+// Auth: ?
+//
+
+#version 3.6;
+#include "textures.inc"
+#include "colors.inc"
+
+global_settings {  assumed_gamma 1.0 }
+#default{ finish{ ambient 0.1 diffuse 0.9 }} 
+
+
+
+camera {
+  location <2, 1.5, -15>
+  look_at  <20, 3.5,  3>
+}
+light_source { <-150, 300, -300> color White}
+
+
+plane { y, -0.95
+  texture{ Polished_Chrome
+    normal{ bumps 0.25 scale <0.25,0.25,0.25>*0.5 turbulence 0.5 } 
+    finish{ reflection 0.60 }}}
+
+sky_sphere { pigment 
+  { gradient <0,1,0>
+    color_map { [0.00 rgb <0.6,0.7,1.0>]
+      [0.35 rgb <0.0,0.1,0.8>]
+      [0.65 rgb <0.0,0.1,0.8>]
+      [1.00 rgb <0.6,0.7,1.0>] 
+    } 
+    scale 2         
+  } // end of pigment
+} //end of skysphere

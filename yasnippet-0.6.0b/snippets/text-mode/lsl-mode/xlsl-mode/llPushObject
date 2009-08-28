@@ -1,0 +1,2 @@
+# --
+llPushObject(key target, vector impulse, vector ang_impulse, integer local)

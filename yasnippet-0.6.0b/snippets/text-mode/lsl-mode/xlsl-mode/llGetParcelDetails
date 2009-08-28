@@ -1,0 +1,2 @@
+# --
+llGetParcelDetails(vector pos, list params)

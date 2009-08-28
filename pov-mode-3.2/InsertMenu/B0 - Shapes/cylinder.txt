@@ -1,0 +1,10 @@
+// Capped Cylinder, closed [or open ended]
+// cylinder { <END1>, <END2>, RADIUS [open] }
+//  END1 = coord of one end of cylinder
+//  END2 = coord of other end
+// RADIUS = size of cylinder
+// open = if present, cylinder is hollow, else capped
+cylinder {
+  0*x,  3*x,  1
+  // open
+}

@@ -1,0 +1,6 @@
+// triangular FINITE (no CSG) shape (vertices are endpoints)
+triangle {
+  <-1,  0, -1>,  // <Vertex1>
+  < 1,  0, -1>,  // <Vertex2>
+  < 0,  0,  1>   // <Vertex3>
+}

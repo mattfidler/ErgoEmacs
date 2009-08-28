@@ -1,0 +1,2 @@
+// show reflections, but not the object directly
+  no_image

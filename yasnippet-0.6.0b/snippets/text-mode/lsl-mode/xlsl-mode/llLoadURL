@@ -1,0 +1,2 @@
+# --
+llLoadURL(key avatar_id, string message, string url)

@@ -1,0 +1,3 @@
+// show no reflections of the object
+  no_reflection
+

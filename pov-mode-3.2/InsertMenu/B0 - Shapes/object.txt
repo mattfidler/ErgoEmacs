@@ -1,0 +1,4 @@
+// general purpose enclosing wrapper for a predefined shape
+#declare MyShape = box {-1,1}    // declare the shape
+object { MyShape }               // create an actual object with that shape
+object { MyShape translate 3*x}  // create another object with that shape

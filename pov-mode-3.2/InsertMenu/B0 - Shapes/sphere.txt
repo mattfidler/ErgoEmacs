@@ -1,0 +1,6 @@
+// create a sphere shape
+sphere {
+  <0, 1, 0> // center of sphere <X Y Z>
+  0.5       // radius of sphere
+  // scale <1,2,1> // <= Note: Spheres can become ellipses by uneven scaling
+}

@@ -1,0 +1,7 @@
+// An infinite planar surface
+// plane {<A, B, C>, D } where: A*x + B*y + C*z = D
+plane {
+  y, // <X Y Z> unit surface normal, vector points "away from surface"
+  -1.0 // distance from the origin in the direction of the surface normal
+  hollow on // has an inside pigment?
+}

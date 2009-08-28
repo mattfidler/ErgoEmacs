@@ -1,0 +1,12 @@
+#name : process marked files in dired
+#contributor : Xah Lee
+# --
+;; suppose myProcessFile is your function that takes a file path
+;; and do some processing on the file
+(defun dired-myProcessFile ()
+  "Apply myProcessFile function to marked files in dired."
+  (interactive)
+  (require 'dired)
+  (mapc 'myProcessFile (dired-get-marked-files))
+)
+;; to use it, type M-x dired-myProcessFile

@@ -1,0 +1,4 @@
+  // spin the torus around the X axis, as "clock" goes from 0 to 1
+  // the torus will rotate one complete 360 degree revolution.
+  // Note that the texture is put on BEFORE we rotate so it rotates too.
+  torus { 1,0.2 pigment {color red 1} rotate clock*x*360}

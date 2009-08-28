@@ -1,0 +1,13 @@
+// As logical operators there are '&' and '|' standing for
+// logical AND and OR.
+// They return arithmetic value 0 for false or 1 for true.
+// Note that A and B are not handled bitwise but logical.
+
+#if (A & B)
+  ... // do this only if both A and B are true
+#end
+
+#if (A | B)
+  ... // do this if either A or B is true
+#end
+

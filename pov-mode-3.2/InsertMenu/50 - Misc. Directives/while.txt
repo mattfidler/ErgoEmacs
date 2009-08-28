@@ -1,0 +1,9 @@
+// Create 10 balls along X axis, from 0 to 9
+#declare BallCount = 0;
+#while (BallCount < 10)
+  sphere {
+    <BallCount,0,0>,  // NOTE: <0,0,0>, <1,0,0>, <2,0,0>, etc.
+    0.5
+  }
+  #declare BallCount = BallCount+1;   // increment our counter
+#end
