@@ -18,13 +18,10 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 
 
 /*
-  Simple program to start Emacs with its console window hidden.
+  Main ErgoEmacs program to start Emacs with its console window hidden.
 
-  This program is provided purely for convenience, since most users will
-  use Emacs in windowing (GUI) mode, and will not want to have an extra
-  console window lying around.  */
-
-/* Based on code of runemacs.exe */
+  Based on code of runemacs.exe.
+*/
 
 #include <windows.h>
 #include <string.h>
@@ -43,23 +40,37 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
   DWORD ret_code = 0;
   char *new_cmdline;
   char *p;
-  char modname[MAX_PATH];
+  char emacs_dir[MAX_PATH];
+  char bin_dir[MAX_PATH];
 
-  if (!GetModuleFileName (NULL, modname, MAX_PATH))
+  if (!GetModuleFileName (NULL, emacs_dir, MAX_PATH))
     goto error;
-  if ((p = strrchr (modname, '\\')) == NULL)
+  if ((p = strrchr (emacs_dir, '\\')) == NULL)
     goto error;
   *p = 0;
-  /* ErgoEmacs: Add "\bin" because ErgoEmacs.exe is not inside bin */
-  {
-    strcat (modname, "\\bin");
-  }
 
-  new_cmdline = alloca (MAX_PATH*2 + strlen (cmdline) + 256);
+  new_cmdline = alloca ((MAX_PATH+2)*3 + strlen (cmdline) + 1024);
+
   /* Quote executable name in case of spaces in the path. */
   *new_cmdline = '"';
-  strcpy (new_cmdline + 1, modname);
-  strcat (new_cmdline, "\\emacs.exe\" ");
+  strcpy (new_cmdline + 1, emacs_dir);
+  strcat (new_cmdline, "\\bin\\emacs.exe\" ");
+
+  /* Add some arguments to the command line.  */
+  {
+    /* Put ErgoEmacs as the window caption.  */
+    strcat (new_cmdline, " --title ErgoEmacs");
+
+    /* Avoid to load ~/.emacs before ErgoEmacs's init.el.  */
+    strcat (new_cmdline, " --no-init-file");
+
+    /* Load the init.el file first and then the customized user ~/.emacs file.   */
+    strcat (new_cmdline, " --load \"");
+    strcat (new_cmdline, emacs_dir);
+    strcat (new_cmdline, "\\ergoemacs\\init.el\"");
+
+    strcat (new_cmdline, " --eval \"(if (file-exists-p \\\"~/.emacs\\\") (load-file \\\"~/.emacs\\\"))\"");
+  }
 
   /* Append original arguments if any; first look for arguments we
      recognise (-wait, -high, and -low), and apply them ourselves.  */
@@ -87,6 +98,7 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
     }
 
   /* Add the original arguments specified by the user (maybe a file to open).  */
+  strcat (new_cmdline, " ");
   strcat (new_cmdline, cmdline);
 
   /* ErgoEmacs: Setup enviroment variables.  */
@@ -98,7 +110,7 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
     GetEnvironmentVariable ("PATH", buf, nchars);
 
     /* Add to PATH "C:\Program Files\ErgoEmacs\bin" */
-    snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s", modname);
+    snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s\\bin", emacs_dir);
     SetEnvironmentVariable ("PATH", buf);
 
     /* If HOME is not set, set it as "C:\Documents and Settings\username" */
@@ -114,21 +126,12 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
     free (buf);
   }
 
-  /* Set emacs_dir variable if runemacs was in "%emacs_dir%\bin".  */
-  if ((p = strrchr (modname, '\\')) && stricmp (p, "\\bin") == 0)
-    {
-      *p = 0;
-      for (p = modname; *p; p++)
-	if (*p == '\\') *p = '/';
-      SetEnvironmentVariable ("emacs_dir", modname);
-    }
-
-  /* ErgoEmacs: Add an argument to load the ergoemacs init.el file.  */
-  {
-    strcat (new_cmdline, " --load \"");
-    strcat (new_cmdline, modname);
-    strcat (new_cmdline, "\\ergoemacs\\init.el\" ");
-  }
+  /* Set emacs_dir variable.  */
+  *p = 0;
+  for (p = emacs_dir; *p; p++)
+    if (*p == '\\') 
+      *p = '/';
+  SetEnvironmentVariable ("emacs_dir", emacs_dir);
 
   memset (&start, 0, sizeof (start));
   start.cb = sizeof (start);
