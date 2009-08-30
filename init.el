@@ -5,6 +5,8 @@
 ;; (load "ergonomic_keybinding_dvorak")
 (load "ergonomic_keybinding_qwerty")
 
+(load "init_functions.el")
+(load "init_keybinding.el")
 (load "init_load_packages.el")
 (load "init_settings.el")
 (load "init_clean_menus.el")

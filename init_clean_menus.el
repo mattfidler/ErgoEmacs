@@ -47,8 +47,10 @@
 (define-key global-map [menu-bar edit goto go-to-pos] nil)
 (define-key global-map [menu-bar edit goto beg-of-buf] nil)
 (define-key global-map [menu-bar edit goto end-of-buf] nil)
-
+
 ;; options menu
+
+; remove stuff
 (define-key global-map [menu-bar options cua-mode] nil)
 (define-key global-map [menu-bar options transient-mark-mode] nil)
 
@@ -67,6 +69,15 @@
 
 (define-key global-map (kbd "<S-down-mouse-1>") nil)
 
+;; add a command to toggle by cursor move by visual line.
+;; todo: need to make the menu reflect current state
+(define-key global-map [menu-bar options line-move-visual] '("Toggle ↑↓ Move by Visual Line" . toggle-line-move-visual))
+
+;; add font scale change
+(define-key global-map [menu-bar options zoom-in] '("Zoom In" . 'text-scale-increase))
+(define-key global-map [menu-bar options zoom-out] '("Zoom Out" . 'text-scale-decrease))
+(define-key global-map [menu-bar options zoom-reset] '("Zoom Reset" . 'text-scale-normal-size))
+
 ;; buffers menu
 (define-key global-map [menu-bar buffer next-buffer] '("Next User Buffer" . next-user-buffer))
 (define-key global-map [menu-bar buffer previous-buffer] '("Previous User Buffer" . previous-user-buffer))
@@ -133,18 +144,7 @@
 (define-key global-map [menu-bar file lang-modes java] '("Java" . java-mode))
 (define-key global-map [menu-bar file lang-modes c++] '("C++" . c++-mode))
 (define-key global-map [menu-bar file lang-modes c] '("C" . c-mode))
-
 
-(defun toggle-line-move-visual ()
-  "Toggle behavior of up/down arrow key, by visual line vs logical line."
-  (interactive)
-  (if line-move-visual
-      (setq line-move-visual nil)
-    (setq line-move-visual t))
-  )
-
-;; adds a command to toggle by visual line
-(define-key global-map [menu-bar options line-move-visual] '("Toggle ↑↓ Move by Visual Line" . toggle-line-move-visual))
 
 ;; TO DO: 
 ;; • remove dividers
