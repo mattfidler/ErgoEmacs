@@ -50,7 +50,6 @@
 (setq dired-recursive-copies (quote always))
 (setq dired-recursive-deletes (quote top))
 
-(setq cua-remap-control-v nil)
 (cua-mode 1)
 (delete-selection-mode 1)
 
