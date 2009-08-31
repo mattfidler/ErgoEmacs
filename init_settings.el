@@ -52,6 +52,8 @@
 
 (cua-mode 1)
 (delete-selection-mode 1)
+;; alt+y is not cua-repeat-replace-region
+(define-key cua--cua-keys-keymap [(meta v)] 'nil)
 
 ;; make whitespace-mode with very basic bc color for whitespaces
 (setq whitespace-style (quote ( spaces tabs newline space-mark tab-mark newline-mark )))
