@@ -33,6 +33,7 @@
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
+;; Thanks to David Capello for contribution to shrink-whitespaces.
 ;; Thanks to marciomazza for spotting several default bindings that should have been unbound.
 ;; Thanks to those who have created and improved the version for Colemak layout. They are (by date): “vockets”, “postivan”, Graham Poulter.
 ;; Thanks to lwarxx for bug report on diff-mode
@@ -45,11 +46,13 @@
 
 ;; Note: When the context is about keys on the keyboard hardware, then QWERTY is used to indicate the key. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
 
+;; version 4.3.13, 2009-08-28 • improved shrink-whitespaces. Now, when called twice, it removes the remaining single space. Thanks to David Capello for the code.
+
 ;; version 4.3.12.2, 2009-08-15 • Fixed a bug where delete-selection-mode migth be turned off. Changed “(delete-selection-mode t)” to “(delete-selection-mode 1)”.
 
 ;; version 4.3.12.1, 2009-08-14 • A minor implementation improvement. In one place, changed the use of functionp to fboundp for checking the existing of a emacs 23 feature recenter-top-bottom. Was using functionp because i forgot about fboundp.
 
-;; version 4.3.12, 2009-08-13 • C-p is now “recenter-top-bottom” for emacs 23 users. In emacs 22, it is “recenter”.
+;; version 4.3.12, 2009-08-13 • Alt+p is now “recenter-top-bottom” for emacs 23 users. In emacs 22, it is “recenter”.
 
 ;; version 4.3.11, 2009-08-05 • Added a hook to fix message-mode.
 
@@ -354,6 +357,8 @@
 (global-set-key (kbd "C-p") 'print-buffer) ; Print
 (global-set-key (kbd "C-a") 'mark-whole-buffer) ; Select All
 (global-set-key (kbd "C-S-w") 'delete-frame) ; close Window.
+
+(global-set-key (kbd "C-f") 'search-forward) ;; Find. (Note: perhaps in the future consider setting this to isearch-forward. Not sure now because isearch behavior is rather different then common Find command. For now, i think mapping Ctrl+f ease initial emacs using pain, but if user keep with emacs, isearch is far more useful. Also, should we add Ctrl+Shift+f for search-backword?. 2009-08-31 Xah Lee.) 
 
 (global-set-key (kbd "<delete>") 'delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
 
@@ -728,11 +733,13 @@ EOL chars by space when the EOL char is not inside string.
       (put this-command 'stateIsCompact-p (if currentStateIsCompact
                                               nil t)) ) ) )
 
-
 (defun shrink-whitespaces ()
   "Remove white spaces around cursor to just one or none.
+If current line does not contain non-white space chars, then remove blank lines to just one.
 If current line contains non-white space chars, then shrink any whitespace char surrounding cursor to just one space.
-If current line does not contain non-white space chars, then remove blank lines to just one."
+If current line is a single space, remove that space.
+
+Calling this command 3 times will always result in no whitespaces around cursor."
   (interactive)
   (let (
         cursor-point
@@ -766,16 +773,19 @@ If current line does not contain non-white space chars, then remove blank lines 
       (setq whitespace-end (point))
       )
 
-
     (if line-has-meat-p
-        (progn 
+        (let (deleted-text)
           (when spaceTabNeighbor-p
-            (delete-region space-or-tab-begin space-or-tab-end)
-            (insert " "))
-          )
+            ;; remove all whitespaces in the range
+            (setq deleted-text (delete-and-extract-region space-or-tab-begin space-or-tab-end))
+            ;; insert a whitespace only if we have removed something
+            ;; different that a simple whitespace
+            (if (not (string= deleted-text " "))
+                (insert " ") ) ) )
 
       (progn
-;;         (delete-region whitespace-begin whitespace-end) (insert "\n") ;; problem with this is that it also zaps tabs or spaces in lines before or after
+        ;; (delete-region whitespace-begin whitespace-end)
+        ;; (insert "\n")
         (delete-blank-lines)
         )
       ;; todo: possibly code my own delete-blank-lines here for better efficiency, because delete-blank-lines seems complex.

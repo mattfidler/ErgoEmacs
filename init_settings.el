@@ -14,24 +14,13 @@
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
 
-; for htmlize.el
-(setq htmlize-convert-nonascii-to-entities nil)
-(setq htmlize-html-charset "utf-8")
+;; For htmlize.el.
+;; Rationale: use unicode whenever possible, since it's widely supported today.
+(setq htmlize-convert-nonascii-to-entities nil) ; make htmlize generate unicode directly instead of html entities
+(setq htmlize-html-charset "utf-8") ; make the output html use utf-8 charset 
 
-;;;; backup
+;;;; no backup or auto-save
 
-;; ; make backup to a designated dir, mirroring the full path
-;; (defun my-backup-file-name (fpath)
-;;   "Return a new file path of a given file path.
-;; If the new path's directories does not exist, create them."
-;;   (let (backup-root bpath)
-;;     (setq backup-root "~/.emacs.d/emacs-backup")
-;;     (setq bpath (concat backup-root fpath "~"))
-;;     (make-directory (file-name-directory bpath) bpath)
-;;     bpath
-;;   )
-;; )
-;; (setq make-backup-file-name-function 'my-backup-file-name)
 (setq backup-by-copying t)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
