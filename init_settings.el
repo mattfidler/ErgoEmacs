@@ -50,8 +50,11 @@
 (setq dired-recursive-copies (quote always))
 (setq dired-recursive-deletes (quote top))
 
+(setq mouse-drag-copy-region nil)
+
 (cua-mode 1)
 (delete-selection-mode 1)
+
 ;; alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
 

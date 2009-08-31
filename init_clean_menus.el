@@ -28,6 +28,7 @@
 
 ;; file menu
 
+;; removing stuff
 (define-key global-map [menu-bar file open-file] '("Open file or folder" . find-file))
 (define-key global-map [menu-bar file kill-buffer] '("Close" . close-current-buffer))
 (define-key global-map [menu-bar file new-file] '("New" . new-empty-buffer))
@@ -36,6 +37,32 @@
 (define-key global-map [menu-bar file insert-file] nil)
 (define-key global-map [menu-bar file make-frame-on-display] nil)
 
+;; add a language modes menu
+(define-key-after global-map [menu-bar file lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")) 'kill-buffer )
+
+(define-key global-map [menu-bar file lang-modes bash] '("Bash" . sh-mode))
+(define-key global-map [menu-bar file lang-modes tcl] '("TCL" . tcl-mode))
+(define-key global-map [menu-bar file lang-modes ruby] '("Ruby" . ruby-mode))
+(define-key global-map [menu-bar file lang-modes python] '("Python" . python-mode))
+(define-key global-map [menu-bar file lang-modes php] '("PHP" . php-mode))
+(define-key global-map [menu-bar file lang-modes perl] '("Perl" . cperl-mode))
+(define-key global-map [menu-bar file lang-modes separator1] '("--"))
+(define-key global-map [menu-bar file lang-modes haskell] '("Haskell" . haskell-mode))
+(define-key global-map [menu-bar file lang-modes ocaml] '("OCaml" . tuareg-mode))
+(define-key global-map [menu-bar file lang-modes elisp] '("Emacs Lisp" . emacs-lisp-mode))
+(define-key global-map [menu-bar file lang-modes separator2] '("--"))
+(define-key global-map [menu-bar file lang-modes latex] '("LaTeX" . latex-mode))
+(define-key global-map [menu-bar file lang-modes js] '("Javascript" . js2-mode))
+(define-key global-map [menu-bar file lang-modes xml] '("XML (xml-mode)" . xml-mode))
+(define-key global-map [menu-bar file lang-modes nxml] '("XML (nxml-mode)" . nxml-mode))
+(define-key global-map [menu-bar file lang-modes html] '("HTML" . html-mode))
+(define-key global-map [menu-bar file lang-modes css] '("CSS" . css-mode))
+(define-key global-map [menu-bar file lang-modes separator3] '("--"))
+(define-key global-map [menu-bar file lang-modes java] '("Java" . java-mode))
+(define-key global-map [menu-bar file lang-modes c++] '("C++" . c++-mode))
+(define-key global-map [menu-bar file lang-modes c] '("C" . c-mode))
+
+
 ;; edit menu
 (define-key global-map [menu-bar edit search search-forward] nil)
 (define-key global-map [menu-bar edit search search-backward] nil)
@@ -77,6 +104,8 @@
 (define-key global-map [menu-bar options zoom-in] '("Zoom In" . 'text-scale-increase))
 (define-key global-map [menu-bar options zoom-out] '("Zoom Out" . 'text-scale-decrease))
 (define-key global-map [menu-bar options zoom-reset] '("Zoom Reset" . 'text-scale-normal-size))
+
+;; • need to group the zoom in/out/reset menu into a submenu
 
 ;; buffers menu
 (define-key global-map [menu-bar buffer next-buffer] '("Next User Buffer" . next-user-buffer))
@@ -118,35 +147,12 @@
 (define-key global-map [menu-bar help-menu more-manuals order-emacs-manuals] nil)
 (define-key global-map [menu-bar help-menu manuals order-emacs-manuals] nil)
 (define-key global-map [menu-bar help-menu about-gnu-project] nil)
-
 
-;; Create language modes menu
-(define-key-after global-map [menu-bar file lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")) 'kill-buffer )
+;; TODO: 
 
-(define-key global-map [menu-bar file lang-modes bash] '("Bash" . sh-mode))
-(define-key global-map [menu-bar file lang-modes tcl] '("TCL" . tcl-mode))
-(define-key global-map [menu-bar file lang-modes ruby] '("Ruby" . ruby-mode))
-(define-key global-map [menu-bar file lang-modes python] '("Python" . python-mode))
-(define-key global-map [menu-bar file lang-modes php] '("PHP" . php-mode))
-(define-key global-map [menu-bar file lang-modes perl] '("Perl" . cperl-mode))
-(define-key global-map [menu-bar file lang-modes separator1] '("--"))
-(define-key global-map [menu-bar file lang-modes haskell] '("Haskell" . haskell-mode))
-(define-key global-map [menu-bar file lang-modes ocaml] '("OCaml" . tuareg-mode))
-(define-key global-map [menu-bar file lang-modes elisp] '("Emacs Lisp" . emacs-lisp-mode))
-(define-key global-map [menu-bar file lang-modes separator2] '("--"))
-(define-key global-map [menu-bar file lang-modes latex] '("LaTeX" . latex-mode))
-(define-key global-map [menu-bar file lang-modes js] '("Javascript" . js2-mode))
-(define-key global-map [menu-bar file lang-modes xml] '("XML (xml-mode)" . xml-mode))
-(define-key global-map [menu-bar file lang-modes nxml] '("XML (nxml-mode)" . nxml-mode))
-(define-key global-map [menu-bar file lang-modes html] '("HTML" . html-mode))
-(define-key global-map [menu-bar file lang-modes css] '("CSS" . css-mode))
-(define-key global-map [menu-bar file lang-modes separator3] '("--"))
-(define-key global-map [menu-bar file lang-modes java] '("Java" . java-mode))
-(define-key global-map [menu-bar file lang-modes c++] '("C++" . c++-mode))
-(define-key global-map [menu-bar file lang-modes c] '("C" . c-mode))
+;; • possibly add menu that shows the current minor modes in effect. (To implement, probably just call describe-mode. ) We might need this since we made C-h m to be describe-major-mode instead of describe-mode. But again maybe not since minor-modes is rather very technical specific to emacs, a concept and feature not in most editors.
 
-
-;; TO DO: 
-;; • remove dividers
 ;; • move incremental search menus one level up.
+;; • remove redundant dividers
 ;; • reorg the help menu and submenu.
+
