@@ -218,6 +218,11 @@
  (define-key diff-mode-map (kbd "S-<f12>") 'diff-file-next)
  ))
 
+(add-hook 'eshell-mode-hook
+ (lambda ()
+   (define-key eshell-mode-map (kbd "M-s") 'move-cursor-next-pane) ; was eshell-next-matching-input
+   ))
+
 (add-hook 'w3m-mode-hook
  (lambda ()
   (define-key w3m-mode-map (kbd "M-a") 'execute-extended-command) ; was w3m-bookmark-add-this-url

@@ -44,7 +44,7 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-h m") 'describe-major-mode)
 
-;; prevent cua-mode from going into selection mode when commands with Shift key is used.
+;; prevent cua-mode from doing text selection when shortcuts with Shift key is used.
 (add-hook 'cua-mode-hook
  (lambda ()
     (put 'cua-scroll-down 'CUA nil)

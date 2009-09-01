@@ -2,6 +2,8 @@
 
 ;; Note: When the context is about keys on the keyboard hardware, then QWERTY is used to indicate the key. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
 
+;; version 4.3.14, 2009-09-01 • Added hook to fix eshell's M-s for both Dvorak and Qwerty. Thanks to David Capello. Added Ctrl+f for Find (search-forward).
+
 ;; version 4.3.13, 2009-08-28 • improved shrink-whitespaces. Now, when called twice, it removes the remaining single space. Thanks to David Capello for the code.
 
 ;; version 4.3.12.2, 2009-08-15 • Fixed a bug where delete-selection-mode migth be turned off. Changed “(delete-selection-mode t)” to “(delete-selection-mode 1)”.
