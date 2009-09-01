@@ -106,46 +106,46 @@
 ;;; --------------------------------------------------
 ;;; STANDARD SHORTCUTS
 
-(define-key ergoemacs-keymap ergoemacs-new-empty-buffer-key 'new-empty-buffer)
-(define-key ergoemacs-keymap ergoemacs-make-frame-command-key 'make-frame-command)
-(define-key ergoemacs-keymap ergoemacs-find-file-key 'find-file)
-(define-key ergoemacs-keymap ergoemacs-close-current-buffer-key 'close-current-buffer)
-(define-key ergoemacs-keymap ergoemacs-save-buffer-key 'save-buffer)
-(define-key ergoemacs-keymap ergoemacs-write-file-key 'write-file)
-(define-key ergoemacs-keymap ergoemacs-print-buffer-key 'print-buffer)
-(define-key ergoemacs-keymap ergoemacs-mark-whole-buffer-key 'mark-whole-buffer)
-(define-key ergoemacs-keymap ergoemacs-delete-frame-key 'delete-frame)
+(define-key ergoemacs-keymap (kbd "C-n") 'new-empty-buffer)
+(define-key ergoemacs-keymap (kbd "C-S-n") 'make-frame-command)
+(define-key ergoemacs-keymap (kbd "C-o") 'find-file)
+(define-key ergoemacs-keymap (kbd "C-w") 'close-current-buffer)
+(define-key ergoemacs-keymap (kbd "C-s") 'save-buffer)
+(define-key ergoemacs-keymap (kbd "C-S-s") 'write-file)
+(define-key ergoemacs-keymap (kbd "C-p") 'print-buffer)
+(define-key ergoemacs-keymap (kbd "C-a") 'mark-whole-buffer)
+(define-key ergoemacs-keymap (kbd "C-S-w") 'delete-frame)
 
-(define-key ergoemacs-keymap ergoemacs-search-forward-key 'search-forward)
+(define-key ergoemacs-keymap (kbd "C-f") 'search-forward)
 
-(define-key ergoemacs-keymap ergoemacs-delete-char-key 'delete-char)
+(define-key ergoemacs-keymap (kbd "<delete>") 'delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
 
-(define-key ergoemacs-keymap ergoemacs-switch-to-previous-frame-key 'switch-to-previous-frame)
-(define-key ergoemacs-keymap ergoemacs-switch-to-next-frame-key 'switch-to-next-frame)
+(define-key ergoemacs-keymap (kbd "M-~") 'switch-to-previous-frame)
+(define-key ergoemacs-keymap (kbd "M-`") 'switch-to-next-frame)
 
-(define-key ergoemacs-keymap ergoemacs-previous-user-buffer-key 'previous-user-buffer)
-(define-key ergoemacs-keymap ergoemacs-next-user-buffer-key 'next-user-buffer)
+(define-key ergoemacs-keymap (kbd "C-<prior>") 'previous-user-buffer)
+(define-key ergoemacs-keymap (kbd "C-<next>") 'next-user-buffer)
 
-(define-key ergoemacs-keymap ergoemacs-previous-emacs-buffer-key 'previous-emacs-buffer)
-(define-key ergoemacs-keymap ergoemacs-next-emacs-buffer-key 'next-emacs-buffer)
+(define-key ergoemacs-keymap (kbd "C-S-<prior>") 'previous-emacs-buffer)
+(define-key ergoemacs-keymap (kbd "C-S-<next>") 'next-emacs-buffer)
 
-(define-key ergoemacs-keymap ergoemacs-backward-page-key 'backward-page)
-(define-key ergoemacs-keymap ergoemacs-forward-page-key 'forward-page)
+(define-key ergoemacs-keymap (kbd "M-S-<prior>") 'backward-page)
+(define-key ergoemacs-keymap (kbd "M-S-<next>") 'forward-page)
 
-(define-key ergoemacs-keymap ergoemacs-query-replace-key 'query-replace)
-(define-key ergoemacs-keymap ergoemacs-query-replace-regexp-key 'query-replace-regexp)
+(define-key ergoemacs-keymap (kbd "M-5") 'query-replace)
+(define-key ergoemacs-keymap (kbd "M-%") 'query-replace-regexp)
 
-(define-key ergoemacs-keymap ergoemacs-delete-other-windows-key 'delete-other-windows)
-(define-key ergoemacs-keymap ergoemacs-delete-window-key 'delete-window)
+(define-key ergoemacs-keymap (kbd "M-1") 'delete-other-windows)
+(define-key ergoemacs-keymap (kbd "M-!") 'delete-window)
 
-(define-key ergoemacs-keymap ergoemacs-split-window-vertically-key 'split-window-vertically)
-(define-key ergoemacs-keymap ergoemacs-split-window-horizontally-key 'split-window-horizontally)
+(define-key ergoemacs-keymap (kbd "M-2") 'split-window-vertically)
+(define-key ergoemacs-keymap (kbd "M-@") 'split-window-horizontally)
 
-(define-key ergoemacs-keymap ergoemacs-extend-selection-key 'extend-selection)
-(define-key ergoemacs-keymap ergoemacs-select-text-in-quote-key 'select-text-in-quote)
+(define-key ergoemacs-keymap (kbd "M-8") 'extend-selection)
+(define-key ergoemacs-keymap (kbd "M-*") 'select-text-in-quote)
 
-(define-key ergoemacs-keymap ergoemacs-ibuffer-key 'ibuffer)
-(define-key ergoemacs-keymap ergoemacs-describe-major-mode-key 'describe-major-mode)
+(define-key ergoemacs-keymap (kbd "C-x C-b") 'ibuffer)
+(define-key ergoemacs-keymap (kbd "C-h m") 'describe-major-mode)
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs minor mode

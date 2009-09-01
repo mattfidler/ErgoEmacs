@@ -1,5 +1,5 @@
 ;-*- coding: utf-8 -*-
-;; Shortcuts for ERGOEMACS_LAYOUT=qwerty-us
+;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=us_dvorak
 
 ;;; --------------------------------------------------
 ;;; CURSOR MOVEMENTS
@@ -86,47 +86,3 @@
 ;;; WINDOW SPLITING
 (defconst ergoemacs-move-cursor-next-pane-key		(kbd "M-o"))
 (defconst ergoemacs-move-cursor-previous-pane-key	(kbd "M-O"))
-
-;;; --------------------------------------------------
-;;; STANDARD SHORTCUTS
-
-(defconst ergoemacs-new-empty-buffer-key		(kbd "C-n"))
-(defconst ergoemacs-make-frame-command-key		(kbd "C-S-n"))
-(defconst ergoemacs-find-file-key			(kbd "C-o"))
-(defconst ergoemacs-close-current-buffer-key		(kbd "C-w"))
-(defconst ergoemacs-save-buffer-key			(kbd "C-s"))
-(defconst ergoemacs-write-file-key			(kbd "C-S-s"))
-(defconst ergoemacs-print-buffer-key			(kbd "C-p"))
-(defconst ergoemacs-mark-whole-buffer-key		(kbd "C-a"))
-(defconst ergoemacs-delete-frame-key			(kbd "C-S-w"))
-
-(defconst ergoemacs-search-forward-key			(kbd "C-f"))
-
-(defconst ergoemacs-delete-char-key			(kbd "<delete>"))
-
-(defconst ergoemacs-switch-to-previous-frame-key	(kbd "M-~"))
-(defconst ergoemacs-switch-to-next-frame-key		(kbd "M-`"))
-
-(defconst ergoemacs-previous-user-buffer-key		(kbd "C-<prior>"))
-(defconst ergoemacs-next-user-buffer-key		(kbd "C-<next>"))
-
-(defconst ergoemacs-previous-emacs-buffer-key		(kbd "C-S-<prior>"))
-(defconst ergoemacs-next-emacs-buffer-key		(kbd "C-S-<next>"))
-
-(defconst ergoemacs-backward-page-key			(kbd "M-S-<prior>"))
-(defconst ergoemacs-forward-page-key			(kbd "M-S-<next>"))
-
-(defconst ergoemacs-query-replace-key			(kbd "M-5"))
-(defconst ergoemacs-query-replace-regexp-key		(kbd "M-%"))
-
-(defconst ergoemacs-delete-other-windows-key		(kbd "M-1"))
-(defconst ergoemacs-delete-window-key			(kbd "M-!"))
-
-(defconst ergoemacs-split-window-vertically-key		(kbd "M-2"))
-(defconst ergoemacs-split-window-horizontally-key	(kbd "M-@"))
-
-(defconst ergoemacs-extend-selection-key		(kbd "M-8"))
-(defconst ergoemacs-select-text-in-quote-key		(kbd "M-*"))
-
-(defconst ergoemacs-ibuffer-key				(kbd "C-x C-b"))
-(defconst ergoemacs-describe-major-mode-key		(kbd "C-h m"))
