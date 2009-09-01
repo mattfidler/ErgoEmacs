@@ -3,8 +3,8 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 (load "functions.el")
-;; (load "ergoemacs_minor_mode_qwerty")
-(load "ergoemacs_minor_mode_dvorak")
+(load "ergoemacs_minor_mode_qwerty")
+;; (load "ergoemacs_minor_mode_dvorak")
 
 
 ;; ErgoEmacs minor mode keymap
