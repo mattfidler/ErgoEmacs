@@ -3,7 +3,11 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; (load "ergonomic_keybinding_dvorak")
-(load "ergonomic_keybinding_qwerty")
+;; (load "ergonomic_keybinding_qwerty")
+
+(load "~/ErgoEmacs_Source/ErgoEmacs/ergoemacs_keybindings_minor_mode/ergoemacs_minor_mode.el")
+(ergoemacs-mode 1)
+
 
 (load "init_functions.el")
 (load "init_keybinding.el")
