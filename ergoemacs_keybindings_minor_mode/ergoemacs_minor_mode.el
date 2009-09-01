@@ -3,9 +3,19 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 (load "functions.el")
-(load "ergoemacs_minor_mode_qwerty")
-;; (load "ergoemacs_minor_mode_dvorak")
 
+(cond
+ ((string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us")
+  (load "ergoemacs_minor_mode_qwerty")
+  )
+ ((string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us_dvorak")
+  (load "ergoemacs_minor_mode_dvorak")
+  )
+
+ (t
+  (load "ergoemacs_minor_mode_qwerty")
+  )
+ )
 
 ;; ErgoEmacs minor mode keymap
 (defvar ergoemacs-keymap (make-sparse-keymap))
