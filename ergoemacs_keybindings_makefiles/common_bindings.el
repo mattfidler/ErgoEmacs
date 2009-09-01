@@ -44,6 +44,19 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-h m") 'describe-major-mode)
 
+;; prevent cua-mode from going into selection mode when commands with Shift key is used.
+(add-hook 'cua-mode-hook
+ (lambda ()
+    (put 'cua-scroll-down 'CUA nil)
+    (put 'cua-scroll-up 'CUA nil)
+    (put 'backward-paragraph 'CUA nil)
+    (put 'forward-paragraph 'CUA nil)
+    (put 'beginning-of-buffer 'CUA nil)
+    (put 'end-of-buffer 'CUA nil)
+    (put 'move-end-of-line 'CUA nil)
+   )
+ )
+
 (add-hook 'w3m-mode-hook
  (lambda ()
   (define-key w3m-mode-map (kbd "<up>") 'previous-line) ; was w3m-previous-anchor. Use Shift+Tab.
@@ -52,8 +65,8 @@
   (define-key w3m-mode-map (kbd "<right>") 'forward-char) ; was w3m-view-this-url. Use Enter.
 ))
 
-
 (add-hook 'dired-mode-hook
  (lambda ()
   (define-key dired-mode-map (kbd "C-o") 'find-file) ; was dired-display-file
  ))
+

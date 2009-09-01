@@ -111,13 +111,12 @@ This is similar to a toggle for fill-paragraph and unfill-paragraph
 When there is a text selection, act on the region.
 
 When in text mode, a paragraph is considerd a block. When in programing
-language mode, the block defined by between empty lines.
+language mode, the block is defined by between empty lines.
 
 Todo: The programing language behavior is currently not done.
 Right now, the code uses fill* functions, so does not work or work well
 in programing lang modes. A proper implementation to compact is replacing
-EOL chars by space when the EOL char is not inside string.
-"
+EOL chars by space when the EOL char is not inside string."
   (interactive)
 
   ;; This command symbol has a property “'stateIsCompact-p”, the

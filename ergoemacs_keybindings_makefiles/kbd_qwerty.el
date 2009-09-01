@@ -179,20 +179,6 @@
  )
 )
 
-;; prevent cua-mode from going into selection mode when commands with Shift key is used.
-(add-hook 'cua-mode-hook
- (lambda ()
-    (put 'cua-scroll-down 'CUA nil)
-    (put 'cua-scroll-up 'CUA nil)
-    (put 'backward-paragraph 'CUA nil)
-    (put 'forward-paragraph 'CUA nil)
-    (put 'beginning-of-buffer 'CUA nil)
-    (put 'end-of-buffer 'CUA nil)
-    (put 'move-end-of-line 'CUA nil)
-   )
- )
-
-
 ;; reclaim some binding used by ibuffer.el
 (add-hook 'ibuffer-mode-hook
  (lambda ()
