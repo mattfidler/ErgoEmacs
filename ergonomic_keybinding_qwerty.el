@@ -46,6 +46,8 @@
 
 ;; Note: When the context is about keys on the keyboard hardware, then QWERTY is used to indicate the key. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
 
+;; version 4.3.14, 2009-09-01 • Added hook to fix eshell's M-s for both Dvorak and Qwerty. Thanks to David Capello. Added Ctrl+f for Find (search-forward).
+
 ;; version 4.3.13, 2009-08-28 • improved shrink-whitespaces. Now, when called twice, it removes the remaining single space. Thanks to David Capello for the code.
 
 ;; version 4.3.12.2, 2009-08-15 • Fixed a bug where delete-selection-mode migth be turned off. Changed “(delete-selection-mode t)” to “(delete-selection-mode 1)”.
@@ -390,7 +392,7 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-h m") 'describe-major-mode)
 
-;; prevent cua-mode from going into selection mode when commands with Shift key is used.
+;; prevent cua-mode from doing text selection when shortcuts with Shift key is used.
 (add-hook 'cua-mode-hook
  (lambda ()
     (put 'cua-scroll-down 'CUA nil)
@@ -526,6 +528,11 @@
  (define-key diff-mode-map (kbd "S-<f11>") 'diff-file-prev)
  (define-key diff-mode-map (kbd "S-<f12>") 'diff-file-next)
  ))
+
+(add-hook 'eshell-mode-hook
+ (lambda ()
+   (define-key eshell-mode-map (kbd "M-s") 'move-cursor-next-pane) ; was eshell-next-matching-input
+   ))
 
 (add-hook 'w3m-mode-hook
  (lambda ()
