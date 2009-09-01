@@ -5,7 +5,7 @@
 ;; (load "ergonomic_keybinding_dvorak")
 ;; (load "ergonomic_keybinding_qwerty")
 
-(load "~/ErgoEmacs_Source/ErgoEmacs/ergoemacs_keybindings_minor_mode/ergoemacs_minor_mode.el")
+(load "ergoemacs_keybindings_minor_mode/ergoemacs_minor_mode.el")
 (ergoemacs-mode 1)
 
 
