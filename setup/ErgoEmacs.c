@@ -18,7 +18,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 
 
 /*
-  Main ErgoEmacs program to start Emacs with its console window hidden.
+  Main ErgoEmacs program to start Emacs with its console window hidden,
+  by David Capello.
 
   Based on code of runemacs.exe.
 */
@@ -28,6 +29,111 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include <malloc.h>
 #include <stdio.h>
 #include <shlobj.h>
+
+static const struct {
+  DWORD kbdcode;
+  const char *file;
+  const char *desc;
+} kb_layout[] = {
+   { 0x00401, "a1",	"Arabic (101)" },
+   { 0x10401, "a2",	"Arabic (102)" },
+   { 0x20401, "a3",	"Arabic (102) AZERTY" },
+   { 0x00402, "bu",	"Bulgarian" },
+   { 0x00404, "us",	"Chinese (Traditional) - US Keyboard" },
+   { 0x00405, "cz",	"Czech" },
+   { 0x10405, "cz1",	"Czech (QWERTY)" },
+   { 0x20405, "cz2",	"Czech Programmers" },
+   { 0x00406, "da",	"Danish" },
+   { 0x00407, "gr",	"German" },
+   { 0x10407, "gr1",	"German (IBM)" },
+   { 0x00408, "he",	"Greek" },
+   { 0x10408, "he220",	"Greek (220)" },
+   { 0x20408, "he319",	"Greek (319)" },
+   { 0x30408, "hela2",	"Greek (220) Latin" },
+   { 0x40408, "hela3",	"Greek (319) Latin" },
+   { 0x50408, "gkl",	"Greek Latin" },
+   { 0x60408, "hept",	"Greek Polytonic" },
+   { 0x00409, "us",	"US English" },
+   { 0x10409, "dv",	"US-Dvorak" },
+   { 0x20409, "usx",	"US-International" },
+   { 0x30409, "usl",	"US-Dvorak for left hand" },
+   { 0x40409, "usr",	"US-Dvorak for right hand" },
+   { 0x50409, "usa",	"US English (IBM Arabic 238_L)" },
+   { 0x0040a, "sp",	"Spanish" },
+   { 0x1040a, "es",	"Spanish Variation" },
+   { 0x0040b, "fi",	"Finnish" },
+   { 0x0040c, "fr",	"French" },
+   { 0x0040d, "heb",	"Hebrew" },
+   { 0x0040e, "hu",	"Hungarian" },
+   { 0x1040e, "hu1",	"Hungarian 101-key" },
+   { 0x0040f, "ic",	"Icelandic" },
+   { 0x00410, "it",	"Italian" },
+   { 0x10410, "it142",	"Italian (142)" },
+   { 0x00411, "jpn",	"Japanese" },
+   { 0x00412, "ko",	"Korean" },
+   { 0x00413, "ne",	"Dutch" },
+   { 0x00414, "no",	"Norwegian" },
+   { 0x00415, "pl1",	"Polish (Programmers)" },
+   { 0x10415, "pl",	"Polish (214)" },
+   { 0x00416, "br",	"Portuguese (Brazilian ABNT)" },
+   { 0x00418, "ro",	"Romanian" },
+   { 0x00419, "ru",	"Russian" },
+   { 0x10419, "ru1",	"Russian (Typewriter)" },
+   { 0x0041a, "cr",	"Croatian" },
+   { 0x0041b, "sl",	"Slovak" },
+   { 0x1041b, "sl1",	"Slovak (QWERTY)" },
+   { 0x0041c, "al",	"Albanian" },
+   { 0x0041d, "sw",	"Swedish" },
+   { 0x0041e, "th0",	"Thai Kedmanee" },
+   { 0x1041e, "th1",	"Thai Pattachote" },
+   { 0x2041e, "th2",	"Thai Kedmanee (non-ShiftLock)" },
+   { 0x3041e, "th3",	"Thai Pattachote (non-ShiftLock)" },
+   { 0x0041f, "tuq",	"Turkish Q" },
+   { 0x1041f, "tuf",	"Turkish F" },
+   { 0x00422, "ur",	"Ukrainian" },
+   { 0x00423, "blr",	"Belarusian" },
+   { 0x00424, "cr",	"Slovenian" },
+   { 0x00425, "est",	"Estonian" },
+   { 0x00426, "lv",	"Latvian" },
+   { 0x10426, "lv1",	"Latvian (QWERTY)" },
+   { 0x00427, "lt",	"Lithuanian IBM" },
+   { 0x10427, "lt1",	"Lithuanian" },
+   { 0x00429, "fa",	"Farsi" },
+   { 0x0042a, "vntc",	"Vietnamese" },
+   { 0x0042b, "arme",	"Armenian Eastern" },
+   { 0x1042b, "armw",	"Armenian Western" },
+   { 0x0042c, "azel",	"Azeri Latin" },
+   { 0x0042f, "mac",	"Macedonian (FYROM)" },
+   { 0x00437, "geo",	"Georgian" },
+   { 0x00438, "fo",	"Faeroese" },
+   { 0x00439, "indev",	"Devanagari - INSCRIPT" },
+   { 0x10439, "inhin",	"Hindi Traditional" },
+   { 0x0043f, "kaz",	"Kazakh" },
+   { 0x00444, "tat",	"Tatar" },
+   { 0x00449, "intam",	"Tamil" },
+   { 0x0044e, "inmar",	"Marathi" },
+   { 0x00804, "us",	"Chinese (Simplified) - US Keyboard" },
+   { 0x00807, "sg",	"Swiss German" },
+   { 0x00809, "uk",	"United Kingdom" },
+   { 0x0080a, "la",	"Latin American" },
+   { 0x0080c, "be",	"Belgian French" },
+   { 0x1080c, "bene",	"Belgian (Comma)" },
+   { 0x00813, "be",	"Belgian Dutch" },
+   { 0x00816, "po",	"Portuguese" },
+   { 0x0081a, "ycl",	"Serbian (Latin)" },
+   { 0x0082c, "aze",	"Azeri Cyrillic" },
+   { 0x00843, "uzb",	"Uzbek Cyrillic" },
+   { 0x00c0c, "fc",	"Canadian French (Legacy)" },
+   { 0x10c0c, "can",	"Canadian Multilingual Standard" },
+   { 0x00c1a, "ycc",	"Serbian (Cyrillic)" },
+   { 0x10c1a, "ycl",	"Serbian (Latin)" },
+   { 0x01009, "ca",	"Canadian French" },
+   { 0x11009, "can",	"Canadian Multilingual Standard" },
+   { 0x0100c, "sf",	"Swiss French" },
+   { 0x01809, "ir",	"Irish" },
+   { 0x11809, "gae",	"Gaelic" },
+   { 0x00000, NULL,	NULL }
+};
 
 int WINAPI
 WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
@@ -69,7 +175,7 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
     strcat (new_cmdline, emacs_dir);
     strcat (new_cmdline, "\\ergoemacs\\init.el\"");
 
-    strcat (new_cmdline, " --eval \"(if (file-exists-p \\\"~/.emacs\\\") (load-file \\\"~/.emacs\\\"))\"");
+    strcat (new_cmdline, " --eval \"(if (file-exists-p \\\"~/.emacs\\\") (load \\\"~/.emacs\\\"))\"");
   }
 
   /* Append original arguments if any; first look for arguments we
@@ -124,6 +230,29 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
       }
 
     free (buf);
+  }
+
+  /* Keyboard layout */
+  {
+    const char* ergoemacs_layout = "";
+    char w32_name[KL_NAMELENGTH];
+    DWORD kbdcode;
+    int i;
+
+    GetKeyboardLayoutName (w32_name);
+    kbdcode = strtol (w32_name, NULL, 16) & 0xfffff;
+
+    for (i = 0; kb_layout[i].file; ++i)
+      {
+	if (kb_layout[i].kbdcode == kbdcode)
+	  {
+	    ergoemacs_layout = kb_layout[i].file;
+	    break;
+	  }
+      }
+
+    SetEnvironmentVariable ("WIN32_KEYBOARD_LAYOUT", w32_name);
+    SetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", ergoemacs_layout);
   }
 
   /* Set emacs_dir variable.  */
