@@ -86,3 +86,21 @@
 ;;; WINDOW SPLITING
 (defconst ergoemacs-move-cursor-next-pane-key		(kbd "M-s"))
 (defconst ergoemacs-move-cursor-previous-pane-key	(kbd "M-S"))
+
+;;; --------------------------------------------------
+;;; OTHER SHORTCUTS
+
+(defconst ergoemacs-switch-to-previous-frame-key        (kbd "M-~"))
+(defconst ergoemacs-switch-to-next-frame-key            (kbd "M-`"))
+
+(defconst ergoemacs-query-replace-key                   (kbd "M-5"))
+(defconst ergoemacs-query-replace-regexp-key            (kbd "M-%"))
+
+(defconst ergoemacs-delete-other-windows-key            (kbd "M-1"))
+(defconst ergoemacs-delete-window-key                   (kbd "M-!"))
+
+(defconst ergoemacs-split-window-vertically-key         (kbd "M-2"))
+(defconst ergoemacs-split-window-horizontally-key       (kbd "M-@"))
+
+(defconst ergoemacs-extend-selection-key                (kbd "M-8"))
+(defconst ergoemacs-select-text-in-quote-key            (kbd "M-*"))

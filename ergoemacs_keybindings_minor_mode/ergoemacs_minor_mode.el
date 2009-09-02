@@ -4,21 +4,27 @@
 
 (load "functions.el")
 
+;; ErgoEmacs minor mode keymap
+(defvar ergoemacs-keymap (make-sparse-keymap))
+
+;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
+;; enviroment variable (this variable is set by ErgoEmacs runner)
 (cond
  ((string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us")
   (load "ergoemacs_minor_mode_qwerty")
   )
- ((string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us_dvorak")
+ ((or (string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us_dvorak")
+      (string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "dv"))
   (load "ergoemacs_minor_mode_dvorak")
   )
-
+ ((string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "sp")
+  (load "ergoemacs_minor_mode_qwerty_sp")
+  )
+ ;; Qwerty by default
  (t
   (load "ergoemacs_minor_mode_qwerty")
   )
  )
-
-;; ErgoEmacs minor mode keymap
-(defvar ergoemacs-keymap (make-sparse-keymap))
 
 ;; Single char cursor movement
 (define-key ergoemacs-keymap ergoemacs-backward-char-key 'backward-char)
@@ -120,9 +126,6 @@
 
 (define-key ergoemacs-keymap (kbd "<delete>") 'delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
 
-(define-key ergoemacs-keymap (kbd "M-~") 'switch-to-previous-frame)
-(define-key ergoemacs-keymap (kbd "M-`") 'switch-to-next-frame)
-
 (define-key ergoemacs-keymap (kbd "C-<prior>") 'previous-user-buffer)
 (define-key ergoemacs-keymap (kbd "C-<next>") 'next-user-buffer)
 
@@ -132,20 +135,26 @@
 (define-key ergoemacs-keymap (kbd "M-S-<prior>") 'backward-page)
 (define-key ergoemacs-keymap (kbd "M-S-<next>") 'forward-page)
 
-(define-key ergoemacs-keymap (kbd "M-5") 'query-replace)
-(define-key ergoemacs-keymap (kbd "M-%") 'query-replace-regexp)
-
-(define-key ergoemacs-keymap (kbd "M-1") 'delete-other-windows)
-(define-key ergoemacs-keymap (kbd "M-!") 'delete-window)
-
-(define-key ergoemacs-keymap (kbd "M-2") 'split-window-vertically)
-(define-key ergoemacs-keymap (kbd "M-@") 'split-window-horizontally)
-
-(define-key ergoemacs-keymap (kbd "M-8") 'extend-selection)
-(define-key ergoemacs-keymap (kbd "M-*") 'select-text-in-quote)
-
 (define-key ergoemacs-keymap (kbd "C-x C-b") 'ibuffer)
 (define-key ergoemacs-keymap (kbd "C-h m") 'describe-major-mode)
+
+;;; --------------------------------------------------
+;;; OTHER SHORTCUTS
+
+(define-key ergoemacs-keymap ergoemacs-switch-to-previous-frame-key 'switch-to-previous-frame)
+(define-key ergoemacs-keymap ergoemacs-switch-to-next-frame-key 'switch-to-next-frame)
+
+(define-key ergoemacs-keymap ergoemacs-query-replace-key 'query-replace)
+(define-key ergoemacs-keymap ergoemacs-query-replace-regexp-key 'query-replace-regexp)
+
+(define-key ergoemacs-keymap ergoemacs-delete-other-windows-key 'delete-other-windows)
+(define-key ergoemacs-keymap ergoemacs-delete-window-key 'delete-window)
+
+(define-key ergoemacs-keymap ergoemacs-split-window-vertically-key 'split-window-vertically)
+(define-key ergoemacs-keymap ergoemacs-split-window-horizontally-key 'split-window-horizontally)
+
+(define-key ergoemacs-keymap ergoemacs-extend-selection-key 'extend-selection)
+(define-key ergoemacs-keymap ergoemacs-select-text-in-quote-key 'select-text-in-quote)
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs minor mode
