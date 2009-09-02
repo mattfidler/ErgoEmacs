@@ -229,30 +229,30 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
 	  }
       }
 
-    free (buf);
-  }
-
-  /* Keyboard layout */
-  {
-    const char* ergoemacs_layout = "";
-    char w32_name[KL_NAMELENGTH];
-    DWORD kbdcode;
-    int i;
-
-    GetKeyboardLayoutName (w32_name);
-    kbdcode = strtol (w32_name, NULL, 16) & 0xfffff;
-
-    for (i = 0; kb_layout[i].file; ++i)
+    /* If ERGOEMACS_KEYBOARD_LAYOUT is not set.  */
+    if (!GetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", buf, nchars) || !*buf)
       {
-	if (kb_layout[i].kbdcode == kbdcode)
+	const char* ergoemacs_layout = "";
+	DWORD kbdcode;
+	int i;
+
+	GetKeyboardLayoutName (buf);
+	kbdcode = strtol (buf, NULL, 16) & 0xfffff;
+
+	for (i = 0; kb_layout[i].file; ++i)
 	  {
-	    ergoemacs_layout = kb_layout[i].file;
-	    break;
+	    if (kb_layout[i].kbdcode == kbdcode)
+	      {
+		ergoemacs_layout = kb_layout[i].file;
+		break;
+	      }
 	  }
+
+	SetEnvironmentVariable ("WIN32_KEYBOARD_LAYOUT", buf);
+	SetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", ergoemacs_layout);
       }
 
-    SetEnvironmentVariable ("WIN32_KEYBOARD_LAYOUT", w32_name);
-    SetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", ergoemacs_layout);
+    free (buf);
   }
 
   /* Set emacs_dir variable.  */
