@@ -172,20 +172,49 @@
    )
  )
 
+;; Hook for Isearch
 (defun ergoemacs-isearch-hook ()
+  (define-key isearch-mode-map (kbd "M-p") 'nil) ; was isearch-ring-retreat
+  (define-key isearch-mode-map (kbd "M-n") 'nil) ; was isearch-ring-advance
+  (define-key isearch-mode-map (kbd "M-y") 'nil) ; was isearch-yank-kill
+  (define-key isearch-mode-map (kbd "M-c") 'nil) ; was isearch-toggle-case-fold
+  (define-key isearch-mode-map (kbd "M-r") 'nil) ; was isearch-toggle-regexp
+  (define-key isearch-mode-map (kbd "M-e") 'nil) ; was isearch-edit-string
+
   (define-key isearch-mode-map ergoemacs-isearch-forward-key 'isearch-repeat-forward)
   (define-key isearch-mode-map ergoemacs-isearch-backward-key 'isearch-repeat-backward)
+  (define-key isearch-mode-map ergoemacs-recenter-key 'recenter)
+  (define-key isearch-mode-map ergoemacs-kill-ring-save-key 'kill-ring-save)
+  (define-key isearch-mode-map ergoemacs-kill-word-key 'kill-word)
+  (define-key isearch-mode-map ergoemacs-backward-kill-word-key 'backward-kill-word)
+
+  (define-key isearch-mode-map (kbd "<f11>") 'isearch-ring-retreat)
+  (define-key isearch-mode-map (kbd "<f12>") 'isearch-ring-advance)
   )
 
+(defun ergoemacs-comint-hook ()
+  (define-key comint-mode-map (kbd "<f11>") 'comint-previous-input)
+  (define-key comint-mode-map (kbd "<f12>") 'comint-next-input)
+  (define-key comint-mode-map (kbd "S-<f11>") 'comint-previous-matching-input)
+  (define-key comint-mode-map (kbd "S-<f12>") 'comint-next-matching-input)
+  )
+
+;; Adds/Removes all ErgoEmacs hooks
 (defun ergoemacs-hook-modes (add)
   (if add
     (progn
-      (message "Adding isearch hooks")
       (add-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
+      (add-hook 'comint-mode-hook 'ergoemacs-comint-hook)
+
+      (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
+      (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
+      (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
+      (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
       )
     (progn
       (message "Removing isearch hooks")
       (remove-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
+      (remove-hook 'coming-mode-hook 'ergoemacs-comint-hook)
       )
     )
   )
