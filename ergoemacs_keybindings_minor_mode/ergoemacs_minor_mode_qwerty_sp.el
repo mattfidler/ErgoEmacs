@@ -1,5 +1,5 @@
 ;-*- coding: utf-8 -*-
-;; Shortcuts for ERGOEMACS_LAYOUT=qwerty-es
+;; Shortcuts for ERGOEMACS_LAYOUT=sp
 
 ;;; --------------------------------------------------
 ;;; CURSOR MOVEMENTS
