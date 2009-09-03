@@ -9,15 +9,23 @@
 
 ;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
 ;; enviroment variable (this variable is set by ErgoEmacs runner)
+(defvar ergoemacs-keyboard-layout (getenv "ERGOEMACS_KEYBOARD_LAYOUT")
+  "It is set with the value of ERGOEMACS_KEYBOARD_LAYOUT
+enviroment variable.  The possible values are:
+
+  us = US English QWERTY keyboard layout
+  dv = US-Dvorak keyboard layout
+  sp = Spanish keyboard layout")
+
 (cond
- ((string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us")
+ ((string= ergoemacs-keyboard-layout "us")
   (load "ergoemacs_minor_mode_qwerty")
   )
- ((or (string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us_dvorak")
-      (string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "dv"))
+ ((or (string= ergoemacs-keyboard-layout "us_dvorak")
+      (string= ergoemacs-keyboard-layout "dv"))
   (load "ergoemacs_minor_mode_dvorak")
   )
- ((string= (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "sp")
+ ((string= ergoemacs-keyboard-layout "sp")
   (load "ergoemacs_minor_mode_qwerty_sp")
   )
  ;; Qwerty by default
@@ -138,6 +146,9 @@
 (define-key ergoemacs-keymap (kbd "C-x C-b") 'ibuffer)
 (define-key ergoemacs-keymap (kbd "C-h m") 'describe-major-mode)
 
+;; Ctrl+Break is a common in IDEs to stop compilation/find/grep processes
+(define-key ergoemacs-keymap (kbd "C-<pause>") 'kill-compilation)
+
 ;;; --------------------------------------------------
 ;;; OTHER SHORTCUTS
 
@@ -159,7 +170,7 @@
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs minor mode
 
-;; prevent cua-mode from going into selection mode when commands with Shift key is used.
+;; Prevent cua-mode from going into selection mode when commands with Shift key is used.
 (add-hook 'cua-mode-hook
  (lambda ()
     (put 'cua-scroll-down 'CUA nil)
@@ -192,11 +203,20 @@
   (define-key isearch-mode-map (kbd "<f12>") 'isearch-ring-advance)
   )
 
+;; Hook for interpreters
 (defun ergoemacs-comint-hook ()
   (define-key comint-mode-map (kbd "<f11>") 'comint-previous-input)
   (define-key comint-mode-map (kbd "<f12>") 'comint-next-input)
   (define-key comint-mode-map (kbd "S-<f11>") 'comint-previous-matching-input)
   (define-key comint-mode-map (kbd "S-<f12>") 'comint-next-matching-input)
+  )
+
+;; Redefining ergoemacs-move-beginning-of-line-key to eshell-bol in eshell-mode-map
+;; does not work, we have to use minor-mode-overriding-map-alist in this case
+(defun ergoemacs-eshell-hook ()
+  (defvar ergoemacs-eshell-keymap (copy-keymap ergoemacs-keymap))
+  (define-key ergoemacs-eshell-keymap ergoemacs-move-beginning-of-line-key 'eshell-bol)
+  (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-eshell-keymap))
   )
 
 ;; Adds/Removes all ErgoEmacs hooks
@@ -205,16 +225,17 @@
     (progn
       (add-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
       (add-hook 'comint-mode-hook 'ergoemacs-comint-hook)
-
+      (add-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
+      
       (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
       (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
       (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
       (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
       )
     (progn
-      (message "Removing isearch hooks")
       (remove-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
       (remove-hook 'coming-mode-hook 'ergoemacs-comint-hook)
+      (remove-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
       )
     )
   )
