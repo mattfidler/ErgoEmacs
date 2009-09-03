@@ -146,7 +146,7 @@ enviroment variable.  The possible values are:
 (define-key ergoemacs-keymap (kbd "C-x C-b") 'ibuffer)
 (define-key ergoemacs-keymap (kbd "C-h m") 'describe-major-mode)
 
-;; Ctrl+Break is a common in IDEs to stop compilation/find/grep processes
+;; Ctrl+Break is a common IDE shortcut to stop compilation/find/grep
 (define-key ergoemacs-keymap (kbd "C-<pause>") 'kill-compilation)
 
 ;;; --------------------------------------------------
@@ -183,8 +183,9 @@ enviroment variable.  The possible values are:
    )
  )
 
-;; Hook for Isearch
 (defun ergoemacs-isearch-hook ()
+  "Hook to be used in isearch so ergoemacs keybindings are not lost."
+
   (define-key isearch-mode-map (kbd "M-p") 'nil) ; was isearch-ring-retreat
   (define-key isearch-mode-map (kbd "M-n") 'nil) ; was isearch-ring-advance
   (define-key isearch-mode-map (kbd "M-y") 'nil) ; was isearch-yank-kill
@@ -195,9 +196,12 @@ enviroment variable.  The possible values are:
   (define-key isearch-mode-map ergoemacs-isearch-forward-key 'isearch-repeat-forward)
   (define-key isearch-mode-map ergoemacs-isearch-backward-key 'isearch-repeat-backward)
   (define-key isearch-mode-map ergoemacs-recenter-key 'recenter)
-  (define-key isearch-mode-map ergoemacs-kill-ring-save-key 'kill-ring-save)
-  (define-key isearch-mode-map ergoemacs-kill-word-key 'kill-word)
-  (define-key isearch-mode-map ergoemacs-backward-kill-word-key 'backward-kill-word)
+  (define-key isearch-mode-map ergoemacs-yank-key 'isearch-yank-kill)
+
+  ;; isearch-other-control-char makes to send the key to original buffer and cancel isearch
+  (define-key isearch-mode-map ergoemacs-kill-ring-save-key 'isearch-other-control-char)
+  (define-key isearch-mode-map ergoemacs-kill-word-key 'isearch-other-control-char)
+  (define-key isearch-mode-map ergoemacs-backward-kill-word-key 'isearch-other-control-char)
 
   (define-key isearch-mode-map (kbd "<f11>") 'isearch-ring-retreat)
   (define-key isearch-mode-map (kbd "<f12>") 'isearch-ring-advance)
