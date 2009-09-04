@@ -1,6 +1,5 @@
 ;-*- coding: utf-8 -*-
-;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=dv
-;; Alias:        ERGOEMACS_KEYBOARD_LAYOUT=us_dvorak
+;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=dv | us_dvorak
 
 ;;; --------------------------------------------------
 ;;; CURSOR MOVEMENTS
