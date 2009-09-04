@@ -7,6 +7,8 @@
 ;; ErgoEmacs minor mode keymap
 (defvar ergoemacs-keymap (make-sparse-keymap))
 
+(load "ergoemacs_minor_mode_unbind")
+
 ;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
 ;; enviroment variable (this variable is set by ErgoEmacs runner)
 (defvar ergoemacs-keyboard-layout (getenv "ERGOEMACS_KEYBOARD_LAYOUT")
@@ -198,7 +200,7 @@ enviroment variable.  The possible values are:
   (define-key isearch-mode-map ergoemacs-recenter-key 'recenter)
   (define-key isearch-mode-map ergoemacs-yank-key 'isearch-yank-kill)
 
-  ;; isearch-other-control-char makes to send the key to original buffer and cancel isearch
+  ;; isearch-other-control-char sends the key to the original buffer and cancels isearch
   (define-key isearch-mode-map ergoemacs-kill-ring-save-key 'isearch-other-control-char)
   (define-key isearch-mode-map ergoemacs-kill-word-key 'isearch-other-control-char)
   (define-key isearch-mode-map ergoemacs-backward-kill-word-key 'isearch-other-control-char)
@@ -250,17 +252,21 @@ enviroment variable.  The possible values are:
 (defun ergoemacs-hook-modes ()
   (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook)))
 
-    (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
-    (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
-    (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
-    (funcall modify-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
-
+    ;; when ergoemacs-mode is being activated
     (when ergoemacs-mode
+      ;; TODO if ergoemacs-mode is nil we should restore global-keymap
+      (ergoemacs-unbind-globals)
+
       (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
       (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
       (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
       (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
       )
+
+    (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
+    (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
+    (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
+    (funcall modify-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
     )
   )
 
@@ -268,8 +274,7 @@ enviroment variable.  The possible values are:
 (define-minor-mode ergoemacs-mode
   "ErgoEmacs mode."
   nil
-  ;; This should be nil
-  :lighter " ErgoEmacs"
+  :lighter " ErgoEmacs"	;; TODO this should be nil (it is for testing purposes)
   :global t
   :keymap ergoemacs-keymap
 
