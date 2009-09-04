@@ -184,7 +184,7 @@ enviroment variable.  The possible values are:
  )
 
 (defun ergoemacs-isearch-hook ()
-  "Hook to be used in isearch so ergoemacs keybindings are not lost."
+  "Hook for `isearch-mode-hook' so ergoemacs keybindings are not lost."
 
   (define-key isearch-mode-map (kbd "M-p") 'nil) ; was isearch-ring-retreat
   (define-key isearch-mode-map (kbd "M-n") 'nil) ; was isearch-ring-advance
@@ -209,37 +209,57 @@ enviroment variable.  The possible values are:
 
 ;; Hook for interpreters
 (defun ergoemacs-comint-hook ()
+  "Hook for `comint-mode-hook'."
+
   (define-key comint-mode-map (kbd "<f11>") 'comint-previous-input)
   (define-key comint-mode-map (kbd "<f12>") 'comint-next-input)
   (define-key comint-mode-map (kbd "S-<f11>") 'comint-previous-matching-input)
   (define-key comint-mode-map (kbd "S-<f12>") 'comint-next-matching-input)
   )
 
-;; Redefining ergoemacs-move-beginning-of-line-key to eshell-bol in eshell-mode-map
-;; does not work, we have to use minor-mode-overriding-map-alist in this case
 (defun ergoemacs-eshell-hook ()
+  "Hook for `eshell-mode-hook', to redefine some ErgoEmacs keys so they are more useful."
+
+  ;; Redefining ergoemacs-move-beginning-of-line-key to eshell-bol in eshell-mode-map
+  ;; does not work, we have to use minor-mode-overriding-map-alist in this case
   (defvar ergoemacs-eshell-keymap (copy-keymap ergoemacs-keymap))
+
   (define-key ergoemacs-eshell-keymap ergoemacs-move-beginning-of-line-key 'eshell-bol)
+  (define-key ergoemacs-eshell-keymap (kbd "<home>") 'eshell-bol)
+
   (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-eshell-keymap))
   )
 
+(defun ergoemacs-iswitchb-hook ()
+  "Hooks for `iswitchb-minibuffer-setup-hook'."
+
+  (defvar ergoemacs-iswitchb-keymap (copy-keymap ergoemacs-keymap))
+
+  (define-key ergoemacs-iswitchb-keymap ergoemacs-isearch-backward-key 'iswitchb-prev-match)
+  (define-key ergoemacs-iswitchb-keymap ergoemacs-isearch-forward-key 'iswitchb-next-match)
+
+  (define-key ergoemacs-iswitchb-keymap (kbd "<f11>") 'iswitchb-prev-match)
+  (define-key ergoemacs-iswitchb-keymap (kbd "<f12>") 'iswitchb-next-match)
+  (define-key ergoemacs-iswitchb-keymap (kbd "S-<f11>") 'iswitchb-prev-match)
+  (define-key ergoemacs-iswitchb-keymap (kbd "S-<f12>") 'iswitchb-next-match)
+
+  (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-iswitchb-keymap))
+  )
+
 ;; Adds/Removes all ErgoEmacs hooks
-(defun ergoemacs-hook-modes (add)
-  (if add
-    (progn
-      (add-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
-      (add-hook 'comint-mode-hook 'ergoemacs-comint-hook)
-      (add-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
-      
+(defun ergoemacs-hook-modes ()
+  (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook)))
+
+    (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
+    (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
+    (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
+    (funcall modify-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
+
+    (when ergoemacs-mode
       (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
       (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
       (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
       (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
-      )
-    (progn
-      (remove-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
-      (remove-hook 'coming-mode-hook 'ergoemacs-comint-hook)
-      (remove-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
       )
     )
   )
@@ -253,5 +273,5 @@ enviroment variable.  The possible values are:
   :global t
   :keymap ergoemacs-keymap
 
-  (ergoemacs-hook-modes ergoemacs-mode)
+  (ergoemacs-hook-modes)
   )
