@@ -24,7 +24,7 @@
 
 [Setup]
 AppName=ErgoEmacs
-AppVerName=ErgoEmacs 23.1.1
+AppVerName=ErgoEmacs 1.5
 AppPublisherURL=http://code.google.com/p/emacs2010/
 AppSupportURL=http://code.google.com/p/emacs2010/
 AppUpdatesURL=http://code.google.com/p/emacs2010/
@@ -33,12 +33,12 @@ DefaultGroupName=ErgoEmacs
 AllowNoIcons=yes
 LicenseFile=..\..\emacs-23.1\COPYING
 OutputDir=.
-OutputBaseFilename=ErgoEmacs 23.1.1 Setup
+OutputBaseFilename=ErgoEmacs 1.5 Setup
 SetupIconFile=..\..\emacs-23.1\etc\icons\emacs.ico
 ;Compression=none
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=23.1.1
+VersionInfoVersion=1.5
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
