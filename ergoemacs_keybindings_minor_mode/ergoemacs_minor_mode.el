@@ -31,7 +31,7 @@ enviroment variable.  The possible values are:
   (load "ergoemacs_minor_mode_qwerty_sp")
   )
  ((string= ergoemacs-keyboard-layout "colemak")
-  (load "ergoemacs_minor_mode_dvorak")
+  (load "ergoemacs_minor_mode_colemak")
   )
  ;; Qwerty by default
  (t
