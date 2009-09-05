@@ -1,7 +1,7 @@
 ;-*- coding: utf-8 -*-
 
 (defun ergoemacs-unbind-globals ()
-
+"Unbind emacs's keybindings that already has a ergoemacs keybinding."
   (global-unset-key (kbd "M-1"))	; digit-argument
   (global-unset-key (kbd "M-2"))	; digit-argument
   (global-unset-key (kbd "M-3"))	; digit-argument
