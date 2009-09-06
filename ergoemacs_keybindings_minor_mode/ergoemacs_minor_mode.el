@@ -1,12 +1,9 @@
 ;-*- coding: utf-8 -*-
 
+;; Add this same directory to load elisp files
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 (load "functions.el")
-
-;; ErgoEmacs minor mode keymap
-(defvar ergoemacs-keymap (make-sparse-keymap))
-
 (load "ergoemacs_minor_mode_unbind")
 
 ;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
@@ -21,23 +18,20 @@ enviroment variable.  The possible values are:
 
 (cond
  ((string= ergoemacs-keyboard-layout "us")
-  (load "ergoemacs_minor_mode_qwerty")
-  )
+  (load "ergoemacs_minor_mode_qwerty"))
  ((or (string= ergoemacs-keyboard-layout "us_dvorak")
       (string= ergoemacs-keyboard-layout "dv"))
-  (load "ergoemacs_minor_mode_dvorak")
-  )
+  (load "ergoemacs_minor_mode_dvorak"))
  ((string= ergoemacs-keyboard-layout "sp")
-  (load "ergoemacs_minor_mode_qwerty_sp")
-  )
+  (load "ergoemacs_minor_mode_qwerty_sp"))
  ((string= ergoemacs-keyboard-layout "colemak")
-  (load "ergoemacs_minor_mode_colemak")
-  )
- ;; Qwerty by default
- (t
-  (load "ergoemacs_minor_mode_qwerty")
-  )
+  (load "ergoemacs_minor_mode_colemak"))
+ (t ; qwerty by default
+  (load "ergoemacs_minor_mode_qwerty"))
  )
+
+(defvar ergoemacs-keymap (make-sparse-keymap)
+  "ErgoEmacs minor mode keymap.")
 
 ;; Single char cursor movement
 (define-key ergoemacs-keymap ergoemacs-backward-char-key 'backward-char)
@@ -175,22 +169,22 @@ enviroment variable.  The possible values are:
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs minor mode
 
-;; Prevent cua-mode from going into selection mode when commands with Shift key is used.
-(add-hook 'cua-mode-hook
- (lambda ()
-    (put 'cua-scroll-down 'CUA nil)
-    (put 'cua-scroll-up 'CUA nil)
-    (put 'backward-paragraph 'CUA nil)
-    (put 'forward-paragraph 'CUA nil)
-    (put 'beginning-of-buffer 'CUA nil)
-    (put 'end-of-buffer 'CUA nil)
-    (put 'move-end-of-line 'CUA nil)
-   )
- )
+(defun ergoemacs-cua-hook ()
+  "Prevent `cua-mode' from going into selection mode when commands with Shift key is used."
+
+  (put 'cua-scroll-down 'CUA nil)
+  (put 'cua-scroll-up 'CUA nil)
+  (put 'backward-paragraph 'CUA nil)
+  (put 'forward-paragraph 'CUA nil)
+  (put 'beginning-of-buffer 'CUA nil)
+  (put 'end-of-buffer 'CUA nil)
+  (put 'move-end-of-line 'CUA nil)
+  )
 
 (defun ergoemacs-isearch-hook ()
   "Hook for `isearch-mode-hook' so ergoemacs keybindings are not lost."
 
+  ;; TODO restore these keys!
   (define-key isearch-mode-map (kbd "M-p") 'nil) ; was isearch-ring-retreat
   (define-key isearch-mode-map (kbd "M-n") 'nil) ; was isearch-ring-advance
   (define-key isearch-mode-map (kbd "M-y") 'nil) ; was isearch-yank-kill
@@ -251,14 +245,18 @@ enviroment variable.  The possible values are:
   (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-iswitchb-keymap))
   )
 
-;; Adds/Removes all ErgoEmacs hooks
 (defun ergoemacs-hook-modes ()
+  "Installs/Removes ErgoEmacs minor mode hooks from major modes
+depending the state of `ergoemacs-mode' variable.  If the mode
+is being initialized, some global keybindings in current-global-map
+will change."
+
   (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook)))
 
     ;; when ergoemacs-mode is on, active hooks and unset global keys, else do inverse
     (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
         (progn
-          (mapc (lambda (x) (global-unset-key (edmacro-parse-keys (car x)))) redundant-keys)
+	  (ergoemacs-unset-redundant-global-keys)
 
           (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
           (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
@@ -266,11 +264,12 @@ enviroment variable.  The possible values are:
           (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
           )
       (progn
-        (mapc (lambda (x) (global-set-key (edmacro-parse-keys (car x)) (cdr x))) redundant-keys)
+	(ergoemacs-restore-global-keys)
         ;; TODO undo the hooks.
        )
       )
 
+    (funcall modify-hook 'cua-mode-hook 'ergoemacs-cua-hook)
     (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
     (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
     (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
