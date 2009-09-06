@@ -255,15 +255,20 @@ enviroment variable.  The possible values are:
 (defun ergoemacs-hook-modes ()
   (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook)))
 
-    ;; when ergoemacs-mode is being activated
-    (when ergoemacs-mode
-      ;; TODO if ergoemacs-mode is nil we should restore global-keymap
-      (ergoemacs-unbind-globals)
+    ;; when ergoemacs-mode is on, active hooks and unset global keys, else do inverse
+    (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
+        (progn
+          (mapc (lambda (x) (global-unset-key (edmacro-parse-keys (car x)))) redundant-keys)
 
-      (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
-      (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
-      (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
-      (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
+          (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
+          (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
+          (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
+          (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
+          )
+      (progn
+        (mapc (lambda (x) (global-set-key (edmacro-parse-keys (car x)) (cdr x))) redundant-keys)
+        ;; TODO undo the hooks.
+       )
       )
 
     (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
