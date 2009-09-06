@@ -152,3 +152,50 @@ disabled at `ergoemacs-restore-global-keys'."
 	ergoemacs-overriden-global-keys)
   (setq ergoemacs-overriden-global-keys '()) ; clear the list
   )
+
+;; Based on describe-key-briefly
+(defun where-is-old-binding (&optional key)
+  "Print the name of the function KEY invoked before to start ErgoEmacs minor mode."
+  (interactive
+   (let ((enable-disabled-menus-and-buttons t)
+	 (cursor-in-echo-area t)
+	 saved-yank-menu)
+     (unwind-protect
+	 (let (key)
+	   ;; If yank-menu is empty, populate it temporarily, so that
+	   ;; "Select and Paste" menu can generate a complete event.
+	   (when (null (cdr yank-menu))
+	     (setq saved-yank-menu (copy-sequence yank-menu))
+	     (menu-bar-update-yank-menu "(any string)" nil))
+	   (setq key (read-key-sequence "Describe old key (or click or menu item): "))
+	   ;; If KEY is a down-event, read and discard the
+	   ;; corresponding up-event.  Note that there are also
+	   ;; down-events on scroll bars and mode lines: the actual
+	   ;; event then is in the second element of the vector.
+	   (and (vectorp key)
+		(let ((last-idx (1- (length key))))
+		  (and (eventp (aref key last-idx))
+		       (memq 'down (event-modifiers (aref key last-idx)))))
+		(read-event))
+	   (list key))
+       ;; Put yank-menu back as it was, if we changed it.
+       (when saved-yank-menu
+	 (setq yank-menu (copy-sequence saved-yank-menu))
+	 (fset 'yank-menu (cons 'keymap yank-menu))))))
+
+  (let (key-desc item-key item-cmd old-cmd)
+    (setq key-desc (key-description key))
+    (setq item ergoemacs-overriden-global-keys)
+    (while (and item (not old-cmd))
+      (setq item-key (car (cdr (car item))))
+      (setq item-cmd (car (cdr (cdr (car item)))))
+      (if (string= item-key key-desc)
+	  (setq old-cmd item-cmd))
+      (setq item (cdr item))
+      )
+    (if old-cmd
+	(message "Key %s was bound to %s" key-desc old-cmd)
+      (message "Key %s was not bound to any command" key-desc)
+      )
+    )
+  )

@@ -144,6 +144,7 @@ enviroment variable.  The possible values are:
 
 (define-key ergoemacs-keymap (kbd "C-x C-b") 'ibuffer)
 (define-key ergoemacs-keymap (kbd "C-h m") 'describe-major-mode)
+(define-key ergoemacs-keymap (kbd "C-h o") 'where-is-old-binding)
 
 ;; Ctrl+Break is a common IDE shortcut to stop compilation/find/grep
 (define-key ergoemacs-keymap (kbd "C-<pause>") 'kill-compilation)
