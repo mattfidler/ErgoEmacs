@@ -215,8 +215,14 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
     /* Get PATH enviroment variable */
     GetEnvironmentVariable ("PATH", buf, nchars);
 
-    /* Add to PATH "C:\Program Files\ErgoEmacs\bin" */
+    /* Add to PATH:
+       "C:\Program Files\ErgoEmacs\bin"
+       "C:\Program Files\ErgoEmacs\msys\bin"
+       "C:\Program Files\ErgoEmacs\hunspell"
+    */
     snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s\\bin", emacs_dir);
+    snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s\\msys\\bin", emacs_dir);
+    snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s\\hunspell", emacs_dir);
     SetEnvironmentVariable ("PATH", buf);
 
     /* If HOME is not set, set it as "C:\Documents and Settings\username" */
