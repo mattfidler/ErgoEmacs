@@ -4,100 +4,99 @@
 
 ;; (require 'edmacro) ; i think this is loaded by default
 
-(defvar ergoemacs-redundant-keys
-'(
-("C-/" . undo)
-("C-0" . digit-argument)
-("C-1" . digit-argument)
-("C-2" . digit-argument)
-("C-3" . digit-argument)
-("C-4" . digit-argument)
-("C-5" . digit-argument)
-("C-6" . digit-argument)
-("C-7" . digit-argument)
-("C-8" . digit-argument)
-("C-9" . digit-argument)
-("C-<backspace>" . backward-kill-word)
-("C-<next>" . scroll-left)
-("C-<prior>" . scroll-right)
-("C-@" . set-mark-command)
-("C-M-%" . query-replace-regexp)
-("C-_" . undo)
-("C-a" . move-beginning-of-line)
-("C-b" . backward-char)
-("C-d" . delete-char)
-("C-e" . move-end-of-line)
-("C-f" . forward-char)
-("C-j" . newline-and-indent)
-("C-k" . kill-line)
-("C-l" . recenter)
-("C-n" . next-line)
-("C-o" . open-line)
-("C-p" . previous-line)
-("C-r" . isearch-backward)
-("C-s" . isearch-forward)
-("C-t" . transpose-chars)
-("C-v" . scroll-up)
-("C-w" . kill-region)
-("C-x 0" . delete-window)
-("C-x 1" . delete-other-windows)
-("C-x 2" . split-window-vertically)
-("C-x 3" . split-window-horizontally)
-("C-x 5 0" . delete-frame)
-("C-x 5 2" . make-frame-command)
-("C-x C-d" . list-directory)
-("C-x C-f" . find-file)
-("C-x C-s" . save-buffer)
-("C-x C-w" . write-file)
-("C-x d" . dired)
-("C-x h" . mark-whole-buffer)
-("C-x o" . other-windows)
-("C-y" . yank)
-("C-z" . iconify-or-deiconify-frame)
-("M--" . negative-argument)
-("M-0" . digit-argument)
-("M-1" . digit-argument)
-("M-2" . digit-argument)
-("M-3" . digit-argument)
-("M-4" . digit-argument)
-("M-5" . digit-argument)
-("M-6" . digit-argument)
-("M-7" . digit-argument)
-("M-8" . digit-argument)
-("M-9" . digit-argument)
-("M-<" . beginning-of-buffer)
-("M->" . end-of-buffer)
-("M-@" . mark-word)
-("M-\\" . delete-horizontal-space)
-("M-a" . backward-sentence)
-("M-b" . backward-word)
-("M-c" . capitalize-word)
-("M-d" . kill-word)
-("M-e" . forward-sentence)
-("M-f" . forward-word)
-("M-h" . mark-paragraph)
-("M-i" . tab-to-tab-stop)
-("M-j" . indent-new-comment-line)
-("M-k" . kill-sentence)
-("M-l" . downcase-word)
-("M-m" . back-to-indentation)
-("M-n" . nil)
-("M-o" . nil)
-("M-p" . nil)
-("M-q" . fill-paragraph)
-("M-r" . move-to-window-line)
-("M-s" . nil)
-("M-t" . transpose-words)
-("M-u" . upcase-word)
-("M-v" . scroll-down)
-("M-w" . kill-ring-save)
-("M-x" . execute-extended-command)
-("M-y" . yank-pop)
-("M-z" . zap-to-char)
-("M-{" . backward-paragraph)
-("M-}" . forward-paragraph)
-)
-)
+(defconst ergoemacs-redundant-keys
+  '( "C-/"
+     "C-0"
+     "C-1"
+     "C-2"
+     "C-3"
+     "C-4"
+     "C-5"
+     "C-6"
+     "C-7"
+     "C-8"
+     "C-9"
+     "C-<backspace>"
+     "C-<next>"
+     "C-<prior>"
+     "C-@"
+     "C-M-%"
+     "C-_"
+     "C-a"
+     "C-b"
+     "C-d"
+     "C-e"
+     "C-f"
+     "C-j"
+     "C-k"
+     "C-l"
+     "C-n"
+     "C-o"
+     "C-p"
+     "C-r"
+     "C-s"
+     "C-t"
+     "C-v"
+     "C-w"
+     "C-x 0"
+     "C-x 1"
+     "C-x 2"
+     "C-x 3"
+     "C-x 5 0"
+     "C-x 5 2"
+     "C-x C-d"
+     "C-x C-f"
+     "C-x C-s"
+     "C-x C-w"
+     "C-x d"
+     "C-x h"
+     "C-x o"
+     "C-y"
+     "C-z"
+     "M--"
+     "M-0"
+     "M-1"
+     "M-2"
+     "M-3"
+     "M-4"
+     "M-5"
+     "M-6"
+     "M-7"
+     "M-8"
+     "M-9"
+     "M-<"
+     "M->"
+     "M-@"
+     "M-\\"
+     "M-a"
+     "M-b"
+     "M-c"
+     "M-d"
+     "M-e"
+     "M-f"
+     "M-h"
+     "M-i"
+     "M-j"
+     "M-k"
+     "M-l"
+     "M-m"
+     "M-n"
+     "M-o"
+     "M-p"
+     "M-q"
+     "M-r"
+     "M-s"
+     "M-t"
+     "M-u"
+     "M-v"
+     "M-w"
+     "M-x"
+     "M-y"
+     "M-z"
+     "M-{"
+     "M-}"
+     )
+  )
 
 ;; Some exceptions we don't want to unset.
 ;; "C-g" 'keyboard-quit
@@ -138,7 +137,7 @@ disabled at `ergoemacs-restore-global-keys'."
 (defun ergoemacs-unset-redundant-global-keys ()
   "Unsets redundant keyboard shortcuts that should not be used in ErgoEmacs."
   (mapc (lambda (x)
-	  (ergoemacs-unset-global-key (current-global-map) (car x)))
+	  (ergoemacs-unset-global-key (current-global-map) x))
 	ergoemacs-redundant-keys)
   )
 
