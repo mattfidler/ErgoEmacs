@@ -31,6 +31,12 @@
 ;; speck-mode
 (autoload 'speck-mode "speck" "Improved batch spell-checking mode." t)
 
+;; Hunspell
+(add-to-list 'load-path
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "rw-hunspell/"))
+(require 'rw-hunspell)
+(rw-hunspell-setup)
+
 ;; AutoHotKey mode (a keyboard macro for Windows)
 (setq ahk-syntax-directory "c:/Program Files (x86)/AutoHotkey/Extras/Editors/Syntax/")
 (autoload 'ahk-mode "ahk-mode.el" "AutoHotKey mode" t)
