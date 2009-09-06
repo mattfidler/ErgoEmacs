@@ -14,7 +14,8 @@ enviroment variable.  The possible values are:
 
   us = US English QWERTY keyboard layout
   dv = US-Dvorak keyboard layout
-  sp = Spanish keyboard layout")
+  sp = Spanish keyboard layout
+  colemak = Ergonomic Colemak keyboard layout")
 
 (cond
  ((string= ergoemacs-keyboard-layout "us")
@@ -29,6 +30,9 @@ enviroment variable.  The possible values are:
  (t ; qwerty by default
   (load "ergoemacs_minor_mode_qwerty"))
  )
+
+;;; --------------------------------------------------
+;;; ergoemacs-keymap
 
 (defvar ergoemacs-keymap (make-sparse-keymap)
   "ErgoEmacs minor mode keymap.")
@@ -168,7 +172,7 @@ enviroment variable.  The possible values are:
 (define-key ergoemacs-keymap ergoemacs-select-text-in-quote-key 'select-text-in-quote)
 
 ;;----------------------------------------------------------------------
-;; ErgoEmacs minor mode
+;; ErgoEmacs hooks
 
 (defun ergoemacs-cua-hook ()
   "Prevent `cua-mode' from going into selection mode when commands with Shift key is used."
@@ -185,7 +189,9 @@ enviroment variable.  The possible values are:
 (defun ergoemacs-isearch-hook ()
   "Hook for `isearch-mode-hook' so ergoemacs keybindings are not lost."
 
-  ;; TODO restore these keys!
+  ;; TODO restore these keys! (it is not necessary, when the
+  ;; ergoemacs-isearch-hook is removed from isearch-mode-hook)
+
   (define-key isearch-mode-map (kbd "M-p") 'nil) ; was isearch-ring-retreat
   (define-key isearch-mode-map (kbd "M-n") 'nil) ; was isearch-ring-advance
   (define-key isearch-mode-map (kbd "M-y") 'nil) ; was isearch-yank-kill
@@ -278,7 +284,9 @@ will change."
     )
   )
 
+;;----------------------------------------------------------------------
 ;; ErgoEmacs minor mode
+
 (define-minor-mode ergoemacs-mode
   "ErgoEmacs mode."
   nil
