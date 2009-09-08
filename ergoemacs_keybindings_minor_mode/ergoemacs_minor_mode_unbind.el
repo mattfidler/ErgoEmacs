@@ -109,8 +109,8 @@
 ;; "C-c" ; (prefix)
 ;; "M-g" ; (prefix)
 
-(defvar ergoemacs-overriden-global-keys '()
-  "Alist to store overriden keyboard shortcuts in
+(defvar ergoemacs-overridden-global-keys '()
+  "Alist to store overridden keyboard shortcuts in
   `current-global-map' and other maps. Each item looks like '(MAP KEY OLD-COMMAND).")
 
 (defun ergoemacs-unset-global-key (map key-s)
@@ -126,9 +126,9 @@ disabled at `ergoemacs-restore-global-keys'."
     (setq key (edmacro-parse-keys key-s))
     ;; get the old command associated with this key
     (setq oldcmd (lookup-key map key))
-    ;; save that shortcut in ergoemacs-overriden-global-keys
+    ;; save that shortcut in ergoemacs-overridden-global-keys
     (if oldcmd
-	(add-to-list 'ergoemacs-overriden-global-keys (cons map (cons key-s (cons oldcmd nil)))))
+	(add-to-list 'ergoemacs-overridden-global-keys (cons map (cons key-s (cons oldcmd nil)))))
     ;; redefine the key in the ergoemacs-keymap
     (define-key map key nil)
     )
@@ -149,8 +149,8 @@ disabled at `ergoemacs-restore-global-keys'."
 	    (edmacro-parse-keys (car (cdr x)))
 	    (car (cdr (cdr x))))
 	  )
-	ergoemacs-overriden-global-keys)
-  (setq ergoemacs-overriden-global-keys '()) ; clear the list
+	ergoemacs-overridden-global-keys)
+  (setq ergoemacs-overridden-global-keys '()) ; clear the list
   )
 
 ;; Based on describe-key-briefly
@@ -185,7 +185,7 @@ disabled at `ergoemacs-restore-global-keys'."
 
   (let (key-desc item-key item-cmd old-cmd)
     (setq key-desc (key-description key))
-    (setq item ergoemacs-overriden-global-keys)
+    (setq item ergoemacs-overridden-global-keys)
     (while (and item (not old-cmd))
       (setq item-key (car (cdr (car item))))
       (setq item-cmd (car (cdr (cdr (car item)))))
