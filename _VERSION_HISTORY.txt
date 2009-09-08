@@ -1,5 +1,7 @@
 -*- coding: utf-8; mode: org; mode: visual-line -*-
 
+This file is deprecated. It is a version history up to 2009-08-27. Since then, much has changed. The file structure, architecture, etc. This file should be removed or moved to somewhere else in the future.
+
 (If you are viewing this file in emacs, type Tab to open/close a section.  Type Shift+Tab to open/close all levels.  (type Shift+Tab 3 times for the first time to expand all.)  )
 
 HISTORY
