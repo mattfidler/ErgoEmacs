@@ -194,7 +194,11 @@ disabled at `ergoemacs-restore-global-keys'."
       (setq item (cdr item))
       )
     (if old-cmd
-	(message "Key %s was bound to %s" key-desc old-cmd)
+	(with-temp-buffer
+	  (where-is old-cmd t)
+	  (message "Key %s was bound to %s which is now invoked by %s"
+		   key-desc old-cmd (buffer-string))
+	  )
       (message "Key %s was not bound to any command" key-desc)
       )
     )
