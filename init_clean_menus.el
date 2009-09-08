@@ -74,6 +74,7 @@
 (define-key global-map [menu-bar file lang-modes c] '("C" . c-mode))
 
 (define-key global-map [menu-bar file separator1] '("--"))
+(define-key global-map [menu-bar file revert-buffer] '("Revert file" . revert-buffer))
 (define-key global-map [menu-bar file write-file] '("Save As…" . write-file))
 (define-key global-map [menu-bar file save-buffer] '("Save" . save-buffer))
 (define-key global-map [menu-bar file kill-buffer] '("Close" . close-current-buffer))
