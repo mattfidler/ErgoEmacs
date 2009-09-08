@@ -1,12 +1,13 @@
-; redo mode
-(require 'redo)
+; -*- coding: utf-8 -*-
+
+;;;; language modes
 
 ;; php mode
-(autoload 'php-mode "php-mode" "php mode by Aaron S Hawley" t)
+(autoload 'php-mode "php-mode" "php mode by Aaron S Hawley." t)
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
 ;; javascript mode
-(autoload 'js2-mode "js2-20080616a" "Steve Yegge's javascript mode" t)
+(autoload 'js2-mode "js2-20080616a" "Steve Yegge's Javascript mode." t)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 ;; visual-basic-mode
@@ -21,26 +22,46 @@
 (autoload 'powershell-mode "powershell-mode" "A editing mode for Microsoft PowerShell." t)
 (add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode)) ; PowerShell script
 
+;; powershell interactive shell
+(autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
+
 ;; xlsl-mode
 (autoload 'xlsl-mode "xlsl-mode" "Load xlsl-mode for editing Linden Scripting Lang." t)
 (add-to-list 'auto-mode-alist '("\\.lsl\\'" . xlsl-mode))
 
-;; powershell interactive shell
-(autoload 'powershell "powershell" "Start a interactive shell of PowerShell." t)
+;; AutoHotKey mode (a keyboard macro for Windows)
+(setq ahk-syntax-directory "c:/Program Files (x86)/AutoHotkey/Extras/Editors/Syntax/")
+(autoload 'ahk-mode "ahk-mode.el" "AutoHotKey mode" t)
+(add-to-list 'auto-mode-alist '("\\.ahk\\'" . ahk-mode))
+
+;; POV-Ray (3D rendering engine)
+(add-to-list 'load-path
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "pov-mode-3.2/"))
+(autoload 'pov-mode "pov-mode" "Major mode for working with POV-Ray code." t)
+(add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
+(add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
+
+;; tuareg mode for ML/Caml/OCaml lang
+(add-to-list 'load-path
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "tuareg-mode-1.45.6/")
+             )
+(add-to-list 'auto-mode-alist '("\\.ml\\w?" . tuareg-mode))
+(autoload 'tuareg-mode "tuareg" "Major mode for editing ML/Caml/OCaml code." t)
+(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+
+;;;; productivity, enhancement, or minor modes
+
+; redo mode
+(require 'redo)
 
 ;; speck-mode
-(autoload 'speck-mode "speck" "Improved batch spell-checking mode." t)
+(autoload 'speck-mode "speck" "On-the-fly spell checking mode, alternative to fly-spell." t)
 
 ;; Hunspell
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "rw-hunspell/"))
 (require 'rw-hunspell)
 (rw-hunspell-setup)
-
-;; AutoHotKey mode (a keyboard macro for Windows)
-(setq ahk-syntax-directory "c:/Program Files (x86)/AutoHotkey/Extras/Editors/Syntax/")
-(autoload 'ahk-mode "ahk-mode.el" "AutoHotKey mode" t)
-(add-to-list 'auto-mode-alist '("\\.ahk\\'" . ahk-mode))
 
 ;; yasnippet template system
 (add-to-list 'load-path
@@ -52,23 +73,14 @@
  (concat (file-name-directory (or load-file-name buffer-file-name)) "yasnippet-0.6.0b/snippets/")
  )
 
-;; POV-Ray (3D rendering engine)
-(add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "pov-mode-3.2/"))
-(autoload 'pov-mode "pov-mode" "PoVray scene file mode" t)
-(add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
-(add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
+;; command-frequency minor mode
+(autoload 'command-frequency "command-frequency" "minor mode for logging emacs command calls for usage insights by statistics." t)
 
-
-; tuareg mode for ML/Caml/OCaml lang
-(add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "tuareg-mode-1.45.6/")
-             )
-(add-to-list 'auto-mode-alist '("\\.ml\\w?" . tuareg-mode))
-(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
-(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+;; display horizontal line for page break char ^L
+(require 'pp-c-l)
+(setq pp^L-^L-string "                                                           ")
+(pretty-control-l-mode 1)
 
-
 ;; dictionary client for dict.org 
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "dictionary-1.8.7")
@@ -81,9 +93,3 @@
 (autoload 'dictionary-popup-matching-words "dictionary" "Display entries matching the word at the point" t)
 (autoload 'dictionary-tooltip-mode "dictionary" "Display tooltips for the current word" t)
 (autoload 'global-dictionary-tooltip-mode "dictionary" "Enable/disable dictionary-tooltip-mode for all buffers" t)
-
-
-;; display horizontal line for page break char ^L
-(require 'pp-c-l)
-(setq pp^L-^L-string "                                                           ")
-(pretty-control-l-mode 1)
