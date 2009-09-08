@@ -18,14 +18,14 @@
   )
 
 (define-key global-map [menu-bar file exit-emacs] '("Quit" . save-buffers-kill-emacs))
-(define-key global-map [menu-bar file separator1] '("--"))
+(define-key global-map [menu-bar file separator5] '("--"))
 (define-key global-map [menu-bar file one-window] '("Unsplit Window" . delete-other-windows))
 (define-key global-map [menu-bar file split-window-leftright] '("Split Window left/right" . split-window-horizontally))
 (define-key global-map [menu-bar file split-window] '("Split Window" . split-window-vertically))
-(define-key global-map [menu-bar file separator1] '("--"))
+(define-key global-map [menu-bar file separator4] '("--"))
 (define-key global-map [menu-bar file ps-print-buffer-faces] '("Print (font+color)" . ps-print-buffer-faces))
 (define-key global-map [menu-bar file print-buffer] '("Print" . print-buffer))
-(define-key global-map [menu-bar file separator1] '("--"))
+(define-key global-map [menu-bar file separator3] '("--"))
 
 ;; add a language modes menu
 (define-key global-map [menu-bar file lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")))
@@ -52,15 +52,15 @@
 (define-key global-map [menu-bar file lang-modes c++] '("C++" . c++-mode))
 (define-key global-map [menu-bar file lang-modes c] '("C" . c-mode))
 
-(define-key global-map [menu-bar file separator1] '("--"))
-(define-key global-map [menu-bar file revert-buffer] '("Revert file" . revert-buffer))
+(define-key global-map [menu-bar file separator2] '("--"))
+(define-key global-map [menu-bar file revert-buffer] '("Revert" . revert-buffer))
 (define-key global-map [menu-bar file write-file] '("Save As…" . write-file))
 (define-key global-map [menu-bar file save-buffer] '("Save" . save-buffer))
+(define-key global-map [menu-bar file separator1] '("--"))
 (define-key global-map [menu-bar file kill-buffer] '("Close" . close-current-buffer))
 (define-key global-map [menu-bar file open-file] '("Open…" . find-file))
 (define-key global-map [menu-bar file make-frame] '("New Frame" . make-frame-command))
 (define-key global-map [menu-bar file new-file] '("New" . new-empty-buffer))
-
 
 ;; edit menu
 (define-key global-map [menu-bar edit search search-forward] nil)
@@ -157,3 +157,6 @@
 ;; • remove redundant dividers
 ;; • reorg the help menu and submenu.
 
+;; • when recentf-mode minor mode is on, it adds a Open Recent menu item under File at bottom after Quit. Needs to be after Open. Looking at the code, it uses easymenu.el to do things. Need fix.
+
+;; • the code can be improved. Right now it uses define-key repeatedly. It can be just a key map.
