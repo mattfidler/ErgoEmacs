@@ -100,9 +100,9 @@
 (define-key global-map [menu-bar options line-move-visual] '("Toggle ↑↓ Move by Visual Line" . toggle-line-move-visual))
 
 ;; add font scale change
-(define-key global-map [menu-bar options zoom-in] '("Zoom In" . 'text-scale-increase))
-(define-key global-map [menu-bar options zoom-out] '("Zoom Out" . 'text-scale-decrease))
-(define-key global-map [menu-bar options zoom-reset] '("Zoom Reset" . 'text-scale-normal-size))
+(define-key global-map [menu-bar options zoom-in] '("Zoom In" . text-scale-increase))
+(define-key global-map [menu-bar options zoom-out] '("Zoom Out" . text-scale-decrease))
+(define-key global-map [menu-bar options zoom-reset] '("Zoom Reset" . text-scale-normal-size))
 
 ;; • need to group the zoom in/out/reset menu into a submenu
 
