@@ -260,9 +260,7 @@ will change."
 
   (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook)))
 
-    ;; (require 'edmacro) ; i think this is loaded by default
-
-    ;; when ergoemacs-mode is on, active hooks and unset global keys, else do inverse
+    ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
         (progn
 	  (ergoemacs-unset-redundant-global-keys)
