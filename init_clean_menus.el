@@ -17,7 +17,7 @@
   (cons "File" (make-sparse-keymap "hoot hoot")) ;; the hoot hoot is there because i wasn't clear what exactly that string technically is.
   )
 
-(define-key global-map [menu-bar file exit-emacs] '("Quit" . 'save-buffers-kill-emacs))
+(define-key global-map [menu-bar file exit-emacs] '("Quit" . save-buffers-kill-emacs))
 (define-key global-map [menu-bar file separator1] '("--"))
 (define-key global-map [menu-bar file one-window] '("Unsplit Window" . delete-other-windows))
 (define-key global-map [menu-bar file split-window-leftright] '("Split Window left/right" . split-window-horizontally))
