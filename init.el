@@ -14,3 +14,5 @@
 (load "init_load_packages.el")
 (load "init_settings.el")
 (load "init_clean_menus.el")
+
+(server-start) ; this keeps emacs running just one instance. For example, a user double clicks a file, it'll just switch to a existing instance. Not sure this is best approach.
