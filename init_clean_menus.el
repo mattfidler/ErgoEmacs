@@ -1,30 +1,9 @@
 ;-*- coding: utf-8 -*-
 
-;; 2009-02-02, 2009-08-21
-
-;; Clean out emacs menus. Add additional ones.
+;; the purpose of this file is to create a more clean menu.
 ;; Rationale:
 ;; • Emacs's Menu Usability Problem
 ;;   http://xahlee.org/emacs/modernization_menu.html
-
-;; and also some other criticisms that effects the menu. e.g.
-
-;; • Replace list-buffers with ibuffer
-;; • Ctrl+N for new-empty-buffer.
-;; • Support standard shortcuts for open, close, save, save as.
-;; • next user buffer and previous user buffer.
-;; etc.
-;; Most of are discussed here:
-;; 
-;; • Why Emacs's Keyboard Shortcuts Are Painful
-;;   http://xahlee.org/emacs/emacs_kb_shortcuts_pain.html
-;; 
-;; • Suggestions on Emacs's Scratch Buffer
-;;   http://xahlee.org/emacs/modernization_scratch_buffer.html
-;; 
-;; • Emacs's M-‹key› Notation vs Alt+‹key› Notation
-;;   http://xahlee.org/emacs/modernization_meta_key.html
-
 
 ;; file menu
 
@@ -35,7 +14,7 @@
 (define-key
   global-map
   [menu-bar file]
-  (cons "File" (make-sparse-keymap "hoot hoot"))
+  (cons "File" (make-sparse-keymap "hoot hoot")) ;; the hoot hoot is there because i wasn't clear what exactly that string technically is.
   )
 
 (define-key global-map [menu-bar file exit-emacs] '("Quit" . 'save-buffers-kill-emacs))
@@ -171,6 +150,8 @@
 ;; TODO: 
 
 ;; • possibly add menu that shows the current minor modes in effect. (To implement, probably just call describe-mode. ) We might need this since we made C-h m to be describe-major-mode instead of describe-mode. But again maybe not since minor-modes is rather very technical specific to emacs, a concept and feature not in most editors.
+
+;; • re-create menus from scratch, instead of piggy back to remove add. (done for the File menu) Because piggy back is difficult to do and manage and subject to emacs changes. 
 
 ;; • move incremental search menus one level up.
 ;; • remove redundant dividers
