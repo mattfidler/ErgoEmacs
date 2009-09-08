@@ -28,17 +28,28 @@
 
 ;; file menu
 
-;; removing stuff
-(define-key global-map [menu-bar file open-file] '("Open file or folder" . find-file))
-(define-key global-map [menu-bar file kill-buffer] '("Close" . close-current-buffer))
-(define-key global-map [menu-bar file new-file] '("New" . new-empty-buffer))
+;; get rid of the whole default File menu
+(define-key global-map [menu-bar file] nil)
 
-(define-key global-map [menu-bar file dired] nil)
-(define-key global-map [menu-bar file insert-file] nil)
-(define-key global-map [menu-bar file make-frame-on-display] nil)
+;; create new File menu
+(define-key
+  global-map
+  [menu-bar file]
+  (cons "File" (make-sparse-keymap "hoot hoot"))
+  )
+
+(define-key global-map [menu-bar file exit-emacs] '("Quit" . 'save-buffers-kill-emacs))
+(define-key global-map [menu-bar file separator1] '("--"))
+(define-key global-map [menu-bar file one-window] '("Unsplit Window" . delete-other-windows))
+(define-key global-map [menu-bar file split-window-leftright] '("Split Window left/right" . split-window-horizontally))
+(define-key global-map [menu-bar file split-window] '("Split Window" . split-window-vertically))
+(define-key global-map [menu-bar file separator1] '("--"))
+(define-key global-map [menu-bar file ps-print-buffer-faces] '("Print (font+color)" . ps-print-buffer-faces))
+(define-key global-map [menu-bar file print-buffer] '("Print" . print-buffer))
+(define-key global-map [menu-bar file separator1] '("--"))
 
 ;; add a language modes menu
-(define-key-after global-map [menu-bar file lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")) 'kill-buffer )
+(define-key global-map [menu-bar file lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")))
 
 (define-key global-map [menu-bar file lang-modes bash] '("Bash" . sh-mode))
 (define-key global-map [menu-bar file lang-modes tcl] '("TCL" . tcl-mode))
@@ -61,6 +72,14 @@
 (define-key global-map [menu-bar file lang-modes java] '("Java" . java-mode))
 (define-key global-map [menu-bar file lang-modes c++] '("C++" . c++-mode))
 (define-key global-map [menu-bar file lang-modes c] '("C" . c-mode))
+
+(define-key global-map [menu-bar file separator1] '("--"))
+(define-key global-map [menu-bar file write-file] '("Save As…" . write-file))
+(define-key global-map [menu-bar file save-buffer] '("Save" . save-buffer))
+(define-key global-map [menu-bar file kill-buffer] '("Close" . close-current-buffer))
+(define-key global-map [menu-bar file open-file] '("Open…" . find-file))
+(define-key global-map [menu-bar file make-frame] '("New Frame" . make-frame-command))
+(define-key global-map [menu-bar file new-file] '("New" . new-empty-buffer))
 
 
 ;; edit menu
