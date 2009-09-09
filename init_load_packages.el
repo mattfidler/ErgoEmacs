@@ -59,9 +59,9 @@
 
 ;; Hunspell
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "rw-hunspell/"))
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "rw-hunspell/")
+	     )
 (require 'rw-hunspell)
-(rw-hunspell-setup)
 
 ;; yasnippet template system
 (add-to-list 'load-path
