@@ -31,7 +31,7 @@
 
 ;; AutoHotKey mode (a keyboard macro for Windows)
 (setq ahk-syntax-directory "c:/Program Files (x86)/AutoHotkey/Extras/Editors/Syntax/")
-(autoload 'ahk-mode "ahk-mode.el" "AutoHotKey mode" t)
+(autoload 'ahk-mode "ahk-mode" "AutoHotKey mode" t)
 (add-to-list 'auto-mode-alist '("\\.ahk\\'" . ahk-mode))
 
 ;; POV-Ray (3D rendering engine)
