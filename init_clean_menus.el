@@ -66,7 +66,7 @@
 (define-key menu-bar-edit-menu [goto beg-of-buf] nil)
 (define-key menu-bar-edit-menu [goto end-of-buf] nil)
 
-(define-key-after menu-bar-edit-menu [redo] '("Redo" . redo-command) 'undo)
+(define-key-after menu-bar-edit-menu [redo] '("Redo" . redo) 'undo)
 (define-key-after menu-bar-edit-menu [redo-sep] '("--") 'redo)
 
 ;; options menu
