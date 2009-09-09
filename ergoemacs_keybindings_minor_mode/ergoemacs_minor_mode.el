@@ -288,7 +288,13 @@ will change."
 ;; ErgoEmacs minor mode
 
 (define-minor-mode ergoemacs-mode
-  "ErgoEmacs mode."
+  "Toggle ergoemacs keybinding mode.
+Without argument, toggles the minor mode.
+Takes a optional ARG.
+If argument is 1, turn it on.
+If argument is 0 or -1, turn it off.
+Argument of t or nil should not be used.
+For full documentation, see: http://xahlee.org/emacs/ergonomic_emacs_keybinding.html"
   nil
   :lighter " ErgoEmacs"	;; TODO this should be nil (it is for testing purposes)
   :global t
