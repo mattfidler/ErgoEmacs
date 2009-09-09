@@ -5,74 +5,69 @@
 ;; • Emacs's Menu Usability Problem
 ;;   http://xahlee.org/emacs/modernization_menu.html
 
-;; file menu
+;; Create new File menu
+(setq menu-bar-file-menu (make-sparse-keymap "File"))
+(define-key global-map [menu-bar file] (cons "File" menu-bar-file-menu))
 
-;; get rid of the whole default File menu
-(define-key global-map [menu-bar file] nil)
-
-;; create new File menu
-(define-key
-  global-map
-  [menu-bar file]
-  (cons "File" (make-sparse-keymap "hoot hoot")) ;; the hoot hoot is there because i wasn't clear what exactly that string technically is.
-  )
-
-(define-key global-map [menu-bar file exit-emacs] '("Quit" . save-buffers-kill-emacs))
-(define-key global-map [menu-bar file separator5] '("--"))
-(define-key global-map [menu-bar file one-window] '("Unsplit Window" . delete-other-windows))
-(define-key global-map [menu-bar file split-window-leftright] '("Split Window left/right" . split-window-horizontally))
-(define-key global-map [menu-bar file split-window] '("Split Window" . split-window-vertically))
-(define-key global-map [menu-bar file separator4] '("--"))
-(define-key global-map [menu-bar file ps-print-buffer-faces] '("Print (font+color)" . ps-print-buffer-faces))
-(define-key global-map [menu-bar file print-buffer] '("Print" . print-buffer))
-(define-key global-map [menu-bar file separator3] '("--"))
+(define-key menu-bar-file-menu [exit-emacs] '("Quit" . save-buffers-kill-emacs))
+(define-key menu-bar-file-menu [separator5] '("--"))
+(define-key menu-bar-file-menu [one-window] '("Unsplit Window" . delete-other-windows))
+(define-key menu-bar-file-menu [split-window-leftright] '("Split Window left/right" . split-window-horizontally))
+(define-key menu-bar-file-menu [split-window] '("Split Window" . split-window-vertically))
+(define-key menu-bar-file-menu [separator4] '("--"))
+(define-key menu-bar-file-menu [ps-print-buffer-faces] '("Print (font+color)" . ps-print-buffer-faces))
+(define-key menu-bar-file-menu [print-buffer] '("Print" . print-buffer))
+(define-key menu-bar-file-menu [separator3] '("--"))
 
 ;; add a language modes menu
-(define-key global-map [menu-bar file lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")))
+(define-key menu-bar-file-menu [lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")))
 
-(define-key global-map [menu-bar file lang-modes bash] '("Bash" . sh-mode))
-(define-key global-map [menu-bar file lang-modes tcl] '("TCL" . tcl-mode))
-(define-key global-map [menu-bar file lang-modes ruby] '("Ruby" . ruby-mode))
-(define-key global-map [menu-bar file lang-modes python] '("Python" . python-mode))
-(define-key global-map [menu-bar file lang-modes php] '("PHP" . php-mode))
-(define-key global-map [menu-bar file lang-modes perl] '("Perl" . cperl-mode))
-(define-key global-map [menu-bar file lang-modes separator1] '("--"))
-(define-key global-map [menu-bar file lang-modes haskell] '("Haskell" . haskell-mode))
-(define-key global-map [menu-bar file lang-modes ocaml] '("OCaml" . tuareg-mode))
-(define-key global-map [menu-bar file lang-modes elisp] '("Emacs Lisp" . emacs-lisp-mode))
-(define-key global-map [menu-bar file lang-modes separator2] '("--"))
-(define-key global-map [menu-bar file lang-modes latex] '("LaTeX" . latex-mode))
-(define-key global-map [menu-bar file lang-modes js] '("Javascript" . js2-mode))
-(define-key global-map [menu-bar file lang-modes xml] '("XML (xml-mode)" . xml-mode))
-(define-key global-map [menu-bar file lang-modes nxml] '("XML (nxml-mode)" . nxml-mode))
-(define-key global-map [menu-bar file lang-modes html] '("HTML" . html-mode))
-(define-key global-map [menu-bar file lang-modes css] '("CSS" . css-mode))
-(define-key global-map [menu-bar file lang-modes separator3] '("--"))
-(define-key global-map [menu-bar file lang-modes java] '("Java" . java-mode))
-(define-key global-map [menu-bar file lang-modes c++] '("C++" . c++-mode))
-(define-key global-map [menu-bar file lang-modes c] '("C" . c-mode))
+(define-key menu-bar-file-menu [lang-modes bash] '("Bash" . sh-mode))
+(define-key menu-bar-file-menu [lang-modes tcl] '("TCL" . tcl-mode))
+(define-key menu-bar-file-menu [lang-modes ruby] '("Ruby" . ruby-mode))
+(define-key menu-bar-file-menu [lang-modes python] '("Python" . python-mode))
+(define-key menu-bar-file-menu [lang-modes php] '("PHP" . php-mode))
+(define-key menu-bar-file-menu [lang-modes perl] '("Perl" . cperl-mode))
+(define-key menu-bar-file-menu [lang-modes separator1] '("--"))
+(define-key menu-bar-file-menu [lang-modes haskell] '("Haskell" . haskell-mode))
+(define-key menu-bar-file-menu [lang-modes ocaml] '("OCaml" . tuareg-mode))
+(define-key menu-bar-file-menu [lang-modes elisp] '("Emacs Lisp" . emacs-lisp-mode))
+(define-key menu-bar-file-menu [lang-modes separator2] '("--"))
+(define-key menu-bar-file-menu [lang-modes latex] '("LaTeX" . latex-mode))
+(define-key menu-bar-file-menu [lang-modes js] '("Javascript" . js2-mode))
+(define-key menu-bar-file-menu [lang-modes xml] '("XML (xml-mode)" . xml-mode))
+(define-key menu-bar-file-menu [lang-modes nxml] '("XML (nxml-mode)" . nxml-mode))
+(define-key menu-bar-file-menu [lang-modes html] '("HTML" . html-mode))
+(define-key menu-bar-file-menu [lang-modes css] '("CSS" . css-mode))
+(define-key menu-bar-file-menu [lang-modes separator3] '("--"))
+(define-key menu-bar-file-menu [lang-modes java] '("Java" . java-mode))
+(define-key menu-bar-file-menu [lang-modes c++] '("C++" . c++-mode))
+(define-key menu-bar-file-menu [lang-modes c] '("C" . c-mode))
 
-(define-key global-map [menu-bar file separator2] '("--"))
-(define-key global-map [menu-bar file revert-buffer] '("Revert" . revert-buffer))
-(define-key global-map [menu-bar file write-file] '("Save As…" . write-file))
-(define-key global-map [menu-bar file save-buffer] '("Save" . save-buffer))
-(define-key global-map [menu-bar file separator1] '("--"))
-(define-key global-map [menu-bar file kill-buffer] '("Close" . close-current-buffer))
-(define-key global-map [menu-bar file open-file] '("Open…" . find-file))
-(define-key global-map [menu-bar file make-frame] '("New Frame" . make-frame-command))
-(define-key global-map [menu-bar file new-file] '("New" . new-empty-buffer))
+(define-key menu-bar-file-menu [separator2] '("--"))
+(define-key menu-bar-file-menu [revert-buffer] '("Revert" . revert-buffer))
+(define-key menu-bar-file-menu [write-file] '("Save As…" . write-file))
+(define-key menu-bar-file-menu [save-buffer] '("Save" . save-buffer))
+(define-key menu-bar-file-menu [separator1] '("--"))
+(define-key menu-bar-file-menu [kill-buffer] '("Close" . close-current-buffer))
+(define-key menu-bar-file-menu [open-file] '("Open…" . find-file))
+(define-key menu-bar-file-menu [make-frame] '("New Frame" . make-frame-command))
+(define-key menu-bar-file-menu [new-file] '("New" . new-empty-buffer))
 
 ;; edit menu
-(define-key global-map [menu-bar edit search search-forward] nil)
-(define-key global-map [menu-bar edit search search-backward] nil)
-(define-key global-map [menu-bar edit search re-search-forward] nil)
-(define-key global-map [menu-bar edit search re-search-backward] nil)
-(define-key global-map [menu-bar edit search repeat-search-fwd] nil)
-(define-key global-map [menu-bar edit search repeat-search-back] nil)
+(define-key menu-bar-edit-menu [search search-forward] nil)
+(define-key menu-bar-edit-menu [search search-backward] nil)
+(define-key menu-bar-edit-menu [search re-search-forward] nil)
+(define-key menu-bar-edit-menu [search re-search-backward] nil)
+(define-key menu-bar-edit-menu [search repeat-search-fwd] nil)
+(define-key menu-bar-edit-menu [search repeat-search-back] nil)
 
-(define-key global-map [menu-bar edit goto go-to-pos] nil)
-(define-key global-map [menu-bar edit goto beg-of-buf] nil)
-(define-key global-map [menu-bar edit goto end-of-buf] nil)
+(define-key menu-bar-edit-menu [goto go-to-pos] nil)
+(define-key menu-bar-edit-menu [goto beg-of-buf] nil)
+(define-key menu-bar-edit-menu [goto end-of-buf] nil)
+
+(define-key-after menu-bar-edit-menu [redo] '("Redo" . redo-command) 'undo)
+(define-key-after menu-bar-edit-menu [redo-sep] '("--") 'redo)
 
 ;; options menu
 
