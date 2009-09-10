@@ -5,8 +5,13 @@
 ; <root>
 ;   |
 ;   +- ErgoEmacs-trunk/
-;   |  +- init.el ...
-;   |  +- setup/
+;   |  +- ergoemacs/
+;   |  |  +- ergoemacs-keybindings/
+;   |  |  +- init.el ...
+;   |  +- packages/
+;   |  |  +- command-frecuency.el
+;   |  |  +- ...
+;   |  +- win32-setup/
 ;   |     +- ErgoEmacs.iss
 ;   |     +- ErgoEmacs.exe
 ;   |     +- ...
@@ -53,7 +58,7 @@
 
 [Setup]
 AppName=ErgoEmacs
-AppVerName=ErgoEmacs 1.5
+AppVerName=ErgoEmacs 1.5.1
 AppPublisherURL=http://code.google.com/p/emacs2010/
 AppSupportURL=http://code.google.com/p/emacs2010/
 AppUpdatesURL=http://code.google.com/p/emacs2010/
@@ -62,12 +67,12 @@ DefaultGroupName=ErgoEmacs
 AllowNoIcons=yes
 LicenseFile=..\..\emacs-23.1\COPYING
 OutputDir=.
-OutputBaseFilename=ErgoEmacs 1.5 Setup
+OutputBaseFilename=ErgoEmacs 1.5.1 Setup
 SetupIconFile=..\..\emacs-23.1\etc\icons\emacs.ico
 ;Compression=none
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=1.5
+VersionInfoVersion=1.5.1
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -79,7 +84,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "..\..\emacs-23.1\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\msys\*"; DestDir: "{app}\msys"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\hunspell\*"; DestDir: "{app}\hunspell"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\*"; Excludes: "setup,*~,#*#"; DestDir: "{app}\ergoemacs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\packages\*"; Excludes: "*~,#*#"; DestDir: "{app}\packages"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\ergoemacs\*"; Excludes: "*~,#*#"; DestDir: "{app}\ergoemacs"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "ErgoEmacs.exe"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]

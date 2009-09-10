@@ -3,8 +3,8 @@
 ;; Add this same directory to load elisp files
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
-(load "functions.el")
-(load "ergoemacs_minor_mode_unbind")
+(load "functions")
+(load "ergoemacs-unbind")
 
 ;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
 ;; enviroment variable (this variable is set by ErgoEmacs runner)
@@ -19,16 +19,16 @@ enviroment variable.  The possible values are:
 
 (cond
  ((string= ergoemacs-keyboard-layout "us")
-  (load "ergoemacs_minor_mode_qwerty"))
+  (load "ergoemacs-layout-us"))
  ((or (string= ergoemacs-keyboard-layout "us_dvorak")
       (string= ergoemacs-keyboard-layout "dv"))
-  (load "ergoemacs_minor_mode_dvorak"))
+  (load "ergoemacs-layout-dv"))
  ((string= ergoemacs-keyboard-layout "sp")
-  (load "ergoemacs_minor_mode_qwerty_sp"))
+  (load "ergoemacs-layout-sp"))
  ((string= ergoemacs-keyboard-layout "colemak")
-  (load "ergoemacs_minor_mode_colemak"))
- (t ; qwerty by default
-  (load "ergoemacs_minor_mode_qwerty"))
+  (load "ergoemacs-layout-colemak"))
+ (t ; US qwerty by default
+  (load "ergoemacs-layout-us"))
  )
 
 ;;; --------------------------------------------------

@@ -36,14 +36,14 @@
 
 ;; POV-Ray (3D rendering engine)
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "pov-mode-3.2/"))
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/pov-mode-3.2/"))
 (autoload 'pov-mode "pov-mode" "Major mode for working with POV-Ray code." t)
 (add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
 ;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "tuareg-mode-1.45.6/")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.6/")
              )
 (add-to-list 'auto-mode-alist '("\\.ml\\w?" . tuareg-mode))
 (autoload 'tuareg-mode "tuareg" "Major mode for editing ML/Caml/OCaml code." t)
@@ -59,18 +59,18 @@
 
 ;; Hunspell
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "rw-hunspell/")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/")
 	     )
 (require 'rw-hunspell nil t)
 
 ;; yasnippet template system
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "yasnippet-0.6.0b/")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.0b/")
              )
 (require 'yasnippet) ;; not yasnippet-bundle
 (yas/initialize)
 (yas/load-directory
- (concat (file-name-directory (or load-file-name buffer-file-name)) "yasnippet-0.6.0b/snippets/")
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.0b/snippets/")
  )
 
 ;; command-frequency minor mode
@@ -83,7 +83,7 @@
 
 ;; dictionary client for dict.org 
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "dictionary-1.8.7")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/dictionary-1.8.7")
 )
 (autoload 'dictionary-search "dictionary" "Ask for a word and search it in all dictionaries" t)
 (autoload 'dictionary-match-words "dictionary" "Ask for a word and search all matching words in the dictionaries" t)

@@ -1,8 +1,10 @@
 ; -*- coding: utf-8 -*-
 
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
+(add-to-list 'load-path 
+	     (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages"))
 
-(load "ergoemacs_keybindings_minor_mode/ergoemacs_minor_mode")
+(load "ergoemacs-keybindings/ergoemacs-mode")
 (ergoemacs-mode 1)
 
 (load "init_functions")
