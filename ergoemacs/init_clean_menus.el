@@ -72,34 +72,37 @@
 ;; options menu
 
 ; remove stuff
-(define-key global-map [menu-bar options cua-mode] nil)
-(define-key global-map [menu-bar options transient-mark-mode] nil)
+(define-key menu-bar-options-menu [cua-mode] nil)
+(define-key menu-bar-options-menu [transient-mark-mode] nil)
 
-(define-key global-map [menu-bar options blink-cursor-mode] nil)
-(define-key global-map [menu-bar options debug-on-error] nil)
-(define-key global-map [menu-bar options debug-on-quit] nil)
+(define-key menu-bar-options-menu [blink-cursor-mode] nil)
+(define-key menu-bar-options-menu [debug-on-error] nil)
+(define-key menu-bar-options-menu [debug-on-quit] nil)
 
-(define-key global-map [menu-bar options showhide showhide-tool-bar] nil)
-(define-key global-map [menu-bar options showhide showhide-scroll-bar] nil)
-(define-key global-map [menu-bar options showhide showhide-fringe] nil)
+(define-key menu-bar-options-menu [showhide showhide-tool-bar] nil)
+(define-key menu-bar-options-menu [showhide showhide-scroll-bar] nil)
+(define-key menu-bar-options-menu [showhide showhide-fringe] nil)
 
-(define-key global-map [menu-bar options showhide mac-font-panel-mode] nil)
-(define-key global-map [menu-bar options showhide showhide-battery] nil)
-(define-key global-map [menu-bar options showhide showhide-date-time] nil)
-(define-key global-map [menu-bar options showhide size-indication-mode] nil)
+(define-key menu-bar-options-menu [showhide mac-font-panel-mode] nil)
+(define-key menu-bar-options-menu [showhide showhide-battery] nil)
+(define-key menu-bar-options-menu [showhide showhide-date-time] nil)
+(define-key menu-bar-options-menu [showhide size-indication-mode] nil)
 
 (define-key global-map (kbd "<S-down-mouse-1>") nil)
 
 ;; add a command to toggle by cursor move by visual line.
 ;; todo: need to make the menu reflect current state
-(define-key global-map [menu-bar options line-move-visual] '("Toggle ↑↓ Move by Visual Line" . toggle-line-move-visual))
+(define-key-after menu-bar-options-menu [line-move-visual]
+  '(menu-item "Move Through Wrapped Lines" toggle-line-move-visual 
+    :button (:toggle . line-move-visual)) 'line-wrapping)
 
 ;; add font scale change
-(define-key global-map [menu-bar options zoom-in] '("Zoom In" . text-scale-increase))
-(define-key global-map [menu-bar options zoom-out] '("Zoom Out" . text-scale-decrease))
-(define-key global-map [menu-bar options zoom-reset] '("Zoom Reset" . text-scale-normal-size))
+(define-key-after menu-bar-options-menu [menu-font-size] 
+  (cons "Font Size" (make-sparse-keymap "font sizes")) 'menu-set-font)
 
-;; • need to group the zoom in/out/reset menu into a submenu
+(define-key menu-bar-options-menu [menu-font-size zoom-in] '("Zoom In" . text-scale-increase))
+(define-key menu-bar-options-menu [menu-font-size zoom-out] '("Zoom Out" . text-scale-decrease))
+(define-key menu-bar-options-menu [menu-font-size zoom-reset] '("Zoom Reset" . text-scale-normal-size))
 
 ;; buffers menu
 (define-key global-map [menu-bar buffer next-buffer] '("Next User Buffer" . next-user-buffer))
