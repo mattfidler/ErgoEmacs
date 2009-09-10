@@ -294,7 +294,8 @@ Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
 Argument of t or nil should not be used.
-For full documentation, see: http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
+For full documentation, see: 
+URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
 
 If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
   nil
