@@ -3,9 +3,12 @@ EMACS = emacs
 endif
 
 RM = rm
-ELC_FILES = $(wildcard *.elc) $(wildcard */*.elc)
-EL_FILES = $(wildcard *.el) $(wildcard */*.el)
+ELC_FILES = $(wildcard *.elc) $(wildcard */*.elc) $(wildcard */*/*.elc)
+EL_FILES = $(wildcard *.el) $(wildcard */*.el) $(wildcard */*/*.el)
 
 all:
 	-$(RM) -f $(ELC_FILES)
 	-$(EMACS) -batch -f batch-byte-compile $(EL_FILES)
+
+clean:
+	-$(RM) -f $(ELC_FILES)
