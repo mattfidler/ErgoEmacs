@@ -7,6 +7,7 @@
 (load "ergoemacs-keybindings/ergoemacs-mode")
 (ergoemacs-mode 1)
 
+(load "init_version")
 (load "init_functions")
 (load "init_keybinding")
 (load "init_load_packages")
