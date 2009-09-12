@@ -30,7 +30,7 @@
 (defalias 'center-line 'isearch-forward) ; center-line is bound to M-s. html mode and Text mode seems to redifine the M-s. Easier to just alias the center-line instead of hook on each mode.
 
 
-(tool-bar-mode 1) ;; not sure we should have this on. The way it is right now, is rather useless for anyone who would use emacs, and i don't think it really provide any UI improvement because there's the menu already. The icons are rather very ugly. Possibly we can improve the icons, and or add a Close button to it.  
+(tool-bar-mode 0) ;; not sure we should have this on. The way it is right now, is rather useless for anyone who would use emacs, and i don't think it really provide any UI improvement because there's the menu already. The icons are rather very ugly. Possibly we can improve the icons, and or add a Close button to it.  
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
 (setq inhibit-startup-screen t)
