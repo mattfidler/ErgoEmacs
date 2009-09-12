@@ -1,6 +1,6 @@
 ; -*- coding: utf-8 -*-
 
-(defconst ergoemacs-version "1.5")
+(defconst ergoemacs-version "1.5.1")
 (defconst ergoemacs-url "http://code.google.com/p/emacs2010/")
 
 ;; ErgoEmacs version
@@ -56,7 +56,7 @@ to the system configuration; look at `system-configuration' instead."
 	      (view-file (expand-file-name "ERGOEMACS-AUTHORS" data-directory))
 	      (goto-char (point-min))))
      "\tErgoEmacs contributors (TODO add ErgoEmacs contributors file)\n"
-     :link ("Authors"
+     :link ("GNU/Emacs Authors"
 	    (lambda (button)
 	      (view-file (expand-file-name "AUTHORS" data-directory))
 	      (goto-char (point-min))))
@@ -89,7 +89,7 @@ to the system configuration; look at `system-configuration' instead."
 		 'follow-link t)
   (insert "\tErgoEmacs contributors\n")
 
-  (insert-button "Authors"
+  (insert-button "GNU/Emacs Authors"
 		 'action
 		 (lambda (button)
 		   (view-file (expand-file-name "AUTHORS" data-directory))
