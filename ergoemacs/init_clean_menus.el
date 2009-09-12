@@ -59,8 +59,10 @@
 (define-key menu-bar-edit-menu [search search-backward] nil)
 (define-key menu-bar-edit-menu [search re-search-forward] nil)
 (define-key menu-bar-edit-menu [search re-search-backward] nil)
+(define-key menu-bar-edit-menu [search separator-repeat-search] nil)
 (define-key menu-bar-edit-menu [search repeat-search-fwd] nil)
 (define-key menu-bar-edit-menu [search repeat-search-back] nil)
+(define-key menu-bar-edit-menu [search separator-tag-search] nil)
 
 (define-key menu-bar-edit-menu [goto go-to-pos] nil)
 (define-key menu-bar-edit-menu [goto beg-of-buf] nil)
@@ -75,7 +77,9 @@
 (define-key menu-bar-options-menu [cua-mode] nil)
 (define-key menu-bar-options-menu [transient-mark-mode] nil)
 
+(define-key menu-bar-options-menu [cursor-separator] nil)
 (define-key menu-bar-options-menu [blink-cursor-mode] nil)
+(define-key menu-bar-options-menu [debugger-separator] nil)
 (define-key menu-bar-options-menu [debug-on-error] nil)
 (define-key menu-bar-options-menu [debug-on-quit] nil)
 
@@ -85,6 +89,7 @@
 
 (define-key menu-bar-options-menu [showhide mac-font-panel-mode] nil)
 (define-key menu-bar-options-menu [showhide showhide-battery] nil)
+(define-key menu-bar-options-menu [showhide datetime-separator] nil)
 (define-key menu-bar-options-menu [showhide showhide-date-time] nil)
 (define-key menu-bar-options-menu [showhide size-indication-mode] nil)
 
@@ -118,37 +123,41 @@
 (add-hook 'menu-bar-update-hook 'ergoemacs-update-buffers t)
 
 ;; tools menu
-(define-key global-map [menu-bar tools gnus] nil)
-(define-key global-map [menu-bar tools rmail] nil)
-(define-key global-map [menu-bar tools compose-mail] nil)
-(define-key global-map [menu-bar tools games] nil)
+(define-key menu-bar-tools-menu [gnus] nil)
+(define-key menu-bar-tools-menu [rmail] nil)
+(define-key menu-bar-tools-menu [compose-mail] nil)
+(define-key menu-bar-tools-menu [separator-games] nil)
+(define-key menu-bar-tools-menu [games] nil)
 
 ;; obsolete, outdated contents. Much replaced by web.
-(define-key global-map [menu-bar help-menu getting-new-versions] nil)
-(define-key global-map [menu-bar help-menu describe-distribution] nil)
+(define-key menu-bar-help-menu [getting-new-versions] nil)
+(define-key menu-bar-help-menu [describe-distribution] nil)
 
-(define-key global-map [menu-bar help-menu external-packages] nil) (define-key global-map [menu-bar help-menu more] nil)
+(define-key menu-bar-help-menu [external-packages] nil)
+(define-key menu-bar-help-menu [more] nil)
 
-(define-key global-map [menu-bar help-menu emacs-known-problems] nil)
-(define-key global-map [menu-bar help-menu emacs-problems] nil)
-(define-key global-map [menu-bar help-menu find-emacs-packages] nil)
+(define-key menu-bar-help-menu [emacs-known-problems] nil)
+(define-key menu-bar-help-menu [emacs-problems] nil)
+(define-key menu-bar-help-menu [find-emacs-packages] nil)
 
 ;; outdated humor and tech
-(define-key global-map [menu-bar help-menu eliza] nil) (define-key global-map [menu-bar help-menu emacs-psychotherapist] nil)
+(define-key menu-bar-help-menu [eliza] nil)
+(define-key menu-bar-help-menu [emacs-psychotherapist] nil)
 
 ;; antiquated tutorial. If it needs a tutorial, something is wrong with UI.
-(define-key global-map [menu-bar help-menu emacs-tutorial] nil)
-(define-key global-map [menu-bar help-menu emacs-tutorial-language-specific] nil)
-(define-key global-map [menu-bar help-menu emacs-faq] nil)
-(define-key global-map [menu-bar help-menu search-documentation emacs-terminology] nil)
+(define-key menu-bar-help-menu [emacs-tutorial] nil)
+(define-key menu-bar-help-menu [emacs-tutorial-language-specific] nil)
+(define-key menu-bar-help-menu [emacs-faq] nil)
+(define-key menu-bar-help-menu [search-documentation emacs-terminology] nil)
 
 ;; remove FSF propaganda. (already linked in About Emacs)
-(define-key global-map [menu-bar help-menu about-gnu-project] nil)
-(define-key global-map [menu-bar help-menu describe-copying] nil)
-(define-key global-map [menu-bar help-menu describe-no-warranty] nil)
-(define-key global-map [menu-bar help-menu more-manuals order-emacs-manuals] nil)
-(define-key global-map [menu-bar help-menu manuals order-emacs-manuals] nil)
-(define-key global-map [menu-bar help-menu about-gnu-project] nil)
+(define-key menu-bar-help-menu [about-gnu-project] nil)
+(define-key menu-bar-help-menu [describe-copying] nil)
+(define-key menu-bar-help-menu [describe-no-warranty] nil)
+(define-key menu-bar-help-menu [more-manuals order-emacs-manuals] nil)
+(define-key menu-bar-help-menu [manuals order-emacs-manuals] nil)
+(define-key menu-bar-help-menu [sep2] nil)
+(define-key menu-bar-help-menu [about-gnu-project] nil)
 
 ;; TODO: 
 
