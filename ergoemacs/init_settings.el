@@ -1,7 +1,7 @@
 ; -*- coding: utf-8 -*-
 
-; load unicode data; used by what-cursor-position for showing full unicode info
-;; commented out because emacs 23 has this info.
+; load unicode data; used by describe-char and what-cursor-position for showing full unicode info
+;; commented out because emacs 23 has this info, or vast majority of the info contained in this file.
 ;; (if (string= (substring-no-properties emacs-version 0 2) "23" )
 ;;     nil
 ;;   (setq describe-char-unicodedata-file
@@ -10,7 +10,7 @@
 ;;   )
 
 
- ; for xml files, use nxml-mode instead of sgml-mode
+;; for xml files, use nxml-mode instead of sgml-mode
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
 
@@ -26,11 +26,11 @@
 (setq auto-save-default nil)
 
 
-(defalias 'yes-or-no-p 'y-or-n-p); get rid of yes-or-no questions. y or n is enough
+(defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
 (defalias 'center-line 'isearch-forward) ; center-line is bound to M-s. html mode and Text mode seems to redifine the M-s. Easier to just alias the center-line instead of hook on each mode.
 
 
-(tool-bar-mode 1)
+(tool-bar-mode 1) ;; not sure we should have this on. The way it is right now, is rather useless for anyone who would use emacs, and i don't think it really provide any UI improvement because there's the menu already. The icons are rather very ugly. Possibly we can improve the icons, and or add a Close button to it.  
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
 (setq inhibit-startup-screen t)
@@ -41,13 +41,14 @@
 
 (setq mouse-drag-copy-region nil)
 
-(cua-mode 1)
 (delete-selection-mode 1)
+(cua-mode 1)
+(iswitchb-mode 1)
 
 ;; alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
 
-;; make whitespace-mode with very basic bc color for whitespaces
+;; make whitespace-mode with very basic background coloring for whitespaces
 (setq whitespace-style (quote ( spaces tabs newline space-mark tab-mark newline-mark )))
 
 ;; make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and ▷ for tab.
