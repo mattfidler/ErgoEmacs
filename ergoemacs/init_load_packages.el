@@ -41,6 +41,14 @@
 (add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
+;; mode for Haskell lang
+(add-to-list 'load-path
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode/"))
+(load "haskell-mode/haskell-site-file")
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+
 ;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.6/")
