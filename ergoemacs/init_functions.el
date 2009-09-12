@@ -12,3 +12,31 @@
       (setq line-move-visual nil)
     (setq line-move-visual t))
   )
+
+(defun cmd-shell (&optional arg)
+  "Run cmd.exe (WinNT) or command.com shell. A numeric prefix
+arg switches to the specified session, creating it if necessary."
+  (interactive "P")
+  (let ((buf-name (cond ((numberp arg)
+			 (format "*cmd<%s>*" arg))
+			(arg 
+			 (generate-new-buffer-name "*cmd*"))
+			(t
+			 "*cmd*")))
+	(explicit-shell-file-name (or (and (w32-using-nt) "cmd.exe")
+				      "command.com")))
+    (shell buf-name)))
+
+(defun msys-shell (&optional arg)
+  "Run MSYS shell (sh.exe).  It's like a Unix Shell in Windows.
+A numeric prefix arg switches to the specified session, creating
+it if necessary."
+  (interactive "P")
+  (let ((buf-name (cond ((numberp arg)
+			 (format "*msys<%d>*" arg))
+			(arg
+			 (generate-new-buffer-name "*msys*"))
+			(t
+			 "*msys*")))
+	(explicit-shell-file-name "sh.exe"))
+    (shell buf-name)))
