@@ -55,14 +55,21 @@
 (define-key menu-bar-file-menu [new-file] '("New" . new-empty-buffer))
 
 ;; edit menu
-(define-key menu-bar-edit-menu [search search-forward] nil)
+
+(define-key menu-bar-edit-menu [search search-forward] '("Text…" . search-forward))
 (define-key menu-bar-edit-menu [search search-backward] nil)
 (define-key menu-bar-edit-menu [search re-search-forward] nil)
 (define-key menu-bar-edit-menu [search re-search-backward] nil)
-(define-key menu-bar-edit-menu [search separator-repeat-search] nil)
 (define-key menu-bar-edit-menu [search repeat-search-fwd] nil)
 (define-key menu-bar-edit-menu [search repeat-search-back] nil)
 (define-key menu-bar-edit-menu [search separator-tag-search] nil)
+
+;; Move 'i-search after 'search
+(define-key-after menu-bar-edit-menu [i-search]
+  (list 'menu-item "Incremental Search" (lookup-key menu-bar-edit-menu [search i-search]))
+  'search)
+(define-key menu-bar-edit-menu [search separator-tag-isearch] nil)
+(define-key menu-bar-edit-menu [search i-search] nil)
 
 (define-key menu-bar-edit-menu [goto go-to-pos] nil)
 (define-key menu-bar-edit-menu [goto beg-of-buf] nil)
@@ -165,7 +172,6 @@
 
 ;; • re-create menus from scratch, instead of piggy back to remove add. (done for the File menu) Because piggy back is difficult to do and manage and subject to emacs changes. 
 
-;; • move incremental search menus one level up.
 ;; • remove redundant dividers
 ;; • reorg the help menu and submenu.
 
