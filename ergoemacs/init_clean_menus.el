@@ -129,7 +129,25 @@
 
 (add-hook 'menu-bar-update-hook 'ergoemacs-update-buffers t)
 
-;; tools menu
+;; Tools menu
+
+(define-key menu-bar-tools-menu [shell] 
+  '("Shell" keymap
+    (shell menu-item "Run Command..." shell-command 
+	   :help "Invoke a shell command and catch its output")
+    (shell-on-region menu-item "Run Command on Region..." shell-command-on-region 
+		     :enable mark-active 
+		     :help "Pass marked region to a shell command")
+    (shell-sep1 menu-item "--")
+    (cmd menu-item "Cmd" cmd-shell :help "Start Windows Shell (cmd.exe / command.com)")
+    (eshell menu-item "Eshell" eshell :help "Start Emacs Shell")
+    (msys menu-item "MSYS Shell" msys-shell :help "Start MSYS shell (sh.exe)")
+    (shell-sep2 menu-item "--")
+    (powershell menu-item "Powershell" powershell :help "Start PowerShell")
+    "shells"))
+
+(define-key menu-bar-tools-menu [shell-on-region] nil)
+
 (define-key menu-bar-tools-menu [gnus] nil)
 (define-key menu-bar-tools-menu [rmail] nil)
 (define-key menu-bar-tools-menu [compose-mail] nil)
