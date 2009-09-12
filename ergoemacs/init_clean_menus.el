@@ -104,14 +104,19 @@
 (define-key menu-bar-options-menu [menu-font-size zoom-out] '("Zoom Out" . text-scale-decrease))
 (define-key menu-bar-options-menu [menu-font-size zoom-reset] '("Zoom Reset" . text-scale-normal-size))
 
-;; buffers menu
-(define-key global-map [menu-bar buffer next-buffer] '("Next User Buffer" . next-user-buffer))
-(define-key global-map [menu-bar buffer previous-buffer] '("Previous User Buffer" . previous-user-buffer))
-(define-key global-map [menu-bar buffer next-emacs-buffer] '("Next Emacs Buffer" . next-emacs-buffer))
-(define-key global-map [menu-bar buffer previous-emacs-buffer] '("Previous Emacs Buffer" . previous-emacs-buffer))
+(defun ergoemacs-update-buffers (&optional force)
+  (define-key global-buffers-menu-map [next-buffer] '("Next User Buffer" . next-user-buffer))
+  (define-key global-buffers-menu-map [previous-buffer] '("Previous User Buffer" . previous-user-buffer))
+  (define-key-after global-buffers-menu-map [next-emacs-buffer] '("Next Emacs Buffer" . next-emacs-buffer)
+    'previous-buffer)
+  (define-key-after global-buffers-menu-map [previous-emacs-buffer] '("Previous Emacs Buffer" . previous-emacs-buffer)
+    'next-emacs-buffer)
+  (define-key global-buffers-menu-map [select-named-buffer] nil)
+  (define-key global-buffers-menu-map [list-all-buffers] '("List All Buffers" . ibuffer))
+  )
 
-(define-key global-map [menu-bar buffer list-all-buffers] '("List All Buffers" . ibuffer))
-
+(add-hook 'menu-bar-update-hook 'ergoemacs-update-buffers t)
+
 ;; tools menu
 (define-key global-map [menu-bar tools gnus] nil)
 (define-key global-map [menu-bar tools rmail] nil)
