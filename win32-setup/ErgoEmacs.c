@@ -135,6 +135,13 @@ static const struct {
    { 0x00000, NULL,	NULL }
 };
 
+static void prepend_path(char* buf, char* path_var, int path_max, 
+			 const char* emacs_dir, const char* subdir)
+{
+  strcpy(buf, path_var);
+  snprintf(path_var, path_max, "%s\\%s;%s", emacs_dir, subdir, buf);
+}
+
 int WINAPI
 WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
 {
@@ -211,19 +218,20 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
   {
     DWORD nchars = 1024 * MAX_PATH;
     char *buf = alloca (nchars);
+    char *path_var = alloca (nchars);
 
     /* Get PATH enviroment variable */
-    GetEnvironmentVariable ("PATH", buf, nchars);
+    GetEnvironmentVariable ("PATH", path_var, nchars);
 
     /* Add to PATH:
        "C:\Program Files\ErgoEmacs\bin"
        "C:\Program Files\ErgoEmacs\msys\bin"
        "C:\Program Files\ErgoEmacs\hunspell"
     */
-    snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s\\bin", emacs_dir);
-    snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s\\msys\\bin", emacs_dir);
-    snprintf (buf + strlen (buf), nchars - strlen (buf), ";%s\\hunspell", emacs_dir);
-    SetEnvironmentVariable ("PATH", buf);
+    prepend_path(buf, path_var, nchars, emacs_dir, "bin");
+    prepend_path(buf, path_var, nchars, emacs_dir, "msys\\bin");
+    prepend_path(buf, path_var, nchars, emacs_dir, "hunspell");
+    SetEnvironmentVariable ("PATH", path_var);
 
     /* If HOME is not set, set it as "C:\Documents and Settings\username" */
     if (!GetEnvironmentVariable ("HOME", buf, nchars) || !*buf)
@@ -259,6 +267,7 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
       }
 
     free (buf);
+    free (path_var);
   }
 
   /* Set emacs_dir variable.  */
