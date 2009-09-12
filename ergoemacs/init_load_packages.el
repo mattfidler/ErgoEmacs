@@ -43,8 +43,8 @@
 
 ;; mode for Haskell lang
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode/"))
-(load "haskell-mode/haskell-site-file")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.4/"))
+(load "haskell-mode-2.4/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
