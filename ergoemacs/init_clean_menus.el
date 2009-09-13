@@ -5,58 +5,59 @@
 ;; • Emacs's Menu Usability Problem
 ;;   http://xahlee.org/emacs/modernization_menu.html
 
-;; Create new File menu
-(setq menu-bar-file-menu (make-sparse-keymap "File"))
+;; File menu
+(setq menu-bar-file-menu 
+      '(keymap
+	(new-file menu-item "New" new-empty-buffer)
+	(make-frame menu-item "New Frame" make-frame-command)
+	(open-file menu-item "Open..." find-file)
+	(kill-buffer menu-item "Close" close-current-buffer)
+	(separator1 menu-item "--")
+	(save-buffer menu-item "Save" save-buffer)
+	(write-file menu-item "Save As..." write-file)
+	(revert-buffer menu-item "Revert" revert-buffer)
+	(separator2 menu-item "--")
+	(lang-modes menu-item "Language Modes"
+		    (keymap (c "C" . c-mode)
+			    (c++ "C++" . c++-mode)
+			    (java "Java" . java-mode)
+			    (separator3 "--")
+			    (css "CSS" . css-mode)
+			    (html "HTML" . html-mode)
+			    (nxml "XML (nxml-mode)" . nxml-mode)
+			    (xml "XML (xml-mode)" . xml-mode)
+			    (js "Javascript" . js2-mode)
+			    (latex "LaTeX" . latex-mode)
+			    (separator2 "--")
+			    (elisp "Emacs Lisp" . emacs-lisp-mode)
+			    (ocaml "OCaml" . tuareg-mode)
+			    (haskell "Haskell" . haskell-mode)
+			    (separator1 "--")
+			    (perl "Perl" . cperl-mode)
+			    (php "PHP" . php-mode)
+			    (python "Python" . python-mode)
+			    (ruby "Ruby" . ruby-mode)
+			    (tcl "TCL" . tcl-mode)
+			    (bash "Bash" . sh-mode)
+			    "major modes"))
+	(separator3 menu-item "--")
+	(print-buffer menu-item "Print" print-buffer)
+	(ps-print-buffer-faces menu-item "Print (font+color)" ps-print-buffer-faces)
+	(separator4 menu-item "--")
+	(split-window menu-item "Split Window" 
+		      split-window-vertically)
+	(split-window-leftright menu-item "Split Window left/right" 
+				split-window-horizontally)
+	(one-window menu-item "Unsplit Window" 
+		    delete-other-windows)
+	(separator5 menu-item "--")
+	(exit-emacs menu-item "Quit" save-buffers-kill-emacs)
+	"File"))
+
 (define-key global-map [menu-bar file] (cons "File" menu-bar-file-menu))
-
-(define-key menu-bar-file-menu [exit-emacs] '("Quit" . save-buffers-kill-emacs))
-(define-key menu-bar-file-menu [separator5] '("--"))
-(define-key menu-bar-file-menu [one-window] '("Unsplit Window" . delete-other-windows))
-(define-key menu-bar-file-menu [split-window-leftright] '("Split Window left/right" . split-window-horizontally))
-(define-key menu-bar-file-menu [split-window] '("Split Window" . split-window-vertically))
-(define-key menu-bar-file-menu [separator4] '("--"))
-(define-key menu-bar-file-menu [ps-print-buffer-faces] '("Print (font+color)" . ps-print-buffer-faces))
-(define-key menu-bar-file-menu [print-buffer] '("Print" . print-buffer))
-(define-key menu-bar-file-menu [separator3] '("--"))
-
-;; add a language modes menu
-(define-key menu-bar-file-menu [lang-modes] (cons "Language Modes" (make-sparse-keymap "major modes")))
-
-(define-key menu-bar-file-menu [lang-modes bash] '("Bash" . sh-mode))
-(define-key menu-bar-file-menu [lang-modes tcl] '("TCL" . tcl-mode))
-(define-key menu-bar-file-menu [lang-modes ruby] '("Ruby" . ruby-mode))
-(define-key menu-bar-file-menu [lang-modes python] '("Python" . python-mode))
-(define-key menu-bar-file-menu [lang-modes php] '("PHP" . php-mode))
-(define-key menu-bar-file-menu [lang-modes perl] '("Perl" . cperl-mode))
-(define-key menu-bar-file-menu [lang-modes separator1] '("--"))
-(define-key menu-bar-file-menu [lang-modes haskell] '("Haskell" . haskell-mode))
-(define-key menu-bar-file-menu [lang-modes ocaml] '("OCaml" . tuareg-mode))
-(define-key menu-bar-file-menu [lang-modes elisp] '("Emacs Lisp" . emacs-lisp-mode))
-(define-key menu-bar-file-menu [lang-modes separator2] '("--"))
-(define-key menu-bar-file-menu [lang-modes latex] '("LaTeX" . latex-mode))
-(define-key menu-bar-file-menu [lang-modes js] '("Javascript" . js2-mode))
-(define-key menu-bar-file-menu [lang-modes xml] '("XML (xml-mode)" . xml-mode))
-(define-key menu-bar-file-menu [lang-modes nxml] '("XML (nxml-mode)" . nxml-mode))
-(define-key menu-bar-file-menu [lang-modes html] '("HTML" . html-mode))
-(define-key menu-bar-file-menu [lang-modes css] '("CSS" . css-mode))
-(define-key menu-bar-file-menu [lang-modes separator3] '("--"))
-(define-key menu-bar-file-menu [lang-modes java] '("Java" . java-mode))
-(define-key menu-bar-file-menu [lang-modes c++] '("C++" . c++-mode))
-(define-key menu-bar-file-menu [lang-modes c] '("C" . c-mode))
-
-(define-key menu-bar-file-menu [separator2] '("--"))
-(define-key menu-bar-file-menu [revert-buffer] '("Revert" . revert-buffer))
-(define-key menu-bar-file-menu [write-file] '("Save As…" . write-file))
-(define-key menu-bar-file-menu [save-buffer] '("Save" . save-buffer))
-(define-key menu-bar-file-menu [separator1] '("--"))
-(define-key menu-bar-file-menu [kill-buffer] '("Close" . close-current-buffer))
-(define-key menu-bar-file-menu [open-file] '("Open…" . find-file))
-(define-key menu-bar-file-menu [make-frame] '("New Frame" . make-frame-command))
-(define-key menu-bar-file-menu [new-file] '("New" . new-empty-buffer))
 
-;; edit menu
-
-(define-key menu-bar-edit-menu [search search-forward] '("Text…" . search-forward))
+;; Edit menu
+(define-key menu-bar-edit-menu [search search-forward] '("Text..." . search-forward))
 (define-key menu-bar-edit-menu [search search-backward] nil)
 (define-key menu-bar-edit-menu [search re-search-forward] nil)
 (define-key menu-bar-edit-menu [search re-search-backward] nil)
@@ -78,7 +79,7 @@
 (define-key-after menu-bar-edit-menu [redo] '("Redo" . redo) 'undo)
 (define-key-after menu-bar-edit-menu [redo-sep] '("--") 'redo)
 
-;; options menu
+;; Options menu
 
 ; remove stuff
 (define-key menu-bar-options-menu [cua-mode] nil)
@@ -116,6 +117,7 @@
 (define-key menu-bar-options-menu [menu-font-size zoom-out] '("Zoom Out" . text-scale-decrease))
 (define-key menu-bar-options-menu [menu-font-size zoom-reset] '("Zoom Reset" . text-scale-normal-size))
 
+;; Buffer menu
 (defun ergoemacs-update-buffers (&optional force)
   (define-key global-buffers-menu-map [next-buffer] '("Next User Buffer" . next-user-buffer))
   (define-key global-buffers-menu-map [previous-buffer] '("Previous User Buffer" . previous-user-buffer))
