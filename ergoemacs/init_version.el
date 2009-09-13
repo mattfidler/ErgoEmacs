@@ -2,6 +2,8 @@
 
 (defconst ergoemacs-version "1.5.1")
 (defconst ergoemacs-url "http://code.google.com/p/emacs2010/")
+(defconst ergoemacs-url-authors "http://code.google.com/p/emacs2010/people/list")
+(defconst ergoemacs-url-contrib "http://code.google.com/p/emacs2010/wiki/how_to_contribute")
 
 ;; ErgoEmacs version
 (defun emacs-version (&optional here) "\
@@ -41,7 +43,7 @@ to the system configuration; look at `system-configuration' instead."
   '((:face (variable-pitch (:foreground "red"))
      "This is "
      :link ("ErgoEmacs"
-	    (lambda (button) (browse-url ergoemacs-url)) 
+	    (lambda (button) (browse-url ergoemacs-url))
 	    "ErgoEmacs home page")
      " based on "
      :link ("GNU Emacs"
@@ -52,20 +54,16 @@ to the system configuration; look at `system-configuration' instead."
      "\n\n"
      :face variable-pitch
      :link ("ErgoEmacs Authors"
-	    (lambda (button)
-	      (view-file (expand-file-name "ERGOEMACS-AUTHORS" data-directory))
-	      (goto-char (point-min))))
-     "\tErgoEmacs contributors (TODO add ErgoEmacs contributors file)\n"
+	    (lambda (button) (browse-url ergoemacs-url-authors)))
+     "\tErgoEmacs contributors\n"
      :link ("GNU/Emacs Authors"
 	    (lambda (button)
 	      (view-file (expand-file-name "AUTHORS" data-directory))
 	      (goto-char (point-min))))
      "\tMany people have contributed code included in GNU Emacs\n"
      :link ("Contributing"
-	    (lambda (button)
-	      (view-file (expand-file-name "ERGOEMACS-CONTRIB" data-directory))
-	      (goto-char (point-min))))
-     "\tHow to contribute improvements to ErgoEmacs (TODO add ERGOEMACS-CONTRIB file)\n"
+	    (lambda (button) (browse-url ergoemacs-url-contrib)))
+     "\tHow to contribute improvements to ErgoEmacs\n"
      "\n"
      :link ("Absence of Warranty" (lambda (button) (describe-no-warranty)))
      "\tErgoEmacs comes with "
@@ -83,9 +81,7 @@ to the system configuration; look at `system-configuration' instead."
 
   (insert-button "ErgoEmacs Authors"
 		 'action
-		 (lambda (button)
-		   (view-file (expand-file-name "ERGOEMACS-AUTHORS" data-directory))
-		   (goto-char (point-min)))
+		 (lambda (button) (browse-url ergoemacs-url-authors))
 		 'follow-link t)
   (insert "\tErgoEmacs contributors\n")
 
@@ -95,13 +91,11 @@ to the system configuration; look at `system-configuration' instead."
 		   (view-file (expand-file-name "AUTHORS" data-directory))
 		   (goto-char (point-min)))
 		 'follow-link t)
-  (insert "\t\t\tMany people have contributed code included in GNU Emacs\n")
+  (insert "\tMany people have contributed code included in GNU Emacs\n")
 
   (insert-button "Contributing"
 		 'action
-		 (lambda (button)
-		   (view-file (expand-file-name "ERGOEMACS-CONTRIBUTE" data-directory))
-		   (goto-char (point-min)))
+		 (lambda (button) (browse-url ergoemacs-url-contrib))
 		 'follow-link t)
   (insert "\t\tHow to contribute improvements to ErgoEmacs\n\n")
 
