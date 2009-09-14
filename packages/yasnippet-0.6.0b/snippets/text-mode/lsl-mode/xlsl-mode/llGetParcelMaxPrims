@@ -1,2 +1,0 @@
-# --
-llGetParcelMaxPrims(vector pos, integer sim_wide)

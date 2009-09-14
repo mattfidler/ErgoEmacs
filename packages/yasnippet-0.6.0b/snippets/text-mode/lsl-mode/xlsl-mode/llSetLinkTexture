@@ -1,2 +1,0 @@
-# --
-llSetLinkTexture(integer linknumber, string texture, integer face)

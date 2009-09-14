@@ -1,2 +1,0 @@
-# --
-llHTTPResponse(key request_id, integer status, string body)
