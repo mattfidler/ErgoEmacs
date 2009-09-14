@@ -1,0 +1,2 @@
+# --
+llGetParcelPrimCount(vector pos, integer category, integer sim_wide)

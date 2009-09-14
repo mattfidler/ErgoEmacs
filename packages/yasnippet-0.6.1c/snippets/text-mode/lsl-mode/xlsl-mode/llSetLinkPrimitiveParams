@@ -1,0 +1,2 @@
+# --
+llSetLinkPrimitiveParams(integer linknumber, list rules)

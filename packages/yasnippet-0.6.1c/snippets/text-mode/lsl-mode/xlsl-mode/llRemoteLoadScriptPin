@@ -1,0 +1,2 @@
+# --
+llRemoteLoadScriptPin(key target, string name, integer pin, integer running, integer start_param)

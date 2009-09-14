@@ -1,0 +1,2 @@
+# --
+llRegionSay(integer channel, string msg)

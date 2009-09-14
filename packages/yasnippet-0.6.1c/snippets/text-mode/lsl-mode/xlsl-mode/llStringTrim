@@ -1,0 +1,2 @@
+# --
+llStringTrim(string src, integer type)
