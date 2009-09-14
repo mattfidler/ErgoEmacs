@@ -33,25 +33,24 @@
 ;; To install this package, do the following:
 ;; 1. Save this file in your favorite dir. For example: 
 ;;    “~/Documents/emacs/command-frequency.el”
+;;
 ;; 2. put the following line in your “.emacs” file:
 ;;   ;; make emacs aware of the file path
 ;;   (add-to-list 'load-path "~/Documents/emacs")
 ;;
-;;   ;; make emacs aware of this package
+;;   ;; load the package package if not already loaded
 ;;   (require 'command-frequency)
 ;;
-;;   ;; load the program
+;;   ;; turn the minor mode on
 ;;   (command-frequency-mode 1)
 ;;}}}
 
 ;;{{{ USAGE
-;; Type “Alt+x command-frequency-mode” to load it, if not already loaded.
-;; When you want to know the command frequency, type “Alt+x command-frequency”.
+;; Type “Alt+x command-frequency-mode” to turn it on or off.
+;; When you want to know your command usage statistics, type “Alt+x command-frequency”.
 ;;
-;; You can also put the following lines in your “.emacs”:
-;;     (require 'command-frequency)
+;; To make your command usage data saved between emacs restarts, put the following lines in your emacs customization file (usually at “~/.emacs”):
 ;;     (command-frequency-table-load)
-;;     (command-frequency-mode 1)
 ;;     (command-frequency-autosave-mode 1)
 ;;}}}
  
