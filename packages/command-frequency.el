@@ -3,6 +3,7 @@
 ;; Copyright 2006 by Ryan Yeske
 ;; Copyright 2006 by Michal Nazarewicz
 ;; Copyright 2008 by Xah Lee
+;; Copyright 2009 by David Capello
 ;;
 ;; Author: Ryan Yeske, Michal Nazarewicz (mina86/AT/mina86.com)
 ;; Maintainer: Xah lee
@@ -78,6 +79,7 @@
 ;;}}}
 
 ;; {{{VERSION HISTORY
+;; Version 1.2, 2009-09: Now each hash hash-key is a (major-mode . command) cons. Now only symbols are recorded. (David Capello)
 ;; Version 1.1, 2008-09: Replaced the use of this-command var by real-last-command, so that the commands backward-kill-word, kill-word, kill-line, kill-region, do not all get counted as kill-region. Changed post-command-hook to pre-command-hook
 ;; Version 1.0, 2007: Made into a full featured minor mode. Added full doc strings. Added feature to save and read to disk the frequency hash table. Added ability to set user preference using emacs's customization system. Code is ~400 lines. This version is made by Michal Nazarewicz in 2007.
 ;; Version 0.1, 2006: First version by Ryan Yeske. A quick hack of about 40 lines. 
@@ -131,9 +133,9 @@ by default."
 (defun command-frequency-record ()
   "Records command execution in `command-frequency-table' hash."
   (let ((command real-last-command) count)
-    (when command
-      (setq count (gethash command command-frequency-table))
-      (puthash command (if count (1+ count) 1)
+    (when (and command (symbolp command))
+      (setq count (gethash (cons major-mode command) command-frequency-table))
+      (puthash (cons major-mode command) (if count (1+ count) 1)
                command-frequency-table))))
 
 ;;}}}
