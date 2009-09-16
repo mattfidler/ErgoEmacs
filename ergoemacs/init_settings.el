@@ -24,6 +24,10 @@
 (setq backup-by-copying t)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
+
+; turn on Open Recent menu under File menu
+(require 'recentf)
+(recentf-mode 1)
 
 
 (defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
