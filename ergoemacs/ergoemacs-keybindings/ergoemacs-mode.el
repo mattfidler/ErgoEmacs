@@ -1,5 +1,47 @@
 ;-*- coding: utf-8 -*-
 
+;-*- coding: utf-8 -*-
+;; ergoemacs-mode.el -- A emacs keybinding set based on ergonomics.
+
+;; Copyright © 2007, 2008, 2009 by Xah Lee
+;; Copyright © 2009 by David Capello
+
+;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
+;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
+
+;; You can redistribute this program and/or modify it under the terms
+;; of the GNU General Public License as published by the Free Software
+;; Foundation; either version 2, or (at your option) any later
+;; version.
+
+;;; DESCRIPTION
+
+;; This keybinding set puts the most frequently used emacs keyboard
+;; shortcuts into the most easy-to-type spots.
+;;
+;; For complete detail, see: 
+;; http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
+
+;;; INSTALL
+
+;; See the file “_INSTALL.txt”.
+
+;;; HISTORY
+
+;; See the file “_HISTORY.txt”.
+
+;;; ACKNOWLEDGMENT
+;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
+;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
+;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
+;; Thanks to David Capello for contribution to shrink-whitespaces.
+;; Thanks to marciomazza for spotting several default bindings that should have been unbound.
+;; Thanks to those who have created and improved the version for Colemak layout. They are (by date): “vockets”, “postivan”, Graham Poulter.
+;; Thanks to lwarxx for bug report on diff-mode
+;; Thanks to many users who send in comments and appreciations on this.
+
+;;; --------------------------------------------------
+
 ;; Add this same directory to load elisp files
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 

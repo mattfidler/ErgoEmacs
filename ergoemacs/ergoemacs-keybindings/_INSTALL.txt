@@ -14,13 +14,15 @@ Now you should have a folder named “ergoemacs-keybindings_v123”.
 On Windows:
 C:\Users\mary\.emacs.d\ergoemacs-keybindings_v123
 
-On Mac OS X:
+On Mac OS X or Linux:
 /Users/mary/.emacs.d/ergoemacs-keybindings_v123
 
 ------------------------------
 3. Specify your keyboard layout.
 
 Place one of the following line in your emacs init file (~/.emacs):
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us") ; US layout
 
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us_dvorak") ; US Dvorak layout
 
@@ -44,9 +46,14 @@ These lines should be placed below your keyboard layout in step 3.
 ------------------------------
 5. Restart emacs.
 
+Now, your will be using the new keybinding. The shortcut for emacs's “M-x” is now “Alt+a”.
+
+To turn off the mode, type “Alt+a” then “ergoemacs-mode”. After that, your keybinding is the same as GNU Emacs's default keybinding.
+
+The command “ergoemacs-mode” toggles the minor mode.
 
 --------------------------------------------------
-Optional.
+Byte Compile Elisp Files (Optional)
 
 If you like, you can byte-compile the elisp files. To byte compile them, call the command byte-compile-file, then the elisp file name. Once you do that, emacs will create a file with “.elc” ending, and will automatically load byte compiled file if there is one.
 
