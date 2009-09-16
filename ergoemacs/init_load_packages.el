@@ -73,12 +73,12 @@
 
 ;; yasnippet template system
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.0b/")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/")
              )
 (require 'yasnippet) ;; not yasnippet-bundle
 (yas/initialize)
 (yas/load-directory
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.0b/snippets/")
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
  )
 
 ;; command-frequency minor mode
