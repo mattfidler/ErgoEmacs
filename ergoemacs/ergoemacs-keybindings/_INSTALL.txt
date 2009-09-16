@@ -24,7 +24,7 @@ Place one of the following line in your emacs init file (~/.emacs):
 
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us") ; US layout
 
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us_dvorak") ; US Dvorak layout
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; US Dvorak layout
 
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "sp") ; Spanish (Spain) (aka “Spanish (International sort)”)
 
