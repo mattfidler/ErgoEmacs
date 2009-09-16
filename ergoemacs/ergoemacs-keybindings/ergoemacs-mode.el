@@ -228,6 +228,21 @@ enviroment variable.  The possible values are:
   (put 'move-end-of-line 'CUA nil)
   )
 
+(defun ergoemacs-minibuffer-setup-hook ()
+  "Hook for minibuffer to move through history with previous-line and next-line keys."
+
+  (defvar ergoemacs-minibuffer-keymap (copy-keymap ergoemacs-keymap))
+
+  (define-key ergoemacs-minibuffer-keymap ergoemacs-previous-line-key 'previous-history-element)
+  (define-key ergoemacs-minibuffer-keymap ergoemacs-next-line-key 'next-history-element)
+  (define-key ergoemacs-minibuffer-keymap (kbd "<f11>") 'previous-history-element)
+  (define-key ergoemacs-minibuffer-keymap (kbd "<f12>") 'next-history-element)
+  (define-key ergoemacs-minibuffer-keymap (kbd "S-<f11>") 'previous-matching-history-element)
+  (define-key ergoemacs-minibuffer-keymap (kbd "S-<f12>") 'next-matching-history-element)
+
+  (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-minibuffer-keymap))
+  )
+
 (defun ergoemacs-isearch-hook ()
   "Hook for `isearch-mode-hook' so ergoemacs keybindings are not lost."
 
@@ -304,24 +319,14 @@ will change."
 
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
-        (progn
-	  (ergoemacs-unset-redundant-global-keys)
-
-          (define-key minibuffer-local-map (kbd "<f11>") 'previous-history-element)
-          (define-key minibuffer-local-map (kbd "<f12>") 'next-history-element)
-          (define-key minibuffer-local-map (kbd "S-<f11>") 'previous-matching-history-element)
-          (define-key minibuffer-local-map (kbd "S-<f12>") 'next-matching-history-element)
-          )
-      (progn
-	(ergoemacs-restore-global-keys)
-        ;; TODO undo the hooks.
-       )
-      )
+	(ergoemacs-unset-redundant-global-keys)
+      (ergoemacs-restore-global-keys))
 
     (funcall modify-hook 'cua-mode-hook 'ergoemacs-cua-hook)
     (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
     (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
     (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
+    (funcall modify-hook 'minibuffer-setup-hook 'ergoemacs-minibuffer-setup-hook)
     (funcall modify-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
     )
   )
