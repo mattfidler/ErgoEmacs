@@ -2,7 +2,7 @@
 
 ;; this file define keys that we want to set/unset because they are already defined by ergoemacs minor mode
 
-(require 'edmacro) ; it is needed when .elc file is used
+(eval-when-compile (require 'edmacro))
 
 (defconst ergoemacs-redundant-keys
   '( "C-/"
