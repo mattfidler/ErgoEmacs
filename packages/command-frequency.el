@@ -6,11 +6,8 @@
 ;; Copyright 2009 by David Capello
 ;;
 ;; Author: Ryan Yeske, Michal Nazarewicz (mina86/AT/mina86.com)
-;; Maintainer: Xah lee
+;; Maintainer: David Capello, Xah lee
 ;; Created: 2006
-;; Modified: 2008-09-03
-;; Version: 1.1
-;; Keywords: command frequency
 
 ;;{{{ LICENSE
 ;;
@@ -31,27 +28,28 @@
 
 ;;{{{ INSTALLATION
 ;; To install this package, do the following:
+;;
 ;; 1. Save this file in your favorite dir. For example: 
 ;;    “~/Documents/emacs/command-frequency.el”
-;; 2. put the following line in your “.emacs” file:
-;;   ;; make emacs aware of the file path
+;;
+;; 2. put the following line in your “~/.emacs” file:
+;;   ;; add the package's path
 ;;   (add-to-list 'load-path "~/Documents/emacs")
 ;;
-;;   ;; make emacs aware of this package
+;;   ;; load the package package if not already loaded
 ;;   (require 'command-frequency)
 ;;
-;;   ;; load the program
+;;   ;; turn the minor mode on
 ;;   (command-frequency-mode 1)
 ;;}}}
 
 ;;{{{ USAGE
-;; Type “Alt+x command-frequency-mode” to load it, if not already loaded.
-;; When you want to know the command frequency, type “Alt+x command-frequency”.
+
+;; Type “Alt+x command-frequency-mode” to turn it on or off.
+;; When you want to know your command usage statistics, type “Alt+x command-frequency”.
+;; To make your command usage data saved between emacs restarts, put the following lines in your “~/.emacs” file after the “(command-frequency-mode 1)” line.
 ;;
-;; You can also put the following lines in your “.emacs”:
-;;     (require 'command-frequency)
 ;;     (command-frequency-table-load)
-;;     (command-frequency-mode 1)
 ;;     (command-frequency-autosave-mode 1)
 ;;}}}
  
@@ -92,7 +90,7 @@
   "Customization group for Command Frequency mode.  Command
 Frequency mode stores number of times each command was called and
 provides it as a statistical data."
-  :package-version '(command-frequency . "1.1")
+  :package-version '(command-frequency . "1.3")
   :group 'local
   :prefix "command-frequency")
 
