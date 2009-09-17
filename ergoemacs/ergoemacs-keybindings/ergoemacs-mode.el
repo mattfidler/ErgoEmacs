@@ -352,3 +352,5 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
 
   (ergoemacs-hook-modes)
   )
+
+(provide 'ergoemacs-mode)
