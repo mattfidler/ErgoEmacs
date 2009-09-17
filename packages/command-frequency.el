@@ -33,24 +33,25 @@
 ;; To install this package, do the following:
 ;; 1. Save this file in your favorite dir. For example: 
 ;;    “~/Documents/emacs/command-frequency.el”
-;;
 ;; 2. put the following line in your “.emacs” file:
 ;;   ;; make emacs aware of the file path
 ;;   (add-to-list 'load-path "~/Documents/emacs")
 ;;
-;;   ;; load the package package if not already loaded
+;;   ;; make emacs aware of this package
 ;;   (require 'command-frequency)
 ;;
-;;   ;; turn the minor mode on
+;;   ;; load the program
 ;;   (command-frequency-mode 1)
 ;;}}}
 
 ;;{{{ USAGE
-;; Type “Alt+x command-frequency-mode” to turn it on or off.
-;; When you want to know your command usage statistics, type “Alt+x command-frequency”.
+;; Type “Alt+x command-frequency-mode” to load it, if not already loaded.
+;; When you want to know the command frequency, type “Alt+x command-frequency”.
 ;;
-;; To make your command usage data saved between emacs restarts, put the following lines in your emacs customization file (usually at “~/.emacs”):
+;; You can also put the following lines in your “.emacs”:
+;;     (require 'command-frequency)
 ;;     (command-frequency-table-load)
+;;     (command-frequency-mode 1)
 ;;     (command-frequency-autosave-mode 1)
 ;;}}}
  
@@ -78,6 +79,7 @@
 ;;}}}
 
 ;; {{{VERSION HISTORY
+;; Version 1.3, 2009-09: Added command-frequency-summarize-all-modes (David Capello)
 ;; Version 1.2, 2009-09: Now each hash hash-key is a (major-mode . command) cons. Now only symbols are recorded. (David Capello)
 ;; Version 1.1, 2008-09: Replaced the use of this-command var by real-last-command, so that the commands backward-kill-word, kill-word, kill-line, kill-region, do not all get counted as kill-region. Changed post-command-hook to pre-command-hook
 ;; Version 1.0, 2007: Made into a full featured minor mode. Added full doc strings. Added feature to save and read to disk the frequency hash table. Added ability to set user preference using emacs's customization system. Code is ~400 lines. This version is made by Michal Nazarewicz in 2007.
@@ -140,6 +142,15 @@ by default."
 ;;}}}
 ;;{{{ INTERNAL FUNCTIONS RETURNING STATISTICS
 
+(defun command-frequency-summarize-all-modes (table)
+  (let ((new-table (make-hash-table :test 'equal :size 128))
+	(count))
+    (maphash (lambda (k v)
+	       (setq count (gethash (cdr k) new-table))
+	       (puthash (cdr k) (if count (+ count v) v) new-table))
+	     table)
+    new-table))
+  
 (defun command-frequency-list (&optional reverse limit)
   "Returns a cons which car is sum of times any command was used
 and cdr is a list of (command . count) pairs.  If REVERSE is nil
@@ -162,7 +173,7 @@ less then -LIMIT times will be added."
       (t
        (lambda (k v) (setq sum (+ sum v))
          (if (> v limit) (setq l (cons (cons k v) l))))))
-     command-frequency-table)
+     (command-frequency-summarize-all-modes command-frequency-table))
     (cons sum
           (cond
            ((equal reverse 'no-sort) l)
