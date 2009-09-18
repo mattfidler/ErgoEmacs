@@ -284,6 +284,16 @@ enviroment variable.  The possible values are:
   (define-key comint-mode-map (kbd "S-<f12>") 'comint-next-matching-input)
   )
 
+;; Log edit mode
+(defun ergoemacs-log-edit-hook ()
+  "Hook for `log-edit-mode-hook'."
+
+  (define-key log-edit-mode-map (kbd "<f11>") 'log-edit-previous-comment)
+  (define-key log-edit-mode-map (kbd "<f12>") 'log-edit-next-comment)
+  (define-key log-edit-mode-map (kbd "S-<f11>") 'log-edit-previous-comment)
+  (define-key log-edit-mode-map (kbd "S-<f12>") 'log-edit-next-comment)
+  )
+
 (defun ergoemacs-eshell-hook ()
   "Hook for `eshell-mode-hook', to redefine some ErgoEmacs keys so they are more useful."
 
@@ -329,6 +339,7 @@ will change."
     (funcall modify-hook 'cua-mode-hook 'ergoemacs-cua-hook)
     (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
     (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
+    (funcall modify-hook 'log-edit-mode-hook 'ergoemacs-log-edit-hook)
     (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
     (funcall modify-hook 'minibuffer-setup-hook 'ergoemacs-minibuffer-setup-hook)
     (funcall modify-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
