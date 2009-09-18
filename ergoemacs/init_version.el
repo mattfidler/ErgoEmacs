@@ -1,9 +1,9 @@
 ; -*- coding: utf-8 -*-
 
 (defconst ergoemacs-version "1.5.1")
-(defconst ergoemacs-url "http://code.google.com/p/emacs2010/")
-(defconst ergoemacs-url-authors "http://code.google.com/p/emacs2010/people/list")
-(defconst ergoemacs-url-contrib "http://code.google.com/p/emacs2010/wiki/how_to_contribute")
+(defconst ergoemacs-url "http://code.google.com/p/ergoemacs/")
+(defconst ergoemacs-url-authors "http://code.google.com/p/ergoemacs/people/list")
+(defconst ergoemacs-url-contrib "http://code.google.com/p/ergoemacs/wiki/HowToContribute")
 
 ;; ErgoEmacs version
 (defun emacs-version (&optional here) "\
