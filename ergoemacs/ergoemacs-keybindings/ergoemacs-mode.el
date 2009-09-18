@@ -57,6 +57,7 @@ enviroment variable.  The possible values are:
   us = US English QWERTY keyboard layout
   dv = US-Dvorak keyboard layout
   sp = Spanish keyboard layout
+  it = Italian keyboard layout
   colemak = Ergonomic Colemak keyboard layout")
 
 (cond
@@ -67,6 +68,9 @@ enviroment variable.  The possible values are:
   (load "ergoemacs-layout-dv"))
  ((string= ergoemacs-keyboard-layout "sp")
   (load "ergoemacs-layout-sp"))
+ ((or (string= ergoemacs-keyboard-layout "it")
+      (string= ergoemacs-keyboard-layout "it142"))
+  (load "ergoemacs-layout-it"))
  ((string= ergoemacs-keyboard-layout "colemak")
   (load "ergoemacs-layout-colemak"))
  (t ; US qwerty by default
