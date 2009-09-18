@@ -149,7 +149,7 @@ by default."
 	     table)
     new-table))
   
-(defun command-frequency-list (&optional reverse limit)
+(defun command-frequency-list (&optional reverse limit summarize)
   "Returns a cons which car is sum of times any command was used
 and cdr is a list of (command . count) pairs.  If REVERSE is nil
 sorts it starting from the most used command; if it is 'no-sort
@@ -171,7 +171,9 @@ less then -LIMIT times will be added."
       (t
        (lambda (k v) (setq sum (+ sum v))
          (if (> v limit) (setq l (cons (cons k v) l))))))
-     (command-frequency-summarize-all-modes command-frequency-table))
+     (if summarize 
+	 (command-frequency-summarize-all-modes command-frequency-table)
+       command-frequency-table))
     (cons sum
           (cond
            ((equal reverse 'no-sort) l)
@@ -192,7 +194,7 @@ called, percentage usage and the command.
 
 See `command-frequency-list' for description of REVERSE and LIMIT
 arguments."
-  (let* ((list (command-frequency-list reverse)) (sum (car list)))
+  (let* ((list (command-frequency-list reverse limit t)) (sum (car list)))
     (mapconcat
      (cond
       ((not func) (lambda (e) (format "%7d  %s\n" (cdr e) (car e))))
