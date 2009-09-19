@@ -303,6 +303,10 @@ enviroment variable.  The possible values are:
 
   (define-key ergoemacs-eshell-keymap ergoemacs-move-beginning-of-line-key 'eshell-bol)
   (define-key ergoemacs-eshell-keymap (kbd "<home>") 'eshell-bol)
+  (define-key ergoemacs-eshell-keymap (kbd "<f11>") 'eshell-previous-matching-input-from-input)
+  (define-key ergoemacs-eshell-keymap (kbd "<f12>") 'eshell-next-matching-input-from-input)
+  (define-key ergoemacs-eshell-keymap (kbd "S-<f11>") 'eshell-previous-matching-input-from-input)
+  (define-key ergoemacs-eshell-keymap (kbd "S-<f12>") 'eshell-next-matching-input-from-input)
 
   (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-eshell-keymap))
   )
