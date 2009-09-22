@@ -1,12 +1,11 @@
 ;-*- coding: utf-8 -*-
-
-;-*- coding: utf-8 -*-
 ;; ergoemacs-mode.el -- A emacs keybinding set based on ergonomics.
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
+;; Version: 5.1
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -45,6 +44,11 @@
 ;; Add this same directory to load elisp files
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
+;; Ergoemacs-keybindings version
+(defconst ergoemacs-mode-version "5.1"
+  "Ergoemacs-keybindings minor mode version number.")
+
+;; Include extra files
 (load "functions")
 (load "ergoemacs-unbind")
 
