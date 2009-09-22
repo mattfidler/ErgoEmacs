@@ -234,6 +234,7 @@ enviroment variable.  The possible values are:
   (put 'beginning-of-buffer 'CUA nil)
   (put 'end-of-buffer 'CUA nil)
   (put 'move-end-of-line 'CUA nil)
+  (put 'end-of-visual-line 'CUA nil)
   )
 
 (defun ergoemacs-minibuffer-setup-hook ()
