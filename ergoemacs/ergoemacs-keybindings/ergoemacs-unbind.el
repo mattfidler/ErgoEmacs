@@ -2,7 +2,7 @@
 
 ;; this file define keys that we want to set/unset because they are already defined by ergoemacs minor mode
 
-(eval-when-compile (require 'edmacro))
+(require 'edmacro)
 
 (defconst ergoemacs-redundant-keys
   '( "C-/"
