@@ -6,11 +6,12 @@ all:
 
 package:
 	mkdir $(PACKAGE_NAME)
-	cp *.el *.txt $(PACKAGE_NAME)
 	cat ergoemacs-mode.el \
 		| sed -e "s/^;; Version:[ 0-9.]*/;; Version: $(VERSION)/" \
-		      -e "s/ergoemacs-mode-version \"5.1\"/ergoemacs-mode-version \"$(VERSION)\"/" \
-		> $(PACKAGE_NAME)/ergoemacs-mode.el
-	-rm $(PACKAGE_NAME).tar.gz
-	tar czf $(PACKAGE_NAME).tar.gz $(PACKAGE_NAME)
+		      -e "s/ergoemacs-mode-version \"[ 0-9.]*\"/ergoemacs-mode-version \"$(VERSION)\"/" \
+		> ergoemacs-mode.tmp
+	mv ergoemacs-mode.tmp ergoemacs-mode.el
+	cp *.el *.txt $(PACKAGE_NAME)
+	-rm $(PACKAGE_NAME).zip
+	zip -9 $(PACKAGE_NAME).zip $(PACKAGE_NAME)/*.*
 	rm -fr $(PACKAGE_NAME)
