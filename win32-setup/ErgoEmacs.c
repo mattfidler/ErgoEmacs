@@ -162,28 +162,15 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
     goto error;
   *p = 0;
 
-  new_cmdline = alloca ((MAX_PATH+2)*3 + strlen (cmdline) + 1024);
+  new_cmdline = alloca (MAX_PATH + 1024 + strlen (cmdline));
 
   /* Quote executable name in case of spaces in the path. */
   *new_cmdline = '"';
   strcpy (new_cmdline + 1, emacs_dir);
   strcat (new_cmdline, "\\bin\\emacs.exe\" ");
 
-  /* Add some arguments to the command line.  */
-  {
-    /* Put ErgoEmacs as the window caption.  */
-    strcat (new_cmdline, " --title ErgoEmacs");
-
-    /* Avoid to load ~/.emacs before ErgoEmacs's init.el.  */
-    strcat (new_cmdline, " --no-init-file");
-
-    /* Load the init.el file first and then the customized user ~/.emacs file.   */
-    strcat (new_cmdline, " --load \"");
-    strcat (new_cmdline, emacs_dir);
-    strcat (new_cmdline, "\\ergoemacs\\init.el\"");
-
-    strcat (new_cmdline, " --eval \"(if (file-exists-p \\\"~/.emacs\\\") (load \\\"~/.emacs\\\"))\"");
-  }
+  /* Put ErgoEmacs as the window caption.  */
+  strcat (new_cmdline, " --title ErgoEmacs");
 
   /* Append original arguments if any; first look for arguments we
      recognise (-wait, -high, and -low), and apply them ourselves.  */
@@ -289,7 +276,7 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
   sec_attrs.nLength = sizeof (sec_attrs);
   sec_attrs.lpSecurityDescriptor = NULL;
   sec_attrs.bInheritHandle = FALSE;
-  
+
   if (CreateProcess (NULL, new_cmdline, &sec_attrs, NULL, TRUE, priority_class,
 		     NULL, NULL, &start, &child))
     {
