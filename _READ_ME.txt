@@ -1,6 +1,6 @@
 -*- coding: utf-8 -*-
 
-For detail of this project, see: http://code.google.com/p/emacs2010/
+For detail of this project, see: http://code.google.com/p/ergoemacs/
 
 This is very much alpha and experimental.
 No major structure has been set yet.
