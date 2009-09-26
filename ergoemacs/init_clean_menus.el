@@ -93,7 +93,7 @@
 			    (not
 			     (mouse-region-match)))
 	       :help "Delete the text in region between mark and current position"
-	       :keys "Delete")
+	       :keys "Del")
 	(mark-whole-buffer menu-item "Select All" mark-whole-buffer
 			   :help "Mark the whole buffer for a subsequent cut/copy")
 	(separator-search menu-item "--")
@@ -289,6 +289,7 @@
   (let ((key (key-description (where-is-internal cmd nil t nil t))))
     (message "KEY \"%s\"" key)
     (let ((case-fold-search nil))
+      (replace-regexp-in-string " " "  "
       (replace-regexp-in-string "<" ""
       (replace-regexp-in-string ">" ""
       (replace-regexp-in-string "\\bRET\\b" "ENTER"
@@ -301,7 +302,7 @@
       (replace-regexp-in-string "\\bC-" "Ctrl+"
       (replace-regexp-in-string "\\bS-" "Shift+"
       (replace-regexp-in-string "\\bM-" "Alt+"
-				key t) t) t) t) t) t) t) t) t) t) t) t)
+				key t) t) t) t) t) t) t) t) t) t) t) t) t)
       )
     )
   )
@@ -362,6 +363,7 @@
 (ergoemacs-preprocess-menu-keybindings menu-bar-bookmark-map)
 (ergoemacs-preprocess-menu-keybindings menu-bar-options-menu)
 (ergoemacs-preprocess-menu-keybindings menu-bar-tools-menu)
+(ergoemacs-preprocess-menu-keybindings (lookup-key menu-bar-tools-menu [shell]))
 (ergoemacs-preprocess-menu-keybindings menu-bar-help-menu)
 
 (ergoemacs-preprocess-menu-keybindings
