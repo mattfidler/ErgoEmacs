@@ -29,13 +29,18 @@
 (require 'recentf)
 (recentf-mode 1)
 
-; reopen last opened files when emacs starts.
+; reopen last opened files when emacs starts. Make sure that even if emacs or PC crashed, emacs still have last opened files.
 (desktop-save-mode 1)
 (setq desktop-save t)
 (setq desktop-dirname "~/.emacs.d/")
+(add-hook 'find-file-hook (lambda () (run-with-timer 5 nil 'desktop-save "~/.emacs.d/")))
 
 ; save minibuffer history
 (savehist-mode 1)
+
+; make lines not dissapear into the right margin while in org-mode
+(add-hook 'org-mode-hook
+          '(lambda () (setq truncate-lines nil) (setq word-wrap t) ))
 
 
 (defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
