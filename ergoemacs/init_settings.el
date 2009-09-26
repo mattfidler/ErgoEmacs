@@ -9,7 +9,11 @@
 ;;                (or load-file-name buffer-file-name)) "UnicodeData.txt" ))
 ;;   )
 
+;; UTF-8 as default encoding
 
+(set-language-environment "UTF-8")
+
+
 ;; for xml files, use nxml-mode instead of sgml-mode
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
