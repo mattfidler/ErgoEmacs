@@ -16,9 +16,9 @@
 [Setup]
 AppName=ErgoEmacs
 AppVerName=ErgoEmacs 1.6
-AppPublisherURL=http://code.google.com/p/ergoemacs/
-AppSupportURL=http://code.google.com/p/ergoemacs/
-AppUpdatesURL=http://code.google.com/p/ergoemacs/
+AppPublisherURL=http://ergoemacs.org/
+AppSupportURL=http://ergoemacs.org/
+AppUpdatesURL=http://ergoemacs.org/
 DefaultDirName={pf}\ErgoEmacs
 DefaultGroupName=ErgoEmacs
 AllowNoIcons=yes
