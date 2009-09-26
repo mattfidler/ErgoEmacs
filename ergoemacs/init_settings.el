@@ -28,6 +28,14 @@
 ; turn on Open Recent menu under File menu
 (require 'recentf)
 (recentf-mode 1)
+
+; reopen last opened files when emacs starts.
+(desktop-save-mode 1)
+(setq desktop-save t)
+(setq desktop-dirname "~/.emacs.d/")
+
+; save minibuffer history
+(savehist-mode 1)
 
 
 (defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
