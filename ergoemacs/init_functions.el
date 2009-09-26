@@ -40,3 +40,11 @@ it if necessary."
 			 "*msys*")))
 	(explicit-shell-file-name "sh.exe"))
     (shell buf-name)))
+
+(defun soft-wrap-lines ()
+  "Make lines wrap at window edge and on word boundary,
+in current buffer."
+  (interactive)
+  (setq truncate-lines nil)
+  (setq word-wrap t)
+  )
