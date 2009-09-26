@@ -116,7 +116,7 @@ various command-frequency-* functions."
   :type 'string)
 
 
-(defcustom command-frequency-table-file "~/.emacs.frequencies"
+(defcustom command-frequency-table-file "~/.emacs.d/.emacs.frequencies"
   "File `command-frequency-table' is saved to/loaded from by
 `command-frequency-save' and `command-frequency-load' functions
 by default."
