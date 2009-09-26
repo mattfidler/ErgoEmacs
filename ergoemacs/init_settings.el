@@ -39,8 +39,7 @@
 (savehist-mode 1)
 
 ; make lines not dissapear into the right margin while in org-mode
-(add-hook 'org-mode-hook
-          '(lambda () (setq truncate-lines nil) (setq word-wrap t) ))
+(add-hook 'org-mode-hook 'soft-wrap-lines)
 
 
 (defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
