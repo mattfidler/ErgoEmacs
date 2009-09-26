@@ -29,27 +29,55 @@
 (require 'recentf)
 (recentf-mode 1)
 
-; reopen last opened files when emacs starts. Make sure that even if emacs or PC crashed, emacs still have last opened files.
-(desktop-save-mode 1)
-(setq desktop-save t)
-(setq desktop-dirname "~/.emacs.d/")
-(add-hook 'find-file-hook (lambda () (run-with-timer 5 nil 'desktop-save "~/.emacs.d/")))
-
 ; save minibuffer history
 (savehist-mode 1)
 
 ; make lines not dissapear into the right margin while in org-mode
 (add-hook 'org-mode-hook 'soft-wrap-lines)
+
+; The following code is necessary to reopen last opened files when
+; emacs starts.
+(require 'desktop)
+(add-hook 'after-init-hook
+ (lambda ()
+   ;; No splash screen
+   (setq inhibit-startup-screen t)
+
+   ;; At this point the desktop.el hook in after-init-hook was
+   ;; executed, so (desktop-read) is avoided.
+   (when (not (eq (emacs-pid) (desktop-owner))) ; Check that emacs did not load a desktop yet
+     ;; Here we activate the desktop mode
+     (desktop-save-mode 1)
+
+     (setq desktop-save t)
+     (setq desktop-dirname "~/.emacs.d/")
+
+     ;; Make sure that even if emacs or PC crashed, emacs
+     ;; still have last opened files.
+     (add-hook 'find-file-hook
+	       (lambda ()
+		 (run-with-timer 5 nil 'desktop-save "~/.emacs.d/")))
+
+     ;; Inhibit the splash screen if the desktop file exists
+     (if (file-exists-p (concat desktop-dirname desktop-base-file-name))
+	 ;; Read the existent desktop
+	 (desktop-read desktop-dirname)))
+
+   ;; If the *scratch* buffer is the current one, let us create a new
+   ;; empty untitled buffer to hide *scratch*
+   (if (string= (buffer-name) "*scratch*")
+       (new-empty-buffer))
+   )
+ t) ;; append this hook to the tail
+
 
 
 (defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
 (defalias 'center-line 'isearch-forward) ; center-line is bound to M-s. html mode and Text mode seems to redifine the M-s. Easier to just alias the center-line instead of hook on each mode.
 
 
-(tool-bar-mode 0) ;; not sure we should have this on. The way it is right now, is rather useless for anyone who would use emacs, and i don't think it really provide any UI improvement because there's the menu already. The icons are rather very ugly. Possibly we can improve the icons, and or add a Close button to it.  
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
-(setq inhibit-startup-screen t)
 
 (setq dired-dwim-target t)
 (setq dired-recursive-copies (quote always))
