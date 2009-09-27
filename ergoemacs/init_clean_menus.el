@@ -365,6 +365,7 @@
 (ergoemacs-preprocess-menu-keybindings menu-bar-tools-menu)
 (ergoemacs-preprocess-menu-keybindings (lookup-key menu-bar-tools-menu [shell]))
 (ergoemacs-preprocess-menu-keybindings menu-bar-help-menu)
+(ergoemacs-preprocess-menu-keybindings edit-popup-menu)
 
 (ergoemacs-preprocess-menu-keybindings
  (lookup-key lisp-interaction-mode-map [menu-bar lisp-interaction]))

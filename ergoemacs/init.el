@@ -19,6 +19,7 @@
 
 ;; ErgoEmacs shortcuts and menus
 (load "init_keybinding")
+(load "init_mouse")
 (load "init_clean_menus")
 
 ;; (server-start) ; this keeps emacs running just one instance. For example, a user double clicks a file, it'll just switch to a existing instance. Not sure this is best approach.
