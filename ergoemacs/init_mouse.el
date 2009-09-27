@@ -34,10 +34,7 @@
 				  (not buffer-read-only))
 			 :help "Choose a string from the kill ring and paste it")
 	(clear menu-item "Clear" delete-region 
-	       :enable (and mark-active
-			    (not buffer-read-only)
-			    (not
-			     (mouse-region-match)))
+	       :enable (and mark-active (not buffer-read-only))
 	       :help "Delete the text in region between mark and current position"
 	       :keys "Del")
 	(separator-select-all menu-item "--")
