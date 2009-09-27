@@ -12,7 +12,6 @@
 ;; UTF-8 as default encoding
 
 (set-language-environment "UTF-8")
-
 
 ;; for xml files, use nxml-mode instead of sgml-mode
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
@@ -77,8 +76,6 @@
 
 
 (defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
-(defalias 'center-line 'isearch-forward) ; center-line is bound to M-s. html mode and Text mode seems to redifine the M-s. Easier to just alias the center-line instead of hook on each mode.
-
 
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
