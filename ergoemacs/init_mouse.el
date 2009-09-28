@@ -1,7 +1,12 @@
 ;-*- coding: utf-8 -*-
 
-;; Middle-click does nothing
+;; Middle-click does nothing (it can be customizable by the user)
 (global-set-key [mouse-2] nil)
+
+;; Mouse wheel behavior 
+(global-set-key [C-wheel-up] 'text-scale-increase)
+(global-set-key [C-wheel-down] 'text-scale-decrease)
+(global-set-key [C-down-mouse-2] 'text-scale-normal-size)
 
 ;; Right-click opens the context menu
 (global-set-key [mouse-3] 'ergoemacs-context-menu)
