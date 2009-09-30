@@ -30,5 +30,7 @@
 (setq recentf-save-file "~/.emacs.d/.recentf")
 (recentf-mode 1)
 
-;; Initialize emacs server
-(server-start)
+;; Initialize emacs server if it is not already running
+(require 'server)
+(if (not (eq t (server-running-p server-name)))
+    (server-start))
