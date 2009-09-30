@@ -1,42 +1,54 @@
 ; -*- coding: utf-8 -*-
 
-; load unicode data; used by describe-char and what-cursor-position for showing full unicode info
+;; Load unicode data; used by describe-char and what-cursor-position for showing full unicode info
 ;; commented out because emacs 23 has this info, or vast majority of the info contained in this file.
+
 ;; (if (string= (substring-no-properties emacs-version 0 2) "23" )
 ;;     nil
 ;;   (setq describe-char-unicodedata-file
 ;;       (concat (file-name-directory
 ;;                (or load-file-name buffer-file-name)) "UnicodeData.txt" ))
 ;;   )
-
-;; UTF-8 as default encoding
 
+;; ----------------------------------------------------------------------------
+
+;; UTF-8 as default encoding
 (set-language-environment "UTF-8")
-
-;; for xml files, use nxml-mode instead of sgml-mode
+
+;; ----------------------------------------------------------------------------
+
+;; For XML files, use nxml-mode instead of sgml-mode
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
-
 
 ;; For htmlize.el.
 ;; Rationale: use unicode whenever possible, since it's widely supported today.
 (setq htmlize-convert-nonascii-to-entities nil) ; make htmlize generate unicode directly instead of html entities
 (setq htmlize-html-charset "utf-8") ; make the output html use utf-8 charset 
-
-;;;; no backup or auto-save
 
+;; ----------------------------------------------------------------------------
+
+;; No backup or auto-save
 (setq backup-by-copying t)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-; save minibuffer history
+;; Save minibuffer history
 (savehist-mode 1)
 
-; make lines not dissapear into the right margin while in org-mode
+;; Make lines not dissapear into the right margin while in org-mode
 (add-hook 'org-mode-hook 'soft-wrap-lines)
 
-; The following code is necessary to reopen last opened files when
-; emacs starts.
+;; ----------------------------------------------------------------------------
+;; Desktop:
+;;
+;; In ErgoEmacs if the user does not open a desktop file, a default desktop
+;; file is created in ~/.emacs.d/.emacs.desktop to keep track of opened files
+;; through different sessions. Anyway it does not matter if this desktop file
+;; is overwritten by another instance.  
+;; ----------------------------------------------------------------------------
+
 (require 'desktop)
+
 (add-hook 'after-init-hook
  (lambda ()
    ;; No splash screen
@@ -48,19 +60,37 @@
      ;; Here we activate the desktop mode
      (desktop-save-mode 1)
 
+     ;; The default desktop is saved always
      (setq desktop-save t)
+
+     ;; The default desktop is loaded anyway if it is locked
+     (setq desktop-load-locked-desktop t)
+
+     ;; Set the location to save/load default desktop
      (setq desktop-dirname "~/.emacs.d/")
 
      ;; Make sure that even if emacs or PC crashed, emacs
      ;; still have last opened files.
      (add-hook 'find-file-hook
 	       (lambda ()
-		 (run-with-timer 5 nil 'desktop-save "~/.emacs.d/")))
+		 (run-with-timer 5 nil
+				 (lambda ()
+				   ;; Reset desktop modification time so the user is not bothered
+				   (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
+				   (desktop-save "~/.emacs.d/")))))
 
-     ;; Inhibit the splash screen if the desktop file exists
+     ;; Read default desktop
      (if (file-exists-p (concat desktop-dirname desktop-base-file-name))
-	 ;; Read the existent desktop
-	 (desktop-read desktop-dirname)))
+	 (desktop-read desktop-dirname))
+
+     ;; Add a hook when emacs is closed to we reset the desktop
+     ;; modification time (in this way the user does not get a warning
+     ;; message about desktop modifications)
+     (add-hook 'kill-emacs-hook
+	       (lambda ()
+		 ;; Reset desktop modification time so the user is not bothered
+		 (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))))
+     )
 
    ;; If the *scratch* buffer is the current one, let us create a new
    ;; empty untitled buffer to hide *scratch*
@@ -69,10 +99,13 @@
    )
  t) ;; append this hook to the tail
 
-
+;; ----------------------------------------------------------------------------
 
-(defalias 'yes-or-no-p 'y-or-n-p); Lets user type y and n instead of the full yes and no.
-
+;; Lets user type y and n instead of the full yes and no.
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; ----------------------------------------------------------------------------
+
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
 
@@ -86,13 +119,15 @@
 (cua-mode 1)
 (iswitchb-mode 1)
 
-;; alt+y is not cua-repeat-replace-region
+;; Alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
-
-;; make whitespace-mode with very basic background coloring for whitespaces
+
+;; ----------------------------------------------------------------------------
+
+;; Make whitespace-mode with very basic background coloring for whitespaces
 (setq whitespace-style (quote ( spaces tabs newline space-mark tab-mark newline-mark )))
 
-;; make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and ▷ for tab.
+;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and ▷ for tab.
 (setq
  whitespace-display-mappings
  '( 
@@ -106,7 +141,8 @@
    (tab-mark 9 [9655 9] [92 9]) ; tab
 ))
 
-
+;; ----------------------------------------------------------------------------
+
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
