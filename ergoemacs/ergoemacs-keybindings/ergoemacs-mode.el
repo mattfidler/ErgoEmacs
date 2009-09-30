@@ -270,6 +270,9 @@ enviroment variable.  The possible values are:
   (define-key isearch-mode-map ergoemacs-recenter-key 'recenter)
   (define-key isearch-mode-map ergoemacs-yank-key 'isearch-yank-kill)
 
+  ;; CUA paste key is isearch-yank-kill in isearch mode
+  (define-key isearch-mode-map (kbd "C-v") 'isearch-yank-kill)
+
   ;; isearch-other-control-char sends the key to the original buffer and cancels isearch
   (define-key isearch-mode-map ergoemacs-kill-ring-save-key 'isearch-other-control-char)
   (define-key isearch-mode-map ergoemacs-kill-word-key 'isearch-other-control-char)
