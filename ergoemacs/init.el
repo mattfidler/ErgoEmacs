@@ -22,4 +22,11 @@
 (load "init_mouse")
 (load "init_clean_menus")
 
+;; Turn on Open Recent menu under File menu before "Close" item
+;; (Why this code here? because the File menu is initialized
+;;  in init_clean_menus.el)
+(require 'recentf)
+(setq recentf-menu-before "Close")
+(recentf-mode 1)
+
 ;; (server-start) ; this keeps emacs running just one instance. For example, a user double clicks a file, it'll just switch to a existing instance. Not sure this is best approach.

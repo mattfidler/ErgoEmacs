@@ -28,10 +28,6 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-; turn on Open Recent menu under File menu
-(require 'recentf)
-(recentf-mode 1)
-
 ; save minibuffer history
 (savehist-mode 1)
 
