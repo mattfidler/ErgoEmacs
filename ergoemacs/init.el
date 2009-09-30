@@ -27,6 +27,7 @@
 ;;  in init_clean_menus.el)
 (require 'recentf)
 (setq recentf-menu-before "Close")
+(setq recentf-save-file "~/.emacs.d/.recentf")
 (recentf-mode 1)
 
 ;; (server-start) ; this keeps emacs running just one instance. For example, a user double clicks a file, it'll just switch to a existing instance. Not sure this is best approach.
