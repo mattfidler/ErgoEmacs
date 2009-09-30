@@ -12,9 +12,6 @@ PACKAGE_NAME = ergoemacs-keybindings-$(CURRENT_VERSION)
 # Default rule. Shows the how to use this Makefile
 all:
 	@echo Usage:
-	@echo "  make update-version VERSION=x.x.x"
-	@echo "    Changes the ergoemacs-keybindings version from ergoemacs-mode.el file"
-	@echo
 	@echo "  make package"
 	@echo "    Creates a .zip file to distribute the current ergoemacs-keybindings version."
 	@echo
@@ -25,14 +22,9 @@ all:
 	@echo "    Shows the current version ergoemacs-keybindings package. The version is extracted"
 	@echo "    from ergoemacs-mode.el file."
 	@echo
-
-# Changes the version of the current ergoemacs-mode.el
-update-version:
-	cat ergoemacs-mode.el \
-		| sed -e "s/^;; Version:[ 0-9.]*/;; Version: $(VERSION)/" \
-		      -e "s/ergoemacs-mode-version \"[ 0-9.]*\"/ergoemacs-mode-version \"$(VERSION)\"/" \
-		> ergoemacs-mode.tmp
-	mv ergoemacs-mode.tmp ergoemacs-mode.el
+	@echo "  make update-version VERSION=x.x.x"
+	@echo "    Changes the ergoemacs-keybindings version from ergoemacs-mode.el file"
+	@echo
 
 # Makes a .zip with the ergoemacs-keybindings package.
 package:
@@ -53,3 +45,11 @@ package-tarball:
 # Displays the current version
 show-version:
 	@echo $(CURRENT_VERSION)
+
+# Changes the version of the current ergoemacs-mode.el
+update-version:
+	cat ergoemacs-mode.el \
+		| sed -e "s/^;; Version:[ 0-9.]*/;; Version: $(VERSION)/" \
+		      -e "s/ergoemacs-mode-version \"[ 0-9.]*\"/ergoemacs-mode-version \"$(VERSION)\"/" \
+		> ergoemacs-mode.tmp
+	mv ergoemacs-mode.tmp ergoemacs-mode.el
