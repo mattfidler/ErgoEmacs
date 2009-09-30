@@ -135,32 +135,105 @@ static const struct {
    { 0x00000, NULL,	NULL }
 };
 
-static void prepend_path(char* buf, char* path_var, int path_max, 
-			 const char* emacs_dir, const char* subdir)
-{
-  strcpy(buf, path_var);
-  snprintf(path_var, path_max, "%s\\%s;%s", emacs_dir, subdir, buf);
-}
+static char emacs_dir[MAX_PATH];
+
+static int get_emacs_dir ();
+static void set_home_dir ();
+static int run_client (LPSTR cmdline);
+static int run_server (LPSTR cmdline);
+static int exe_cmdline (LPSTR cmdline, int wait_for_child, DWORD priority_class);
+static void prepend_path (char* buf, char* path_var, int path_max, 
+			  const char* emacs_dir, const char* subdir);
 
 int WINAPI
 WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
 {
-  STARTUPINFO start;
-  SECURITY_ATTRIBUTES sec_attrs;
-  PROCESS_INFORMATION child;
-  int wait_for_child = FALSE;
-  DWORD priority_class = NORMAL_PRIORITY_CLASS;
-  DWORD ret_code = 0;
-  char *new_cmdline;
+  int code;
+
+  code = get_emacs_dir ();
+  if (code == 0)
+    {
+      set_home_dir ();
+
+      code = run_client (cmdline);
+      if (code != 0)
+	{
+	  code = run_server (cmdline);
+	}
+    }
+
+  if (code == -1)
+    {
+      MessageBox (NULL, "Could not start ErgoEmacs.", "Error", MB_ICONSTOP);
+      code = 1;
+    }
+
+  return code;
+}
+
+static int get_emacs_dir()
+{
   char *p;
-  char emacs_dir[MAX_PATH];
-  char bin_dir[MAX_PATH];
 
   if (!GetModuleFileName (NULL, emacs_dir, MAX_PATH))
-    goto error;
+    return -1;
+
   if ((p = strrchr (emacs_dir, '\\')) == NULL)
-    goto error;
+    return -1;
+
   *p = 0;
+  return 0;
+}
+
+static void set_home_dir ()
+{
+  char buf[MAX_PATH];
+
+  /* If HOME is not set, set it as "C:\Documents and Settings\username" */
+  if (!GetEnvironmentVariable ("HOME", buf, MAX_PATH) || !*buf)
+    {
+      HRESULT hr = SHGetFolderPath (NULL, CSIDL_PROFILE, NULL, 0, buf);
+      if (SUCCEEDED (hr))
+	{
+	  SetEnvironmentVariable ("HOME", buf);
+	}
+    }
+}
+
+/* Run emacsclient.exe to connect to some current server to open the
+   file specified in the command line.  */
+static int run_client (LPSTR cmdline)
+{
+  DWORD ret_code = 0;
+  char *new_cmdline;
+
+  new_cmdline = alloca (MAX_PATH*2 + 1024 + strlen (cmdline));
+
+  /* Quote executable name in case of spaces in the path. */
+  *new_cmdline = '"';
+  strcpy (new_cmdline + 1, emacs_dir);
+  strcat (new_cmdline, "\\bin\\emacsclient.exe\" ");
+  strcat (new_cmdline, " ");
+  strcat (new_cmdline, " --no-wait ");
+  strcat (new_cmdline, " --server-file \"");
+  GetEnvironmentVariable ("HOME", new_cmdline + strlen (new_cmdline), MAX_PATH);
+  strcat (new_cmdline, "\\.emacs.d\\server\\server\" ");
+  strcat (new_cmdline, cmdline);
+
+  ret_code = exe_cmdline (new_cmdline, TRUE, NORMAL_PRIORITY_CLASS);
+
+  free (new_cmdline);
+  return ret_code;
+}
+
+/* Runs emacs.exe to initialize a new server.  */
+static int run_server (LPSTR cmdline)
+{
+  int wait_for_child = FALSE;
+  DWORD priority_class = NORMAL_PRIORITY_CLASS;
+  char *new_cmdline;
+  int ret_code;
+  char *p;
 
   new_cmdline = alloca (MAX_PATH + 1024 + strlen (cmdline));
 
@@ -177,22 +250,22 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
   while (cmdline[0] == '-' || cmdline[0] == '/')
     {
       if (strncmp (cmdline+1, "wait", 4) == 0)
-	{
-	  wait_for_child = TRUE;
-	  cmdline += 5;
-	}
+  	{
+  	  wait_for_child = TRUE;
+  	  cmdline += 5;
+  	}
       else if (strncmp (cmdline+1, "high", 4) == 0)
-	{
-	  priority_class = HIGH_PRIORITY_CLASS;
-	  cmdline += 5;
-	}
+  	{
+  	  priority_class = HIGH_PRIORITY_CLASS;
+  	  cmdline += 5;
+  	}
       else if (strncmp (cmdline+1, "low", 3) == 0)
-	{
-	  priority_class = IDLE_PRIORITY_CLASS;
-	  cmdline += 4;
-	}
+  	{
+  	  priority_class = IDLE_PRIORITY_CLASS;
+  	  cmdline += 4;
+  	}
       else
-	break;
+  	break;
       /* Look for next argument.  */
       while (*++cmdline == ' ');
     }
@@ -215,20 +288,10 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
        "C:\Program Files\ErgoEmacs\msys\bin"
        "C:\Program Files\ErgoEmacs\hunspell"
     */
-    prepend_path(buf, path_var, nchars, emacs_dir, "bin");
-    prepend_path(buf, path_var, nchars, emacs_dir, "msys\\bin");
-    prepend_path(buf, path_var, nchars, emacs_dir, "hunspell");
+    prepend_path (buf, path_var, nchars, emacs_dir, "bin");
+    prepend_path (buf, path_var, nchars, emacs_dir, "msys\\bin");
+    prepend_path (buf, path_var, nchars, emacs_dir, "hunspell");
     SetEnvironmentVariable ("PATH", path_var);
-
-    /* If HOME is not set, set it as "C:\Documents and Settings\username" */
-    if (!GetEnvironmentVariable ("HOME", buf, nchars) || !*buf)
-      {
-	HRESULT hr = SHGetFolderPath (NULL, CSIDL_PROFILE, NULL, 0, buf);
-	if (SUCCEEDED (hr))
-	  {
-	    SetEnvironmentVariable ("HOME", buf);
-	  }
-      }
 
     /* If ERGOEMACS_KEYBOARD_LAYOUT is not set.  */
     if (!GetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", buf, nchars) || !*buf)
@@ -264,6 +327,20 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
       *p = '/';
   SetEnvironmentVariable ("emacs_dir", emacs_dir);
 
+  ret_code = exe_cmdline (new_cmdline, wait_for_child, priority_class);
+
+  free (new_cmdline);
+  return ret_code;
+}
+
+static int exe_cmdline (LPSTR cmdline, int wait_for_child, DWORD priority_class)
+{
+  STARTUPINFO start;
+  SECURITY_ATTRIBUTES sec_attrs;
+  PROCESS_INFORMATION child;
+  DWORD ret_code = 0;
+  char *p;
+
   memset (&start, 0, sizeof (start));
   start.cb = sizeof (start);
   start.dwFlags = STARTF_USESHOWWINDOW | STARTF_USECOUNTCHARS;
@@ -277,7 +354,7 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
   sec_attrs.lpSecurityDescriptor = NULL;
   sec_attrs.bInheritHandle = FALSE;
 
-  if (CreateProcess (NULL, new_cmdline, &sec_attrs, NULL, TRUE, priority_class,
+  if (CreateProcess (NULL, cmdline, &sec_attrs, NULL, TRUE, priority_class,
 		     NULL, NULL, &start, &child))
     {
       if (wait_for_child)
@@ -289,10 +366,14 @@ WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
       CloseHandle (child.hProcess);
     }
   else
-    goto error;
-  return (int) ret_code;
+    return -1;
 
-error:
-  MessageBox (NULL, "Could not start Emacs.", "Error", MB_ICONSTOP);
-  return 1;
+  return (int) ret_code;
+}
+
+static void prepend_path (char* buf, char* path_var, int path_max, 
+			  const char* emacs_dir, const char* subdir)
+{
+  strcpy (buf, path_var);
+  snprintf (path_var, path_max, "%s\\%s;%s", emacs_dir, subdir, buf);
 }
