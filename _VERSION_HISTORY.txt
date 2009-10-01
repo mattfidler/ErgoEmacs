@@ -1,11 +1,13 @@
 -*- coding: utf-8; mode: org; mode: visual-line -*-
 
-This file is deprecated. It is a version history up to 2009-08-27. Since then, much has changed. The file structure, architecture, etc. This file should be removed or moved to somewhere else in the future.
+This file is a version history for developers.
 
 (If you are viewing this file in emacs, type Tab to open/close a section.  Type Shift+Tab to open/close all levels.  (type Shift+Tab 3 times for the first time to expand all.)  )
 
 HISTORY
 
+* Version 1.6.1: 2009-09-27.
+  
 * Version 1.6: 2009-09-25.
  
   • Simplified ErgoEmacs runner through site-start.el.
@@ -20,6 +22,11 @@ HISTORY
   • Added initial version of ErgoEmacs runner to setup ERGOEMACS_KEYBOARD_LAYOUT environment variable automatically through Windows API.
   • Converted ergoemacs-keybindings to a minor mode.
   • Added msys and hunspell.
+
+* Version 1.5.0: 2009-08-27.
+  • The project is now completely reworked, most work done by David Capello.
+  • Added a binary build structure for Windows binary.
+  • ErgoEmacs Keybinding is now minor mode, with many features...
 
 * Version 1.4.6: 2009-08-27.
 
