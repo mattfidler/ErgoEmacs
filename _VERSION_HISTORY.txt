@@ -2,6 +2,14 @@
 
 This file is a version history for developers.
 
+A Release Notes for users can be based on this file.
+
+The ideas is that developers can write down what largish changes are made between releases here. The writing is more oriented for developers with tech detail, and no worry about representation. All non-trivial changes can be written down here.
+
+Then, when we have a new release, we can write a Release Notes for the users, using info in this file as basis.
+
+This is just a idea how version history and release notes can be done... open to suggestions or may change depending how things works out. For example, possibly the Google Code's wiki can be used instead of this file. 
+
 (If you are viewing this file in emacs, type Tab to open/close a section.  Type Shift+Tab to open/close all levels.  (type Shift+Tab 3 times for the first time to expand all.)  )
 
 HISTORY
