@@ -38,7 +38,7 @@ INSTALLATION
 3. In your “~/.emacs”, put the following lines:
 
 ; (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; optional for Dvorak keyboard
-(load "~/my_emacs_lib/ergoemacs_1.6.2/site-lisp/site-start.el")
+(load-file "~/my_emacs_lib/ergoemacs_1.6.2/site-lisp/site-start.el")
 
 --------------------------------------------------
 USING DIFFERENT KEYBOARD LAYOUT
