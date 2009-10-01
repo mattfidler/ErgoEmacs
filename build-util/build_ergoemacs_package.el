@@ -45,6 +45,13 @@ about linked files, time stamp, etc, are from that function."
 ;; byte compile elc files
 (load-file (concat destDir "build-util/byte-compile_lisp_files.el"))
 
+;; zip it
+(let ((destDirSansSlash (substring destDir 0 -1)))
+  (shell-command (concat "zip -r " destDirSansSlash ".zip " destDirSansSlash ) )
+)
+
+
+
 ;; TODO
 ;; ideally, change all shell calls to elisp functions so it's not dependent on shell.
 ;; using elisp for build is just experimental. We can revert to unix shell in the future.
