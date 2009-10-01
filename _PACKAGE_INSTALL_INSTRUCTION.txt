@@ -1,0 +1,41 @@
+-*- coding: utf-8 -*-
+
+This is the installation instruction for the ErgoEmacs Package.
+
+The ErgoEmacs Package is a set of elisp files that can be installed on any platform running emacs. (e.g. Mac OS X, Linux, Windows)
+
+The home page of ErgoEmacs is at http://ErgoEmacs.org/
+
+--------------------------------------------------
+INSTALLATION
+
+You need to have working emacs already installed on your system.
+(For Mac, we recommend Carbon Emacs at http://homepage.mac.com/zenitani/emacs-e.html)
+
+1. Unzip the package.
+
+ (if you have not done so already.) 
+ Example:
+
+ unzip ergoemacs_1.6.2.zip
+
+2. Compile the elisp files.
+
+ You can do so by opening the file
+ “ergoemacs_1.6.2/build-util/byte-compile_lisp_files.el”
+ then type Alt+x, then eval-buffer.
+
+ It may take 30 seconds. Ignore the output of warnings.
+
+3. Put the package in your emacs library dir.
+
+ Create a directory “~/my_emacs_lib/”
+ (this can be any dir you use for personal emacs libraries)
+
+ Move ergoemacs dir into the “~/my_emacs_lib/” directory.
+ So, you should have
+ “~/my_emacs_lib/ergoemacs_1.6.2/”
+
+4. In your “~/.emacs”, put the following lines:
+
+(load "~/my_emacs_lib/ergoemacs_1.6.2/site-lisp/site-start.el")
