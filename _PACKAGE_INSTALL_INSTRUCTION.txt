@@ -2,15 +2,20 @@
 
 This is the installation instruction for the ErgoEmacs Package.
 
-The ErgoEmacs Package is a set of elisp files that can be installed on any platform running emacs. (e.g. Mac OS X, Linux, Windows)
+The ErgoEmacs Package is a set of elisp files that can be installed on any platform running emacs. (e.g. Mac OS X, Linux, Windows) Once installed, you'll have a enhanced version of emacs, with ergonomic keybindings, enhance user interface, and many elisp packages prepared and loaded for you.
 
 The home page of ErgoEmacs is at http://ErgoEmacs.org/
 
 --------------------------------------------------
-INSTALLATION
+REQUIREMENT
 
 You need to have working emacs already installed on your system.
 (For Mac, we recommend Carbon Emacs at http://homepage.mac.com/zenitani/emacs-e.html)
+
+Your emacs should be version 23.x. (To find out, type in shell: “emacs --version”, or in emacs type “M-x version”.)
+
+--------------------------------------------------
+INSTALLATION
 
 1. Unzip the package.
 
@@ -19,15 +24,9 @@ You need to have working emacs already installed on your system.
 
  unzip ergoemacs_1.6.2.zip
 
-2. Compile the elisp files.
+ (The version number is just a example. Your may be higher.)
 
- You can do so by opening the file
- “ergoemacs_1.6.2/build-util/byte-compile_lisp_files.el”
- then type Alt+x, then eval-buffer.
-
- It may take 30 seconds. Ignore the output of warnings.
-
-3. Put the package in your emacs library dir.
+2. Put the package in your emacs library dir.
 
  Create a directory “~/my_emacs_lib/”
  (this can be any dir you use for personal emacs libraries)
@@ -36,6 +35,30 @@ You need to have working emacs already installed on your system.
  So, you should have
  “~/my_emacs_lib/ergoemacs_1.6.2/”
 
-4. In your “~/.emacs”, put the following lines:
+3. In your “~/.emacs”, put the following lines:
 
+; (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; optional for Dvorak keyboard
 (load "~/my_emacs_lib/ergoemacs_1.6.2/site-lisp/site-start.el")
+
+--------------------------------------------------
+USING DIFFERENT KEYBOARD LAYOUT
+
+If you are using Dvorak keyboard layout, put the line:
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv")
+
+before you load the site-start.el file.
+
+You can also set a environment variable in your operating system.
+
+The variable name should be: “ERGOEMACS_KEYBOARD_LAYOUT”
+
+The value can be any one of:
+
+ Value        Meaning
+--------------------------
+  us         US English QWERTY keyboard layout
+  dv         US-Dvorak keyboard layout
+  sp         Spanish keyboard layout
+  it         Italian keyboard layout
+  colemak    Ergonomic Colemak keyboard layout
