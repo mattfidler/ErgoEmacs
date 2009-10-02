@@ -36,6 +36,17 @@ Do not use this function."
   )
 
 ;; main
+
+
+;; if previous build dir and zip file exist, remove them.
+(let (destDirNoSlash) 
+  (setq destDirNoSlash (substring destDir 0 -1))
+  (if (file-exists-p destDirNoSlash) (shell-command (concat "rm -R " destDirNoSlash) ))
+  (if (file-exists-p (concat destDirNoSlash ".zip" )) 
+      (delete-file (concat destDirNoSlash ".zip" ))
+    )
+  )
+
 (make-directory destDir t)
 ; (copy-directory-recursive sourceDir destDir)
  (shell-command (concat "cp -R " sourceDir " " destDir) )
