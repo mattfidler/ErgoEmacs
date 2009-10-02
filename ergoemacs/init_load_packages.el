@@ -18,14 +18,14 @@
 (add-to-list 'auto-mode-alist '("\\.frm\\'" . visual-basic-mode)) ;basic language source
 (add-to-list 'auto-mode-alist '("\\.cls\\'" . visual-basic-mode)) ;C++ class definition file
 
-;; powershell-mode
+;; powershell-mode. http://en.wikipedia.org/wiki/PowerShell
 (autoload 'powershell-mode "powershell-mode" "A editing mode for Microsoft PowerShell." t)
 (add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode)) ; PowerShell script
 
 ;; powershell interactive shell
 (autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
 
-;; xlsl-mode
+;; xlsl-mode. http://en.wikipedia.org/wiki/Linden_Scripting_Language
 (autoload 'xlsl-mode "xlsl-mode" "Load xlsl-mode for editing Linden Scripting Lang." t)
 (add-to-list 'auto-mode-alist '("\\.lsl\\'" . xlsl-mode))
 
@@ -34,14 +34,14 @@
 (autoload 'ahk-mode "ahk-mode" "AutoHotKey mode" t)
 (add-to-list 'auto-mode-alist '("\\.ahk\\'" . ahk-mode))
 
-;; POV-Ray (3D rendering engine)
+;; POV-Ray (3D rendering engine) http://en.wikipedia.org/wiki/POV-Ray
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/pov-mode-3.2/"))
 (autoload 'pov-mode "pov-mode" "Major mode for working with POV-Ray code." t)
 (add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
-;; mode for Haskell lang
+;; mode for Haskell lang. http://en.wikipedia.org/wiki/Haskell_(programming_language)
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.4/"))
 (load "haskell-mode-2.4/haskell-site-file")
@@ -62,10 +62,10 @@
 ; redo mode
 (require 'redo)
 
-;; speck-mode
+;; speck-mode. To use, call spec-mode.
 (autoload 'speck-mode "speck" "On-the-fly spell checking mode, alternative to fly-spell." t)
 
-;; Hunspell
+;; Hunspell. TODO: See http://code.google.com/p/ergoemacs/issues/detail?id=51
 (when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
 (progn
       (add-to-list 'load-path
@@ -74,8 +74,6 @@
       (rw-hunspell-setup)
       )
 )
-
-;; TODO: check for several standard paths for hunspell, and other spell checker. If none found, don't load hunspell. The path to check depends on OS. On Windows, probably the order is: ErgoEmacs's bin dir, then “C:\Program Files (x86)\”. Possibly check env var if they are used by spell checkers to locate the binary. On the Mac, check for the bin dir of Emacs binary, e.g. “/Application/Emacs.app/Contents/MacOS/bin/aspell”. Then check for “/opt/local/bin” (used by Mac Ports), “/sw/bin” (used by Fink), then “/usr/loca/bin” (unix standard). (check if Mac OS X 10.5 or 10.6 actually include one in “/usr/bin”.) The prefer order for the spell checker is probably hunspell, aspell, ispell. See http://code.google.com/p/ergoemacs/issues/detail?id=51
 
 ;; yasnippet template system
 (add-to-list 'load-path
@@ -87,15 +85,22 @@
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
  )
 
-;; command-frequency minor mode
+;; command-frequency minor mode. To use, call command-frequency.
 (autoload 'command-frequency "command-frequency" "minor mode for logging emacs command calls for usage insights by statistics." t)
 
-;; display horizontal line for page break char ^L
+;; turn command-frequency on
+;; (require 'command-frequency)
+;; (command-frequency-table-load)
+;; (command-frequency-mode 1)
+;; (command-frequency-autosave-mode 1)
+
+;; display horizontal line for the Form Feed char (ASCII 12, ^L)
+;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.
 (require 'pp-c-l)
 (setq pp^L-^L-string "                                                           ")
 (pretty-control-l-mode 1)
 
-;; dictionary client for dict.org 
+;; dictionary client for dict.org . To use, call dictionary-lookup-definition to lookup def of word under cursor.
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/dictionary-1.8.7")
 )
