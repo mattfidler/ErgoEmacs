@@ -66,16 +66,14 @@
 (autoload 'speck-mode "speck" "On-the-fly spell checking mode, alternative to fly-spell." t)
 
 ;; Hunspell
-(when (string-equal system-type "windows-nt")
-  (when (or (file-exists-p "../hunspell")
-            (file-exists-p "C:\\Program Files (x86)\\ErgoEmacs\\hunspell")
-            )
-    (progn
+(when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
+(progn
       (add-to-list 'load-path
                    (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
       (require 'rw-hunspell)
       (rw-hunspell-setup)
-      ) ) ) 
+      )
+)
 
 ;; TODO: check for several standard paths for hunspell, and other spell checker. If none found, don't load hunspell. The path to check depends on OS. On Windows, probably the order is: ErgoEmacs's bin dir, then “C:\Program Files (x86)\”. Possibly check env var if they are used by spell checkers to locate the binary. On the Mac, check for the bin dir of Emacs binary, e.g. “/Application/Emacs.app/Contents/MacOS/bin/aspell”. Then check for “/opt/local/bin” (used by Mac Ports), “/sw/bin” (used by Fink), then “/usr/loca/bin” (unix standard). (check if Mac OS X 10.5 or 10.6 actually include one in “/usr/bin”.) The prefer order for the spell checker is probably hunspell, aspell, ispell. See http://code.google.com/p/ergoemacs/issues/detail?id=51
 
