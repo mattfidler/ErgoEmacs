@@ -1,12 +1,11 @@
 ; -*- coding: utf-8 -*-
 
-(defun fullPath-relative-to-calling-function (file-path)
-  "Returns the full path of FILE-PATH, relative to file location of this function call.
- PATH is a file path relative to the dir of the file where this function is called.
+(defun fullpath-relative-to-call-location (file-path)
+  "Returns the full path of FILE-PATH, relative to file location where this function is called.
 
-Example: If the file that calls fullPath-relative-to-load-path is at:
+Example: If the file that calls fullpath-relative-to-call-location is at:
 /Users/xah/web/emacs/emacs_init.el then,
- (fullPath-relative-to-load-path \"xyz.el\")
+ (fullpath-relative-to-call-location \"xyz.el\")
 returns
  /Users/xah/web/emacs/xyz.el
 
@@ -28,4 +27,6 @@ This function solves 2 problems.
   (concat (file-name-directory (or load-file-name buffer-file-name)) file-path)
 )
 
-(load (fullPath-relative-to-calling-function "../ergoemacs/init") )
+(defalias 'fullpath 'fullpath-relative-to-call-location)
+
+(load (fullpath-relative-to-call-location "../ergoemacs/init") )
