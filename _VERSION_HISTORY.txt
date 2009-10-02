@@ -14,6 +14,9 @@ This is just a idea how version history and release notes can be done... open to
 
 HISTORY
 
+* Version 1.6.2: 2009-10-01.
+  • Changed loading of hunspell, so that if on non-Windows, it is not loaded. Issue 51 temp fix.
+ 
 * Version 1.6.1: 2009-09-27.
   
 * Version 1.6: 2009-09-25.
