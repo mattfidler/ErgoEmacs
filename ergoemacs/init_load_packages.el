@@ -18,9 +18,9 @@
 (add-to-list 'auto-mode-alist '("\\.frm\\'" . visual-basic-mode)) ;basic language source
 (add-to-list 'auto-mode-alist '("\\.cls\\'" . visual-basic-mode)) ;C++ class definition file
 
-;; Windows's cmd.exe's batch script “.bat” file mode.
-(autoload 'dos-mode "dos" "A mode for editing Windows “.bat”/batch/cmd.exe scripts." t)
-(add-to-list 'auto-mode-alist '("\\.bat\\" . dos-mode))
+;; for editing Windows's cmd.exe's script; batch, “.bat” file mode.
+(autoload 'dos-mode "dos" "A mode for editing Windows cmd.exe batch scripts." t)
+(add-to-list 'auto-mode-alist '("\\.bat\\'" . dos-mode))
 
 ;; powershell-mode. http://en.wikipedia.org/wiki/PowerShell
 (autoload 'powershell-mode "powershell-mode" "A editing mode for Microsoft PowerShell." t)
