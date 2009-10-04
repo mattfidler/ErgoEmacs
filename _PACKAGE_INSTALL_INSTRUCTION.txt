@@ -12,7 +12,7 @@ REQUIREMENT
 You need to have working emacs already installed on your system.
 (For Mac, we recommend Carbon Emacs at http://homepage.mac.com/zenitani/emacs-e.html)
 
-Your emacs should be version 23.x. (To find out, type in shell: “emacs --version”, or in emacs type “M-x version”.)
+Your emacs should be version 23.1 or later. (To find out, type in shell: “emacs --version”, or in emacs type “M-x version”.)
 
 --------------------------------------------------
 INSTALLATION
@@ -24,7 +24,7 @@ INSTALLATION
 
  unzip ergoemacs_1.6.2.zip
 
- (The version number is just a example. Your may be higher.)
+ (The version number is just a example. Yours may be higher.)
 
 2. Put the package in your emacs library dir.
 
@@ -37,7 +37,16 @@ INSTALLATION
 
 3. In your “~/.emacs”, put the following lines:
 
-; (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; optional for Dvorak keyboard
+; Optional
+; (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; for Dvorak keyboard
+
+; Optional. Swap “Ctrl+x” and “Ctrl+t”, so it's easier to type on Dvorak layout
+; (keyboard-translate ?\C-t ?\C-x) (keyboard-translate ?\C-x ?\C-t)
+
+; Options for Mac.
+; (setq mac-command-modifier 'meta)
+; (setq mac-option-modifier 'hyper)
+
 (load-file "~/my_emacs_lib/ergoemacs_1.6.2/site-lisp/site-start.el")
 
 --------------------------------------------------

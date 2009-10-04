@@ -21,6 +21,7 @@
 ;; for editing Windows's cmd.exe's script; batch, “.bat” file mode.
 (autoload 'dos-mode "dos" "A mode for editing Windows cmd.exe batch scripts." t)
 (add-to-list 'auto-mode-alist '("\\.bat\\'" . dos-mode))
+(add-to-list 'auto-mode-alist '("\\.cmd\\'" . dos-mode))
 
 ;; powershell-mode. http://en.wikipedia.org/wiki/PowerShell
 (autoload 'powershell-mode "powershell-mode" "A editing mode for Microsoft PowerShell." t)
