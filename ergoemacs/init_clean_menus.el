@@ -26,7 +26,7 @@
 			    (html "HTML" . html-mode)
 			    (nxml "XML (nxml-mode)" . nxml-mode)
 			    (xml "XML (xml-mode)" . xml-mode)
-			    (js "Javascript (expresso-mode)" . expresso-mode)
+			    (js "Javascript (espresso-mode)" . espresso-mode)
 			    (js2 "Javascript (js2-mode)" . js2-mode)
 			    (latex "LaTeX" . latex-mode)
 			    (separator2 "--")
