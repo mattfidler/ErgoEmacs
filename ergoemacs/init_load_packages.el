@@ -6,9 +6,14 @@
 (autoload 'php-mode "php-mode" "php mode by Aaron S Hawley." t)
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
-;; javascript mode
-(autoload 'js2-mode "js2-20080616a" "Steve Yegge's Javascript mode." t)
+;; javascript. (IDE-like by Steve Yegge. Features a js syntax parser)
+(autoload 'js2-mode "js2-20080616a" "IDE-like Javascript mode; features a on-the-fly syntax parser." t)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+;; javascript mode (more standard js mode.)
+(autoload 'espresso-mode "espresso" "Javascript mode" t)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . espresso-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
 
 ;; visual-basic-mode
 (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
