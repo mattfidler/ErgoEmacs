@@ -160,6 +160,9 @@ enviroment variable.  The possible values are:
 
 ;;; EMACS'S SPECIAL COMMANDS
 
+; Cancel
+(define-key ergoemacs-keymap ergoemacs-keyboard-quit-key 'keyboard-quit)
+
 ; Mark point.
 (define-key ergoemacs-keymap ergoemacs-set-mark-command-key 'set-mark-command)
 
@@ -242,6 +245,7 @@ enviroment variable.  The possible values are:
 
   (defvar ergoemacs-minibuffer-keymap (copy-keymap ergoemacs-keymap))
 
+  (define-key ergoemacs-minibuffer-keymap ergoemacs-keyboard-quit-key 'minibuffer-keyboard-quit)
   (define-key ergoemacs-minibuffer-keymap ergoemacs-previous-line-key 'previous-history-element)
   (define-key ergoemacs-minibuffer-keymap ergoemacs-next-line-key 'next-history-element)
   (define-key ergoemacs-minibuffer-keymap (kbd "<f11>") 'previous-history-element)
@@ -265,6 +269,7 @@ enviroment variable.  The possible values are:
   (define-key isearch-mode-map (kbd "M-r") 'nil) ; was isearch-toggle-regexp
   (define-key isearch-mode-map (kbd "M-e") 'nil) ; was isearch-edit-string
 
+  (define-key isearch-mode-map ergoemacs-keyboard-quit-key 'isearch-abort)
   (define-key isearch-mode-map ergoemacs-isearch-forward-key 'isearch-repeat-forward)
   (define-key isearch-mode-map ergoemacs-isearch-backward-key 'isearch-repeat-backward)
   (define-key isearch-mode-map ergoemacs-recenter-key 'recenter)
@@ -324,6 +329,7 @@ enviroment variable.  The possible values are:
 
   (defvar ergoemacs-iswitchb-keymap (copy-keymap ergoemacs-keymap))
 
+  (define-key ergoemacs-iswitchb-keymap ergoemacs-keyboard-quit-key 'minibuffer-keyboard-quit)
   (define-key ergoemacs-iswitchb-keymap ergoemacs-isearch-backward-key 'iswitchb-prev-match)
   (define-key ergoemacs-iswitchb-keymap ergoemacs-isearch-forward-key 'iswitchb-next-match)
 

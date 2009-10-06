@@ -77,6 +77,9 @@
 
 ;;; EMACS'S SPECIAL COMMANDS
 
+; Cancel
+(defconst ergoemacs-keyboard-quit-key			(kbd "M-b"))
+
 ; Mark point.
 (defconst ergoemacs-set-mark-command-key		(kbd "M-SPC"))
 
