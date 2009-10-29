@@ -99,10 +99,10 @@
 (autoload 'command-frequency "command-frequency" "minor mode for logging emacs command calls for usage insights by statistics." t)
 
 ;; turn command-frequency on
-;; (require 'command-frequency)
-;; (command-frequency-table-load)
-;; (command-frequency-mode 1)
-;; (command-frequency-autosave-mode 1)
+(require 'command-frequency)
+(command-frequency-table-load)
+(command-frequency-mode 1)
+(command-frequency-autosave-mode 1)
 
 ;; display horizontal line for the Form Feed char (ASCII 12, ^L)
 ;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.
