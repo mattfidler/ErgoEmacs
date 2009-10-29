@@ -36,7 +36,7 @@
 ;;   ;; add the package's path
 ;;   (add-to-list 'load-path "~/Documents/emacs")
 ;;
-;;   ;; load the package package if not already loaded
+;;   ;; load the package if not already loaded
 ;;   (require 'command-frequency)
 ;;
 ;;   ;; turn the minor mode on
@@ -116,7 +116,7 @@ various command-frequency-* functions."
   :type 'string)
 
 
-(defcustom command-frequency-table-file "~/.emacs.d/.emacs.frequencies"
+(defcustom command-frequency-table-file "~/.emacs.d/.emacs.command.frequency"
   "File `command-frequency-table' is saved to/loaded from by
 `command-frequency-save' and `command-frequency-load' functions
 by default."
