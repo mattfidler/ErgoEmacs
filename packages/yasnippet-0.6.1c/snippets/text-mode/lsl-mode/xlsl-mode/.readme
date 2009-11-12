@@ -5,6 +5,8 @@ Comment: Comments, suggestions, additions, very welcome. Thanks.
 
 Version history:
 
+version 1.4.5, 2009-11-12 • Added a template for “for” loop.
+
 version 1.4.4, 2009-04-26 • Fixed llApplyImpulse.
 
 version 1.4.3, 2009-04-24 • Added: “do”, “jump”, “else”, “elseif”, “while”. Modified “if”. Fixed llGiveMoney.
