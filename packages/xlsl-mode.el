@@ -35,7 +35,7 @@
 
 ;;; HISTORY
 
-;; version 1.5.13, 2009-11-15 • Added AGENT keyword.
+;; version 1.5.13, 2009-11-15 • Added AGENT Constant.
 ;; version 1.5.12, 2009-10-10 • Added these constants for keyword completion: OBJECT_NAME OBJECT_DESC OBJECT_POS OBJECT_ROT OBJECT_VELOCITY OBJECT_OWNER OBJECT_GROUP OBJECT_CREATOR
 ;; version 1.5.11, 2009-08-27 • if emacs 23, turn on linum-mode.
 ;; version 1.5.10, 2009-04-28 • Added constants: DATA_BORN DATA_NAME DATA_ONLINE DATA_PAYINFO 
