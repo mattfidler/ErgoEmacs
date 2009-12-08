@@ -5,7 +5,7 @@
 ;; Copyright © 2009 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: 5.2
+;; Version: 5.1
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -45,7 +45,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.2"
+(defconst ergoemacs-mode-version "5.1"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -117,7 +117,7 @@ enviroment variable.  The possible values are:
 (define-key ergoemacs-keymap ergoemacs-isearch-forward-key 'isearch-forward)
 (define-key ergoemacs-keymap ergoemacs-isearch-backward-key 'isearch-backward)
 
-(define-key ergoemacs-keymap ergoemacs-recenter-key 'recenter)
+(define-key ergoemacs-keymap ergoemacs-recenter-key 'recenter-top-bottom)
 
 ;;; MAJOR EDITING COMMANDS
 
@@ -225,103 +225,20 @@ enviroment variable.  The possible values are:
 (define-key ergoemacs-keymap ergoemacs-select-text-in-quote-key 'select-text-in-quote)
 
 ;;----------------------------------------------------------------------
-;; CUA fix
-
-(defun ergoemacs-fix-cua--pre-command-handler-1 ()
-  "Fixes CUA minor mode so selection is highlighted only when
-Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
- (defun cua--pre-command-handler-1 ()
-  ;; Cancel prefix key timeout if user enters another key.
-  (when cua--prefix-override-timer
-    (if (timerp cua--prefix-override-timer)
-	(cancel-timer cua--prefix-override-timer))
-    (setq cua--prefix-override-timer nil))
-
-  (cond
-   ;; Only symbol commands can have necessary properties
-   ((not (symbolp this-command))
-    nil)
-
-   ;; Handle delete-selection property on non-movement commands
-   ((not (eq (get this-command 'CUA) 'move))
-    (when (and mark-active (not deactivate-mark))
-      (let* ((ds (or (get this-command 'delete-selection)
-		     (get this-command 'pending-delete)))
-	     (nc (cond
-		  ((not ds) nil)
-		  ((eq ds 'yank)
-		   'cua-paste)
-		  ((eq ds 'kill)
-		   (if cua--rectangle
-		       'cua-copy-rectangle
-		     'cua-copy-region))
-		  ((eq ds 'supersede)
-		   (if cua--rectangle
-		       'cua-delete-rectangle
-		     'cua-delete-region))
-		  (t
-		   (if cua--rectangle
-		       'cua-delete-rectangle ;; replace?
-		     'cua-replace-region)))))
-	(if nc
-	    (setq this-original-command this-command
-		  this-command nc)))))
-
-   ;; Handle shifted cursor keys and other movement commands.
-   ;; If region is not active, region is activated if key is shifted.
-   ;; If region is active, region is cancelled if key is unshifted
-   ;;   (and region not started with C-SPC).
-   ;; If rectangle is active, expand rectangle in specified direction and
-   ;;   ignore the movement.
-   ((if window-system
-        ;; Shortcut for window-system, assuming that input-decode-map is empty.
-
-	;; ErgoEmacs patch begin ------------------
-	;;;; (memq 'shift (event-modifiers
-	;;;; 	           (aref (this-single-command-raw-keys) 0)))
-	(and (memq 'shift (event-modifiers
-			   (aref (this-single-command-raw-keys) 0)))
-	     ;; In this way, we expect to use CUA only with keys that
-	     ;; are symbols (like <left>, <next>, etc.)
-	     (symbolp (event-basic-type (aref (this-single-command-raw-keys) 0))))
-	;; ErgoEmacs patch end --------------------
-
-      (or
-       ;; Check if the final key-sequence was shifted.
-       (memq 'shift (event-modifiers
-		     (aref (this-single-command-keys) 0)))
-       ;; If not, maybe the raw key-sequence was mapped by input-decode-map
-       ;; to a shifted key (and then mapped down to its unshifted form).
-       (let* ((keys (this-single-command-raw-keys))
-              (ev (lookup-key input-decode-map keys)))
-         (or (and (vector ev) (memq 'shift (event-modifiers (aref ev 0))))
-             ;; Or maybe, the raw key-sequence was not an escape sequence
-             ;; and was shifted (and then mapped down to its unshifted form).
-             (memq 'shift (event-modifiers (aref keys 0)))))))
-    (unless mark-active
-      (push-mark-command nil t))
-    (setq cua--last-region-shifted t)
-    (setq cua--explicit-region-start nil))
-
-   ;; Set mark if user explicitly said to do so
-   ((or cua--explicit-region-start cua--rectangle)
-    (unless mark-active
-      (push-mark-command nil nil)))
-
-   ;; Else clear mark after this command.
-   (t
-    ;; If we set mark-active to nil here, the region highlight will not be
-    ;; removed by the direct_output_ commands.
-    (setq deactivate-mark t)))
-
-  ;; Detect extension of rectangles by mouse or other movement
-  (setq cua--buffer-and-point-before-command
-	(if cua--rectangle (cons (current-buffer) (point)))))
- )
-
-
-;;----------------------------------------------------------------------
 ;; ErgoEmacs hooks
+
+(defun ergoemacs-cua-hook ()
+  "Prevent `cua-mode' from going into selection mode when commands with Shift key is used."
+
+  (put 'cua-scroll-down 'CUA nil)
+  (put 'cua-scroll-up 'CUA nil)
+  (put 'backward-paragraph 'CUA nil)
+  (put 'forward-paragraph 'CUA nil)
+  (put 'beginning-of-buffer 'CUA nil)
+  (put 'end-of-buffer 'CUA nil)
+  (put 'move-end-of-line 'CUA nil)
+  (put 'end-of-visual-line 'CUA nil)
+  )
 
 (defun ergoemacs-minibuffer-setup-hook ()
   "Hook for minibuffer to move through history with previous-line and next-line keys."
@@ -431,10 +348,6 @@ is being initialized, some global keybindings in current-global-map
 will change."
 
   (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook)))
-
-    ;; Fix CUA
-    (if ergoemacs-mode
-	(ergoemacs-fix-cua--pre-command-handler-1))
 
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
