@@ -29,7 +29,7 @@
 ;; Full documentation is at: http://xahlee.org/emacs/xbbcode-mode.html
 
 ;; To see the inline documentation in emacs, type “C-h m”
-;; (describe-mode). (if you have not load the mode type, first type
+;; (describe-mode). (if you have not load the mode, first type
 ;; Alt+x xbbcode-mode)
 
 ;;; HISTORY
@@ -119,7 +119,7 @@ Other examples:
         ("\\[b\\]\\(.*?\\)\\[\\/b\\]" . (1 'bold))
         ("\\[i\\]\\(.*?\\)\\[\\/i\\]" . (1 'italic))
         ("\\[u\\]\\(.*?\\)\\[\\/u\\]" . (1 'underline))
-        ("\\[s\\]\\(.*?\\)\\[\\/s\\]" . (1 'shadow)) ; for lack of strick-thru face. Todo: need to define a strick-thru face.
+        ("\\[s\\]\\(.*?\\)\\[\\/s\\]" . (1 'shadow)) ; for lack of predefined strick-thru face. Todo: need to define a strick-thru face.
 
         ("\\(\\[url=\\)\\(.*?\\)\\(\\]\\)" . (1 font-lock-constant-face)) ; coloring the “[url=”
         ("\\(\\[url=\\)\\(.*?\\)\\(\\]\\)" . (3 font-lock-constant-face)) ; coloring the “]”
