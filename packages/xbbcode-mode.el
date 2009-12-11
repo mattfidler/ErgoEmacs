@@ -136,11 +136,14 @@ Other examples:
       )
 
 (defun xbbcode-mode ()
-;; (define-derived-mode xbbcode-mode c-mode "LSL"
-  "Major mode for editing bbcode.
+  "Major mode for editing BBCode.
+
+To insert a tag, for example “[b]bold[/b]”, type “b”, then type
+“\\[xbbcode-insert-tag]”, then it'll become “[b][/b]” with your
+cursor placed in between the tags.
 
 Shortcuts             Command Name
-\\[bbcode-insert-tag]       `bbcode-insert-tag'
+\\[xbbcode-insert-tag]       `xbbcode-insert-tag'
 
 Home page: URL `http://xahlee.org/emacs/xbbcode-mode.html'."
   (interactive)
