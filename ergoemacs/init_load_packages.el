@@ -66,6 +66,10 @@
 (add-to-list 'auto-mode-alist '("\\.ml\\w?" . tuareg-mode))
 (autoload 'tuareg-mode "tuareg" "Major mode for editing ML/Caml/OCaml code." t)
 (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+
+;; xbbcode-mode for editing BBCode
+(add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))
+(autoload 'xbbcode-mode "xbbcode-mode" "Load xbbcode-mode for editing BBCode." t)
 
 ;;;; productivity, enhancement, or minor modes
 
@@ -122,3 +126,28 @@
 (autoload 'dictionary-popup-matching-words "dictionary" "Display entries matching the word at the point" t)
 (autoload 'dictionary-tooltip-mode "dictionary" "Display tooltips for the current word" t)
 (autoload 'global-dictionary-tooltip-mode "dictionary" "Enable/disable dictionary-tooltip-mode for all buffers" t)
+
+
+;; some aliases.
+;; this section probably needs to be moved into a file by itself.
+;; or in the file for settings
+
+;; the reason for these aliases is that, often, elisp package names is
+;; not intuitive, and should not be the lang name neither. For
+;; example, for javascript, those familiar with emacs would intuitive
+;; type M-x javascript-mode or M-x js-mode. However, the 2 most robust
+;; js packages are called by M-x espresso-mode and M-x
+;; js2-mode. Without some insider knowledge, it is difficult to know
+;; what function user needs to call for particular major mode he wants.
+;; (the mode menu in ErgoEmacs helps, but this is not in GNU Emacs 23)
+
+;; also, due to elisp not having name space, or a enforced package/module/lib naming system etc, package names shouldn't be just the language name. That is, a particular javascript mode really shouldn't be named javascript-mode, because, different people's packages for js will all compete for that name, and prevents the flexibility of testing or using different versions of major mode for that language. Given the way things are, one ideal fix is to always use a alias to point to the mode where ErgoEmacs decides to be the default for that lang. For example, ErgoEmacs bundles 2 major modes for javascript, js2-mode and espresso-mode, and suppose we decided espresso-mode should be the default, then we can define a alias js-mode to point to espresso-mode. This way, user can intuitively load the package for js, but can also load a different one if he has knowledege about which modes exists for the lang he wants.
+
+(defalias 'lsl-mode 'xlsl-mode)
+(defalias 'bbcode-mode 'xbbcode-mode)
+(defalias 'js-mode 'espresso-mode)
+(defalias 'cmd-mode 'dos-mode)
+(defalias 'ocaml-mode 'tuareg-mode)
+
+(defalias 'spell-check 'speck-mode)
+
