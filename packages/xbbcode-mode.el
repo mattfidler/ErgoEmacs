@@ -34,11 +34,12 @@
 
 ;;; HISTORY
 
+;; version 1.1, 2009-12-14. The xbbcode-about now has clickable links, and other minor improvement.
 ;; version 1.0, 2009-12-09. First version.
 
 ;;; Code:
 
-(setq xbbcode-mode-version "1.0")
+(setq xbbcode-mode-version "1.1")
 
 (defgroup xbbcode-mode nil
   "Major mode for editing bbcode."
@@ -76,12 +77,15 @@
 (defun xbbcode-about ()
   "Describe the major mode."
   (interactive)
-  (display-message-or-buffer
-   (concat "xbbcode-mode is a major mode for editing BBCode.\n\n"
-           "You are currently using version: " xbbcode-mode-version "\n\n"
-           "To see inline documentation, type “Alt+x describe-mode”.\n\n"
-           "The home page is http://xahlee.org/emacs/xbbcode-mode.html \n\n")
-   )
+  (with-output-to-temp-buffer "*Majro Modes for Text Editing*"
+    (princ 
+     (concat "xbbcode-mode is a major mode for editing BBCode.\n\n"
+             "You are currently using version: " xbbcode-mode-version "\n\n"
+             "Author: Xah Lee\n\n"
+             "To see inline documentation, call the command `describe-mode' while in the mode.\n\n"
+             "The home page is URL `http://xahlee.org/emacs/xbbcode-mode.html' \n\n")
+     )
+    )
   )
 
 (defun xbbcode-insert-tag ()
