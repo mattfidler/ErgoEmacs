@@ -65,7 +65,7 @@ The list includes all major modes for editing programing language
 files or such things as BBCode, but does not include major modes
 for dired, irc, mail, shell, etc."
   (interactive)
-(with-output-to-temp-buffer "*Majro Modes for Text Editing*"
+(with-output-to-temp-buffer "*Major Modes for Text Editing*"
   (princ 
          "###############################################
 # This is a list of text-editing related major modes that comes with ErgoEmacs.
