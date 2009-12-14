@@ -35,6 +35,7 @@
 
 ;;; HISTORY
 
+;; version 1.5.14, 2009-12-14 • Minor improvement in the help menu “LSL‣About xlsl-mode.”, and added the corresponding command xlsl-about. 
 ;; version 1.5.13, 2009-11-15 • Added AGENT Constant.
 ;; version 1.5.12, 2009-10-10 • Added these constants for keyword completion: OBJECT_NAME OBJECT_DESC OBJECT_POS OBJECT_ROT OBJECT_VELOCITY OBJECT_OWNER OBJECT_GROUP OBJECT_CREATOR
 ;; version 1.5.11, 2009-08-27 • if emacs 23, turn on linum-mode.
@@ -68,7 +69,7 @@
 
 (require 'thingatpt )
 
-(setq xlsl-mode-version "1.5.13")
+(setq xlsl-mode-version "1.5.14")
 
 (defgroup xlsl-mode nil
   "Major mode for editing Linden Scripting Language."
@@ -130,15 +131,7 @@ The value can be any of:
 
     (define-key menuMap [goto-home-page] '("Goto xlsl-mode website" . (lambda () (interactive) (browse-url "http://xahlee.org/sl/ls-emacs.html"))))
 
-    (define-key menuMap [about] '("About xlsl-mode" .
-                                  (lambda () (interactive)
-                                    (display-message-or-buffer
-                                     (concat "xlsl-mode is a major mode for editing Linden Scripting Language.\n\n"
-                                             "You are currently using version: " xlsl-mode-version "\n\n"
-                                             "To see inline documentation, type “Alt+x describe-mode” while you are in xlsl-mode.\n\n"
-                                             "To see the latest version and online doc, go to
-http://xahlee.org/sl/ls-emacs.html \n\n")
-                                     "*About xlsl-mode*"))))
+    (define-key menuMap [about] '("About xlsl-mode" . xlsl-about))
 
     (define-key menuMap [customize] '("Customize xlsl-mode" . (lambda () (interactive) (customize-group 'xlsl-mode))))
 
@@ -170,6 +163,20 @@ http://xahlee.org/sl/ls-emacs.html \n\n")
   "Syntax table for `xlsl-mode'.")
 
 ;;; functions
+
+(defun xlsl-about ()
+  "Show the author, version number, and description about this package."
+  (interactive)
+  (with-output-to-temp-buffer "*About xlsl-mode*"
+    (princ
+     (concat "Mode name: xlsl-mode.\n\n"
+             "Author: Xah Lee\n\n"
+             "Version: " xlsl-mode-version "\n\n"
+             "To see inline documentation, type “Alt+x `describe-mode'” while you are in xlsl-mode.\n\n"
+             "Home page: URL `http://xahlee.org/sl/ls-emacs.html' \n\n")
+     )
+    )
+  )
 
 (defun xlsl-copy-all ()
   "Copy buffer content into the kill-ring.
