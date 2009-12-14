@@ -77,13 +77,13 @@
 (defun xbbcode-about ()
   "Describe the major mode."
   (interactive)
-  (with-output-to-temp-buffer "*Majro Modes for Text Editing*"
+  (with-output-to-temp-buffer "*About xbbcode-mode*"
     (princ 
-     (concat "xbbcode-mode is a major mode for editing BBCode.\n\n"
-             "You are currently using version: " xbbcode-mode-version "\n\n"
-             "Author: Xah Lee\n\n"
+     (concat "Package name: xbbcode-mode\n"
+             "Version: " xbbcode-mode-version "\n"
+             "Author: Xah Lee\n"
              "To see inline documentation, call the command `describe-mode' while in the mode.\n\n"
-             "The home page is URL `http://xahlee.org/emacs/xbbcode-mode.html' \n\n")
+             "Home page: URL `http://xahlee.org/emacs/xbbcode-mode.html' \n")
      )
     )
   )
