@@ -43,6 +43,7 @@
 			    (vb "Visual Basic" . visual-basic-mode)
 			    (cmd "cmd.exe" . dos-mode)
 			    (powershell "PowerShell" . powershell-mode)
+			    (list-text-editing-modes "List Text Editing Modes..." . list-text-editing-modes)
 			    "major modes"))
 	(separator3 menu-item "--")
 	(print-buffer menu-item "Print" print-buffer)
