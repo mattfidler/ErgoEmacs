@@ -90,6 +90,7 @@ Javascript • espresso-mode
 Javascript • js2-mode
 LaTeX • latex-mode
 Linden Scripting Language • xlsl-mode
+Lua • lua-mode
 OCaml • tuareg-mode
 PHP • php-mode
 Perl • cperl-mode
