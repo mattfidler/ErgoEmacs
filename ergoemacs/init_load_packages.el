@@ -35,6 +35,10 @@
 ;; powershell interactive shell
 (autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
 
+;; mode for lua language
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode)) ; lua-mode
+
 ;; xlsl-mode. http://en.wikipedia.org/wiki/Linden_Scripting_Language
 (autoload 'xlsl-mode "xlsl-mode" "Load xlsl-mode for editing Linden Scripting Lang." t)
 (add-to-list 'auto-mode-alist '("\\.lsl\\'" . xlsl-mode))
