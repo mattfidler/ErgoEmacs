@@ -1,5 +1,5 @@
 ;-*- coding: utf-8 -*-
-;; lsl-mode_Xah_Lee.el -- Major mode for editing LSL (Linden Scripting Language).
+;; xlsl-mode.el -- Major mode for editing LSL (Linden Scripting Language).
 
 ;; Copyright © 2008 by Xah Lee
 
