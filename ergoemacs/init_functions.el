@@ -76,7 +76,7 @@ for dired, irc, mail, shell, etc."
 # please help by adding modes you use at
 # http://code.google.com/p/ergoemacs/issues/detail?id=64
 
-AutoHotKey • ahk-mode
+AutoHotKey • xahk-mode
 BBCode • xbbcode-mode
 Bash • sh-mode
 C • c-mode

@@ -43,10 +43,9 @@
 (autoload 'xlsl-mode "xlsl-mode" "Load xlsl-mode for editing Linden Scripting Lang." t)
 (add-to-list 'auto-mode-alist '("\\.lsl\\'" . xlsl-mode))
 
-;; AutoHotKey mode (a keyboard macro for Windows)
-(setq ahk-syntax-directory "c:/Program Files (x86)/AutoHotkey/Extras/Editors/Syntax/")
-(autoload 'ahk-mode "ahk-mode" "AutoHotKey mode" t)
-(add-to-list 'auto-mode-alist '("\\.ahk\\'" . ahk-mode))
+;; AutoHotKey (ahk) mode (a keyboard macro for Windows)
+(autoload 'xahk-mode "xahk-mode" "AutoHotKey mode" t)
+(add-to-list 'auto-mode-alist '("\\.ahk\\'" . xahk-mode))
 
 ;; POV-Ray (3D rendering engine) http://en.wikipedia.org/wiki/POV-Ray
 (add-to-list 'load-path
@@ -147,10 +146,11 @@
 
 ;; also, due to elisp not having name space, or a enforced package/module/lib naming system etc, package names shouldn't be just the language name. That is, a particular javascript mode really shouldn't be named javascript-mode, because, different people's packages for js will all compete for that name, and prevents the flexibility of testing or using different versions of major mode for that language. Given the way things are, one ideal fix is to always use a alias to point to the mode where ErgoEmacs decides to be the default for that lang. For example, ErgoEmacs bundles 2 major modes for javascript, js2-mode and espresso-mode, and suppose we decided espresso-mode should be the default, then we can define a alias js-mode to point to espresso-mode. This way, user can intuitively load the package for js, but can also load a different one if he has knowledege about which modes exists for the lang he wants.
 
-(defalias 'lsl-mode 'xlsl-mode)
+(defalias 'ahk-mode 'xahk-mode)
 (defalias 'bbcode-mode 'xbbcode-mode)
-(defalias 'js-mode 'espresso-mode)
 (defalias 'cmd-mode 'dos-mode)
+(defalias 'js-mode 'espresso-mode)
+(defalias 'lsl-mode 'xlsl-mode)
 (defalias 'ocaml-mode 'tuareg-mode)
 
 (defalias 'spell-check 'speck-mode)
