@@ -19,13 +19,14 @@
 
 ;;; HISTORY
 
+;; version 1.1, 2010-01-14 Added indentation feature. (press Tab to indent.)
 ;; version 1.0, 2010-01-09 First version.
 
 ;;; Code:
 
 (require 'thingatpt )
 
-(setq xahk-mode-version "1.0.0")
+(setq xahk-mode-version "1.1.0")
 
 (defgroup xahk-mode nil
   "Major mode for editing AutoHotKey script."
@@ -241,6 +242,7 @@ Complete documentation at URL `http://xahlee.org/mswin/emacs_autohotkey_mode.htm
   (interactive)
   (kill-all-local-variables)
 
+  (c-mode) ; for indentation
   (setq major-mode 'xahk-mode)
   (setq mode-name "AHK")
   (set-syntax-table xahk-mode-syntax-table)
