@@ -322,19 +322,6 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs hooks
 
-(defun ergoemacs-cua-hook ()
-  "Prevent `cua-mode' from going into selection mode when commands with Shift key is used."
-
-  (put 'cua-scroll-down 'CUA nil)
-  (put 'cua-scroll-up 'CUA nil)
-  (put 'backward-paragraph 'CUA nil)
-  (put 'forward-paragraph 'CUA nil)
-  (put 'beginning-of-buffer 'CUA nil)
-  (put 'end-of-buffer 'CUA nil)
-  (put 'move-end-of-line 'CUA nil)
-  (put 'end-of-visual-line 'CUA nil)
-  )
-
 (defun ergoemacs-minibuffer-setup-hook ()
   "Hook for minibuffer to move through history with previous-line and next-line keys."
 
@@ -453,7 +440,6 @@ will change."
         (ergoemacs-unset-redundant-global-keys)
       (ergoemacs-restore-global-keys))
 
-    (funcall modify-hook 'cua-mode-hook 'ergoemacs-cua-hook)
     (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
     (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
     (funcall modify-hook 'log-edit-mode-hook 'ergoemacs-log-edit-hook)
