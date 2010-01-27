@@ -15,7 +15,7 @@
 
 [Setup]
 AppName=ErgoEmacs
-AppVerName=ErgoEmacs 1.6.1
+AppVerName=ErgoEmacs 1.7
 AppPublisherURL=http://ergoemacs.org/
 AppSupportURL=http://ergoemacs.org/
 AppUpdatesURL=http://ergoemacs.org/
@@ -24,18 +24,20 @@ DefaultGroupName=ErgoEmacs
 AllowNoIcons=yes
 LicenseFile=..\..\emacs-23.1\COPYING
 OutputDir=.
-OutputBaseFilename=ErgoEmacs 1.6.1 Setup
+OutputBaseFilename=ErgoEmacs 1.7 Setup
 SetupIconFile=..\..\emacs-23.1\etc\icons\emacs.ico
 ;Compression=none
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=1.6.1
+VersionInfoVersion=1.7
+ChangesAssociations=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: associate; Description: "&Associate .el files with ErgoEmacs"; GroupDescription: "File Associations:"; Flags: unchecked
 
 [Files]
 Source: "..\..\emacs-23.1\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -52,4 +54,10 @@ Name: "{commondesktop}\ErgoEmacs"; Filename: "{app}\ErgoEmacs.exe"; Tasks: deskt
 
 [Run]
 Filename: "{app}\ErgoEmacs.exe"; Description: "{cm:LaunchProgram,ErgoEmacs}"; Flags: nowait postinstall skipifsilent
+
+[Registry]
+Root: HKCR; Subkey: ".el"; ValueType: string; ValueName: ""; ValueData: "ErgoEmacsFile"; Flags: uninsdeletevalue; Tasks: associate
+Root: HKCR; Subkey: "ErgoEmacsFile"; ValueType: string; ValueName: ""; ValueData: "ErgoEmacs File"; Flags: uninsdeletekey; Tasks: associate
+Root: HKCR; Subkey: "ErgoEmacsFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ErgoEmacs.exe,0"; Tasks: associate
+Root: HKCR; Subkey: "ErgoEmacsFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\ErgoEmacs.exe"" ""%1"""; Tasks: associate
 
