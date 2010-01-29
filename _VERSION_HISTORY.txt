@@ -10,9 +10,52 @@ Then, when we have a new release, we can write a Release Notes for the users, us
 
 This is just a idea how version history and release notes can be done... open to suggestions or may change depending how things works out. For example, possibly the Google Code's wiki can be used instead of this file. 
 
+This file is now based on the commit history at http://code.google.com/p/ergoemacs/updates/list . This file may not be necessary and be removed in the future.
+
 (If you are viewing this file in emacs, type Tab to open/close a section.  Type Shift+Tab to open/close all levels.  (type Shift+Tab 3 times for the first time to expand all.)  )
 
 HISTORY
+
+* Version 1.7: 2010-01-28.
+
+Major user visible changes:
+
+** New Modes
+
+• Added lua-mode.el for editing the lua language source code.
+http://code.google.com/p/ergoemacs/source/detail?r=340
+
+ • Added a dos.el and batch-mode.el modes (for editing Windows's command line batch script.) This can be access from the menu File -> Language Modes.
+http://code.google.com/p/ergoemacs/source/detail?r=307
+http://code.google.com/p/ergoemacs/issues/detail?id=55#c0
+
+ • There is now a menu for loading a javascript mode (the expresso-mode).
+ http://code.google.com/p/ergoemacs/source/detail?r=311
+
+• A new mode for editing bbcode is included. (command name is xbbcode-mode).
+http://code.google.com/p/ergoemacs/source/detail?r=332
+
+• Added a new mode for AutoHotKey. The new mode xahk-mode replaces the previous ahk-mode.
+http://code.google.com/p/ergoemacs/issues/detail?id=24#c1
+
+Most modes with unintuitive names now has a alias. For example, calling js-mode loads the expresso-mode designed for editing javascript. bbcode-mode calls xbbcode-mode, lsl-mode calls xlsl-mode, ahk-mode calls xahk-mode, etc.
+
+** Menu Changes
+
+• Added a submenu under File -> Language Modes -> List Text Editing Modes. This is intended to show all modes that are used for editing special files.
+http://code.google.com/p/ergoemacs/issues/detail?id=64#c0
+
+** Key shortcut changes
+
+ • Now, Alt+n will cancel commands (GNU Emacs's Ctrl+g). Experimental.
+ http://code.google.com/p/ergoemacs/source/detail?r=313
+
+ • Ctrl+Shift+Home and Ctrl+Shift+End now select text.
+ http://code.google.com/p/ergoemacs/issues/detail?id=32 . 
+
+** Misc
+
+ • the spell checker hunspell will check for aspell and ispell if it cannot find hunspell. http://code.google.com/p/ergoemacs/source/detail?r=305
 
 * Version 1.6.2: 2009-10-01.
   • Changed loading of hunspell, so that if on non-Windows, it is not loaded. Issue 51 temp fix.
