@@ -79,18 +79,30 @@
 ; redo mode
 (require 'redo)
 
-;; speck-mode. To use, call spec-mode.
+;; speck-mode. To use, call speck-mode. TODO: http://code.google.com/p/ergoemacs/issues/detail?id=56 Check if speck-mode is actually using hunspell.
 (autoload 'speck-mode "speck" "On-the-fly spell checking mode, alternative to fly-spell." t)
 
-;; Hunspell. TODO: See http://code.google.com/p/ergoemacs/issues/detail?id=51
-(when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
-(progn
+;; Hunspell
+(when (string-equal system-type "windows-nt")
+  (when (or (file-exists-p "../hunspell")
+            (file-exists-p "C:\\Program Files (x86)\\ErgoEmacs\\hunspell")
+            )
+    (progn
       (add-to-list 'load-path
                    (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
       (require 'rw-hunspell)
       (rw-hunspell-setup)
-      )
-)
+      ) ) ) 
+
+;; ;; Hunspell. TODO: See http://code.google.com/p/ergoemacs/issues/detail?id=51
+;; (when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
+;; (progn
+;;       (add-to-list 'load-path
+;;                    (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
+;;       (require 'rw-hunspell)
+;;       (rw-hunspell-setup)
+;;       )
+;; )
 
 ;; yasnippet template system
 (add-to-list 'load-path
