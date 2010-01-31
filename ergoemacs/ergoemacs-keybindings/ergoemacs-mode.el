@@ -330,12 +330,17 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   (define-key ergoemacs-minibuffer-keymap ergoemacs-keyboard-quit-key 'minibuffer-keyboard-quit)
   (define-key ergoemacs-minibuffer-keymap ergoemacs-previous-line-key 'previous-history-element)
   (define-key ergoemacs-minibuffer-keymap ergoemacs-next-line-key 'next-history-element)
+
   (define-key ergoemacs-minibuffer-keymap (kbd "<f11>") 'previous-history-element)
   (define-key ergoemacs-minibuffer-keymap (kbd "<f12>") 'next-history-element)
   (define-key ergoemacs-minibuffer-keymap (kbd "S-<f11>") 'previous-matching-history-element)
   (define-key ergoemacs-minibuffer-keymap (kbd "S-<f12>") 'next-matching-history-element)
 
-  (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-minibuffer-keymap))
+  ;; The ergoemacs-mode keymap could already be in the minor-mode-overriding map
+  ;; (e.g. iswitchb or ido hooks were executed)
+  (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-minibuffer-keymap)
+	       nil (lambda (x y)
+		     (equal (car y) (car x))))
   )
 
 (defun ergoemacs-isearch-hook ()
@@ -423,6 +428,25 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-iswitchb-keymap))
   )
 
+(defun ergoemacs-ido-minibuffer-setup-hook ()
+  "Hook for `ido-minibuffer-setup-hook`."
+
+  (defvar ergoemacs-ido-keymap (copy-keymap ergoemacs-keymap))
+
+  (define-key ergoemacs-ido-keymap ergoemacs-keyboard-quit-key 'minibuffer-keyboard-quit)
+  (define-key ergoemacs-ido-keymap ergoemacs-forward-char-key 'ido-next-match)
+  (define-key ergoemacs-ido-keymap ergoemacs-backward-char-key 'ido-prev-match)
+  (define-key ergoemacs-ido-keymap ergoemacs-previous-line-key 'ido-next-match-dir)
+  (define-key ergoemacs-ido-keymap ergoemacs-next-line-key 'ido-prev-match-dir)
+
+  (define-key ergoemacs-ido-keymap (kbd "<f11>") 'previous-history-element)
+  (define-key ergoemacs-ido-keymap (kbd "<f12>") 'next-history-element)
+  (define-key ergoemacs-ido-keymap (kbd "S-<f11>") 'previous-matching-history-element)
+  (define-key ergoemacs-ido-keymap (kbd "S-<f12>") 'next-matching-history-element)
+
+  (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-ido-keymap))
+  )
+
 (defun ergoemacs-hook-modes ()
   "Installs/Removes ErgoEmacs minor mode hooks from major modes
 depending the state of `ergoemacs-mode' variable.  If the mode
@@ -446,6 +470,7 @@ will change."
     (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
     (funcall modify-hook 'minibuffer-setup-hook 'ergoemacs-minibuffer-setup-hook)
     (funcall modify-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
+    (funcall modify-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
     )
   )
 
