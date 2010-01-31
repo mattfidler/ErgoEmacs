@@ -289,7 +289,7 @@
 
 (defun ergoemacs-shortcut-for-command (cmd)
   (let ((key (key-description (where-is-internal cmd nil t nil t))))
-    (message "KEY \"%s\"" key)
+    ;(message "KEY \"%s\"" key)
     (let ((case-fold-search nil))
       (replace-regexp-in-string " " "  "
       (replace-regexp-in-string "<" ""
@@ -316,7 +316,7 @@
 	   (stringp (caddr item))
 	   (symbolp (cadddr item))
 	   (not (keymapp (cadddr item))))
-      ;; Look if this item already as a :keys property
+      ;; Look if this item already has a :keys property
       (if (position :keys item)
 	  nil
 	(ergoemacs-shortcut-for-command (cadddr item))
@@ -352,7 +352,7 @@
 		     (consp (cdr (cdr (cdr x))))
 		     (eq (car (cdr x)) 'menu-item)
 		     (keymapp (car (cdr (cdr (cdr x))))))
-	    ;; (message "Submenu: %s" (car (cdr (cdr x))))
+	    ;(message "Submenu: %s" (car (cdr (cdr x))))
 	    (ergoemacs-preprocess-menu-keybindings (car (cdr (cdr (cdr x)))))
 	    )
 	  )
