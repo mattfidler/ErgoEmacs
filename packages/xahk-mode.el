@@ -19,6 +19,7 @@
 
 ;;; HISTORY
 
+;; version 1.2, 2010-02-17 fixed a defect where if source contains “"C:\"”, everything after is badly syntax colored. Thanks to “xinlu.h” and “iain.tuddenham”. Detail at http://code.google.com/p/ergoemacs/issues/detail?id=66
 ;; version 1.1, 2010-01-14 Added indentation feature. (press Tab to indent.)
 ;; version 1.0, 2010-01-09 First version.
 
@@ -26,7 +27,7 @@
 
 (require 'thingatpt )
 
-(setq xahk-mode-version "1.1.0")
+(setq xahk-mode-version "1.2.0")
 
 (defgroup xahk-mode nil
   "Major mode for editing AutoHotKey script."
@@ -81,7 +82,7 @@
   (modify-syntax-entry ?^ "." synTable)
   (modify-syntax-entry ?& "." synTable)
   (modify-syntax-entry ?* "." synTable)
-  (modify-syntax-entry ?` "." synTable)
+  (modify-syntax-entry ?` "\\" synTable) ; ` is escape
   (modify-syntax-entry ?~ "." synTable)
   (modify-syntax-entry ?: "." synTable)
   (modify-syntax-entry ?' "." synTable)
@@ -94,6 +95,7 @@
   (modify-syntax-entry ?/ "." synTable)
   (modify-syntax-entry ?- "." synTable)
   (modify-syntax-entry ?_ "." synTable)
+  (modify-syntax-entry ?\\ "." synTable) ; \ is path separator
   synTable)
   "Syntax table for `xahk-mode'.")
 
