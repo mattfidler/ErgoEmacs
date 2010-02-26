@@ -2,10 +2,10 @@
 ;; ergoemacs-mode.el -- A emacs keybinding set based on ergonomics.
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
-;; Copyright © 2009 by David Capello
+;; Copyright © 2009, 2010 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: 5.2.1
+;; Version: 5.3
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -33,10 +33,10 @@
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
-;; Thanks to David Capello for contribution to shrink-whitespaces.
 ;; Thanks to marciomazza for spotting several default bindings that should have been unbound.
 ;; Thanks to those who have created and improved the version for Colemak layout. They are (by date): “vockets”, “postivan”, Graham Poulter.
 ;; Thanks to lwarxx for bug report on diff-mode
+;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
 ;; Thanks to many users who send in comments and appreciations on this.
 
 ;;; --------------------------------------------------
@@ -45,7 +45,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.2.1"
+(defconst ergoemacs-mode-version "5.3"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -429,7 +429,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   )
 
 (defun ergoemacs-ido-minibuffer-setup-hook ()
-  "Hook for `ido-minibuffer-setup-hook`."
+  "Hook for `ido-minibuffer-setup-hook'."
 
   (defvar ergoemacs-ido-keymap (copy-keymap ergoemacs-keymap))
 
@@ -447,13 +447,30 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-ido-keymap))
   )
 
+(defvar ergoemacs-hook-list (list)
+  "List of hook and hook-function pairs.")
+
+(defun ergoemacs-add-hook (hook hook-function)
+  "Adds a pair of hook and hook-function to the list
+ergoemacs hooks."
+  (add-to-list 'ergoemacs-hook-list (cons hook hook-function)))
+
+(ergoemacs-add-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
+(ergoemacs-add-hook 'comint-mode-hook 'ergoemacs-comint-hook)
+(ergoemacs-add-hook 'log-edit-mode-hook 'ergoemacs-log-edit-hook)
+(ergoemacs-add-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
+(ergoemacs-add-hook 'minibuffer-setup-hook 'ergoemacs-minibuffer-setup-hook)
+(ergoemacs-add-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
+(ergoemacs-add-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
+
 (defun ergoemacs-hook-modes ()
   "Installs/Removes ErgoEmacs minor mode hooks from major modes
 depending the state of `ergoemacs-mode' variable.  If the mode
 is being initialized, some global keybindings in current-global-map
 will change."
 
-  (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook)))
+  (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook))
+	(modify-advice (if ergoemacs-mode 'ad-enable-advice 'ad-disable-advice)))
 
     ;; Fix CUA
     (if ergoemacs-mode
@@ -464,15 +481,84 @@ will change."
         (ergoemacs-unset-redundant-global-keys)
       (ergoemacs-restore-global-keys))
 
-    (funcall modify-hook 'isearch-mode-hook 'ergoemacs-isearch-hook)
-    (funcall modify-hook 'comint-mode-hook 'ergoemacs-comint-hook)
-    (funcall modify-hook 'log-edit-mode-hook 'ergoemacs-log-edit-hook)
-    (funcall modify-hook 'eshell-mode-hook 'ergoemacs-eshell-hook)
-    (funcall modify-hook 'minibuffer-setup-hook 'ergoemacs-minibuffer-setup-hook)
-    (funcall modify-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
-    (funcall modify-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
+    ;; install the mode-hooks
+    (dolist (hook ergoemacs-hook-list)
+      (funcall modify-hook (car hook) (cdr hook)))
+
+    ;; enable advices
+    (funcall modify-advice 'global-set-key 'around 'ergoemacs-global-set-key-advice)
+    (funcall modify-advice 'global-unset-key 'around 'ergoemacs-global-unset-key-advice)
+    (funcall modify-advice 'local-set-key 'around 'ergoemacs-local-set-key-advice)
+    (funcall modify-advice 'local-unset-key 'around 'ergoemacs-local-unset-key-advice)
+
+    ;; update advices
+    (ad-activate 'global-set-key)
+    (ad-activate 'global-unset-key)
+    (ad-activate 'local-set-key)
+    (ad-activate 'local-unset-key)
     )
   )
+
+;;----------------------------------------------------------------------
+;; ErgoEmacs replacements for local- and global-set-key
+
+(defun ergoemacs-global-set-key (key command)
+  "Set a key in the ergoemacs-keymap, thus
+making it globally active. This allow to redefine
+any key unbound or claimed by ergoemacs."
+  (interactive)
+  (define-key ergoemacs-keymap key command))
+
+(defun ergoemacs-global-unset-key (key)
+  "Removes a key from the ergoemacs-keymap."
+  (interactive)
+  (ergoemacs-global-set-key key nil))
+
+(defvar ergoemacs-local-keymap nil
+  "Local ergoemacs keymap")
+(make-variable-buffer-local 'ergoemacs-local-keymap)
+
+(defun ergoemacs-local-set-key (key command)
+  "Set a key in the ergoemacs local map."
+  ;; install keymap if not already installed
+  (interactive)
+  (progn 
+    (unless ergoemacs-local-keymap
+      (setq ergoemacs-local-keymap (copy-keymap ergoemacs-keymap))
+      (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-local-keymap)))
+    ;; add key
+    (define-key ergoemacs-local-keymap key command)))
+
+(defun ergoemacs-local-unset-key (key)
+  "Unset a key in the ergoemacs local map."
+  (ergoemacs-local-set-key key nil))
+
+;;----------------------------------------------------------------------
+;; ErgoEmacs advices for local- and global-set-key
+
+(defadvice global-set-key (around ergoemacs-global-set-key-advice (key command))
+  "This let you use global-set-key as usual when ergoemacs-mode is enabled."
+  (if (fboundp 'ergoemacs-mode)
+      (ergoemacs-global-set-key key command)
+    ad-do-it))
+
+(defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
+  "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
+  (if (fboundp 'ergoemacs-mode)
+      (ergoemacs-global-unset-key key)
+    ad-do-it))
+
+(defadvice local-set-key (around ergoemacs-local-set-key-advice (key command))
+  "This let you use local-set-key as usual when ergoemacs-mode is enabled."
+  (if (fboundp 'ergoemacs-mode)
+      (ergoemacs-local-set-key key command)
+    ad-do-it))
+
+(defadvice local-unset-key (around ergoemacs-local-unset-key-advice (key))
+  "This let you use local-unset-key as usual when ergoemacs-mode is enabled."
+  (if (fboundp 'ergoemacs-mode)
+      (ergoemacs-local-unset-key key)
+    ad-do-it))
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs minor mode
