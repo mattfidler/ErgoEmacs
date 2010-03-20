@@ -379,7 +379,7 @@ Else it is a user buffer."
        (setq isEmacsBufferAfter t)
      (setq isEmacsBufferAfter nil))
    (when isEmacsBufferAfter
-     (previous-user-buffer)
+     (next-user-buffer)
      )
    )
  )
