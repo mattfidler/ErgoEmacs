@@ -78,6 +78,8 @@ enviroment variable.  The possible values are:
   (load "ergoemacs-layout-it"))
  ((string= ergoemacs-keyboard-layout "gb")
   (load "ergoemacs-layout-gb"))
+ ((string= ergoemacs-keyboard-layout "gb-dv")
+  (load "ergoemacs-layout-gb-dv"))
  ((string= ergoemacs-keyboard-layout "colemak")
   (load "ergoemacs-layout-colemak"))
  (t ; US qwerty by default
