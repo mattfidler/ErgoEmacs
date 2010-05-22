@@ -5,7 +5,7 @@
 ;; Copyright © 2009, 2010 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: 5.3
+;; Version: 5.3.2
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -45,7 +45,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.3"
+(defconst ergoemacs-mode-version "5.3.2"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
