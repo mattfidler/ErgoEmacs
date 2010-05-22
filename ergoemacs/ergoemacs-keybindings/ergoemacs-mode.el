@@ -37,6 +37,9 @@
 ;; Thanks to those who have created and improved the version for Colemak layout. They are (by date): “vockets”, “postivan”, Graham Poulter.
 ;; Thanks to lwarxx for bug report on diff-mode
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
+;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
+;; Thanks to Jorge Dias for UK layout.
+;; Thanks to phillip.wood@@dunelm.org.uk for UK Dvorak layout.
 ;; Thanks to many users who send in comments and appreciations on this.
 
 ;;; --------------------------------------------------
