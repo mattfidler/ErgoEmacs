@@ -8,7 +8,7 @@ Note: When talking about keys, QWERTY is assumed to indicate the key, unless oth
 
 ** Ctrl+p now asks for confirmation before printing
 Ctrl+p will now ask user confirmation before printing the current buffer.
-This is prevent unintentional press of Ctrl+p from printing.
+This is to prevent unintentional printing.
 Old Emacs users tends to press Ctrl+p a lot because that used to be moving cursor up.
 See: http://code.google.com/p/ergoemacs/issues/detail?id=60
 
