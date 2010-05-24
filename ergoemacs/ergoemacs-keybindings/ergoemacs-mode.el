@@ -5,7 +5,7 @@
 ;; Copyright © 2009, 2010 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: 5.3.2
+;; Version: 5.3.3
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -48,7 +48,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.3.2"
+(defconst ergoemacs-mode-version "5.3.3"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -190,7 +190,7 @@ enviroment variable.  The possible values are:
 (define-key ergoemacs-keymap (kbd "C-w") 'close-current-buffer)
 (define-key ergoemacs-keymap (kbd "C-s") 'save-buffer)
 (define-key ergoemacs-keymap (kbd "C-S-s") 'write-file)
-(define-key ergoemacs-keymap (kbd "C-p") 'print-buffer)
+(define-key ergoemacs-keymap (kbd "C-p") 'print-buffer-confirm)
 (define-key ergoemacs-keymap (kbd "C-a") 'mark-whole-buffer)
 (define-key ergoemacs-keymap (kbd "C-S-w") 'delete-frame)
 

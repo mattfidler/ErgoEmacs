@@ -63,6 +63,6 @@ Byte Compile Elisp Files (Optional)
 
 If you like, you can byte-compile the elisp files. To byte compile them, call the command byte-compile-file, then the elisp file name. Once you do that, emacs will create a file with “.elc” ending, and will automatically load byte compiled file if there is one.
 
-Byte compiled files makes loading and running programs about 5 or more times faster, but for small elisp files, the speed increse is probably not noticeable.
+Byte compiled files makes loading and running programs about 5 or more times faster, but for small elisp files, the speed increase is probably not noticeable.
 
 You do not need to change any lines in the emacs initialization given above.

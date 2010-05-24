@@ -4,6 +4,14 @@
 
 Note: When talking about keys, QWERTY is assumed to indicate the key, unless otherwise specified. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
 
+* version 5.3.3, 2010-05-24
+
+** Ctrl+p now asks for confirmation before printing
+Ctrl+p will now ask user confirmation before printing the current buffer.
+This is prevent unintentional press of Ctrl+p from printing.
+Old Emacs users tends to press Ctrl+p a lot because that used to be moving cursor up.
+See: http://code.google.com/p/ergoemacs/issues/detail?id=60
+
 * version 5.3.2, 2010-05-22
 
 ** Added United Kingdom layout (gb).

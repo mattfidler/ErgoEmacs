@@ -4,6 +4,15 @@
 
 (delete-selection-mode 1) ; turn on text selection highlighting and make typing override selected text (Note: when delete-selection-mode is on, then transient-mark-mode is automatically on too.)
 
+(defun print-buffer-confirm ()
+  "Print current buffer, but ask for confirmation first."
+  (interactive)
+  (when
+      (y-or-n-p "Print current buffer?")
+    (print-buffer)
+    )
+  )
+
 (defun call-keyword-completion ()
   "Call the command that has keyboard shortcut M-TAB."
   (interactive)
