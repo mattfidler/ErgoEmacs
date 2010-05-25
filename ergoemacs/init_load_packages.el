@@ -82,6 +82,9 @@
 ;; speck-mode. To use, call speck-mode. TODO: http://code.google.com/p/ergoemacs/issues/detail?id=56 Check if speck-mode is actually using hunspell.
 (autoload 'speck-mode "speck" "On-the-fly spell checking mode, alternative to fly-spell." t)
 
+(setq speck-engine (quote Hunspell))
+(setq speck-hunspell-language-options (quote (("da" utf-8 nil t nil) ("de" iso-8859-1 nil t nil) ("en" utf-8 nil nil nil) ("fr" iso-8859-1 nil nil nil) ("it" iso-8859-1 nil nil nil) ("ru" koi8-r nil nil nil))))
+
 ;; Hunspell
 (when (string-equal system-type "windows-nt")
   (when (or (file-exists-p "../hunspell")
