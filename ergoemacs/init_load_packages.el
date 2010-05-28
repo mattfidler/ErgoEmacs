@@ -113,8 +113,8 @@
               ("fr" iso-8859-1 nil nil nil)
               ("it" iso-8859-1 nil nil nil)
               ("ru" koi8-r nil nil nil))))
-(setq speck-hunspell-program "../hunspell/hunspell.exe")
-(setq speck-hunspell-library-directory "../hunspell/")
+(setq speck-hunspell-program (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/hunspell.exe"))
+(setq speck-hunspell-library-directory (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/"))
 (setq speck-hunspell-default-dictionary-name "en_US")
 
 ;; yasnippet template system
