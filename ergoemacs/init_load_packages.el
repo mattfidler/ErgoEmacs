@@ -127,6 +127,14 @@
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
  )
 
+;; Highlight occurrence of current word, and move cursor to next/prev occurrence
+;; see http://xahlee.org/emacs/modernization_isearch.html
+(require 'highlight-symbol)
+;; temp hotkeys
+(global-set-key (kbd "<f10>") 'highlight-symbol-at-point) ; this is a toggle
+(global-set-key (kbd "<f11>") 'highlight-symbol-next)
+(global-set-key (kbd "<f12>") 'highlight-symbol-prev)
+
 ;; command-frequency minor mode. To use, call command-frequency.
 (autoload 'command-frequency "command-frequency" "minor mode for logging emacs command calls for usage insights by statistics." t)
 
