@@ -321,7 +321,6 @@ static int run_server (LPSTR cmdline)
   }
 
   /* Set emacs_dir variable.  */
-  *p = 0;
   for (p = emacs_dir; *p; p++)
     if (*p == '\\') 
       *p = '/';
