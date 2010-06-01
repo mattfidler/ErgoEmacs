@@ -5,17 +5,17 @@ INSTALLATION INSTRUCTIONS
 ------------------------------
 1. Unzip the folder.
 
-If you downloaded a file named “ergoemacs-keybindings_v123.zip”, unzip it.
-Now you should have a folder named “ergoemacs-keybindings_v123”.
+If you downloaded a file named “ergoemacs-keybindings-5.3.3.zip”, unzip it.
+Now you should have a folder named “ergoemacs-keybindings-5.3.3”.
 
 ------------------------------
 2. Place the folder somewhere in your home directory. For examples:
 
 On Windows:
-C:\Users\mary\.emacs.d\ergoemacs-keybindings_v123
+C:\Users\mary\.emacs.d\ergoemacs-keybindings-5.3.3
 
 On Mac OS X or Linux:
-/Users/mary/.emacs.d/ergoemacs-keybindings_v123
+/Users/mary/.emacs.d/ergoemacs-keybindings-5.3.3
 
 ------------------------------
 3. Specify your keyboard layout.
@@ -42,7 +42,7 @@ Place one of the following line in your emacs init file (~/.emacs):
 Place the following lines in your emacs init file. Make sure that the path points to your file is correct. You do not need to have the file path end in “.el”.
 
 ;; load ErgoEmacs keybinding
-(load "~/.emacs.d/ergoemacs-keybindings/ergoemacs-mode")
+(load "~/.emacs.d/ergoemacs-keybindings-5.3.3/ergoemacs-mode")
 
 ;; turn on minor mode ergoemacs-mode
 (ergoemacs-mode 1)
@@ -62,6 +62,10 @@ The command “ergoemacs-mode” toggles the minor mode.
 Byte Compile Elisp Files (Optional)
 
 If you like, you can byte-compile the elisp files. To byte compile them, call the command byte-compile-file, then the elisp file name. Once you do that, emacs will create a file with “.elc” ending, and will automatically load byte compiled file if there is one.
+
+You can byte compile the whole directory. To do so, run the following in command line console. Here's a bash example on OS X's Terminal:
+
+emacs -batch -f batch-byte-compile /Users/mary/.emacs.d/ergoemacs-keybindings-5.3.3/*.el
 
 Byte compiled files makes loading and running programs about 5 or more times faster, but for small elisp files, the speed increase is probably not noticeable.
 
