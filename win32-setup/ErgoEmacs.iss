@@ -5,7 +5,7 @@
 ; <root>
 ;   |
 ;   |- ErgoEmacs-trunk/
-;   |- emacs-23.1/
+;   |- emacs-23.2/
 ;   |- msys/
 ;   `- hunspell/
 ;
@@ -15,21 +15,21 @@
 
 [Setup]
 AppName=ErgoEmacs
-AppVerName=ErgoEmacs 1.7
+AppVerName=ErgoEmacs 1.8
 AppPublisherURL=http://ergoemacs.org/
 AppSupportURL=http://ergoemacs.org/
 AppUpdatesURL=http://ergoemacs.org/
 DefaultDirName={pf}\ErgoEmacs
 DefaultGroupName=ErgoEmacs
 AllowNoIcons=yes
-LicenseFile=..\..\emacs-23.1\COPYING
+LicenseFile=..\..\emacs-23.2\COPYING
 OutputDir=.
-OutputBaseFilename=ErgoEmacs 1.7 Setup
-SetupIconFile=..\..\emacs-23.1\etc\icons\emacs.ico
+OutputBaseFilename=ErgoEmacs 1.8 Setup
+SetupIconFile=..\..\emacs-23.2\etc\icons\emacs.ico
 ;Compression=none
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=1.7
+VersionInfoVersion=1.8
 ChangesAssociations=yes
 
 [Languages]
@@ -40,7 +40,7 @@ Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm
 Name: associate; Description: "&Associate .el files with ErgoEmacs"; GroupDescription: "File Associations:"; Flags: unchecked
 
 [Files]
-Source: "..\..\emacs-23.1\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\..\emacs-23.2\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\msys\*"; DestDir: "{app}\msys"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\hunspell\*"; DestDir: "{app}\hunspell"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\packages\*"; Excludes: "*~,#*#"; DestDir: "{app}\packages"; Flags: ignoreversion recursesubdirs createallsubdirs

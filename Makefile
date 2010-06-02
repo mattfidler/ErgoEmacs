@@ -16,14 +16,13 @@ endif
 
 RM = rm
 ELC_FILES = $(wildcard *.elc) $(wildcard */*.elc) $(wildcard */*/*.elc)
-EL_FILES = $(wildcard *.el) $(wildcard */*.el) $(wildcard */*/*.el)
 
 all:
 	@echo "Usage:"
 	@echo "  make compile"
 	@echo "    Byte-compiles all .el files with the specified emacs in EMACS variable."
 	@echo "    E.g. You can use it as:"
-	@echo "      make compile EMACS=../emacs-23.1/bin/emacs.exe"
+	@echo "      make compile EMACS=../emacs-23.2/bin/emacs.exe"
 	@echo
 	@echo "  make clean"
 	@echo "    Removes all .elc files."
@@ -38,7 +37,18 @@ all:
 # Byte-compiles all .el files
 compile:
 	-$(RM) -f $(ELC_FILES)
-	-$(EMACS) -batch -f batch-byte-compile $(EL_FILES)
+	$(EMACS) -L packages \
+		 -L packages/yasnippet-0.6.1c \
+		 -batch -f batch-byte-compile ergoemacs/*.el
+	$(EMACS) -batch -f batch-byte-compile ergoemacs/ergoemacs-keybindings/*.el
+	$(EMACS) -batch -f batch-byte-compile packages/*.el
+	$(EMACS) -L packages/dictionary-1.8.7 -batch -f batch-byte-compile packages/dictionary-1.8.7/*.el
+	$(EMACS) -L packages/haskell-mode-2.4 -batch -f batch-byte-compile packages/haskell-mode-2.4/*.el
+	$(EMACS) -batch -f batch-byte-compile packages/pov-mode-3.2/*.el
+	$(EMACS) -batch -f batch-byte-compile packages/rw-hunspell/*.el
+	-$(EMACS) -L packages/tuareg-mode-1.45.6 -batch -f batch-byte-compile packages/tuareg-mode-1.45.6/*.el
+	$(EMACS) -batch -f batch-byte-compile packages/yasnippet-0.6.1c/*.el
+	$(EMACS) -batch -f batch-byte-compile site-lisp/*.el
 
 # Removes all .elc files
 clean:
