@@ -28,7 +28,7 @@
 ;;  in init_clean_menus.el)
 (require 'recentf)
 (setq recentf-menu-before "Close")
-(setq recentf-save-file "~/.emacs.d/.recentf")
+(setq recentf-save-file (concat user-emacs-directory ".recentf"))
 (recentf-mode 1)
 
 ;; Initialize emacs server if it is not already running
