@@ -1,17 +1,5 @@
 ; -*- coding: utf-8 -*-
 
-;; Load unicode data; used by describe-char and what-cursor-position for showing full unicode info
-;; commented out because emacs 23 has this info, or vast majority of the info contained in this file.
-
-;; (if (string= (substring-no-properties emacs-version 0 2) "23" )
-;;     nil
-;;   (setq describe-char-unicodedata-file
-;;       (concat (file-name-directory
-;;                (or load-file-name buffer-file-name)) "UnicodeData.txt" ))
-;;   )
-
-;; ----------------------------------------------------------------------------
-
 ;; UTF-8 as default encoding
 (set-language-environment "UTF-8")
 
