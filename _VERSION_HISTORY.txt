@@ -38,7 +38,7 @@ http://code.google.com/p/ergoemacs/source/detail?r=332
 • Added a new mode for AutoHotKey. The new mode xahk-mode replaces the previous ahk-mode.
 http://code.google.com/p/ergoemacs/issues/detail?id=24#c1
 
-Most modes with unintuitive names now has a alias. For example, calling js-mode loads the expresso-mode designed for editing javascript. bbcode-mode calls xbbcode-mode, lsl-mode calls xlsl-mode, ahk-mode calls xahk-mode, etc.
+Most modes with unintuitive names now have a alias. For example, calling js-mode loads the expresso-mode designed for editing javascript. bbcode-mode calls xbbcode-mode, lsl-mode calls xlsl-mode, ahk-mode calls xahk-mode, etc.
 
 ** Menu Changes
 

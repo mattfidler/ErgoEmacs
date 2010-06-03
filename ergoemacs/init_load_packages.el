@@ -2,20 +2,15 @@
 
 ;;;; language modes
 
-;; php mode
+;;; php mode
 (autoload 'php-mode "php-mode" "php mode by Aaron S Hawley." t)
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
-;; javascript. (IDE-like by Steve Yegge. Features a js syntax parser)
-(autoload 'js2-mode "js2-20080616a" "IDE-like Javascript mode; features a on-the-fly syntax parser." t)
+;;; javascript. (IDE-like by Steve Yegge. Features a js syntax parser)
+(autoload 'js2-mode "js2-20090723b" "IDE-like Javascript mode; features a on-the-fly syntax parser." t)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
-;; javascript mode (more standard js mode.)
-(autoload 'espresso-mode "espresso" "Javascript mode" t)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . espresso-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . espresso-mode))
-
-;; visual-basic-mode
+;;; visual-basic-mode
 (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
 (add-to-list 'auto-mode-alist '("\\.vbs\\'" . visual-basic-mode)) ;VBscript
 (add-to-list 'auto-mode-alist '("\\.vb\\'" . visual-basic-mode))  ;visual basic .NET file
@@ -23,54 +18,55 @@
 (add-to-list 'auto-mode-alist '("\\.frm\\'" . visual-basic-mode)) ;basic language source
 (add-to-list 'auto-mode-alist '("\\.cls\\'" . visual-basic-mode)) ;C++ class definition file
 
-;; for editing Windows's cmd.exe's script; batch, “.bat” file mode.
+;;; for editing Windows's cmd.exe's script; batch, “.bat” file mode.
 (autoload 'dos-mode "dos" "A mode for editing Windows cmd.exe batch scripts." t)
 (add-to-list 'auto-mode-alist '("\\.bat\\'" . dos-mode))
 (add-to-list 'auto-mode-alist '("\\.cmd\\'" . dos-mode))
 
-;; powershell-mode. http://en.wikipedia.org/wiki/PowerShell
+;;; powershell-mode. http://en.wikipedia.org/wiki/PowerShell
 (autoload 'powershell-mode "powershell-mode" "A editing mode for Microsoft PowerShell." t)
 (add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode)) ; PowerShell script
 
-;; powershell interactive shell
+;;; powershell interactive shell
 (autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
 
-;; mode for lua language
+;;; mode for lua language
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode)) ; lua-mode
 
-;; xlsl-mode. http://en.wikipedia.org/wiki/Linden_Scripting_Language
+;;; xlsl-mode. http://en.wikipedia.org/wiki/Linden_Scripting_Language
 (autoload 'xlsl-mode "xlsl-mode" "Load xlsl-mode for editing Linden Scripting Lang." t)
 (add-to-list 'auto-mode-alist '("\\.lsl\\'" . xlsl-mode))
 
-;; AutoHotKey (ahk) mode (a keyboard macro for Windows)
+;;; AutoHotKey (ahk) mode (a keyboard macro for Windows)
 (autoload 'xahk-mode "xahk-mode" "AutoHotKey mode" t)
 (add-to-list 'auto-mode-alist '("\\.ahk\\'" . xahk-mode))
 
-;; POV-Ray (3D rendering engine) http://en.wikipedia.org/wiki/POV-Ray
+;;; POV-Ray (3D rendering engine) http://en.wikipedia.org/wiki/POV-Ray
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/pov-mode-3.2/"))
 (autoload 'pov-mode "pov-mode" "Major mode for working with POV-Ray code." t)
 (add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
-;; mode for Haskell lang. http://en.wikipedia.org/wiki/Haskell_(programming_language)
+;;; mode for Haskell lang. http://en.wikipedia.org/wiki/Haskell_(programming_language)
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.4/"))
-(load "haskell-mode-2.4/haskell-site-file")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.7.0/"))
+(load "haskell-mode-2.7.0/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
-;; tuareg mode for ML/Caml/OCaml lang
+;;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.6/")
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.7/")
              )
 (add-to-list 'auto-mode-alist '("\\.ml\\w?" . tuareg-mode))
 (autoload 'tuareg-mode "tuareg" "Major mode for editing ML/Caml/OCaml code." t)
 (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
 
-;; xbbcode-mode for editing BBCode
+;;; xbbcode-mode for editing BBCode
 (add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))
 (autoload 'xbbcode-mode "xbbcode-mode" "Load xbbcode-mode for editing BBCode." t)
 
@@ -162,29 +158,3 @@
 (autoload 'dictionary-popup-matching-words "dictionary" "Display entries matching the word at the point" t)
 (autoload 'dictionary-tooltip-mode "dictionary" "Display tooltips for the current word" t)
 (autoload 'global-dictionary-tooltip-mode "dictionary" "Enable/disable dictionary-tooltip-mode for all buffers" t)
-
-
-;; some aliases.
-;; this section probably needs to be moved into a file by itself.
-;; or in the file for settings
-
-;; the reason for these aliases is that, often, elisp package names is
-;; not intuitive, and should not be the lang name neither. For
-;; example, for javascript, those familiar with emacs would intuitive
-;; type M-x javascript-mode or M-x js-mode. However, the 2 most robust
-;; js packages are called by M-x espresso-mode and M-x
-;; js2-mode. Without some insider knowledge, it is difficult to know
-;; what function user needs to call for particular major mode he wants.
-;; (the mode menu in ErgoEmacs helps, but this is not in GNU Emacs 23)
-
-;; also, due to elisp not having name space, or a enforced package/module/lib naming system etc, package names shouldn't be just the language name. That is, a particular javascript mode really shouldn't be named javascript-mode, because, different people's packages for js will all compete for that name, and prevents the flexibility of testing or using different versions of major mode for that language. Given the way things are, one ideal fix is to always use a alias to point to the mode where ErgoEmacs decides to be the default for that lang. For example, ErgoEmacs bundles 2 major modes for javascript, js2-mode and espresso-mode, and suppose we decided espresso-mode should be the default, then we can define a alias js-mode to point to espresso-mode. This way, user can intuitively load the package for js, but can also load a different one if he has knowledege about which modes exists for the lang he wants.
-
-(defalias 'ahk-mode 'xahk-mode)
-(defalias 'bbcode-mode 'xbbcode-mode)
-(defalias 'cmd-mode 'dos-mode)
-(defalias 'js-mode 'espresso-mode)
-(defalias 'lsl-mode 'xlsl-mode)
-(defalias 'ocaml-mode 'tuareg-mode)
-
-(defalias 'spell-check 'speck-mode)
-

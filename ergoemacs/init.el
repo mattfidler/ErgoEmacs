@@ -16,6 +16,7 @@
 (load "init_version")
 (load "init_functions")
 (load "init_settings")
+(load "init_aliases.el")
 
 ;; ErgoEmacs shortcuts and menus
 (load "init_keybinding")
