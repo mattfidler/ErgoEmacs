@@ -43,9 +43,10 @@
 ;; meanings.
 
 ;; Some tech detail: set the desktop session file at
-;; “~/.emacs.d/.emacs.desktop”.  This file is our desktop file. It
-;; will be auto created and or over-written.  if a emacs expert has
-;; other desktop session files elsewhere, he can still use or manage those.
+;; ‹user-emacs-directory› (default is “~/.emacs.d/.emacs.desktop”).  This file
+;; is our desktop file. It will be auto created and or over-written.
+;; if a emacs expert has other desktop session files elsewhere, he can
+;; still use or manage those.
 
 (require 'desktop)
 
@@ -66,7 +67,7 @@
     (setq desktop-load-locked-desktop t)
 
     ;; Set the location to save/load default desktop
-    (setq desktop-dirname "~/.emacs.d/")
+    (setq desktop-dirname user-emacs-directory)
 
     ;; Make sure that even if emacs or OS crashed, emacs
     ;; still have last opened files.
@@ -76,7 +77,7 @@
                                 (lambda ()
                                   ;; Reset desktop modification time so the user is not bothered
                                   (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
-                                  (desktop-save "~/.emacs.d/")))))
+                                  (desktop-save user-emacs-directory)))))
 
     ;; Read default desktop
     (if (file-exists-p (concat desktop-dirname desktop-base-file-name))
