@@ -6,16 +6,25 @@ INSTALLATION INSTRUCTIONS
 1. Unzip the folder.
 
 If you downloaded a file named “ergoemacs-keybindings-5.3.3.zip”, unzip it.
+
+On Windows, you can right click the file name and choose “Extract All...”.
+
+On Mac OS X, you can double click to unzip.
+
+On Linux (and Mac OS X), you can type “unzip ergoemacs-keybindings-5.3.3.zip” on a command console.
+
 Now you should have a folder named “ergoemacs-keybindings-5.3.3”.
 
 ------------------------------
-2. Place the folder somewhere in your home directory. For examples:
+2. Place the folder in a emacs directory. For examples:
 
 On Windows:
 C:\Users\mary\.emacs.d\ergoemacs-keybindings-5.3.3
 
 On Mac OS X or Linux:
 /Users/mary/.emacs.d/ergoemacs-keybindings-5.3.3
+
+If the folder “.emacs.d” doesn't exist, you can go ahead and create it.
 
 ------------------------------
 3. Specify your keyboard layout.
@@ -52,7 +61,7 @@ These lines should be placed below your keyboard layout in step 3.
 ------------------------------
 5. Restart emacs.
 
-Now, your will be using the new keybinding. The shortcut for emacs's “M-x” is now “Alt+a”.
+Now, your will be using the new keybinding. The keyboard shortcut for emacs's “M-x” is now “Alt+a”.
 
 To turn off the mode, type “Alt+a” then “ergoemacs-mode”. After that, your keybinding is the same as GNU Emacs's default keybinding.
 
