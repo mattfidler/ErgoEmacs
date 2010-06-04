@@ -6,6 +6,8 @@
 ;; ----------------------------------------------------------------------------
 
 ;; For XML files, use nxml-mode instead of sgml-mode
+;; this is default in emacs 23.2, but not 23.1. We still support 23.1
+;; better code would be first checking if it exists
 (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
 ;; For htmlize.el.
