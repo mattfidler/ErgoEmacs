@@ -2,7 +2,7 @@
 
 ;; Most of the code in this file is a copy from GNU Emacs startup.el
 
-(defconst ergoemacs-version "1.8")
+(defconst ergoemacs-version "1.8.1")
 (defconst ergoemacs-url "http://ergoemacs.org/")
 (defconst ergoemacs-url-authors "http://code.google.com/p/ergoemacs/wiki/AuthorsAndAcknowledgement")
 (defconst ergoemacs-url-contrib "http://code.google.com/p/ergoemacs/wiki/HowToContribute")

@@ -15,7 +15,7 @@
 
 [Setup]
 AppName=ErgoEmacs
-AppVerName=ErgoEmacs 1.8
+AppVerName=ErgoEmacs 1.8.1
 AppPublisherURL=http://ergoemacs.org/
 AppSupportURL=http://ergoemacs.org/
 AppUpdatesURL=http://ergoemacs.org/
@@ -24,12 +24,12 @@ DefaultGroupName=ErgoEmacs
 AllowNoIcons=yes
 LicenseFile=..\..\emacs-23.2\COPYING
 OutputDir=.
-OutputBaseFilename=ErgoEmacs 1.8 Setup
+OutputBaseFilename=ErgoEmacs 1.8.1 Setup
 SetupIconFile=..\..\emacs-23.2\etc\icons\emacs.ico
 ;Compression=none
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=1.8
+VersionInfoVersion=1.8.1
 ChangesAssociations=yes
 
 [Languages]
