@@ -29,6 +29,7 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.  */
 #include <malloc.h>
 #include <stdio.h>
 #include <shlobj.h>
+#include "string_utils.h"
 
 static const struct {
   DWORD kbdcode;
@@ -142,8 +143,7 @@ static void set_home_dir ();
 static int run_client (LPSTR cmdline);
 static int run_server (LPSTR cmdline);
 static int exe_cmdline (LPSTR cmdline, int wait_for_child, DWORD priority_class);
-static void prepend_path (char* buf, char* path_var, int path_max, 
-			  const char* emacs_dir, const char* subdir);
+static void prepend_path (String* s, const char* emacs_dir, const char* subdir);
 
 int WINAPI
 WinMain (HINSTANCE hSelf, HINSTANCE hPrev, LPSTR cmdline, int nShow)
@@ -187,15 +187,15 @@ static int get_emacs_dir()
 
 static void set_home_dir ()
 {
-  char buf[MAX_PATH];
+  char home[MAX_PATH];
 
   /* If HOME is not set, set it as "C:\Documents and Settings\username" */
-  if (!GetEnvironmentVariable ("HOME", buf, MAX_PATH) || !*buf)
+  if (!GetEnvironmentVariable ("HOME", home, MAX_PATH) || !*home)
     {
-      HRESULT hr = SHGetFolderPath (NULL, CSIDL_PROFILE, NULL, 0, buf);
+      HRESULT hr = SHGetFolderPath (NULL, CSIDL_PROFILE, NULL, 0, home);
       if (SUCCEEDED (hr))
 	{
-	  SetEnvironmentVariable ("HOME", buf);
+	  SetEnvironmentVariable ("HOME", home);
 	}
     }
 }
@@ -204,25 +204,26 @@ static void set_home_dir ()
    file specified in the command line.  */
 static int run_client (LPSTR cmdline)
 {
+  char home[MAX_PATH];
   DWORD ret_code = 0;
-  char *new_cmdline;
-
-  new_cmdline = alloca (MAX_PATH*2 + 1024 + strlen (cmdline));
+  String *new_cmdline = string_create ("");
 
   /* Quote executable name in case of spaces in the path. */
-  *new_cmdline = '"';
-  strcpy (new_cmdline + 1, emacs_dir);
-  strcat (new_cmdline, "\\bin\\emacsclient.exe\" ");
-  strcat (new_cmdline, " ");
-  strcat (new_cmdline, " --no-wait ");
-  strcat (new_cmdline, " --server-file \"");
-  GetEnvironmentVariable ("HOME", new_cmdline + strlen (new_cmdline), MAX_PATH);
-  strcat (new_cmdline, "\\.emacs.d\\server\\server\" ");
-  strcat (new_cmdline, cmdline);
+  string_append (new_cmdline, "\"");
+  string_append (new_cmdline, emacs_dir);
+  string_append (new_cmdline, "\\bin\\emacsclient.exe\" ");
 
-  ret_code = exe_cmdline (new_cmdline, TRUE, NORMAL_PRIORITY_CLASS);
+  string_append (new_cmdline, " ");
+  string_append (new_cmdline, " --no-wait ");
+  string_append (new_cmdline, " --server-file \"");
+  GetEnvironmentVariable ("HOME", home, MAX_PATH);
+  string_append (new_cmdline, home);
+  string_append (new_cmdline, "\\.emacs.d\\server\\server\" ");
+  string_append (new_cmdline, cmdline);
 
-  free (new_cmdline);
+  ret_code = exe_cmdline (new_cmdline->text, TRUE, NORMAL_PRIORITY_CLASS);
+
+  string_destroy (new_cmdline);
   return ret_code;
 }
 
@@ -231,19 +232,17 @@ static int run_server (LPSTR cmdline)
 {
   int wait_for_child = FALSE;
   DWORD priority_class = NORMAL_PRIORITY_CLASS;
-  char *new_cmdline;
+  String *new_cmdline = string_create ("");
   int ret_code;
   char *p;
 
-  new_cmdline = alloca (MAX_PATH + 1024 + strlen (cmdline));
-
   /* Quote executable name in case of spaces in the path. */
-  *new_cmdline = '"';
-  strcpy (new_cmdline + 1, emacs_dir);
-  strcat (new_cmdline, "\\bin\\emacs.exe\" ");
+  string_append (new_cmdline, "\"");
+  string_append (new_cmdline, emacs_dir);
+  string_append (new_cmdline, "\\bin\\emacs.exe\" ");
 
   /* Put ErgoEmacs as the window caption.  */
-  strcat (new_cmdline, " --title ErgoEmacs");
+  string_append (new_cmdline, " --title ErgoEmacs");
 
   /* Append original arguments if any; first look for arguments we
      recognise (-wait, -high, and -low), and apply them ourselves.  */
@@ -271,30 +270,42 @@ static int run_server (LPSTR cmdline)
     }
 
   /* Add the original arguments specified by the user (maybe a file to open).  */
-  strcat (new_cmdline, " ");
-  strcat (new_cmdline, cmdline);
+  string_append (new_cmdline, " ");
+  string_append (new_cmdline, cmdline);
 
-  /* ErgoEmacs: Setup enviroment variables.  */
+  /* ErgoEmacs: Setup PATH enviroment variable.  */
   {
-    DWORD nchars = 1024 * MAX_PATH;
-    char *buf = alloca (nchars);
-    char *path_var = alloca (nchars);
+    int required_length = 256;
+    String *path_var = string_create ("");
 
     /* Get PATH enviroment variable */
-    GetEnvironmentVariable ("PATH", path_var, nchars);
+    do
+      {
+	string_reserve (path_var, required_length);
 
+	required_length = GetEnvironmentVariable ("PATH", path_var->text, required_length);
+      } while (required_length >= path_var->size);
+    path_var->length = strlen(path_var->text);
+      
     /* Add to PATH:
        "C:\Program Files\ErgoEmacs\bin"
        "C:\Program Files\ErgoEmacs\msys\bin"
        "C:\Program Files\ErgoEmacs\hunspell"
     */
-    prepend_path (buf, path_var, nchars, emacs_dir, "bin");
-    prepend_path (buf, path_var, nchars, emacs_dir, "msys\\bin");
-    prepend_path (buf, path_var, nchars, emacs_dir, "hunspell");
-    SetEnvironmentVariable ("PATH", path_var);
+    prepend_path (path_var, emacs_dir, "bin");
+    prepend_path (path_var, emacs_dir, "msys\\bin");
+    prepend_path (path_var, emacs_dir, "hunspell");
+    SetEnvironmentVariable ("PATH", path_var->text);
+
+    string_destroy (path_var);
+  }
+
+  /* ErgoEmacs: Setup keyboard layout.  */
+  {
+    char buf[256];
 
     /* If ERGOEMACS_KEYBOARD_LAYOUT is not set.  */
-    if (!GetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", buf, nchars) || !*buf)
+    if (!GetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", buf, sizeof (buf)) || !*buf)
       {
 	const char* ergoemacs_layout = "";
 	DWORD kbdcode;
@@ -315,9 +326,6 @@ static int run_server (LPSTR cmdline)
 	SetEnvironmentVariable ("WIN32_KEYBOARD_LAYOUT", buf);
 	SetEnvironmentVariable ("ERGOEMACS_KEYBOARD_LAYOUT", ergoemacs_layout);
       }
-
-    free (buf);
-    free (path_var);
   }
 
   /* Set emacs_dir variable.  */
@@ -326,9 +334,9 @@ static int run_server (LPSTR cmdline)
       *p = '/';
   SetEnvironmentVariable ("emacs_dir", emacs_dir);
 
-  ret_code = exe_cmdline (new_cmdline, wait_for_child, priority_class);
+  ret_code = exe_cmdline (new_cmdline->text, wait_for_child, priority_class);
 
-  free (new_cmdline);
+  string_destroy (new_cmdline);
   return ret_code;
 }
 
@@ -370,9 +378,10 @@ static int exe_cmdline (LPSTR cmdline, int wait_for_child, DWORD priority_class)
   return (int) ret_code;
 }
 
-static void prepend_path (char* buf, char* path_var, int path_max, 
-			  const char* emacs_dir, const char* subdir)
+static void prepend_path (String* s, const char* emacs_dir, const char* subdir)
 {
-  strcpy (buf, path_var);
-  snprintf (path_var, path_max, "%s\\%s;%s", emacs_dir, subdir, buf);
+  string_prepend (s, ";");
+  string_prepend (s, subdir);
+  string_prepend (s, "\\");
+  string_prepend (s, emacs_dir);
 }
