@@ -86,7 +86,7 @@ Emacs Lisp • emacs-lisp-mode
 HTML • html-mode
 Haskell • haskell-mode
 Java • java-mode
-Javascript • espresso-mode
+Javascript • js-mode
 Javascript • js2-mode
 LaTeX • latex-mode
 Linden Scripting Language • xlsl-mode
