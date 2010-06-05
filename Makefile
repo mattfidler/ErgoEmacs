@@ -46,7 +46,7 @@ compile:
 	$(EMACS) -L packages/haskell-mode-2.7.0 -batch -f batch-byte-compile packages/haskell-mode-2.7.0/*.el
 	$(EMACS) -batch -f batch-byte-compile packages/pov-mode-3.2/*.el
 	$(EMACS) -batch -f batch-byte-compile packages/rw-hunspell/*.el
-	-$(EMACS) -L packages/tuareg-mode-1.45.7 -batch -f batch-byte-compile packages/tuareg-mode-1.45.7/*.el
+	$(EMACS) -L packages/tuareg-mode-1.45.7 -batch -f batch-byte-compile packages/tuareg-mode-1.45.7/*.el
 	$(EMACS) -batch -f batch-byte-compile packages/yasnippet-0.6.1c/*.el
 	$(EMACS) -batch -f batch-byte-compile site-lisp/*.el
 
