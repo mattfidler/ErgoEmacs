@@ -486,7 +486,13 @@ will change."
 
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
-        (ergoemacs-unset-redundant-global-keys)
+	(progn
+	  (ergoemacs-unset-redundant-global-keys)
+
+	  ;; alt+n is the new "Quit" in query-replace-map
+	  (ergoemacs-unset-global-key query-replace-map "\e")
+	  (define-key query-replace-map ergoemacs-keyboard-quit-key 'exit-prefix))
+      ;; if ergoemacs was disabled: restore original keys
       (ergoemacs-restore-global-keys))
 
     ;; install the mode-hooks
