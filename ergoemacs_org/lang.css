@@ -1,0 +1,120 @@
+/* XahLee.org  */
+@import "lbasic.css";
+
+span.code{font-family:monospace;color:#00008d}
+
+span.ref{font-family:monospace;background-color:#e8ffff;font-size:small}
+span.ref:before{content:"※ "}
+
+span.kbd{}
+span.key{border:solid 1px #c2c2c2;background-color:#f0f0f0;padding-left:.3ex;padding-right:.3ex}
+
+pre.ahk,pre.bash,pre.bashshell,pre.basic,pre.bbcode,pre.c,pre.cmd,pre.code,pre.css,pre.elisp,pre.haskell,pre.html,pre.java,pre.javascript,pre.lsl,pre.math,pre.mma,pre.ocaml,pre.perl,pre.php,pre.povray,pre.powershell,pre.python,pre.ruby,pre.scheme,pre.vbs,pre.visualbasic,pre.xml{background-color:#f0fff0;padding:1ex;line-height:120%;width:90ex;border:solid thin}
+
+pre.code{border-color:#bebebe}
+pre.math{background-color:#f9f9e9}
+
+pre.bash{border-color:#9400d3}
+pre.bashshell{border-color:#9400d3}
+pre.bbcode{border-color:#c71585}
+pre.c{border-color:#454545}
+pre.cmd{border-color:#8b8970}
+pre.css{border-color:#ff8247}
+pre.elisp{border-color:#b03060}
+pre.haskell{border-color:#00b2ee}
+pre.html{border-color:#00bfff}
+pre.java{border-color:#a020f0}
+pre.javascript{border-color:#90ee90}
+pre.lsl{border-color:#1e90ff}
+pre.mma{border-color:#cd0000}
+pre.ocaml{border-color:#6b8e23}
+pre.perl{border-color:#ffc0cb}
+pre.php{border-color:#2e8b57}
+pre.povray{border-color:#ff00ff}
+pre.powershell{border-color:#191970}
+pre.python{border-color:#0000ff}
+pre.ruby{border-color:#cd2626}
+pre.scheme{border-color:#ff8c00}
+pre.vbs{border-color:#778899}
+pre.visualbasic{border-color:#778899}
+pre.xml{border-color:#ff0000}
+
+/* generic for any lang */
+pre > span.comment{color:#b22222}
+pre > span.comment-delimiter{color:#b22222}
+pre > span.string{color:#bc8f8f}
+pre > span.function-name{color:#0000ff}
+pre > span.keyword{color:#a020f0}
+pre > span.type{color:#228b22}
+pre > span.variable-name{color:#b8860b}
+pre > span.constant{color:#5f9ea0}
+pre > span.preprocessor{color:#da70d6}
+pre > span.builtin{color:#da70d6}
+
+pre.perl span.cperl-array{color:#0000ff;background-color:#eeeed1;font-weight:bold}
+pre.perl span.cperl-hash{color:#ff0000;background-color:#eeeed1;font-weight:bold;font-style:italic}
+pre.perl span.cperl-nonoverridable{color:#66cd00}
+pre.perl span.negation-char{}
+pre.perl span.underline{text-decoration:underline}
+
+pre.php span.default{color:#000000;background-color:#f0fff0}
+
+pre.elisp span.doc{color:#bc8f8f}
+pre.elisp span.negation-char{}
+pre.elisp span.regexp-grouping-backslash{font-weight:bold}
+pre.elisp span.regexp-grouping-construct{font-weight:bold}
+pre.elisp span.warning{color:#ff0000;font-weight:bold}
+
+pre.ocaml span.tuareg-font-lock-governing{color:#a020f0}
+pre.ocaml span.tuareg-font-lock-operator{color:#006b00}
+
+pre.xml span.sgml-namespace{color:#da70d6}
+
+pre.xml span.nxml-attribute-colon{}
+pre.xml span.nxml-attribute-local-name{color:#a0522d}
+pre.xml span.nxml-attribute-prefix{color:#7a378b}
+pre.xml span.nxml-attribute-value{color:#8b2252}
+pre.xml span.nxml-attribute-value-delimiter{color:#8b2252}
+pre.xml span.nxml-element-local-name{color:#0000ff}
+pre.xml span.nxml-entity-ref-delimiter{color:#008b8b}
+pre.xml span.nxml-entity-ref-name{color:#008b8b}
+pre.xml span.nxml-namespace-attribute-value{color:#8b2252}
+pre.xml span.nxml-namespace-attribute-value-delimiter{color:#8b2252}
+pre.xml span.nxml-namespace-attribute-xmlns{color:#7a378b}
+pre.xml span.nxml-processing-instruction-delimiter{}
+pre.xml span.nxml-processing-instruction-target{color:#a020f0}
+pre.xml span.nxml-tag-delimiter{}
+pre.xml span.nxml-tag-slash{}
+pre.xml span.nxml-text{}
+
+
+pre.html span.bold{font-weight:bold}
+pre.html span.underline{text-decoration:underline}
+
+pre.css span.css-property{color:#b8860b}
+pre.css span.css-selector{color:#0000ff}
+
+pre.java span.doc{color:#b22222}
+
+pre.povray span.preprocessor{color:#da70d6}
+
+pre.haskell span.warning{color:#ff0000;font-weight:bold}
+
+pre.ahk span.xahk-mode-command-name{color: #0000ff}
+
+a.cabri,a.gcf,a.mma,a.ggb,a.gsp,a.pdf,a.qtmov{display:inline-block;background-position:left center !important}
+a.cabri{background:url(ics/cabri.gif) no-repeat left center;padding-left:16px}
+a.gcf{background:url(ics/gcf.gif) no-repeat left center;padding-left:14px}
+a.ggb{background:url(ics/ggb.gif) no-repeat left center;padding-left:34px;height:32px;line-height:32px}
+a.gsp{background:url(ics/gsp.gif) no-repeat left center;padding-left:16px}
+a.mma{background:url(ics/mma.gif) no-repeat left center;padding-left:16px}
+a.pdf{background:url(ics/pdf-s.gif) no-repeat left center;padding-left:34px;height:32px;line-height:32px}
+a.qtmov{background:url(ics/qt.gif) no-repeat left center;padding-left:15px}
+
+a.jv{background-color:#e6e6fa}
+
+span.xahnote{color:#3cb371}
+span.xahnote:before{content:"〔XahNote: "}
+span.xahnote:after{content:"〕"}
+
+span.jsbtn{padding:.5ex;margin:.5ex;font-size:2ex;background-color:yellow;border:solid thin gray}
