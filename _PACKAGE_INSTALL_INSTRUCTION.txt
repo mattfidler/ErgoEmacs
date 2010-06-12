@@ -1,41 +1,49 @@
--*- coding: utf-8 -*-
+-*- coding: utf-8; mode: org -*-
+
+# when viewing this file in emacs, press Shift+Tab 3 times to expand all headings.
+
+* Introduction
 
 This is the installation instruction for the ErgoEmacs Package.
 
-The ErgoEmacs Package is a set of elisp files that can be installed on any platform running emacs. (e.g. Mac OS X, Linux, Windows) Once installed, you'll have a enhanced version of emacs, with ergonomic keybindings, enhance user interface, and many elisp packages prepared and loaded for you.
+The ErgoEmacs Package is a set of elisp files that can be installed on any platform running emacs. (Mac OS X, Linux, Windows) Once installed, you'll have a enhanced version of emacs, with ergonomic keybindings, enhance user interface, and many elisp packages prepared and loaded for you.
 
 The home page of ErgoEmacs is at http://ErgoEmacs.org/
 
---------------------------------------------------
-REQUIREMENT
+* Requirement
 
-You need to have working emacs already installed on your system.
-(For Mac, we recommend Carbon Emacs at http://homepage.mac.com/zenitani/emacs-e.html)
+You need to have a working emacs already installed.
 
-Your emacs should be version 23.1 or later. (To find out, type in shell: “emacs --version”, or in emacs type “M-x version”.)
+Your emacs should be version 23.2 or later. (To find out what is the version of your emacs, type in emacs “M-x version”.)
 
---------------------------------------------------
-INSTALLATION
+** Mac
 
-1. Unzip the package.
+For Mac, you can download emacs 23.x at
+http://emacsformacosx.com/
 
- (if you have not done so already.) 
+If you are using Carbon Emacs ( http://homepage.mac.com/zenitani/emacs-e.html ), as of 2010-06-12, it is not based on emacs 23.2.
+
+If you are using Aquamacs Emacs ( http://aquamacs.org/ ), the latest version on the website should work.
+
+* Installation
+
+** 1. Unzip the package.
  Example:
 
- unzip ergoemacs_1.6.2.zip
+ unzip ergoemacs_1.7.1.zip
 
  (The version number is just a example. Yours may be higher.)
 
-2. Put the package in your emacs library dir.
+** 2. Put the package in your emacs library dir.
 
- Create a directory “~/my_emacs_lib/”
- (this can be any dir you use for personal emacs libraries)
+ Move ergoemacs folder into the directory at “~/.emacs.d/”
 
- Move ergoemacs dir into the “~/my_emacs_lib/” directory.
  So, you should have
- “~/my_emacs_lib/ergoemacs_1.6.2/”
+ “~/.emacs.d/ergoemacs_1.7.1/”
 
-3. In your “~/.emacs”, put the following lines:
+ If the directory “~/.emacs.d/” does not exist, creat it.
+
+** 3. In your “~/.emacs”, put the following lines:
 
 ; Optional
 ; (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; for Dvorak keyboard
@@ -47,27 +55,18 @@ INSTALLATION
 ; (setq mac-command-modifier 'meta)
 ; (setq mac-option-modifier 'hyper)
 
-(load-file "~/my_emacs_lib/ergoemacs_1.6.2/site-lisp/site-start.el")
+(load-file "~/.emacs.d/ergoemacs_1.7.1/site-lisp/site-start.el")
 
---------------------------------------------------
-USING DIFFERENT KEYBOARD LAYOUT
+* Using Different Keyboard Layout (optional)
 
-If you are using Dvorak keyboard layout, put the line:
+Place ONE of the following line in your emacs init file (~/.emacs):
 
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv")
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us") ; US layout
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; US Dvorak layout
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "gb") ; UK layout
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "gb-dv") ; UK Dvorak layout
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "sp") ; Spanish (Spain) (aka “Spanish (International sort)”)
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "it") ; Italian layout
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "colemak") ; Colemak layout
 
-before you load the site-start.el file.
-
-You can also set a environment variable in your operating system.
-
-The variable name should be: “ERGOEMACS_KEYBOARD_LAYOUT”
-
-The value can be any one of:
-
- Value        Meaning
---------------------------
-  us         US English QWERTY keyboard layout
-  dv         US-Dvorak keyboard layout
-  sp         Spanish keyboard layout
-  it         Italian keyboard layout
-  colemak    Ergonomic Colemak keyboard layout
+It should be placed before you load the site-start.el file.
