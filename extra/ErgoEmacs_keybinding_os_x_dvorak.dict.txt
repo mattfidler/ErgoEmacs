@@ -1,0 +1,56 @@
+/* 
+date: 2010-06-15
+version: 1.0
+Author: Xah Lee
+Description: Mac OS X keybinding file for the ErgoEmacs keybinding for Dvorak layout.
+
+• How To Create Keybinding In Mac OS X
+  http://xahlee.org/emacs/osx_keybinding.html
+
+• ErgoEmacs Keybinding
+  http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
+
+Note: due to some limitations of the OS X keybinding system,
+THE FOLLOWING DOES NOT WORK.
+
+• Opt+n for move cursor right
+• Opt+e for deleting a char to the left
+• Opt+u for deleting a char to the right
+
+*/
+
+{
+    "~c" = "moveUp:";
+    "~t" = "moveDown:";
+    "~h" = "moveLeft:";
+    "~n" = "moveRight:";
+
+    "~r" = "moveWordRight:";
+    "~g" = "moveWordLeft:";
+    "~d" = "moveToBeginningOfLine:";
+    "~D" = "moveToEndOfLine:";
+
+    "~C" = "pageUp:";
+    "~T" = "pageDown:";
+
+    "~G" = "moveToBeginningOfParagraph:";
+    "~R" = "moveToEndOfParagraph:";
+
+    "~H" = "moveToBeginningOfDocument:";
+    "~N" = "moveToEndOfDocument:";
+
+    "~e" = "deleteBackward:";
+    "~u" = "delete:";
+    "~." = "deleteWordBackward:";
+    "~p" = "deleteWordForward:";
+
+    "~:" = "redo:";
+    "~;" = "undo:";
+    "~q" = "cut:";
+    "~Q" = ("selectAll:", "cut:");
+    "~j" = "copy:";
+    "~J" = ("selectAll:", "copy:");
+    "~k" = "paste:";
+
+    "~8" = "selectWord:";
+}
