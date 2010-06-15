@@ -40,7 +40,7 @@ THE FOLLOWING DOES NOT WORK.
     "~N" = "moveToEndOfDocument:";
 
     "~e" = "deleteBackward:";
-    "~u" = "delete:";
+    "~u" = "deleteForward:";
     "~." = "deleteWordBackward:";
     "~p" = "deleteWordForward:";
 
