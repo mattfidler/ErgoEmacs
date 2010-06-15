@@ -16,6 +16,11 @@ thumb.
 
 Now, launch or re-launch any Cocoa application, such as TextEdit. The app should now use ErgoEmacs keybinding.
 
+If you are using emacs, you might want to put the following lines in your “.emacs”:
+(setq mac-control-modifier 'meta)
+(setq mac-command-modifier 'control)
+These lines works for Cocoa emacs, may not work for Carbon Emacs.
+
 Some references:
 
 • How To Create Keybinding In Mac OS X
