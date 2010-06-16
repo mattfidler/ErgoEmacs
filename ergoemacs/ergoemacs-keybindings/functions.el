@@ -63,12 +63,17 @@ If narrow-to-region is in effect, then cut that region only."
 
 (defun select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
-Delimiters are paired characters: ()[]<>«»“”‘’「」【】, including \"\"."
+Delimiters are paired characters:
+ ()[]{}<>«»‹›“”〖〗【】「」『』〈〉《》〔〕
+
+For practical purposes, it also includes double straight quote \",
+but except single quote matching pairs ‘’, because that is often
+used as apostrophy."
  (interactive)
  (let (b1 b2)
-   (skip-chars-backward "^<>(“{[「«【\"‘")
+   (skip-chars-backward "^([{<“「『‹«〈《〔【〖\"")
    (setq b1 (point))
-   (skip-chars-forward "^<>)”}]」】»\"’")
+   (skip-chars-forward "^)]}>”」』›»〉》〕】〗\"")
    (setq b2 (point))
    (set-mark b1)
    )
