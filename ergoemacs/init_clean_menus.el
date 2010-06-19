@@ -15,7 +15,7 @@
 	(separator1 menu-item "--")
 	(save-buffer menu-item "Save" save-buffer)
 	(write-file menu-item "Save As..." write-file)
-	(revert-buffer menu-item "Revert" revert-buffer)
+	(revert-buffer menu-item "Revert to Saved" revert-buffer)
 	(separator2 menu-item "--")
 	(lang-modes menu-item "Language Modes"
 		    (keymap (c "C" . c-mode)
@@ -193,12 +193,23 @@
 (define-key menu-bar-options-menu [showhide showhide-date-time] nil)
 (define-key menu-bar-options-menu [showhide size-indication-mode] nil)
 
-(define-key global-map (kbd "<S-down-mouse-1>") nil)
+;; (define-key menu-bar-options-menu [customize] nil)
+;; (define-key menu-bar-options-menu [save] nil)
+(define-key global-map (kbd "<S-down-mouse-1>") nil) ; remove Shift+“Mouse Left Button” for setting font
 
-;; add a command to toggle by cursor move by visual line.
-;; todo: need to make the menu reflect current state
+;; add a menu for showing line numbers on margin
+(define-key-after menu-bar-options-menu [showhide global-linum-mode]
+  '(menu-item "Show/Hide line numbers in margin" global-linum-mode
+    :button (:toggle . global-linum-mode))  'line-number-mode )
+
+;; add a menu for toggling the visibility of spaces and tabs
+(define-key-after menu-bar-options-menu [whitespace-mode]
+  '(menu-item "Show/Hide Space and Tabs" whitespace-mode
+    :button (:toggle . whitespace-mode)) 'line-move-visual )
+
+;; add a menu to toggle whether down arrow key move cursor by visual line.
 (define-key-after menu-bar-options-menu [line-move-visual]
-  '(menu-item "Move Through Wrapped Lines" toggle-line-move-visual
+  '(menu-item "Move through wrapped lines" toggle-line-move-visual
     :button (:toggle . line-move-visual)) 'line-wrapping)
 
 ;; add font scale change
@@ -381,7 +392,3 @@
 ;; • re-create menus from scratch, instead of piggy back to remove add. (done for the File menu) Because piggy back is difficult to do and manage and subject to emacs changes.
 
 ;; • reorg the help menu and submenu.
-
-;; • when recentf-mode minor mode is on, it adds a Open Recent menu item under File at bottom after Quit. Needs to be after Open. Looking at the code, it uses easymenu.el to do things. Need fix.
-
-;; • the code can be improved. Right now it uses define-key repeatedly. It can be just a key map.
