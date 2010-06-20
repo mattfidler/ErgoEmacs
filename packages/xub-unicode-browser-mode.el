@@ -30,11 +30,11 @@
 ;; display character info of the char under cursor.
 ;; Mouse left click on a char also works.
 
-;; Full documentation and tips on unicode at: http://xahlee.org/emacs/unicode-browser.html
+;; Get unicode files to browse at: http://xahlee.org/emacs/unicode-browser.html
 
 ;; To see the inline documentation in emacs, type “C-h m”
 ;; (describe-mode). (if you have not load the mode, first type
-;; Alt+x xub)
+;; Alt+x xub-mode)
 
 ;;; HISTORY
 
@@ -87,7 +87,6 @@
  (describe-char (point))
   )
 
-
 (defun xub-mode ()
   "Major mode for browsing unicode characters.
 
@@ -99,7 +98,7 @@ The info will contain the character's unicode code point in
 decimal, octal, hexadecimal, and its unicode name, unicode
 category, font used, case class (lower/upper), etc.
 
-You can get files full of unicode characters at:
+You can get files unicode character files at:
   URL `http://xahlee.org/comp/unicode_arrows.html'
 
 Tips:
@@ -119,7 +118,6 @@ it does not know the character's unicode name."
   
   (setq major-mode 'xub)
   (setq mode-name "xub Char Browser")
-;  (set-syntax-table xub-syntax-table)
   (use-local-map xub-map)
   
   (run-mode-hooks 'xub-hook))
