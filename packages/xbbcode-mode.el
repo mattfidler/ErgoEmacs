@@ -34,12 +34,13 @@
 
 ;;; HISTORY
 
-;; version 1.1, 2009-12-14. The xbbcode-about now has clickable links, and other minor improvement.
-;; version 1.0, 2009-12-09. First version.
+;; version 1.2, 2010-06-20 Added xbbcode-show-bbcode-help. Improved menu items.
+;; version 1.1, 2009-12-14 The xbbcode-about now has clickable links, and other minor improvement.
+;; version 1.0, 2009-12-09 First version.
 
 ;;; Code:
 
-(setq xbbcode-mode-version "1.1")
+(setq xbbcode-mode-version "1.2")
 
 (defgroup xbbcode-mode nil
   "Major mode for editing bbcode."
@@ -51,17 +52,16 @@
 
 (defvar xbbcode-mode-map nil "Keymap for xbbcode-mode")
 
-(if xbbcode-mode-map nil
-  (setq xbbcode-mode-map (make-sparse-keymap))
-  (define-key xbbcode-mode-map (kbd "C-c C-t") 'xbbcode-insert-tag)
-  (define-key xbbcode-mode-map [menu-bar] (make-sparse-keymap))
-
-  (let ((menuMap (make-sparse-keymap "BBCode")))
-    (define-key xbbcode-mode-map [menu-bar xlsl] (cons "BBCode" menuMap))
-
-    (define-key menuMap [goto-home-page] '("Goto xbbcode-mode website" . (lambda () (interactive) (browse-url "http://xahlee.org/emacs/xbbcode-mode.html"))))
-    (define-key menuMap [about] '("About xbbcode-mode..." . xbbcode-about))
-    ))
+(setq xbbcode-mode-map (make-sparse-keymap))
+(define-key xbbcode-mode-map (kbd "C-c C-t") 'xbbcode-insert-tag)
+(define-key xbbcode-mode-map (kbd "C-c C-h") 'xbbcode-show-bbcode-help)
+(define-key xbbcode-mode-map [menu-bar] (make-sparse-keymap))
+(let ((menuMap (make-sparse-keymap "BBCode")))
+  (define-key xbbcode-mode-map [menu-bar xbbcode] (cons "BBCode" menuMap))
+  (define-key menuMap [about] '("About xbbcode-mode..." . xbbcode-about))
+  (define-key menuMap [xbbcode-insert-tag] '("Word to Tag" . xbbcode-insert-tag))
+  (define-key menuMap [xbbcode-show-bbcode-help] '("Show common tags" . xbbcode-show-bbcode-help))
+  )
 
 ;;; syntax table
 (defvar xbbcode-mode-syntax-table
@@ -82,9 +82,57 @@
      (concat "Package name: xbbcode-mode\n"
              "Version: " xbbcode-mode-version "\n"
              "Author: Xah Lee\n"
-             "To see inline documentation, call the command `describe-mode' while in the mode.\n\n"
+             "To see inline documentation, call the command describe-mode while in the mode.\n\n"
              "Home page: URL `http://xahlee.org/emacs/xbbcode-mode.html' \n")
      )
+    )
+  )
+
+(defun xbbcode-show-bbcode-help ()
+  "Display commonly used bbcode tags."
+  (interactive)
+  (with-output-to-temp-buffer "*bbcode cheatsheet*"
+    (princ 
+"[b]bold[/b]
+[i]italic[/i]
+[u]underline[/u]
+[s]strike-thru[/s]
+
+[url]http://example.com/[/url]
+[quote]something[/quote]
+[img]http://example.com/cat.jpg[/img]
+[email]mary@example.com[/email]
+
+[quote=\"mary\"]i didn't do it[/quote]
+
+[code]x = 5
+print x
+[/code]
+
+[size=20]Features[/size]
+
+[color=#FF0000]red[/color]
+[color=FF0000]red[/color]
+[color=red]red[/color]
+[color=blue]blue[/color]
+
+[color=red][size=20]Want to Save Money?[/size][/color]
+
+[list]
+[*]A list of items
+[*]with bullets.
+[/list]
+
+[list=1]
+[*]numbered first item
+[*]second item
+[/list]
+
+[list=a]
+[*]first item. Ordered by a, b, c etc.
+[*]second tiem.
+[/list]
+"     )
     )
   )
 
@@ -142,12 +190,11 @@ Other examples:
 (defun xbbcode-mode ()
   "Major mode for editing BBCode.
 
-To insert a tag, for example “[b]bold[/b]”, type “b”, then type
-“\\[xbbcode-insert-tag]”, then it'll become “[b][/b]” with your
-cursor placed in between the tags.
+Press “\\[xbbcode-insert-tag]” to change word under cursor into a tag.
 
 Shortcuts             Command Name
 \\[xbbcode-insert-tag]       `xbbcode-insert-tag'
+\\[xbbcode-show-bbcode-help]       `xbbcode-show-bbcode-help'
 
 Home page: URL `http://xahlee.org/emacs/xbbcode-mode.html'."
   (interactive)
