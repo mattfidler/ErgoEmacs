@@ -38,20 +38,59 @@
 
 ;;; HISTORY
 
+;; version 1.1, 2010-06-20 • Fixed first-mouse-click problem. (changed keybinding from "<down-mouse-1>" to "<mouse-1>"). • Added a menu. • Added commands xub-zoom-in xub-zoom-out.
 ;; version 1.0, 2010-06-20 First version.
 
 ;;; Code:
 
-(setq xub-version "1.0")
+(setq xub-version "1.1")
 
 (defvar xub-map nil "Keymap for xub")
 
-  (setq xub-map (make-sparse-keymap))
-  (define-key xub-map (kbd "<left>") 'xub-show-left)
-  (define-key xub-map (kbd "<right>") 'xub-show-right)
-  (define-key xub-map (kbd "<up>") 'xub-show-up)
-  (define-key xub-map (kbd "<down>") 'xub-show-down)
-  (define-key xub-map (kbd "<down-mouse-1>") 'xub-left-click)
+(setq xub-map (make-sparse-keymap))
+(define-key xub-map (kbd "<left>") 'xub-show-left)
+(define-key xub-map (kbd "<right>") 'xub-show-right)
+(define-key xub-map (kbd "<up>") 'xub-show-up)
+(define-key xub-map (kbd "<down>") 'xub-show-down)
+(define-key xub-map (kbd "<mouse-1>") 'xub-left-click)
+
+(define-key xub-map (kbd "<M-f12>") 'xub-zoom-in)
+(define-key xub-map (kbd "<M-f11>") 'xub-zoom-out)
+
+(define-key xub-map [menu-bar] (make-sparse-keymap))
+(let ((menuMap (make-sparse-keymap "XUB")))
+    (define-key xub-map [menu-bar xub] (cons "XUB" menuMap))
+
+    (define-key menuMap [about] '("About xub-mode" . xub-about))
+    (define-key menuMap [zoom-out] '("Zoom out" . xub-zoom-out))
+    (define-key menuMap [zoom-in] '("Zoom in" . xub-zoom-in))
+)
+
+(defun xub-about ()
+  "Show the author, version number, and description about this package."
+  (interactive)
+  (with-output-to-temp-buffer "*About xub-mode*"
+    (princ
+     (concat "Mode name: xub-mode.\n\n"
+             "Author: Xah Lee\n\n"
+             "Version: " xub-version "\n\n"
+             "To see inline documentation, type “Alt+x describe-mode” while you are in xub-mode.\n\n"
+             "Home page: URL `http://xahlee.org/emacs/unicode-browser.html' \n\n")
+     )
+    )
+  )
+
+(defun xub-zoom-in ()
+  "Make font size larger."
+  (interactive)
+  (text-scale-increase 1)
+  )
+
+(defun xub-zoom-out ()
+  "Make font size smaller."
+  (interactive)
+  (text-scale-decrease 1)
+  )
 
 (defun xub-left-click ()
   "Show info about the character under cursor."
@@ -99,20 +138,15 @@ decimal, octal, hexadecimal, and its unicode name, unicode
 category, font used, case class (lower/upper), etc.
 
 You can get files unicode character files at:
-  URL `http://xahlee.org/comp/unicode_arrows.html'
+  URL `http://xahlee.org/emacs/unicode-browser.html'
 
 Tips:
 
 In emacs 23.x, to insert a unicode by name or by hex code, call
 `ucs-insert'. You can use the tab and * wildcard for name completion.
 
-For example, if you want to insert LEFTWARDS ARROW (←), you can
-call ucs-insert, then type L*ARROW for all possible unicode names
-starting with L and contains Arrow.
-
 You need emacs 23.x to enjoy this mode. Because emacs 22's
-`describe-char' does not provide full unicode info. For example,
-it does not know the character's unicode name."
+`describe-char' does not provide full unicode info."
   (interactive)
 ;  (kill-all-local-variables)
   
