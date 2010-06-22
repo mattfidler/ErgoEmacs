@@ -153,5 +153,4 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(completions-common-part ((t (:inherit default :foreground "red"))))
- '(pp^L-highlight ((((type x w32 mac graphic) (class color)) (:underline "maroon"))))
  '(show-paren-match ((((class color) (background light)) (:background "azure2")))))
