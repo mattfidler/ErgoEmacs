@@ -1,19 +1,18 @@
-;; -*- coding: utf-8 -*-
 ;;; pp-c-l.el --- Display Control-l characters in a pretty way
 ;; 
 ;; Filename: pp-c-l.el
 ;; Description: Display Control-l characters in a buffer in a pretty way
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 1.0
-;; Last-Updated: Thu Feb 26 13:01:23 2009 (-0800)
+;; Last-Updated: Wed Apr 28 14:32:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 143
+;;     Update #: 196
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp-c-l.el
 ;; Keywords: display, convenience, faces
-;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x, GNU Emacs 22.x, GNU Emacs 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -46,25 +45,31 @@
 ;;  (~/.emacs or ~/_emacs):
 ;;
 ;;    (require 'pp-c-l)           ; Load this library.
+;;
+;;  To turn on this mode by default, then either customize option
+;;  `pretty-control-l-mode' to non-nil or add this line also to your
+;;  init file:
+;;
 ;;    (pretty-control-l-mode 1)   ; Turn on pretty display of `^L'.
 ;;
 ;;  For most of the user options defined here, if you change the value
 ;;  then you will need to re-enter `pretty-control-l-mode', for the
 ;;  new value to take effect.
 ;;
-;;  Note: If you use option `pp^L-^L-string-function' to define the ^L
-;;  appearance based on the current window (e.g. its width), then you
-;;  might want to add command `refresh-pretty-control-l' to variable
-;;  `window-configuration-change-hook', to automatically update the ^L
-;;  display whenever you resize the window:
-;;
-;;    (add-hook 'window-configuration-change-hook
-;;              'refresh-pretty-control-l)
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
 ;;
+;; 2010/04/28 dadams
+;;     Added autoload cookie for pp^L-^L-display-table-entry.  Thx to Peter Galbraith.
+;; 2010/04/08 dadams
+;;     Added autoload cookies.  Thx to Peter Galbraith.
+;; 2009/03/02 dadams
+;;     Enhancement by Andrey Paramonov.
+;;       pp^L-^L-display-table-entry: Added window argument.
+;;       pretty-control-l-mode: Update display table of each window.
+;;                              Add/remove refresh to window-configuration-hook.
+;;       refresh-pretty-control-l: Just call mode function when turned on.
 ;; 2009/02/26 dadams
 ;;     Added: pp^L-^L-string-function, refresh-pretty-control-l.
 ;;     pp^L-^L-display-table-entry: Use pp^L-^L-string-function if non-nil.
@@ -113,12 +118,12 @@
         (logior char (lsh (face-id face) 19)) ; CHARACTERBITS
       char)))
 
+;;;###autoload
 (defgroup Pretty-Control-L nil
   "Options to define pretty display of Control-l (`^L') characters."
   :prefix "pp^L-" :group 'convenience :group 'wp
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-pp-c-l.el bug: \
+          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=pp-c-l.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
@@ -128,6 +133,7 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/PrettyControlL")
   :link '(emacs-commentary-link :tag "Commentary" "pp-c-l"))
 
+;;;###autoload
 (defface pp^L-highlight
     (if (> emacs-major-version 21)
         '((((type x w32 mac graphic) (class color))
@@ -139,6 +145,7 @@ Don't forget to mention your Emacs and library versions."))
   "*Face used to highlight `pp^L-^L-vector'."
   :group 'Pretty-Control-L :group 'faces)
 
+;;;###autoload
 (defcustom pp^L-^L-string "          Section (Printable Page)          "
   "*Highlighted string displayed in place of each Control-l (^L) character.
 If `pp^L-^L-string-function' is non-nil, then the string that function
@@ -146,24 +153,25 @@ returns is used instead of `pp^L-^L-string'."
   :type 'string :group 'Pretty-Control-L)
 
 (defcustom pp^L-^L-string-function nil
-  "*Function to produce string displayed in place of each Control-l (^L) char.
-If this is non-nil, then option `pp^L-^L-string' is not used.
+  "*Function to produce string displayed in place of a Control-l (^L) char.
+The function accepts as argument the window where the ^L is displayed.
+If the option value is non-nil, option `pp^L-^L-string' is not used.
 You can use this option to have a dynamically defined display string.
-For example, with `foo' as the value, and this definition, a
-window-width horizontal line is displayed.
-  (defun foo () (make-string (window-width) ?_))"
+For example, this value displays a window-width horizontal line:
+  (lambda (win) (make-string (1- (window-width win)) ?_))"
   :type '(choice (const :tag "None" nil) function) :group 'Pretty-Control-L)
 
 (defcustom pp^L-^L-string-pre (if (> emacs-major-version 21) "\n" "")
   "*String displayed just before `pp^L-^L-string'.
 This text is not highlighted."
   :type 'string :group 'Pretty-Control-L)
-  
+
 (defcustom pp^L-^L-string-post ""
   "*String displayed just after `pp^L-^L-string'.
 This text is not highlighted."
   :type 'string :group 'convenience :group 'wp)
 
+;;;###autoload
 (unless (fboundp 'define-minor-mode)    ; Emacs 20.
   (defcustom pretty-control-l-mode nil
     "*Toggle pretty display of Control-l (`^L') characters.
@@ -173,9 +181,10 @@ use either \\[customize] or command `pretty-control-l-mode'."
     :initialize 'custom-initialize-default
     :type 'boolean :group 'Pretty-Control-L))
 
-(defun pp^L-^L-display-table-entry ()
-  "Returns the display-table entry for the Control-l (`^L') character.
-A vector determining how a Control-l character is displayed.
+;;;###autoload
+(defun pp^L-^L-display-table-entry (window)
+  "Returns the display-table entry for Control-l (`^L') char in WINDOW.
+A vector determining how a Control-l character is displayed in WINDOW.
 Either a vector of characters or nil.  The characters are displayed in
 place of the Control-l character.  nil means `^L' is displayed.
 
@@ -184,12 +193,12 @@ and `pp^L-^L-string-post'."
   (vconcat (mapconcat (lambda (c) (list c)) pp^L-^L-string-pre "")
            (mapcar (lambda (c) (pp^L-make-glyph-code c 'pp^L-highlight))
                    (if pp^L-^L-string-function
-                       (funcall pp^L-^L-string-function)
+                       (funcall pp^L-^L-string-function window)
                      pp^L-^L-string))
            (mapconcat (lambda (c) (list c)) pp^L-^L-string-post "")))
 
 (defalias 'pp^l 'pretty-control-l-mode)
-
+;;;###autoload
 (if (fboundp 'define-minor-mode)
     ;; Emacs 21 and later.
     ;; We eval this so that even if the library is byte-compiled with Emacs 20,
@@ -210,14 +219,18 @@ Don't forget to mention your Emacs and library versions."))
             :link '(url-link :tag "Description"
                     "http://www.emacswiki.org/cgi-bin/wiki/PrettyControlL")
             :link '(emacs-commentary-link :tag "Commentary" "pp-c-l")
-            (cond (pretty-control-l-mode
-                   (unless standard-display-table ; Default value is nil!
-                     (setq standard-display-table (make-display-table))) 
-                   (aset standard-display-table ?\014 (pp^L-^L-display-table-entry)))
-                  (t
-                   (unless standard-display-table ; Default value is nil!
-                     (setq standard-display-table (make-display-table))) 
-                   (aset standard-display-table ?\014 nil)))))
+            (if pretty-control-l-mode
+                (add-hook 'window-configuration-change-hook 'refresh-pretty-control-l)
+              (remove-hook 'window-configuration-change-hook 'refresh-pretty-control-l))
+            (walk-windows 
+ 	     (lambda (window)
+ 	       (let ((display-table  (or (window-display-table window)
+                                         (make-display-table))))
+ 		 (aset display-table ?\014 (and pretty-control-l-mode
+                                                (pp^L-^L-display-table-entry window)))
+ 		 (set-window-display-table window display-table)))
+             'no-minibuf
+             'visible)))
 
   ;; Emacs 20
   (defun pretty-control-l-mode (&optional arg)
@@ -226,24 +239,24 @@ With ARG, turn pretty display of `^L' on if and only if ARG is positive."
     (interactive "P")
     (setq pretty-control-l-mode
           (if arg (> (prefix-numeric-value arg) 0) (not pretty-control-l-mode)))
-    (cond (pretty-control-l-mode
-           (unless standard-display-table ; Default value is nil!
-             (setq standard-display-table (make-display-table))) 
-           (aset standard-display-table ?\014 (pp^L-^L-display-table-entry))
-           (message "Pretty display of `^L' is now ON"))
-          (t
-           (unless standard-display-table ; Default value is nil!
-             (setq standard-display-table (make-display-table))) 
-           (aset standard-display-table ?\014 nil)
-           (message "Pretty display of `^L' is now OFF")))))
+    (if pretty-control-l-mode
+        (add-hook 'window-configuration-change-hook 'refresh-pretty-control-l)
+      (remove-hook 'window-configuration-change-hook 'refresh-pretty-control-l))
+    (walk-windows 
+     (lambda (window)
+       (let ((display-table  (or (window-display-table window) (make-display-table))))
+         (aset display-table ?\014 (and pretty-control-l-mode
+                                        (pp^L-^L-display-table-entry window)))
+         (set-window-display-table window display-table)))
+     'no-minibuf
+     'visible)))
 
+;;;###autoload
 (defun refresh-pretty-control-l ()
-  "Toggle `pretty-control-l-mode' off, then on, to update the display."
+  "Reinitialize `pretty-control-l-mode', if on, to update the display."
   (interactive)
-  (pretty-control-l-mode -1)
-  (pretty-control-l-mode 1))
+  (when pretty-control-l-mode (pretty-control-l-mode t)))
   
-
 ;;;;;;;;;;;;;;;;;;;;
 
 (provide 'pp-c-l)
