@@ -20,6 +20,7 @@
 	(lang-modes menu-item "Language Modes"
 		    (keymap (c "C" . c-mode)
 			    (c++ "C++" . c++-mode)
+			    (c++ "C#" . csharp-mode)
 			    (java "Java" . java-mode)
 			    (separator3 "--")
 			    (css "CSS" . css-mode)
