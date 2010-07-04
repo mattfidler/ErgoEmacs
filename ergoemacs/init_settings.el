@@ -17,6 +17,9 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
+;; make cursor movement thru camelCase words.
+(global-subword-mode 1)
+
 ;; Save minibuffer history
 (savehist-mode 1)
 
