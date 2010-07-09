@@ -213,6 +213,11 @@
   '(menu-item "Move through wrapped lines" toggle-line-move-visual
     :button (:toggle . line-move-visual)) 'line-wrapping)
 
+;; add a menu to toggle whether left/right cursor movement will move into camelCaseWords 
+(define-key-after menu-bar-options-menu [global-subword-mode]
+  '(menu-item "Move through camelCaseWord" global-subword-mode
+    :button (:toggle . global-subword-mode)) 'line-move-visual)
+
 ;; add font scale change
 (define-key-after menu-bar-options-menu [menu-font-size]
   '(menu-item "Font Size"
