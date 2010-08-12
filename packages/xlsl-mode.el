@@ -115,7 +115,7 @@ The value can be any of:
 
 (defvar xlsl-mode-map nil "Keymap for xlsl-mode")
 
-(if xlsl-mode-map nil
+(when (not xlsl-mode-map)
   (setq xlsl-mode-map (make-sparse-keymap))
   (define-key xlsl-mode-map (kbd "C-c C-c") 'xlsl-copy-all)
   (define-key xlsl-mode-map (kbd "C-c C-l") 'xlsl-syntax-check)
