@@ -38,12 +38,13 @@
 
 ;;; HISTORY
 
+;; version 1.1.1, 2010-06-21 • Added xub-forward-to-space and xub-backward-to-space.
 ;; version 1.1, 2010-06-20 • Fixed first-mouse-click problem. (changed keybinding from "<down-mouse-1>" to "<mouse-1>"). • Added a menu. • Added commands xub-zoom-in xub-zoom-out.
 ;; version 1.0, 2010-06-20 First version.
 
 ;;; Code:
 
-(setq xub-version "1.1")
+(setq xub-version "1.1.1")
 
 (defvar xub-map nil "Keymap for xub")
 
@@ -53,7 +54,8 @@
 (define-key xub-map (kbd "<up>") 'xub-show-up)
 (define-key xub-map (kbd "<down>") 'xub-show-down)
 (define-key xub-map (kbd "<mouse-1>") 'xub-left-click)
-
+(define-key xub-map [remap forward-word] 'xub-forward-to-space)
+(define-key xub-map [remap backward-word] 'xub-backward-to-space)
 (define-key xub-map (kbd "<M-f12>") 'xub-zoom-in)
 (define-key xub-map (kbd "<M-f11>") 'xub-zoom-out)
 
@@ -65,6 +67,19 @@
     (define-key menuMap [zoom-out] '("Zoom out" . xub-zoom-out))
     (define-key menuMap [zoom-in] '("Zoom in" . xub-zoom-in))
 )
+
+(defun xub-forward-to-space ()
+  "Move cursor forward to next end of space or newline."
+  (interactive)
+  (search-forward-regexp " +\\|\n+" nil t)
+  )
+
+(defun xub-backward-to-space ()
+  "Move cursor backward to previous beginning of space or newline."
+  (interactive)
+  (search-backward-regexp " +\\|\n+" nil t)
+  (skip-chars-backward " ")
+  )
 
 (defun xub-about ()
   "Show the author, version number, and description about this package."
@@ -95,35 +110,43 @@
 (defun xub-left-click ()
   "Show info about the character under cursor."
   (interactive)
-  (describe-char (point))
+  (xub-display-info)
   )
 
 (defun xub-show-right ()
   "Move cursor forward then show info about the character under cursor."
   (interactive)
  (forward-char)
- (describe-char (point))
+ (xub-display-info)
+  )
+
+(defun xub-display-info ()
+  "Display char info."
+(describe-char (point))
+ ;; (if (looking-at " \\|\n")
+ ;;     (message "space or newline")
+ ;;   (describe-char (point)) )
   )
 
 (defun xub-show-left ()
   "Move cursor backward then show info about the character under cursor."
   (interactive)
  (backward-char)
- (describe-char (point))
+ (xub-display-info)
   )
 
 (defun xub-show-up ()
   "Move cursor up then show info about the character under cursor."
   (interactive)
  (previous-line)
- (describe-char (point))
+ (xub-display-info)
   )
 
 (defun xub-show-down ()
   "Move cursor down then show info about the character under cursor."
   (interactive)
  (next-line)
- (describe-char (point))
+ (xub-display-info)
   )
 
 (defun xub-mode ()
