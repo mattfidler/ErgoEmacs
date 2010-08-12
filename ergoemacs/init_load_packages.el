@@ -11,12 +11,16 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 ;;; visual-basic-mode
-(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
+(autoload 'visual-basic-mode "visual-basic-mode" "Major moder for editing Visual Basic code." t)
 (add-to-list 'auto-mode-alist '("\\.vbs\\'" . visual-basic-mode)) ;VBscript
 (add-to-list 'auto-mode-alist '("\\.vb\\'" . visual-basic-mode))  ;visual basic .NET file
 (add-to-list 'auto-mode-alist '("\\.bas\\'" . visual-basic-mode)) ;visual basic form
 (add-to-list 'auto-mode-alist '("\\.frm\\'" . visual-basic-mode)) ;basic language source
 (add-to-list 'auto-mode-alist '("\\.cls\\'" . visual-basic-mode)) ;C++ class definition file
+
+;;; csharp mode
+(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
+(add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode))
 
 ;;; for editing Windows's cmd.exe's script; batch, “.bat” file mode.
 (autoload 'dos-mode "dos" "A mode for editing Windows cmd.exe batch scripts." t)
@@ -69,6 +73,10 @@
 ;;; xbbcode-mode for editing BBCode
 (add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))
 (autoload 'xbbcode-mode "xbbcode-mode" "Load xbbcode-mode for editing BBCode." t)
+
+;;; xub-unicode-browser-mode for browsing Unicode characters
+(autoload 'xub-unicode-browser-mode "xub-unicode-browser-mode" "Load Unicode browsing mode." t)
+
 
 ;;;; productivity, enhancement, or minor modes
 
@@ -122,6 +130,8 @@
 (yas/load-directory
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
  )
+(add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
+
 
 ;; Highlight occurrence of current word, and move cursor to next/prev occurrence
 ;; see http://xahlee.org/emacs/modernization_isearch.html
