@@ -74,8 +74,8 @@
 (add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))
 (autoload 'xbbcode-mode "xbbcode-mode" "Load xbbcode-mode for editing BBCode." t)
 
-;;; xub-unicode-browser-mode for browsing Unicode characters
-(autoload 'xub-unicode-browser-mode "xub-unicode-browser-mode" "Load Unicode browsing mode." t)
+;;; xub-mode for browsing Unicode characters
+(autoload 'xub-mode "xub-mode" "Load Unicode browsing mode." t)
 
 
 ;;;; productivity, enhancement, or minor modes

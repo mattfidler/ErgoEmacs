@@ -1,5 +1,5 @@
 ;-*- coding: utf-8 -*-
-;; xub-unicode-browser-mode.el -- Major mode for browsing unicode characters.
+;; xub-mode.el -- Major mode for browsing unicode characters.
 
 ;; Copyright © 2010 by Xah Lee
 
@@ -38,13 +38,14 @@
 
 ;;; HISTORY
 
+;; version 1.1.2, 2010-08-13 • renamed file frome “xub-unicode-browser-mode.el” to “xub-mode.el”. The feature name is also renamed from “xub-unicode-browser-mode” to “xub-mode”.
 ;; version 1.1.1, 2010-06-21 • Added xub-forward-to-space and xub-backward-to-space.
 ;; version 1.1, 2010-06-20 • Fixed first-mouse-click problem. (changed keybinding from "<down-mouse-1>" to "<mouse-1>"). • Added a menu. • Added commands xub-zoom-in xub-zoom-out.
 ;; version 1.0, 2010-06-20 First version.
 
 ;;; Code:
 
-(setq xub-version "1.1.1")
+(setq xub-version "1.1.2")
 
 (defvar xub-map nil "Keymap for xub")
 
@@ -174,9 +175,9 @@ You need emacs 23.x to enjoy this mode. Because emacs 22's
 ;  (kill-all-local-variables)
   
   (setq major-mode 'xub)
-  (setq mode-name "xub Char Browser")
+  (setq mode-name "xub Unicode Browser")
   (use-local-map xub-map)
   
   (run-mode-hooks 'xub-hook))
 
-(provide 'xub-unicode-browser-mode)
+(provide 'xub-mode)
