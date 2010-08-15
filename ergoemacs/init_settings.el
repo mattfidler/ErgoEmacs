@@ -156,5 +156,5 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(completions-common-part ((t (:inherit default :foreground "red"))))
- '(isearch ((((class color) (min-colors 88) (background light)) (:background "yellow" :foreground "blue"))))
+ '(isearch ((((class color) (min-colors 88) (background light)) (:background "black" :foreground "white"))))
  '(show-paren-match ((((class color) (background light)) (:background "azure2")))))
