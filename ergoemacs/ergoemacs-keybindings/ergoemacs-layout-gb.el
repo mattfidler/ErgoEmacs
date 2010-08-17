@@ -1,5 +1,7 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=gb
+;; Contributor: Jorge Dias (aka theturingmachine)
+;; Creation date: 2010-05
 
 ;;; --------------------------------------------------
 ;;; CURSOR MOVEMENTS

@@ -1,5 +1,7 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=sp
+;; Contributor: David Capello
+;; Creation date: 2009
 
 ;;; --------------------------------------------------
 ;;; CURSOR MOVEMENTS

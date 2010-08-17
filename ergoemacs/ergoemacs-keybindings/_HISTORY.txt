@@ -4,6 +4,32 @@
 
 Note: When talking about keys, QWERTY is assumed to indicate the key, unless otherwise specified. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
 
+* version 5.3.4, 2010-08-16
+remapped some keys for all layouts.
+
+OLD             command                  new
+Alt+1        delete-other-windows        Alt+3
+Alt+!        delete-window               Alt+0
+Alt+2        split-window-vertically     Alt+4
+Alt+@         split-window-horizontally   Alt+$
+
+Reason: the 1 and 2 keys are two of the most difficult to press keys on the top row.
+3 and 4 are the best for left hand.
+8 and 9 are the best for right hand.
+(this can be verified by looking at the original Dvorak layout for number keys)
+
+For emacs commands, according to command frequency statistics, the order are roughly this, from most used to least:
+
+delete-other-windows
+split-window-vertically
+delete-window
+split-window-horizontally
+
+therefore this change. For Xah Lee's personal experience in this, see:
+ http://xahlee.org/emacs/vi_esc_syndrome.html
+
+Note that Alt+0 for delete-window was in the original ErgoEmacs keybinding design for about a year, but got changed to Alt+Shift+1 (Alt+!). The thinking was for some logical consistency with Alt+1. My experience since is that logical consistency is bad for ergonomics advantage. Logical consistency is good at beginning for learning, but once muscle memory is developed, ergonomic efficiency is far more important, and will be used for years.
+
 * version 5.3.3, 2010-05-24
 
 ** Ctrl+p now asks for confirmation before printing
@@ -34,6 +60,9 @@ http://code.google.com/p/ergoemacs/issues/detail?id=67#c3
 ** Copy and Cut to copy/cut current line
 
 Added a feature so that copy/cut will get the current line if there's no text selection.
+
+* version 5.x.x
+Italian layout has been created, by By David Capello, with help by Francesco Biccari
 
 * version 5, 2009-09-15
 
