@@ -5,7 +5,11 @@
 Note: When talking about keys, QWERTY is assumed to indicate the key, unless otherwise specified. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
 
 * version 5.3.4, 2010-08-16
-remapped some keys for all layouts.
+
+** Added a Swedish layout
+Contributed by Kristian Hellquist.
+
+** remapped split window keys for all layouts.
 
 OLD             command                  new
 Alt+1        delete-other-windows        Alt+3
