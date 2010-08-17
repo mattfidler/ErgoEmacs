@@ -1,5 +1,7 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=colemak
+;; Contributor: Ivan Haralamov ( postivan gmail.com ) and others
+;; Creation date: 2009
 
 ;;; --------------------------------------------------
 ;;; CURSOR MOVEMENTS

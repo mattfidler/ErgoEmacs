@@ -64,6 +64,8 @@ Added a feature so that copy/cut will get the current line if there's no text se
 * version 5.x.x
 Italian layout has been created, by By David Capello, with help by Francesco Biccari
 
+A colemak layout is added or sometimes before. The bulk of key mapping was helped by Ivan Haralamov (aka postivan), and vockets?
+
 * version 5, 2009-09-15
 
 ** Changed into a minor mode, with support for many keyboard layouts
