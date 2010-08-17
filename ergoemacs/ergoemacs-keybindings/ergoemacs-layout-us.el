@@ -1,6 +1,7 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=us
-;; Contributor: David Capello
+;; Keyboard Layout: United States
+;; Contributor: David Capello, Xah Lee
 ;; Creation date: 2009
 
 ;;; --------------------------------------------------

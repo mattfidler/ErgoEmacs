@@ -1,5 +1,6 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=it
+;; Keyboard Layout: Italian
 ;; Contributor: David Capello, Francesco Biccari
 ;; Creation date: 2009-09
 

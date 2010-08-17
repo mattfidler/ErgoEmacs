@@ -1,6 +1,6 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=gb-dv
-;; UK Dvorak
+;; Keyboard Layout: UK Dvorak
 ;; Contributor: Phillip Wood
 ;; Creation date: 2010-05
 

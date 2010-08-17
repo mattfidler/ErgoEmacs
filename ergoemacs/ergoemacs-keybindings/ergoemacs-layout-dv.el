@@ -1,5 +1,6 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=dv | us_dvorak
+;; Keyboard Layout: Dvorak
 ;; Contributor: Xah Lee, David Capello
 ;; Creation date: 2009
 

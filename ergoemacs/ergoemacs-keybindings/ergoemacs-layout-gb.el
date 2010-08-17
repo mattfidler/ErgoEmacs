@@ -1,5 +1,6 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=gb
+;; Keyboard Layout: United Kingdom
 ;; Contributor: Jorge Dias (aka theturingmachine)
 ;; Creation date: 2010-05
 

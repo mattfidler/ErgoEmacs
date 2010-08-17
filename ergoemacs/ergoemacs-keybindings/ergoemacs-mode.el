@@ -39,8 +39,9 @@
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
 ;; Thanks to Jorge Dias for UK layout.
-;; Thanks to phillip.wood@@dunelm.org.uk for UK Dvorak layout.
+;; Thanks to Phillip Wood for UK Dvorak layout.
 ;; Thanks to many users who send in comments and appreciations on this.
+;; Contributor for each layout is in the layout file.
 
 ;;; --------------------------------------------------
 
@@ -66,6 +67,7 @@ enviroment variable.  The possible values are:
   gb = UK keyboard layout
   sp = Spanish keyboard layout
   it = Italian keyboard layout
+  sv = Swedish keyboard layout
   colemak = Ergonomic Colemak keyboard layout")
 
 (cond
@@ -83,6 +85,8 @@ enviroment variable.  The possible values are:
   (load "ergoemacs-layout-gb"))
  ((string= ergoemacs-keyboard-layout "gb-dv")
   (load "ergoemacs-layout-gb-dv"))
+ ((string= ergoemacs-keyboard-layout "sv")
+  (load "ergoemacs-layout-sv"))
  ((string= ergoemacs-keyboard-layout "colemak")
   (load "ergoemacs-layout-colemak"))
  (t ; US qwerty by default

@@ -1,6 +1,7 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=colemak
-;; Contributor: Ivan Haralamov ( postivan gmail.com ) and others
+;; Keyboard Layout: Colemak
+;; Contributor: Ivan Haralamov ( postivan gmail.com ), “vockets”, Graham Poulter.
 ;; Creation date: 2009
 
 ;;; --------------------------------------------------
