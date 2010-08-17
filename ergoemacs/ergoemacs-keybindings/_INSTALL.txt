@@ -58,7 +58,7 @@ You do not need to have the file path end in “.el”.
 
 ** 5. Restart emacs.
 
-After you restart emacs, your will be using the new keybinding. The keyboard shortcut for emacs's “M-x” is now “Alt+a”.
+After you restart emacs, you will be using the new keybinding. The keyboard shortcut for emacs's “M-x” is now “Alt+a”.
 
 To turn off the mode, type “Alt+a” then “ergoemacs-mode”. After that, your keybinding is the same as GNU Emacs's default keybinding.
 
