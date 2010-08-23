@@ -27,12 +27,17 @@
 ;; created on Windows 7 evaluation build 7100
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
+;; Version 0.3: 
+;; - added a #SingleInstance directive, by Xah Lee
 ;; Version 0.2: 
 ;; - 'Fixed' malfunctioning kill-line-backwards by remapping it to
 ;;   something without a shift modifier. Not very happy about it.
 ;; - Replaced Send with SendInput
 ;; - Replaced occurences of DEL with C-x to 'kill' to the clipboard
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; don't run multiple instance of this script
+#SingleInstance force
 
 ;; try to avoid redundancy  with ErgoEmacs
 #IfWinNotActive ahk_class Emacs
