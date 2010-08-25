@@ -5,7 +5,7 @@
 ;; Copyright © 2009, 2010 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: 5.3.4
+;; Version: 5.3.5
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -34,12 +34,9 @@
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
 ;; Thanks to marciomazza for spotting several default bindings that should have been unbound.
-;; Thanks to those who have created and improved the version for Colemak layout. They are (by date): “vockets”, “postivan”, Graham Poulter.
 ;; Thanks to lwarxx for bug report on diff-mode
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
-;; Thanks to Jorge Dias for UK layout.
-;; Thanks to Phillip Wood for UK Dvorak layout.
 ;; Thanks to many users who send in comments and appreciations on this.
 ;; Contributor for each layout is in the layout file.
 
@@ -49,7 +46,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.3.4"
+(defconst ergoemacs-mode-version "5.3.5"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -68,6 +65,7 @@ enviroment variable.  The possible values are:
   sp = Spanish keyboard layout
   it = Italian keyboard layout
   sv = Swedish keyboard layout
+  da = Danish keyboard layout
   colemak = Ergonomic Colemak keyboard layout")
 
 (cond
@@ -87,6 +85,8 @@ enviroment variable.  The possible values are:
   (load "ergoemacs-layout-gb-dv"))
  ((string= ergoemacs-keyboard-layout "sv")
   (load "ergoemacs-layout-sv"))
+ ((string= ergoemacs-keyboard-layout "da")
+  (load "ergoemacs-layout-da"))
  ((string= ergoemacs-keyboard-layout "colemak")
   (load "ergoemacs-layout-colemak"))
  (t ; US qwerty by default

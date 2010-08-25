@@ -2,7 +2,12 @@
 
 # when viewing this file in emacs, press Shift+Tab 3 times to expand all headings.
 
-Note: When talking about keys, QWERTY is assumed to indicate the key, unless otherwise specified. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
+Note: When talking about keys, QWERTY is used to indicate key position on the keyboard, unless otherwise specified. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
+
+* version 5.3.5, 2010-08-24
+
+** Added a Danish layout.
+Contributed by Michael Budde.
 
 * version 5.3.4, 2010-08-16
 
@@ -50,7 +55,7 @@ http://code.google.com/p/ergoemacs/source/detail?r=371
 http://groups.google.com/group/ergoemacs/browse_frm/thread/3e1b9326b6cc2cc4
 
 ** Added United Kingdom Dvorak layout (gb-dv).
-Thanks to phillip.wood@@dunelm.org.uk
+Thanks to Phillip Wood
 http://code.google.com/p/ergoemacs/issues/detail?id=73
 
 ** fixed keybinding conflict problem. You can now change bindings
@@ -162,28 +167,33 @@ This version is now a full featured minor mode. It supports 3 different keyboard
 ** “Ctrl+h m” now calls describe-major-mode.
 
 * version 4.2.1, 2009-02-28
- Changed the keybinding for previous-user-buffer from Ctrl+← to Ctrl+PageUp. And previous-emacs-buffer from Ctrl+Shift+← to Ctrl+Shift+PageUp. Similar for the “next” versions. Rationale: The Ctrl+Arrow are standard editing shortcuts commond in Windows, Mac, Linux.
+
+Changed the keybinding for previous-user-buffer from Ctrl+← to Ctrl+PageUp. And previous-emacs-buffer from Ctrl+Shift+← to Ctrl+Shift+PageUp. Similar for the “next” versions. Rationale: The Ctrl+Arrow are standard editing shortcuts commond in Windows, Mac, Linux.
 
 * version 4.2.0, 2009-02-27
- Added Alt+t for keyword completion. Rationale: The default M-TAB is used by Windows, Mac, Linux, to switch apps.
+
+Added Alt+t for keyword completion. Rationale: The default M-TAB is used by Windows, Mac, Linux, to switch apps.
 
 * version 4.1.8, 2009-02-15
- Corrected the keybinding for Save As (write-file)
+Corrected the keybinding for Save As (write-file)
 
 * version 4.1.7, 2008-12-10
- Made compact-uncompact-block to work on text selection if there's one.
+Made compact-uncompact-block to work on text selection if there's one.
 
 * version 4.1.6, 2008-12-09
-. Added select-text-in-quote.
+
+** Added select-text-in-quote
 
 * version 4.1.5, 2008-10-21
-. Added extend-selection by Nikolaj Schumacher.
+** Added extend-selection by Nikolaj Schumacher.
 
 * version 4.1.4, 2008-10-20
-. Fixed close-current-buffer: sometimes when closing a buffer not associated with a file, it'll prompt whether to kill instead of whether to save.
+** Fixed close-current-buffer
+Sometimes when closing a buffer not associated with a file, it'll prompt whether to kill instead of whether to save.
 
 * version 4.1.3, 2008-10-18
-. Fixed minor bug in toggle-letter-case. It now works non-english letters such as éÉ and single letter word “a teapot” or words starting with a number “1st timer”. Thanks to Andreas Politz and Nikolaj Schumacher.
+** Fixed minor bug in toggle-letter-case.
+It now works non-english letters such as éÉ and single letter word “a teapot” or words starting with a number “1st timer”. Thanks to Andreas Politz and Nikolaj Schumacher.
 ** next-frame-command is renamed to switch-to-next-frame. Similar for previous-frame-command.
 
 * version 4.1.2, 2008-10-16
@@ -193,11 +203,14 @@ This version is now a full featured minor mode. It supports 3 different keyboard
 
 * version 4.1.1, 2008-10-07
 
-** Removed unfill-paragraph and unfill-region because they are defined in ourcomments-util.el bundled with emacs 22, also because they are not used in this file now (compact-uncompact-block replaced most of their functionality).
+** Removed unfill-paragraph and unfill-region
+Because they are defined in ourcomments-util.el bundled with emacs 22, also because they are not used in this file now (compact-uncompact-block replaced most of their functionality).
 
 * version 4.1, 2008-10-06
 
-** Added keys for previous-user-buffer, next-user-buffer, next-frame-command, previous-frame-command, query-replace and query-replace-regexp, move-cursor-to-next-pane, move-cursor-to-previous-pane, split-window-horizontally, toggle-letter-case. Combined delete-blank-lines and just-one-space to shrink-whitespaces. Moved delete-window to be with delete-other-window.
+** Added keys for about 9 commands
+ previous-user-buffer, next-user-buffer, next-frame-command, previous-frame-command, query-replace and query-replace-regexp, move-cursor-to-next-pane, move-cursor-to-previous-pane, split-window-horizontally, toggle-letter-case. Combined delete-blank-lines and just-one-space to shrink-whitespaces.
+** Moved delete-window to be with delete-other-window.
 
 * version 4.0.1, 2008-09-23
 
@@ -205,7 +218,8 @@ This version is now a full featured minor mode. It supports 3 different keyboard
 
 * version 4, 2008-09-21
 
-** Unbind almost all Meta-‹key› and Ctrl-‹key› space bindings. Added about 11 commands, such as next-user-buffer, close-current-buffer etc.
+** Unbind almost all Meta-‹key› and Ctrl-‹key› space bindings.
+** Added about 11 commands, such as next-user-buffer, close-current-buffer etc.
 
 * version 3.6, 2008-09-18
 
