@@ -25,7 +25,8 @@
 			   (eq last-command 'undo)
 			   (listp pending-undo-list)
 			 (consp buffer-undo-list)))
-	      :help "Undo last operation")
+	      :help "Undo last operation"
+	      :keys "Ctrl+Z")
 	(separator-undo menu-item "--")
 	(cut menu-item "Cut" clipboard-kill-region
 	     :help "Delete text in region and copy it to the clipboard"

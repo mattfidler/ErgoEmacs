@@ -75,7 +75,8 @@
 			   (eq last-command 'undo)
 			   (listp pending-undo-list)
 			 (consp buffer-undo-list)))
-	      :help "Undo last operation")
+	      :help "Undo last operation"
+	      :keys "Ctrl+Z")
 	(redo menu-item "Redo" redo
 	      :keys "Ctrl+Shift+Z")
 	(redo-sep menu-item "--")
