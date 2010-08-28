@@ -20,10 +20,17 @@
 ;;; INSTALL
 
 ;; Open the file, then type Alt+x eval-buffer.
-;; You are done.
 ;; Open any LSL source code, then type Alt+x xlsl-mode, you'll have syntax coloring and other features.
 
-;; For more detail on automatic loading, please see the doc at home page.
+;; To have emacs automatically load the file when it restarts, and automatically use the mode when opening files ending in “.lsl”, follow these steps:
+
+;; Rename the file to “xlsl-mode.el” (if the file is not already that name). Now, put the following lines in your emacs init file “.emacs”:
+
+;; (add-to-list 'load-path "~/.emacs.d/") ;; create the dir if it doesn't exist
+;; (autoload 'xlsl-mode "xlsl-mode" "Load xlsl-mode for editing Linden Scripting Lang." t)
+;; (add-to-list 'auto-mode-alist '("\\.lsl\\'" . xlsl-mode))
+
+;; Then, restart emacs.
 
 ;;; DOCUMENTATION
 

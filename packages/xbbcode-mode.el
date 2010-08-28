@@ -18,11 +18,33 @@
 
 ;;; INSTALL
 
-;; Open the file, then type Alt+x eval-buffer.
-;; You are done.
-;; When you need to edit BBCode, type Alt+x xbbcode-mode.
+;; Open the file, then type “Alt+x eval-buffer”. You are done. When
+;; you need to work in bbcode, just type “Alt+x xbbcode-mode”,
+;; you'll see bbcode tags colored.
 
-;; For more detail on automatic loading, please see the doc at home page.
+;; To have emacs automatically load the file when it restarts, and
+;; automatically load the mode when opening files whose name ends in
+;; “.bbcode”, do the following:
+
+;; Place this file in the directory 〔~/.emacs.d/〕. For example:
+
+;; on Windows
+;; C:\Users\mary\.emacs.d\xbbcode-mode.el
+
+;; on Mac OS X
+;; /Users/mary/.emacs.d\xbbcode-mode.el
+
+;; then, put the following lines in your emacs init file 〔~/.emacs〕:
+
+;; (add-to-list 'load-path "~/.emacs.d/") ;; add a dir to load path
+;; (autoload 'xbbcode-mode "xbbcode-mode" "Load xbbcode-mode for editing BBCode." t)
+;; (add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))
+
+;; ; optional. Make the command easier to remember. This lets you call
+;; ; it with just “bbcode” instead of “xbbcode-mode”
+;; (defalias 'bbcode 'xbbcode-mode)
+
+;; Then, restart emacs.
 
 ;;; DOCUMENTATION
 
