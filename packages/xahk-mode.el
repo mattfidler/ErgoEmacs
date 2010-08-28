@@ -17,6 +17,23 @@
 ;; for download location and documentation, see:
 ;; http://xahlee.org/mswin/emacs_autohotkey_mode.html
 
+;;; INSTALL
+
+;; Open the file, then type “Alt+x eval-buffer”. You are done. Open
+;; any ahk script, then type “Alt+x xahk-mode”, you'll see the
+;; source code syntax colored.
+
+;; To have emacs automatically load the file when it restarts, and
+;; automatically use the mode when opening files ending in “.ahk”, put
+;; the following lines in your emacs init file “.emacs”:
+
+;; (add-to-list 'load-path "/path/to/parent/dir/") ;; make sure dir is the file's parent
+;; (autoload 'xahk-mode "xahk-mode" "Load xahk-mode for editing AutoHotkey scripts." t)
+;; (add-to-list 'auto-mode-alist '("\\.ahk\\'" . xahk-mode))
+;; (defalias 'ahk-mode 'xahk-mode) ; make it easier to remember.
+
+;; Then, restart emacs.
+
 ;;; HISTORY
 
 ;; version 1.2, 2010-02-17 fixed a defect where if source contains “"C:\"”, everything after is badly syntax colored. Thanks to “xinlu.h” and “iain.tuddenham”. Detail at http://code.google.com/p/ergoemacs/issues/detail?id=66
