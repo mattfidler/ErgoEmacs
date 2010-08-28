@@ -20,9 +20,28 @@
 ;; you need to browse a file full of unicode characters, just type M-x
 ;; xub-mode.
 
-;; For more detail setting up automatic loading when emacs starts,
-;; please see the doc at home page:
-;; http://xahlee.org/emacs/unicode-browser.html
+;; To install, place this file in the directory 〔~/.emacs.d/〕. For example:
+
+;; on Windows
+;; C:\Users\mary\.emacs.d\xub-mode.el
+
+;; on Mac OS X
+;; /Users/mary/.emacs.d\xub-mode.el
+
+;; Then, place the following code in your emacs init file, 〔~/.emacs〕.
+
+;; ;; add directory .emacs.d to load path
+;; (add-to-list 'load-path "~/.emacs.d/")
+
+;; ;; set auto loading of xub-mode when xub-mode is called.
+;; (autoload 'xub-mode "xub-mode" "Load xub-mode for browsing Unicode." t)
+
+;; ;;;; Optional
+;; ;; define alias so the command name to invoke mode is more intuitive and easier to remember
+;; ; (defalias 'unicode-browser 'xub-mode)
+
+;; Then, restart emacs.
+
 
 ;;; DOCUMENTATION
 
