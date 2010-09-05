@@ -132,6 +132,8 @@
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
 
+;; enhanced file manager
+(require 'dired+)
 
 ;; Highlight occurrence of current word, and move cursor to next/prev occurrence
 ;; see http://xahlee.org/emacs/modernization_isearch.html

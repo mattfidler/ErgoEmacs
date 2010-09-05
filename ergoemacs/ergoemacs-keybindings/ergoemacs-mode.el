@@ -36,9 +36,17 @@
 ;; Thanks to marciomazza for spotting several default bindings that should have been unbound.
 ;; Thanks to lwarxx for bug report on diff-mode
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
-;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
 ;; Thanks to many users who send in comments and appreciations on this.
-;; Contributor for each layout is in the layout file.
+;; Layout contributors:
+;; ergoemacs-layout-da.el Contributor: Michael Budde
+;; ergoemacs-layout-dv.el Contributor: Xah Lee, David Capello
+;; ergoemacs-layout-gb-dv.el Contributor: Phillip Wood
+;; ergoemacs-layout-gb.el Contributor: Jorge Dias (aka theturingmachine)
+;; ergoemacs-layout-it.el Contributor: David Capello, Francesco Biccari
+;; ergoemacs-layout-sp.el Contributor: David Capello
+;; ergoemacs-layout-sv.el Contributor: Kristian Hellquist
+;; ergoemacs-layout-us.el Contributor: David Capello, Xah Lee
+;; ergoemacs-layout-colemak.el Contributor: Ivan Haralamov ( postivan gmail.com ), “vockets”, Graham Poulter.
 
 ;;; --------------------------------------------------
 

@@ -26,6 +26,10 @@
 ;; Make lines not dissapear into the right margin while in org-mode
 (add-hook 'org-mode-hook 'soft-wrap-lines)
 
+;; turn on save place so that when opening a file, the cursor will be at the last position.
+(require 'saveplace)
+(setq-default save-place t)
+
 ;; ----------------------------------------------------------------------------
 ;; Make emacs open all files in last emacs session.
 ;;
