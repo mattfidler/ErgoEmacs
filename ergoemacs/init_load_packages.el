@@ -132,7 +132,12 @@
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
 
-;; enhanced file manager
+;; enhanced bookmark, bookmarkplus
+(add-to-list 'load-path
+             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
+(require 'bookmark+)
+
+;; enhanced file manager. dired plus
 (require 'dired+)
 
 ;; Highlight occurrence of current word, and move cursor to next/prev occurrence
