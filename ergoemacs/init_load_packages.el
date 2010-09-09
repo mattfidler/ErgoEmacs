@@ -137,6 +137,9 @@
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
 (require 'bookmark+)
 
+;; add a tab bar widget
+(require 'tabbar)
+
 ;; enhanced file manager. dired plus
 (require 'dired+)
 
