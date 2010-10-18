@@ -146,12 +146,12 @@
   return
 
 ;; undo/redo
-!`z::
+!z::
   SendInput {Ctrl down}
   SendInput {z}
   SendInput {Ctrl up}
   return
-+!z;::
+!+z::
   SendInput {Ctrl down}
   SendInput {y}
   SendInput {Ctrl up}
