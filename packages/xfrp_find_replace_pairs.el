@@ -70,7 +70,7 @@ See also `replace-regexp-pairs-in-string'."
     (setq ii 0)
     (while (< ii (length pairs))
       (setq randomStrList (cons
-                    (concat "ㄓ" (number-to-string (random)) "ㄘ")
+                    (concat "ㄦ" (number-to-string (random)) "ㄎ")
  ; use rarely used unicode char to prevent match in input string
                     randomStrList ))
       (setq ii (1+ ii))
