@@ -361,6 +361,16 @@ Emacs buffers are those whose name starts with *."
 ;; status to offer save
 ;; This custome kill buffer is close-current-buffer.
 
+(defun open-in-desktop ()
+  "Open the current file in desktop.
+Works in Microsoft Windows and Mac OS X."
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore"
+                       (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ) )
 
 (defvar recently-closed-buffers (cons nil nil) "A list of recently closed buffers. The max number to track is controlled by the variable recently-closed-buffers-max.")
 (defvar recently-closed-buffers-max 10 "The maximum length for recently-closed-buffers.")
