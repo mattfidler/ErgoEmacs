@@ -34,6 +34,9 @@
 ;;; powershell interactive shell
 (autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
 
+;;; mode for clojure language
+(autoload 'clojure-mode "clojure-mode" "mode for editing clojure language." t)
+
 ;;; mode for lua language
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode)) ; lua-mode
@@ -132,13 +135,29 @@
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
 
+
+;; auto-complete (a enhanced word completion)
+(add-to-list 'load-path
+             (concat (file-name-directory (or load-file-name buffer-file-name))
+                     "../packages/auto-complete-1.3/" ) )
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories
+             (concat (file-name-directory (or load-file-name buffer-file-name))
+                     "../packages/auto-complete-1.3/ac-dict/" ))
+(ac-config-default)
+;; had experience of crashing my emacs
+(auto-complete-mode 1)
+(defun ac-css-mode-setup()) ; bug workaround http://github.com/m2ym/auto-complete/issues#issue/27 http://github.com/m2ym/auto-complete/issues#issue/31
+
 ;; enhanced bookmark, bookmarkplus
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
 (require 'bookmark+)
 
 ;; add a tab bar widget
-(require 'tabbar)
+;; (require 'tabbar)
+;; (tabbar-mode 1)
+;; 2010-09-30. Turned off for now. problem: sometimes after a while, tabbar mode will slow you down. i.e. set key repeat rate to highest in OS. Then, holding down a key will show jumpy behavior.
 
 ;; enhanced file manager. dired plus
 (require 'dired+)
