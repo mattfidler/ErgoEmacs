@@ -32,6 +32,7 @@
 			    (latex "LaTeX" . latex-mode)
 			    (separator2 "--")
 			    (elisp "Emacs Lisp" . emacs-lisp-mode)
+			    (clojure "Clojure" . clojure-mode)
 			    (ocaml "OCaml" . tuareg-mode)
 			    (haskell "Haskell" . haskell-mode)
 			    (separator1 "--")

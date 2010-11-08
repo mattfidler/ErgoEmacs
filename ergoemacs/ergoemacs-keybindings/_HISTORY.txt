@@ -4,6 +4,10 @@
 
 Note: When talking about keys, QWERTY is used to indicate key position on the keyboard, unless otherwise specified. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
 
+* version 5.3.6, 2010-11-05
+
+** Added open-in-desktop command with key Ctrl+Shift+O.
+
 * version 5.3.5, 2010-08-24
 
 ** Added a Danish layout.

@@ -65,6 +65,10 @@
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
+;;; TODO 2010-11 decide whether to load /packages/erlang/
+
+;;; TODO 2010-11 decide whether to load /packages/scala-mode/
+
 ;;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
              (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.7/")

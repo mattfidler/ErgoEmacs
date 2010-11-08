@@ -41,7 +41,7 @@ If you are using Aquamacs Emacs ( http://aquamacs.org/ ), the latest version on 
  So, you should have
  “~/.emacs.d/ergoemacs_1.7.1/”
 
- If the directory “~/.emacs.d/” does not exist, creat it.
+ If the directory “~/.emacs.d/” does not exist, create it.
 
 ** 3. In your “~/.emacs”, put the following lines:
 

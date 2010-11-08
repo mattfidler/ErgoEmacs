@@ -81,6 +81,7 @@ BBCode • xbbcode-mode
 Bash • sh-mode
 C • c-mode
 C++ • c++-mode
+Clojure • clojure-mode
 CSS • css-mode
 Emacs Lisp • emacs-lisp-mode
 HTML • html-mode
