@@ -11,6 +11,7 @@
 	(new-file menu-item "New" new-empty-buffer)
 	(make-frame menu-item "New Frame" make-frame-command)
 	(open-file menu-item "Open..." find-file)
+	(open-last-closed menu-item "Open last closed" open-last-closed)
 	(kill-buffer menu-item "Close" close-current-buffer)
 	(separator1 menu-item "--")
 	(save-buffer menu-item "Save" save-buffer)

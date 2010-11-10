@@ -201,6 +201,7 @@ enviroment variable.  The possible values are:
 (define-key ergoemacs-keymap (kbd "C-o") 'find-file)
 (define-key ergoemacs-keymap (kbd "C-S-o") 'open-in-desktop)
 (define-key ergoemacs-keymap (kbd "C-w") 'close-current-buffer)
+(define-key ergoemacs-keymap (kbd "C-S-w") 'open-last-closed)
 (define-key ergoemacs-keymap (kbd "C-s") 'save-buffer)
 (define-key ergoemacs-keymap (kbd "C-S-s") 'write-file)
 (define-key ergoemacs-keymap (kbd "C-p") 'print-buffer-confirm)

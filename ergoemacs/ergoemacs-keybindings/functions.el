@@ -428,3 +428,8 @@ Else it is a user buffer."
      )
    )
  )
+
+(defun open-last-closed ()
+  "Open the last closed file."
+  (interactive)
+  (find-file (cdr (pop recently-closed-buffers)) ) )
