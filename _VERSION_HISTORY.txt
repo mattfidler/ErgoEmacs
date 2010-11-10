@@ -16,6 +16,98 @@ This file is now based on the commit history at http://code.google.com/p/ergoema
 
 HISTORY
 
+* Version 1.8: 2010-11-08.
+This version require emacs 23.2.
+
+** New major modes
+*** Erlang.
+you might need to put the following with the right path in your emacs init file.
+(setq erlang-root-dir "C:/Program Files (x86)/erl5.8.1.1")
+(add-to-list 'exec-path "C:/Program Files (x86)/erl5.8.1.1/bin")
+
+Scala.
+Clojure
+C# mode
+
+new version of tuareg, haskell, js2 modes. Removed espresso.el mode because in 23.2. Moved aliases to init_aliases.el. Other minor cleanups.
+
+added the package highlight-symbol.el added package highlight-symbol. See http://xahlee.org/emacs/modernization_isearch.html 
+
+
+xub-mode.el unicode browser.
+xbbcode-mode
+Twit.el
+
+r425 added few new menus. Show whitespaces, line number on margin.
+
+r424 more fix to select-text-in-quote to include <> as both beginning or ending delimiter. improved the select-text-in-quote so it does correctly on more unicode matching pairs.
+
+r402 removed espresso.el because it's included in emacs 23.2 as js mode.
+
+** ErgoEmacs keybinding 
+
+r373 Add feature so copy the current line if there's no text selection. Same for cut. Other minor edits and fixes from previous checkin.
+
+r372 added UK Dvorak layout. From Issue #73. Thanks to phil.wood.phil
+
+r371 added United Kingdom layout. Thanks to 'Jorge (theturingmachine)'
+
+r507 fixed split window keys for the gb layout.
+r482 added a Danish layout. #82
+r477 removed the unbinding of Ctrl+Backspace, because that seems to be standard together with Ctrl+arrow and Ctrl+Del.
+
+r469 Added a Swedish layout.
+changed split window keys. e.g. Alt+1, Alt+2 etc for all layout. For detail and reason, see _HISTORY.txt file.
+
+A bug fix. Added ergoemacs-keyboard-quit-key to ergoemacs-layout-gb.el. Thanks to Jorge Dias.
+
+r377 Make Ctrl+p to ask confirmation before calling print-buffer.
+
+r404 Alt+n key now works in other scenarios (like when you close a file). Fixed issue #68.
+
+changed text color and background color for isearch. The defualt magenta background is low contrast, hard to read.
+
+** New features
+
+
+added bookmark+ mode.
+diredplus dired+.el
+added tab bar widget. Giving it another shot.
+ auto-complete mode (a feature for dynamic name/template completion similar to yasnippet)
+
+check if global-subword-mode is defined before turning it on. The subword-mode seems to be a emacs 23.2 
+
+r480 updated the readme file for sys wide ErgoEmacs keybinding utilities. added a menu to move thru camelCaseWords.
+
+r505 new version of dos.el
+r438 check to see if on Windows or Mac before removing GNU Emacs's middle-click default behavior.
+
+*** added a open-last-closed command.
+This is in the menu under File.
+The keyboard shortcut is Ctrl+Shift+w.
+
+** new commands
+
+r524 added the key Ctrl+Shift+O for open-in-desktop.
+
+
+** yasnippet mode.
+Many improvement to the yasnippet templates for
+html, elisp, lsl.
+
+** elisp utility
+minor improvement on the xfrp find/replace lib. string replacement
+
+r436 new version of pp-c-l.el
+
+** minor fixes.
+
+*** r370 Now close-current-buffer function selects the next user buffer (not the previous one).  The next buffer is the more recent used one.
+
+*** r369 Added hook for ido-mode. ido-mode should not conflict with ErgoEmacs keybindings.
+
+*** r368 AutoHotkey xahk-mode. fixed a problem with syntax coloring on backslash. Issue 66.
+
 * Version 1.7: 2010-01-28.
 
 Major user visible changes:
