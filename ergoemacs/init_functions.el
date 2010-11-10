@@ -99,6 +99,7 @@ Perl • cperl-mode
 PowerShell • powershell-mode
 Python • python-mode
 Ruby • ruby-mode
+Scala • scala-mode
 TCL • tcl-mode
 Visual Basic • visual-basic-mode
 XML • nxml-mode

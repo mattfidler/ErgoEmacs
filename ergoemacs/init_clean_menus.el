@@ -36,6 +36,7 @@
 			    (clojure "Clojure" . clojure-mode)
 			    (ocaml "OCaml" . tuareg-mode)
 			    (haskell "Haskell" . haskell-mode)
+			    (scala-mode "Scala" . scala-mode)
 			    (haskell "Erlang" . erlang-mode)
 			    (separator1 "--")
 			    (perl "Perl" . cperl-mode)
@@ -209,7 +210,7 @@
 
 ;; add a menu for toggling the visibility of spaces and tabs
 (define-key-after menu-bar-options-menu [whitespace-mode]
-  '(menu-item "Show/Hide Space and Tabs" whitespace-mode
+  '(menu-item "Show/Hide Space, Tab" whitespace-mode
     :button (:toggle . whitespace-mode)) 'line-move-visual )
 
 ;; add a menu to toggle whether down arrow key move cursor by visual line.

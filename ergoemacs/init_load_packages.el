@@ -73,7 +73,11 @@
 (require 'erlang-start)
 (require 'erlang-flymake)
 
-;;; TODO 2010-11 decide whether to load /packages/scala-mode/
+
+;;; mode for Scala lang. 
+(add-to-list 'load-path
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/scala-mode/"))
+(require 'scala-mode-auto)
 
 ;;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
