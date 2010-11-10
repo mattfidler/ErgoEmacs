@@ -51,27 +51,33 @@
 
 ;;; POV-Ray (3D rendering engine) http://en.wikipedia.org/wiki/POV-Ray
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/pov-mode-3.2/"))
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/pov-mode-3.2/"))
 (autoload 'pov-mode "pov-mode" "Major mode for working with POV-Ray code." t)
 (add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
 ;;; mode for Haskell lang. http://en.wikipedia.org/wiki/Haskell_(programming_language)
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.7.0/"))
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.7.0/"))
 (load "haskell-mode-2.7.0/haskell-site-file")
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
-;;; TODO 2010-11 decide whether to load /packages/erlang/
+;;; mode for erlang lang. 
+(add-to-list 'load-path
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/erlang/"))
+(setq erlang-root-dir "C:/Program Files (x86)/erl5.8.1.1")
+(add-to-list 'exec-path "C:/Program Files (x86)/erl5.8.1.1/bin")
+(require 'erlang-start)
+(require 'erlang-flymake)
 
 ;;; TODO 2010-11 decide whether to load /packages/scala-mode/
 
 ;;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.7/")
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.7/")
              )
 (add-to-list 'auto-mode-alist '("\\.ml\\w?" . tuareg-mode))
 (autoload 'tuareg-mode "tuareg" "Major mode for editing ML/Caml/OCaml code." t)
@@ -97,7 +103,7 @@
             )
     (progn
       (add-to-list 'load-path
-                   (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
+       (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
       (require 'rw-hunspell)
       (rw-hunspell-setup)
       ) ) ) 
@@ -106,7 +112,7 @@
 ;; (when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
 ;; (progn
 ;;       (add-to-list 'load-path
-;;                    (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
+;;        (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
 ;;       (require 'rw-hunspell)
 ;;       (rw-hunspell-setup)
 ;;       )
@@ -130,7 +136,7 @@
 
 ;; yasnippet template system
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/")
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/")
              )
 (require 'yasnippet) ;; not yasnippet-bundle
 (yas/initialize)
@@ -142,11 +148,11 @@
 
 ;; auto-complete (a enhanced word completion)
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name))
+ (concat (file-name-directory (or load-file-name buffer-file-name))
                      "../packages/auto-complete-1.3/" ) )
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories
-             (concat (file-name-directory (or load-file-name buffer-file-name))
+ (concat (file-name-directory (or load-file-name buffer-file-name))
                      "../packages/auto-complete-1.3/ac-dict/" ))
 (ac-config-default)
 ;; had experience of crashing my emacs
@@ -155,7 +161,7 @@
 
 ;; enhanced bookmark, bookmarkplus
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
 (require 'bookmark+)
 
 ;; add a tab bar widget
@@ -191,7 +197,7 @@
 
 ;; dictionary client for dict.org . To use, call dictionary-lookup-definition to lookup def of word under cursor.
 (add-to-list 'load-path
-             (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/dictionary-1.8.7")
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/dictionary-1.8.7")
 )
 (autoload 'dictionary-search "dictionary" "Ask for a word and search it in all dictionaries" t)
 (autoload 'dictionary-match-words "dictionary" "Ask for a word and search all matching words in the dictionaries" t)

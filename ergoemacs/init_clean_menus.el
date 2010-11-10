@@ -35,6 +35,7 @@
 			    (clojure "Clojure" . clojure-mode)
 			    (ocaml "OCaml" . tuareg-mode)
 			    (haskell "Haskell" . haskell-mode)
+			    (haskell "Erlang" . erlang-mode)
 			    (separator1 "--")
 			    (perl "Perl" . cperl-mode)
 			    (php "PHP" . php-mode)
