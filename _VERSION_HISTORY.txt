@@ -19,27 +19,69 @@ HISTORY
 * Version 1.8: 2010-11-08.
 This version require emacs 23.2.
 
-** New major modes
-*** Erlang.
+** New language modes
+
+All new language modes listed in the menu “File‣Language Modes”.
+When opening a file with the lang's file name extension, proper mode will be activated.
+
+*** Erlang
 you might need to put the following with the right path in your emacs init file.
 (setq erlang-root-dir "C:/Program Files (x86)/erl5.8.1.1")
 (add-to-list 'exec-path "C:/Program Files (x86)/erl5.8.1.1/bin")
 
-Scala.
-Clojure
-C# mode
+*** Scala
 
-new version of tuareg, haskell, js2 modes. Removed espresso.el mode because in 23.2. Moved aliases to init_aliases.el. Other minor cleanups.
+*** Clojure
 
-added the package highlight-symbol.el added package highlight-symbol. See http://xahlee.org/emacs/modernization_isearch.html 
+*** C Sharp
 
+*** New javascript modes
 
-xub-mode.el unicode browser.
-xbbcode-mode
-Twit.el
+The espresso-mode for javascript is removed, because in Emacs 23.2. It is renamed to js-mode.
 
-r425 added few new menus. Show whitespaces, line number on margin.
+There are now 2 javascript modes. One is “js-mode”, and another is “js2-mode”.
 
+js-mode is simple, traditional implementation.
+
+js2-mode by Steve Yegge has a embeded javascript parser that does on-the-fly syntax checking.
+
+*** xbbcode-mode
+BBCode is a light-weight markup used often in online forums.
+See:
+http://en.wikipedia.org/wiki/BBCode
+http://xahlee.org/emacs/xbbcode-mode.html
+
+if a file ends in “.bbcode”, it'll open in xbbcode-mode.
+
+*** new version of OCaml mode (tuareg-mode), haskell-mode. 
+
+** Other new modes.
+
+*** Twit.el for twitter. Call “twit-post” to tweet. Call “twit-show-recent-tweets” to view tweets.
+
+*** highlight-symbol.el
+
+added the package highlight-symbol.el 
+
+To highlight all words under cursor, press Ctrl+F10. Press it again to toggle. (The key may change in the future).
+
+Also, there's 
+highlight-lines-matching-regexp
+highlight-phrase
+highlight-regexp
+in emacs.
+
+Call “highlight-*” to see all emacs command names starting with “highlight-”.
+
+See also: http://xahlee.org/emacs/modernization_isearch.html 
+
+*** xub-mode.el unicode browser.
+
+A unicode browser mode. It lets you easily get info about unicode, or find unicode character.
+
+See: http://xahlee.org/emacs/unicode-browser.html
+
+*** tt
 r424 more fix to select-text-in-quote to include <> as both beginning or ending delimiter. improved the select-text-in-quote so it does correctly on more unicode matching pairs.
 
 r402 removed espresso.el because it's included in emacs 23.2 as js mode.
@@ -69,11 +111,12 @@ changed text color and background color for isearch. The defualt magenta backgro
 
 ** New features
 
+*** tt
 
 added bookmark+ mode.
 diredplus dired+.el
 added tab bar widget. Giving it another shot.
- auto-complete mode (a feature for dynamic name/template completion similar to yasnippet)
+auto-complete mode (a feature for dynamic name/template completion similar to yasnippet)
 
 check if global-subword-mode is defined before turning it on. The subword-mode seems to be a emacs 23.2 
 
@@ -82,9 +125,12 @@ r480 updated the readme file for sys wide ErgoEmacs keybinding utilities. added 
 r505 new version of dos.el
 r438 check to see if on Windows or Mac before removing GNU Emacs's middle-click default behavior.
 
-*** added a open-last-closed command.
-This is in the menu under File.
-The keyboard shortcut is Ctrl+Shift+w.
+*** New menu items
+“Options‣Show/Hide Space and Tab”
+“Options‣Show/Hide‣line number in margin”
+
+*** added a open-last-closed command
+In menu “File‣Open last closed”.
 
 ** new commands
 
