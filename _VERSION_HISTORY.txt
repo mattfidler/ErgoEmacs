@@ -1,5 +1,7 @@
 -*- coding: utf-8; mode: org; mode: visual-line -*-
 
+(If you are viewing this file in emacs, type Shift+Tab 3 times to open all headers.)
+
 This file is a version history for developers.
 
 A Release Notes for users can be based on this file.
@@ -10,14 +12,23 @@ Then, when we have a new release, we can write a Release Notes for the users, us
 
 This is just a idea how version history and release notes can be done... open to suggestions or may change depending how things works out. For example, possibly the Google Code's wiki can be used instead of this file. 
 
-This file is now based on the commit history at http://code.google.com/p/ergoemacs/updates/list . This file may not be necessary and be removed in the future.
+This file is now based on the svn log commit history.
+http://code.google.com/p/ergoemacs/updates/list  or
+or svn command 「svn log」.
 
-(If you are viewing this file in emacs, type Tab to open/close a section.  Type Shift+Tab to open/close all levels.  (type Shift+Tab 3 times for the first time to expand all.)  )
+This file may not be necessary and be removed in the future.
 
 HISTORY
 
-* Version 1.8: 2010-11-08.
+* Version 1.9: 2010-11-08.
 This version require emacs 23.2.
+
+** New version of ErgoEmacs keybinding package
+
+For release notes, see, e.g.:
+
+〔c:/Program Files (x86)/ErgoEmacs/ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕
+or
 
 ** New language modes
 
@@ -25,19 +36,32 @@ All new language modes listed in the menu “File‣Language Modes”.
 When opening a file with the lang's file name extension, proper mode will be activated.
 
 *** Erlang
+http://en.wikipedia.org/wiki/Erlang_%28programming_language%29
+
+Erlang's file name extension is “.erl”.
+
 you might need to put the following with the right path in your emacs init file.
 (setq erlang-root-dir "C:/Program Files (x86)/erl5.8.1.1")
 (add-to-list 'exec-path "C:/Program Files (x86)/erl5.8.1.1/bin")
 
 *** Scala
+http://en.wikipedia.org/wiki/Scala_%28programming_language%29
+
+Scala's file name extension is “.scala”.
 
 *** Clojure
 
+http://en.wikipedia.org/wiki/Clojure
+
+Clojure's file name extension is “.clj”.
+
 *** C Sharp
+
+C Sharp's file name extension is “.cs”.
 
 *** New javascript modes
 
-The espresso-mode for javascript is removed, because in Emacs 23.2. It is renamed to js-mode.
+The espresso-mode for javascript is removed, because it is bundled with Emacs 23.2, and is renamed to js-mode.
 
 There are now 2 javascript modes. One is “js-mode”, and another is “js2-mode”.
 
@@ -45,23 +69,73 @@ js-mode is simple, traditional implementation.
 
 js2-mode by Steve Yegge has a embeded javascript parser that does on-the-fly syntax checking.
 
+*** new version of OCaml mode (tuareg-mode), haskell-mode.
+http://en.wikipedia.org/wiki/Objective_Caml
+http://en.wikipedia.org/wiki/Haskell_%28programming_language%29
+
 *** xbbcode-mode
-BBCode is a light-weight markup used often in online forums.
-See:
 http://en.wikipedia.org/wiki/BBCode
+
+BBCode is a light-weight markup used often in online forums.
+
 http://xahlee.org/emacs/xbbcode-mode.html
 
 if a file ends in “.bbcode”, it'll open in xbbcode-mode.
 
-*** new version of OCaml mode (tuareg-mode), haskell-mode. 
+** New minor modes and features
 
-** Other new modes.
+*** added bookmark+ mode.
 
-*** Twit.el for twitter. Call “twit-post” to tweet. Call “twit-show-recent-tweets” to view tweets.
+When you call bookmark 【Ctrl+x r l】 (bookmark-bmenu-list), now it runs bookmark+ mode. It is a enhanced bookmark mode. It's under menu “Edit‣Bookmark”.
 
-*** highlight-symbol.el
+If you are not familiar with bookmark, see: http://xahlee.org/emacs/bookmark.html
 
-added the package highlight-symbol.el 
+For bookmark+ features, see: http://www.emacswiki.org/emacs/BookmarkPlus
+
+to turn it off, comment out the line
+(require 'bookmark+)
+in
+〔C:/Program Files (x86)/ErgoEmacs/ergoemacs/init_load_packages.el〕
+
+Do the same for any package you never need. On Windows, be sure you have sys admin privilege when you modify any file in the Program Files dir. See: 〈Windows Vista VirtualStore Problem〉 @ http://xahlee.org/UnixResource_dir/writ/windows_virtualstore.html
+
+*** added diredplus mode.
+
+The file management mode (dired) has been enhanced with diredplus mode.
+See: http://www.emacswiki.org/DiredPlus
+
+For basics of dired, see: http://xahlee.org/emacs/file_management.html
+
+*** auto-complete mode
+auto-complete-mode is a feature for dynamic name/template completion similar to yasnippet.
+It pops up a completion menu as you type.
+
+*** added tab bar widget the tabbar-mode
+
+By default, it is not turned on.
+
+To turn on, put the following in your emacs init file:
+
+(require 'tabbar)
+(tabbar-mode 1)
+
+It's turned off by default because in may make your emacs slower.
+
+check if global-subword-mode is defined before turning it on. The subword-mode seems to be a emacs 23.2 
+
+r480 updated the readme file for sys wide ErgoEmacs keybinding utilities. added a menu to move thru camelCaseWords.
+
+r505 new version of dos.el
+r438 check to see if on Windows or Mac before removing GNU Emacs's middle-click default behavior.
+
+
+*** 〔Twit.el〕 for twitter.
+Call “twit-post” to tweet.
+Call “twit-show-recent-tweets” to view tweets.
+
+http://www.emacswiki.org/emacs/TwIt
+
+*** highlighting word under cursor 〔highlight-symbol.el〕
 
 To highlight all words under cursor, press Ctrl+F10. Press it again to toggle. (The key may change in the future).
 
@@ -75,62 +149,30 @@ Call “highlight-*” to see all emacs command names starting with “highlight
 
 See also: http://xahlee.org/emacs/modernization_isearch.html 
 
-*** xub-mode.el unicode browser.
+*** Unicode browser 〔xub-mode.el〕
 
 A unicode browser mode. It lets you easily get info about unicode, or find unicode character.
 
+Open a file with many unicode character, then call the mode by 【Alt+a xub-mode】.
+
 See: http://xahlee.org/emacs/unicode-browser.html
 
-*** tt
-r424 more fix to select-text-in-quote to include <> as both beginning or ending delimiter. improved the select-text-in-quote so it does correctly on more unicode matching pairs.
+*** minor improvements
 
-r402 removed espresso.el because it's included in emacs 23.2 as js mode.
-
-** ErgoEmacs keybinding 
-
-r373 Add feature so copy the current line if there's no text selection. Same for cut. Other minor edits and fixes from previous checkin.
-
-r372 added UK Dvorak layout. From Issue #73. Thanks to phil.wood.phil
-
-r371 added United Kingdom layout. Thanks to 'Jorge (theturingmachine)'
-
-r507 fixed split window keys for the gb layout.
-r482 added a Danish layout. #82
-r477 removed the unbinding of Ctrl+Backspace, because that seems to be standard together with Ctrl+arrow and Ctrl+Del.
-
-r469 Added a Swedish layout.
-changed split window keys. e.g. Alt+1, Alt+2 etc for all layout. For detail and reason, see _HISTORY.txt file.
-
-A bug fix. Added ergoemacs-keyboard-quit-key to ergoemacs-layout-gb.el. Thanks to Jorge Dias.
-
-r377 Make Ctrl+p to ask confirmation before calling print-buffer.
-
-r404 Alt+n key now works in other scenarios (like when you close a file). Fixed issue #68.
-
-changed text color and background color for isearch. The defualt magenta background is low contrast, hard to read.
-
-** New features
-
-*** tt
-
-added bookmark+ mode.
-diredplus dired+.el
-added tab bar widget. Giving it another shot.
-auto-complete mode (a feature for dynamic name/template completion similar to yasnippet)
-
-check if global-subword-mode is defined before turning it on. The subword-mode seems to be a emacs 23.2 
-
-r480 updated the readme file for sys wide ErgoEmacs keybinding utilities. added a menu to move thru camelCaseWords.
-
-r505 new version of dos.el
-r438 check to see if on Windows or Mac before removing GNU Emacs's middle-click default behavior.
-
-*** New menu items
+**** New menu items
 “Options‣Show/Hide Space and Tab”
 “Options‣Show/Hide‣line number in margin”
 
-*** added a open-last-closed command
+**** added a open-last-closed command
 In menu “File‣Open last closed”.
+
+**** changed text color and background color for isearch. 
+The defualt magenta background is low contrast, hard to read.
+Not sure if this is good change. Please complain to let us know.
+
+**** select-text-in-quote knows more matching pairs
+
+Improved “select-text-in-quote” command. 【Alt+Shift+8】. It does correctly on more unicode matching pairs.
 
 ** new commands
 
