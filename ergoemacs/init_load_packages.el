@@ -19,7 +19,7 @@
 (add-to-list 'auto-mode-alist '("\\.cls\\'" . visual-basic-mode)) ;C++ class definition file
 
 ;;; csharp mode
-(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
+(autoload 'csharp-mode "csharp-mode-0.7.6" "Major mode for editing C# code." t)
 (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode))
 
 ;;; for editing Windows's cmd.exe's script; batch, “.bat” file mode.
