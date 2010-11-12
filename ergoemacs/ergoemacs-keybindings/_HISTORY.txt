@@ -2,7 +2,41 @@
 
 # when viewing this file in emacs, press Shift+Tab 3 times to expand all headings.
 
-Note: When talking about keys, QWERTY is used to indicate key position on the keyboard, unless otherwise specified. For example, “Changed M+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”).
+Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed Alt+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”). But when talking about code, such as “remap M-r to something”, that means the letter r on whatever layout.
+
+* version x.x.x, xxxx-xx-xx next release draft. (put whatever changes here since last release)
+
+
+*** copy/cut current line
+
+If there's no text selection, copy 【Alt+c】 will copy the current line. Same for cut.
+
+*** More international layouts
+
+Added UK layout. Thanks to Jorge Dias (aka theturingmachine)
+Added UK Dvorak layout. Thanks to Phillip Wood
+Added Danish layout. Thanks to Michael Budde
+Added Swedish layout. Thanks to Kristian Hellquist
+
+You can see all supported layouts and their contributors at, e.g.:
+〔c:/Program Files (x86)/ErgoEmacs/ergoemacs/ergoemacs-keybindings/〕
+
+See also:
+• 〈Dvorak, Maltron, Colemak, NEO, Bépo, Turkish-F, Keyboard Layouts Fight!〉
+http://xahlee.org/kbd/dvorak_and_all_keyboard_layouts.html
+
+r507 fixed split window keys for the gb layout.
+r477 removed the unbinding of Ctrl+Backspace, because that seems to be standard together with Ctrl+arrow and Ctrl+Del.
+
+changed split window keys. e.g. Alt+1, Alt+2 etc for all layout. For detail and reason, see _HISTORY.txt file.
+
+A bug fix. Added ergoemacs-keyboard-quit-key to ergoemacs-layout-gb.el. Thanks to Jorge Dias.
+
+r377 Make Ctrl+p to ask confirmation before calling print-buffer.
+
+r404 Alt+n key now works in other scenarios (like when you close a file). Fixed issue #68.
+
+** added ergoemacs-layout-pt-nativo.el
 
 * version 5.3.6, 2010-11-05
 
