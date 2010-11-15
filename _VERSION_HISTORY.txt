@@ -18,7 +18,7 @@ or svn command 「svn log」.
 
 HISTORY
 
-* Version 1.9: 2010-11-08.
+* Version 1.9.0: 2010-11-08.
 This version require emacs 23.2.
 
 ** New version of ErgoEmacs keybinding package
