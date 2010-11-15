@@ -8,6 +8,8 @@ Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherw
 
 ** Added open-in-desktop command with key 【Ctrl+Shift+O】.
 
+** Added open-last-closed command.
+
 ** More international layouts
 
 Added Danish layout. Thanks to Michael Budde
