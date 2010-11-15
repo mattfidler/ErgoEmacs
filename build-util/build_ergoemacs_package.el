@@ -1,18 +1,31 @@
 ; -*- coding: utf-8 -*-
 
-;; 2009-10-01
-;; run this file to build a ErgoEmacs package for installation on any emacs binary.
+;; 2009-10-01, 2010-11-15
+;; This elisp script builds a ErgoEmacs elisp package.
+;; Effectively, it creates a new zip file, nothing else.
 
-;; Steps:
-;; copy the whole dir into some dest dir.
+;; What does it do:
+;; copy the whole “ergoemacs” dir into some dest dir. The “ergoemacs” is the dir from root checked out from svn.
 ;; remove all .svn dirs.
 ;; remove other files and dir such as Makefile and win32-setup etc.
+
+;; HOW TO RUN IT
+;; First, change the version number in variable “destDir”.
+;; then, just eval-buffer.
+;; The result will be a new zip file (and a unzipped dir) at the root of your svn checkout.
+;; For example, if your svn checkout path is
+;;   c:/Users/xah/ErgoEmacs_Source
+;; then the following are created
+;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.0
+;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.0.zip
+
+;; This script requires unix “find”, “rm”, “cp”, etc.
 
 (defvar sourceDir nil "The ergoemacs source code dir in repository.")
 (setq sourceDir "../")
 
 (defvar destDir nil "The output dir.")
-(setq destDir "../../ergoemacs_1.6.2/")
+(setq destDir "../../ergoemacs_1.9.0/")
 
 
 ;; main
