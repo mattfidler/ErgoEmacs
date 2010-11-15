@@ -169,11 +169,11 @@
 (require 'bookmark+)
 
 ;; add a tab bar widget
-;; (require 'tabbar)
-;; (tabbar-mode 1)
-;; 2010-09-30. Turned off for now. problem: sometimes after a while, tabbar mode will slow you down. i.e. set key repeat rate to highest in OS. Then, holding down a key will show jumpy behavior.
+(require 'tabbar)
+(tabbar-mode 1)
+;; 2010-09-30. problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
 
-;; enhanced file manager. dired plus
+;; enhanced “directory viewer”/“file manager” (diredplus mode)
 (require 'dired+)
 
 ;; Highlight occurrence of current word, and move cursor to next/prev occurrence
