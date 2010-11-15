@@ -47,6 +47,7 @@
 ;; ergoemacs-layout-sv.el Contributor: Kristian Hellquist
 ;; ergoemacs-layout-us.el Contributor: David Capello, Xah Lee
 ;; ergoemacs-layout-colemak.el Contributor: Ivan Haralamov ( postivan gmail.com ), “vockets”, Graham Poulter.
+;; ergoemacs-layout-pt-nativo.el Contributor: Xavier Pinho
 
 ;;; --------------------------------------------------
 
@@ -64,17 +65,21 @@
 ;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
 ;; enviroment variable (this variable is set by ErgoEmacs runner)
 (defvar ergoemacs-keyboard-layout (getenv "ERGOEMACS_KEYBOARD_LAYOUT")
-  "It is set with the value of ERGOEMACS_KEYBOARD_LAYOUT
-enviroment variable.  The possible values are:
+  "Specifies which keyboard layout to use.
+This is a mirror of the environment variable ERGOEMACS_KEYBOARD_LAYOUT
+Valid values are:
 
-  us = US English QWERTY keyboard layout
-  dv = US-Dvorak keyboard layout
-  gb = UK keyboard layout
-  sp = Spanish keyboard layout
-  it = Italian keyboard layout
-  sv = Swedish keyboard layout
-  da = Danish keyboard layout
-  colemak = Ergonomic Colemak keyboard layout")
+ “us” (US English QWERTY)
+ “dv” (US-Dvorak)
+ “gb” (UK)
+ “gb-dv” (UK Dvorak)
+ “sp” (Spanish)
+ “it” (Italian)
+ “sv” (Swedish)
+ “da” (Danish)
+ “colemak” (Ergonomic Colemak URL `http://colemak.com/')
+ “pt-nativo” (Ergonomic PT-Nativo URL `http://tecladobrasileiro.com.br')"
+)
 
 (cond
  ((string= ergoemacs-keyboard-layout "us")
@@ -97,6 +102,8 @@ enviroment variable.  The possible values are:
   (load "ergoemacs-layout-da"))
  ((string= ergoemacs-keyboard-layout "colemak")
   (load "ergoemacs-layout-colemak"))
+((string= ergoemacs-keyboard-layout "pt-nativo")
+  (load "ergoemacs-layout-pt-nativo.el"))
  (t ; US qwerty by default
   (load "ergoemacs-layout-us"))
  )
