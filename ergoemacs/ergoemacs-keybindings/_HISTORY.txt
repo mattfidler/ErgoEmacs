@@ -4,48 +4,30 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed Alt+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”). But when talking about code, such as “remap M-r to something”, that means the letter r on whatever layout.
 
-* version x.x.x, xxxx-xx-xx next release draft. (put whatever changes here since last release)
+* version 5.3.7, 2010-11-15
 
+** Added open-in-desktop command with key 【Ctrl+Shift+O】.
 
-*** copy/cut current line
+** More international layouts
 
-If there's no text selection, copy 【Alt+c】 will copy the current line. Same for cut.
-
-*** More international layouts
-
-Added UK layout. Thanks to Jorge Dias (aka theturingmachine)
-Added UK Dvorak layout. Thanks to Phillip Wood
 Added Danish layout. Thanks to Michael Budde
-Added Swedish layout. Thanks to Kristian Hellquist
+Added ergoemacs-layout-pt-nativo.el. Thanks to Xavier Pinho
 
-You can see all supported layouts and their contributors at, e.g.:
-〔c:/Program Files (x86)/ErgoEmacs/ergoemacs/ergoemacs-keybindings/〕
+You can see all supported layouts and their contributors in the directory 〔ergoemacs-keybindings〕.
 
-See also:
-• 〈Dvorak, Maltron, Colemak, NEO, Bépo, Turkish-F, Keyboard Layouts Fight!〉
-http://xahlee.org/kbd/dvorak_and_all_keyboard_layouts.html
+See also: 〈Dvorak, Maltron, Colemak, NEO, Bépo, Turkish-F, Keyboard Layouts Fight!〉 @ http://xahlee.org/kbd/dvorak_and_all_keyboard_layouts.html
 
-r507 fixed split window keys for the gb layout.
-r477 removed the unbinding of Ctrl+Backspace, because that seems to be standard together with Ctrl+arrow and Ctrl+Del.
+** minor fixes
 
-changed split window keys. e.g. Alt+1, Alt+2 etc for all layout. For detail and reason, see _HISTORY.txt file.
+*** 【Ctrl+Backspace】 for backward-kill-word
 
-A bug fix. Added ergoemacs-keyboard-quit-key to ergoemacs-layout-gb.el. Thanks to Jorge Dias.
+This is a standard key together with 【Ctrl+Arrow】 and 【Ctrl+Del】.
 
-r377 Make Ctrl+p to ask confirmation before calling print-buffer.
+r477 Technically, removed the unbinding of <C-backspace>.
 
-r404 Alt+n key now works in other scenarios (like when you close a file). Fixed issue #68.
+*** Added ergoemacs-keyboard-quit-key to ergoemacs-layout-gb.el
 
-** added ergoemacs-layout-pt-nativo.el
-
-* version 5.3.6, 2010-11-05
-
-** Added open-in-desktop command with key Ctrl+Shift+O.
-
-* version 5.3.5, 2010-08-24
-
-** Added a Danish layout.
-Contributed by Michael Budde.
+A bug fix. Thanks to Jorge Dias.
 
 * version 5.3.4, 2010-08-16
 
