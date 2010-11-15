@@ -18,7 +18,7 @@ Your emacs should be version 23.2 or later. (To find out what is the version of 
 
 ** Mac
 
-For Mac, you can download emacs 23.x at
+For Mac, you can download emacs 23.2 at
 http://emacsformacosx.com/
 
 If you are using Carbon Emacs ( http://homepage.mac.com/zenitani/emacs-e.html ), as of 2010-06-12, it is not based on emacs 23.2.
@@ -28,45 +28,56 @@ If you are using Aquamacs Emacs ( http://aquamacs.org/ ), the latest version on 
 * Installation
 
 ** 1. Unzip the package.
- Example:
+Example:
 
- unzip ergoemacs_1.7.1.zip
+ unzip ergoemacs_1.9.0.zip
 
- (The version number is just a example. Yours may be higher.)
+(The version number is just a example. Yours may be higher.)
 
 ** 2. Put the package in your emacs library dir.
 
- Move ergoemacs folder into the directory at “~/.emacs.d/”
+Move ergoemacs folder into the directory at 〔~/.emacs.d/〕
 
- So, you should have
- “~/.emacs.d/ergoemacs_1.7.1/”
+So, you should have 〔~/.emacs.d/ergoemacs_1.9.0/〕
 
- If the directory “~/.emacs.d/” does not exist, create it.
+If the directory 〔~/.emacs.d/〕 does not exist, create it.
 
 ** 3. In your “~/.emacs”, put the following lines:
 
 ; Optional
 ; (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; for Dvorak keyboard
 
-; Optional. Swap “Ctrl+x” and “Ctrl+t”, so it's easier to type on Dvorak layout
+; Optional. Swap 【Ctrl+x】 and 【Ctrl+t】, so it's easier to type on Dvorak layout
 ; (keyboard-translate ?\C-t ?\C-x) (keyboard-translate ?\C-x ?\C-t)
 
 ; Options for Mac.
 ; (setq mac-command-modifier 'meta)
 ; (setq mac-option-modifier 'hyper)
 
-(load-file "~/.emacs.d/ergoemacs_1.7.1/site-lisp/site-start.el")
+(load-file "~/.emacs.d/ergoemacs_1.9.0/site-lisp/site-start.el")
 
 * Using Different Keyboard Layout (optional)
 
 Place ONE of the following line in your emacs init file (~/.emacs):
 
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us") ; US layout
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; US Dvorak layout
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "gb") ; UK layout
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "gb-dv") ; UK Dvorak layout
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "us") ; US
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; US Dvorak (Ergonomic)
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "gb") ; UK
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "gb-dv") ; UK Dvorak
+
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "sp") ; Spanish (Spain) (aka “Spanish (International sort)”)
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "it") ; Italian layout
-(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "colemak") ; Colemak layout
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "it") ; Italian
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "sv") ; Swedish
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "da") ; Danish
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "pt-nativo") ; (Ergonomic) PT-Nativo from http://tecladobrasileiro.com.br
+
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "colemak") ; (Ergonomic) Colemak http://colemak.com/
 
 It should be placed before you load the site-start.el file.
