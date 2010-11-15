@@ -16,8 +16,6 @@ This file is now based on the svn log commit history.
 http://code.google.com/p/ergoemacs/updates/list
 or svn command 「svn log」.
 
-This file may not be necessary and be removed in the future.
-
 HISTORY
 
 * Version 1.9: 2010-11-08.
@@ -25,11 +23,26 @@ This version require emacs 23.2.
 
 ** New version of ErgoEmacs keybinding package
 
-For release notes, see the folder:
+For release notes, see the folder 〔ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕 or
+http://code.google.com/p/ergoemacs/source/browse/trunk/ergoemacs/ergoemacs-keybindings/_HISTORY.txt-
+*** release Highlights:
+**** Many new international layouts:
+ US
+ US Dvorak (Ergonomic)
+ UK
+ UK Dvorak
+ Spanish (Spain) (aka “Spanish (International sort)”)
+ Italian
+ Swedish
+ Danish
+ (Ergonomic) PT-Nativo from http://tecladobrasileiro.com.br
+ (Ergonomic) Colemak http://colemak.com/
+**** There's open-in-desktop command with key 【Ctrl+Shift+O】.
+**** There's a open-last-closed command.
 
-〔ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕
-or
-http://code.google.com/p/ergoemacs/source/browse/trunk/ergoemacs/ergoemacs-keybindings/_HISTORY.txt
+**** The new keys for split window related commands are 【Ctrl+3】, 【Ctrl+4】, 【Ctrl+Shift+4】
+
+**** 【Ctrl+p】 now asks for confirmation before printing
 
 ** New language modes
 
@@ -91,7 +104,7 @@ if a file ends in “.bbcode”, it'll open in xbbcode-mode.
 
 ** New minor modes and features
 
-*** enhanced bookmark feature the bookmark+ mode.
+*** Enhanced bookmark feature the bookmark+ mode.
 
 When you call bookmark 【Ctrl+x r l】 (bookmark-bmenu-list), now it runs bookmark+ mode. It is a enhanced bookmark mode. It's under menu “Edit‣Bookmark”.
 
@@ -106,14 +119,14 @@ in
 
 Do the same for any package you never need. On Windows, be sure you have sys admin privilege when you modify any file in the Program Files dir. See: 〈Windows Vista VirtualStore Problem〉 @ http://xahlee.org/UnixResource_dir/writ/windows_virtualstore.html
 
-*** enhanced directory viewer feature (dired+).
+*** Enhanced directory viewer feature (dired+).
 
 The file management mode (dired) has been enhanced with diredplus mode.
 See: http://www.emacswiki.org/DiredPlus
 
 For basics of dired, see: http://xahlee.org/emacs/file_management.html
 
-*** enhanced feature of name completition. (auto-complete-mode)
+*** Enhanced feature of name completition. (auto-complete-mode)
 auto-complete-mode is a feature for dynamic name/template completion similar to yasnippet.
 It pops up a completion menu as you type.
 
@@ -167,7 +180,7 @@ When you work in html-mode, there are now 84 templates for tag completion.
 
 For example, type “p” then Tab, then it becomes “<p></p>” with your cursor in between the tags.
 
-For yasnippet basics, see: http://xahlee.org/emacs/emacs_templates.html
+For basics use, see: http://xahlee.org/emacs/emacs_templates.html
 
 *** Template set for emacs lisp (for yasnippet mode).
 
@@ -179,7 +192,7 @@ When in emacs-lisp-mode, for example, type “l”, then Tab, then it becomes
   
   )
 
-For yasnippet basics, see: http://xahlee.org/emacs/emacs_templates.html
+For basics use, see: http://xahlee.org/emacs/emacs_templates.html
 
 ** other Misc improvements
 
@@ -195,7 +208,7 @@ Convenient when you closed a buffer by mistake. This is similar to browser's 【
 
 Press 【Ctrl+Shift+O】 to open the current directory in operating system's desktop.
 
-*** Operating-System-wide ErgoEmacs keybindings
+*** Operating-System-wide ErgoEmacs keybindings utilities
 
 There are several utilities that sets your OS to use ErgoEmacs keybinding.
 
@@ -212,7 +225,7 @@ Not sure if this is good change. Please complain to let us know.
 Improved “select-text-in-quote” command. 【Alt+Shift+8】. It does correctly on more unicode matching pairs.
 
 **** r505 new version of dos.el
-**** r438 check to see if on Windows or Mac before removing GNU Emacs's middle-click default behavior.
+**** r438 mouse middle-click respect linux default behavior.
 
 On Windows or OSX, middle click does nothing.
 On Linux, middle click now does default behavior of paste.
@@ -229,12 +242,10 @@ xfrp_find_replace_pairs.el is a elisp lib that makes multi-pair string/region re
 
 See: http://xahlee.org/emacs/elisp_replace_string_region.html
 
-** minor fixes.
+**** r370 Now close-current-buffer function selects the next user buffer (not the previous one).  The next buffer is the more recent used one.
 
-*** r370 Now close-current-buffer function selects the next user buffer (not the previous one).  The next buffer is the more recent used one.
-
-*** r369 Added hook for ido-mode. ido-mode should not conflict with ErgoEmacs keybindings.
-*** r368 AutoHotkey xahk-mode. fixed a problem with syntax coloring on backslash. Issue 66.
+**** r369 Added hook for ido-mode. ido-mode should not conflict with ErgoEmacs keybindings.
+**** r368 AutoHotkey xahk-mode. fixed a problem with syntax coloring on backslash. Issue 66.
 
 * Version 1.7: 2010-01-28.
 
