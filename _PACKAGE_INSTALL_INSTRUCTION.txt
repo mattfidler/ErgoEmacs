@@ -44,17 +44,24 @@ If the directory 〔~/.emacs.d/〕 does not exist, create it.
 
 ** 3. In your “~/.emacs”, put the following lines:
 
-; Optional
-; (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "dv") ; for Dvorak keyboard
-
-; Optional. Swap 【Ctrl+x】 and 【Ctrl+t】, so it's easier to type on Dvorak layout
-; (keyboard-translate ?\C-t ?\C-x) (keyboard-translate ?\C-x ?\C-t)
-
-; Options for Mac.
-; (setq mac-command-modifier 'meta)
-; (setq mac-option-modifier 'hyper)
-
 (load-file "~/.emacs.d/ergoemacs_1.9.0/site-lisp/site-start.el")
+
+* Problems?
+
+If you some some strange error, such as:
+“Wrong number of arguments: called-interactively-p, 1”
+
+it might mean there's a bug in elisp type compile incompability.
+(see: http://xahlee.org/emacs/elisp_byte_compile_problem.html )
+
+You can recompile all your elisp files. To do so, open the file
+〔ergoemacs/build-util/byte-compile_lisp_files.el〕
+then call eval-buffer.
+
+If you still have a problem, post a question at:
+http://groups.google.com/group/ergoemacs
+or file a bug report at:
+http://code.google.com/p/ergoemacs/issues/list
 
 * Using Different Keyboard Layout (optional)
 
