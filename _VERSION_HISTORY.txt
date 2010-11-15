@@ -13,7 +13,7 @@ Then, when we have a new release, we can write a Release Notes for the users, us
 This is just a idea how version history and release notes can be done... open to suggestions or may change depending how things works out. For example, possibly the Google Code's wiki can be used instead of this file. 
 
 This file is now based on the svn log commit history.
-http://code.google.com/p/ergoemacs/updates/list  or
+http://code.google.com/p/ergoemacs/updates/list
 or svn command 「svn log」.
 
 This file may not be necessary and be removed in the future.
@@ -25,10 +25,11 @@ This version require emacs 23.2.
 
 ** New version of ErgoEmacs keybinding package
 
-For release notes, see, e.g.:
+For release notes, see the folder:
 
-〔c:/Program Files (x86)/ErgoEmacs/ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕
+〔ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕
 or
+http://code.google.com/p/ergoemacs/source/browse/trunk/ergoemacs/ergoemacs-keybindings/_HISTORY.txt
 
 ** New language modes
 
@@ -69,14 +70,20 @@ js-mode is simple, traditional implementation.
 
 js2-mode by Steve Yegge has a embeded javascript parser that does on-the-fly syntax checking.
 
-*** new version of OCaml mode (tuareg-mode), haskell-mode.
+*** new version of mode for OCaml (tuareg-mode)
 http://en.wikipedia.org/wiki/Objective_Caml
+
+OCaml's file name extension is “.ml”.
+
+*** new version of haskell-mode
 http://en.wikipedia.org/wiki/Haskell_%28programming_language%29
 
-*** xbbcode-mode
+Haskell's file name extension is “.hs”.
+
+*** BBCode mode (xbbcode-mode)
 http://en.wikipedia.org/wiki/BBCode
 
-BBCode is a light-weight markup used often in online forums.
+BBCode is a light-weight markup used often in online forums that are written in PHP.
 
 http://xahlee.org/emacs/xbbcode-mode.html
 
@@ -84,7 +91,7 @@ if a file ends in “.bbcode”, it'll open in xbbcode-mode.
 
 ** New minor modes and features
 
-*** added bookmark+ mode.
+*** enhanced bookmark feature the bookmark+ mode.
 
 When you call bookmark 【Ctrl+x r l】 (bookmark-bmenu-list), now it runs bookmark+ mode. It is a enhanced bookmark mode. It's under menu “Edit‣Bookmark”.
 
@@ -99,43 +106,48 @@ in
 
 Do the same for any package you never need. On Windows, be sure you have sys admin privilege when you modify any file in the Program Files dir. See: 〈Windows Vista VirtualStore Problem〉 @ http://xahlee.org/UnixResource_dir/writ/windows_virtualstore.html
 
-*** added diredplus mode.
+*** enhanced directory viewer feature (dired+).
 
 The file management mode (dired) has been enhanced with diredplus mode.
 See: http://www.emacswiki.org/DiredPlus
 
 For basics of dired, see: http://xahlee.org/emacs/file_management.html
 
-*** auto-complete mode
+*** enhanced feature of name completition. (auto-complete-mode)
 auto-complete-mode is a feature for dynamic name/template completion similar to yasnippet.
 It pops up a completion menu as you type.
 
-*** added tab bar widget the tabbar-mode
+For screenshots and doc, see: http://cx4a.org/software/auto-complete/
 
-By default, it is not turned on.
+To turn it off, put this in your emacs init file:
+(auto-complete-mode 0)
 
-To turn on, put the following in your emacs init file:
+*** Added tab bar GUI (tabbar-mode)
 
-(require 'tabbar)
-(tabbar-mode 1)
+This adds graphical user intereface of Tabs. Each tab is a emacs buffer.
 
-It's turned off by default because in may make your emacs slower.
+To turn it off, put the following in your emacs init file:
 
-check if global-subword-mode is defined before turning it on. The subword-mode seems to be a emacs 23.2 
+(tabbar-mode 0)
 
-r480 updated the readme file for sys wide ErgoEmacs keybinding utilities. added a menu to move thru camelCaseWords.
-
-r505 new version of dos.el
-r438 check to see if on Windows or Mac before removing GNU Emacs's middle-click default behavior.
-
+For some discussion, see: http://www.emacswiki.org/emacs/TabBarMode
 
 *** 〔Twit.el〕 for twitter.
 Call “twit-post” to tweet.
 Call “twit-show-recent-tweets” to view tweets.
 
-http://www.emacswiki.org/emacs/TwIt
+See: http://www.emacswiki.org/emacs/TwIt
+http://en.wikipedia.org/wiki/Twitter
 
-*** highlighting word under cursor 〔highlight-symbol.el〕
+*** A Unicode browser 〔xub-mode.el〕
+
+A unicode browser mode. It lets you easily get info about Unicode characters, or finding the character.
+
+Open a file with many unicode character, then call the mode by 【Alt+a xub-mode】.
+
+See: http://xahlee.org/emacs/unicode-browser.html
+
+*** Highlighting word under cursor 〔highlight-symbol.el〕
 
 To highlight all words under cursor, press Ctrl+F10. Press it again to toggle. (The key may change in the future).
 
@@ -149,24 +161,49 @@ Call “highlight-*” to see all emacs command names starting with “highlight
 
 See also: http://xahlee.org/emacs/modernization_isearch.html 
 
-*** Unicode browser 〔xub-mode.el〕
+*** Template set for HTML (with yasnippet mode).
 
-A unicode browser mode. It lets you easily get info about unicode, or find unicode character.
+When you work in html-mode, there are now 84 templates for tag completion.
 
-Open a file with many unicode character, then call the mode by 【Alt+a xub-mode】.
+For example, type “p” then Tab, then it becomes “<p></p>” with your cursor in between the tags.
 
-See: http://xahlee.org/emacs/unicode-browser.html
+For yasnippet basics, see: http://xahlee.org/emacs/emacs_templates.html
 
-*** minor improvements
+*** Template set for emacs lisp (for yasnippet mode).
 
-**** New menu items
-“Options‣Show/Hide Space and Tab”
-“Options‣Show/Hide‣line number in margin”
+When you work in emacs lisp (emacs-lisp-mode), there are now ~140 templates for function completion.
 
-**** added a open-last-closed command
-In menu “File‣Open last closed”.
+When in emacs-lisp-mode, for example, type “l”, then Tab, then it becomes
 
-**** changed text color and background color for isearch. 
+(let ( )
+  
+  )
+
+For yasnippet basics, see: http://xahlee.org/emacs/emacs_templates.html
+
+** other Misc improvements
+
+*** New menu items and commands
+
+**** “Options‣Show/Hide Space and Tab”
+**** “Options‣Show/Hide‣line number in margin”
+**** “Options‣move through camelCaseWords”
+**** New open-last-closed command “File‣Open last closed”.
+Convenient when you closed a buffer by mistake. This is similar to browser's 【Ctrl+Shift+t】.
+
+**** Command open-in-desktop 【Ctrl+Shift+O】.
+
+Press 【Ctrl+Shift+O】 to open the current directory in operating system's desktop.
+
+*** Operating-System-wide ErgoEmacs keybindings
+
+There are several utilities that sets your OS to use ErgoEmacs keybinding.
+
+To install them, see: http://xahlee.org/emacs/ergonomic_emacs_keybinding_system-wide.html
+
+*** minor fixes
+
+**** Changed text color and background color for isearch. 
 The defualt magenta background is low contrast, hard to read.
 Not sure if this is good change. Please complain to let us know.
 
@@ -174,26 +211,29 @@ Not sure if this is good change. Please complain to let us know.
 
 Improved “select-text-in-quote” command. 【Alt+Shift+8】. It does correctly on more unicode matching pairs.
 
-** new commands
+**** r505 new version of dos.el
+**** r438 check to see if on Windows or Mac before removing GNU Emacs's middle-click default behavior.
 
-r524 added the key Ctrl+Shift+O for open-in-desktop.
+On Windows or OSX, middle click does nothing.
+On Linux, middle click now does default behavior of paste.
 
+To set middle click to anything you want, add this in your emacs init file:
+(global-set-key (kbd "<mouse-2>") 'commandName) ;; mouse middle click
+**** r436 new version of pp-c-l.el
+This will render the FORM FEED (ascii 12; ^L) character as a horizontal line.
+See: http://www.emacswiki.org/emacs/PrettyControlL
 
-** yasnippet mode.
-Many improvement to the yasnippet templates for
-html, elisp, lsl.
+**** xfrp_find_replace_pairs.el
 
-** elisp utility
-minor improvement on the xfrp find/replace lib. string replacement
+xfrp_find_replace_pairs.el is a elisp lib that makes multi-pair string/region replacement easier.
 
-r436 new version of pp-c-l.el
+See: http://xahlee.org/emacs/elisp_replace_string_region.html
 
 ** minor fixes.
 
 *** r370 Now close-current-buffer function selects the next user buffer (not the previous one).  The next buffer is the more recent used one.
 
 *** r369 Added hook for ido-mode. ido-mode should not conflict with ErgoEmacs keybindings.
-
 *** r368 AutoHotkey xahk-mode. fixed a problem with syntax coloring on backslash. Issue 66.
 
 * Version 1.7: 2010-01-28.
