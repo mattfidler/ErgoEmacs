@@ -186,13 +186,11 @@ For basics use, see: http://xahlee.org/emacs/emacs_templates.html
 
 When you work in emacs lisp (emacs-lisp-mode), there are now ~140 templates for function completion.
 
-When in emacs-lisp-mode, for example, type “l”, then Tab, then it becomes
+See: 〈Yasnippet Templates for Emacs Lisp Mode〉 http://xahlee.org/emacs/elisp_idiom_templates.html
 
-(let ( )
-  
-  )
+*** Abbrev set for coding emacs lisp
 
-For basics use, see: http://xahlee.org/emacs/emacs_templates.html
+About 80 abbrevations. See http://xahlee.org/emacs/elisp_idiom_templates.html
 
 ** other Misc improvements
 
