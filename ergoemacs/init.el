@@ -16,7 +16,8 @@
 (load "init_version")
 (load "init_functions")
 (load "init_settings")
-(load "init_aliases.el")
+(load "init_aliases")
+(load "init_abbrevs-lisp-mode")
 
 ;; ErgoEmacs shortcuts and menus
 (load "init_keybinding")
