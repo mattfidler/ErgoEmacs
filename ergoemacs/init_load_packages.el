@@ -100,43 +100,43 @@
 ; redo mode
 (require 'redo)
 
-;; Hunspell
-(when (string-equal system-type "windows-nt")
-  (when (or (file-exists-p "../hunspell")
-            (file-exists-p "C:\\Program Files (x86)\\ErgoEmacs\\hunspell")
-            )
-    (progn
-      (add-to-list 'load-path
-       (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
-      (require 'rw-hunspell)
-      (rw-hunspell-setup)
-      ) ) ) 
-
-;; ;; Hunspell. TODO: See http://code.google.com/p/ergoemacs/issues/detail?id=51
-;; (when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
-;; (progn
+;; ;; Hunspell
+;; (when (string-equal system-type "windows-nt")
+;;   (when (or (file-exists-p "../hunspell")
+;;             (file-exists-p "C:\\Program Files (x86)\\ErgoEmacs\\hunspell")
+;;             )
+;;     (progn
 ;;       (add-to-list 'load-path
 ;;        (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
 ;;       (require 'rw-hunspell)
 ;;       (rw-hunspell-setup)
-;;       )
-;; )
+;;       ) ) ) 
 
-;; speck-mode. To use, call speck-mode.
-;; TODO: http://code.google.com/p/ergoemacs/issues/detail?id=56
-;; http://code.google.com/p/ergoemacs/issues/detail?id=74
-(autoload 'speck-mode "speck" "Background spell checking mode, alternative to flyspell-mode." t)
-(setq speck-engine (quote Hunspell))
-(setq speck-hunspell-language-options
-      (quote (("da" utf-8 nil t nil)
-              ("de" iso-8859-1 nil t nil)
-              ("en" utf-8 nil nil nil) 
-              ("fr" iso-8859-1 nil nil nil)
-              ("it" iso-8859-1 nil nil nil)
-              ("ru" koi8-r nil nil nil))))
-(setq speck-hunspell-program (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/hunspell.exe"))
-(setq speck-hunspell-library-directory (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/"))
-(setq speck-hunspell-default-dictionary-name "en_US")
+;; ;; ;; Hunspell. TODO: See http://code.google.com/p/ergoemacs/issues/detail?id=51
+;; ;; (when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
+;; ;; (progn
+;; ;;       (add-to-list 'load-path
+;; ;;        (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
+;; ;;       (require 'rw-hunspell)
+;; ;;       (rw-hunspell-setup)
+;; ;;       )
+;; ;; )
+
+;; ;; speck-mode. To use, call speck-mode.
+;; ;; TODO: http://code.google.com/p/ergoemacs/issues/detail?id=56
+;; ;; http://code.google.com/p/ergoemacs/issues/detail?id=74
+;; (autoload 'speck-mode "speck" "Background spell checking mode, alternative to flyspell-mode." t)
+;; (setq speck-engine (quote Hunspell))
+;; (setq speck-hunspell-language-options
+;;       (quote (("da" utf-8 nil t nil)
+;;               ("de" iso-8859-1 nil t nil)
+;;               ("en" utf-8 nil nil nil) 
+;;               ("fr" iso-8859-1 nil nil nil)
+;;               ("it" iso-8859-1 nil nil nil)
+;;               ("ru" koi8-r nil nil nil))))
+;; (setq speck-hunspell-program (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/hunspell.exe"))
+;; (setq speck-hunspell-library-directory (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/"))
+;; (setq speck-hunspell-default-dictionary-name "en_US")
 
 ;; yasnippet template system
 (add-to-list 'load-path
