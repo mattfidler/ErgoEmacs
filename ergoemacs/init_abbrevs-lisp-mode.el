@@ -77,8 +77,6 @@
  ("rsb" "re-search-backward" nil 0)
  ("rsf" "re-search-forward" nil 0)
  ("s" "setq" nil 0)
- ("sb" "save-buffer" nil 0)
- ("sb" "search-backward" nil 0)
  ("sb" "set-buffer" nil 0)
  ("sbr" "search-backward-regexp" nil 0)
  ("sc" "shell-command" nil 0)
