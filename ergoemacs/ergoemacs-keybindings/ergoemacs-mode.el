@@ -207,6 +207,7 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "C-S-n") 'make-frame-command)
 (define-key ergoemacs-keymap (kbd "C-o") 'find-file)
 (define-key ergoemacs-keymap (kbd "C-S-o") 'open-in-desktop)
+(define-key ergoemacs-keymap (kbd "C-S-t") 'open-last-closed)
 (define-key ergoemacs-keymap (kbd "C-w") 'close-current-buffer)
 (define-key ergoemacs-keymap (kbd "C-s") 'save-buffer)
 (define-key ergoemacs-keymap (kbd "C-S-s") 'write-file)

@@ -4,6 +4,10 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed Alt+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”). But when talking about code, such as “remap M-r to something”, that means the letter r on whatever layout.
 
+* version x.x.x, yyyy-mm-dd
+
+2010-11-18 added a hotkey Ctrl+Shift+t for open-last-closed in ErgoEmacs keybinding package.
+
 * version 5.3.7, 2010-11-15
 
 ** Added open-in-desktop command with key 【Ctrl+Shift+O】.
