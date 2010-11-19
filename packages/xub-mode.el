@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; version 1.1.3, 2010-11-18 • Fixed a bug where describe-major-mode generates a error.
 ;; version 1.1.2, 2010-08-13 • renamed file frome “xub-unicode-browser-mode.el” to “xub-mode.el”. The feature name is also renamed from “xub-unicode-browser-mode” to “xub-mode”.
 ;; version 1.1.1, 2010-06-21 • Added xub-forward-to-space and xub-backward-to-space.
 ;; version 1.1, 2010-06-20 • Fixed first-mouse-click problem. (changed keybinding from "<down-mouse-1>" to "<mouse-1>"). • Added a menu. • Added commands xub-zoom-in xub-zoom-out.
@@ -64,7 +65,7 @@
 
 ;;; Code:
 
-(setq xub-version "1.1.2")
+(setq xub-version "1.1.3")
 
 (defvar xub-map nil "Keymap for xub")
 
@@ -193,8 +194,8 @@ You need emacs 23.x to enjoy this mode. Because emacs 22's
   (interactive)
 ;  (kill-all-local-variables)
   
-  (setq major-mode 'xub)
-  (setq mode-name "xub Unicode Browser")
+  (setq major-mode 'xub-mode)
+  (setq mode-name "XUB Unicode Browser")
   (use-local-map xub-map)
   
   (run-mode-hooks 'xub-hook))
