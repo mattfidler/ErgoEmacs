@@ -16,8 +16,8 @@
 ;; For example, if your svn checkout path is
 ;;   c:/Users/xah/ErgoEmacs_Source
 ;; then the following are created
-;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.0
-;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.0.zip
+;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.1
+;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.1.zip
 
 ;; This script requires unix “find”, “rm”, “cp”, etc.
 
@@ -25,7 +25,7 @@
 (setq sourceDir "../")
 
 (defvar destDir nil "The output dir.")
-(setq destDir "../../ergoemacs_1.9.0/")
+(setq destDir "../../ergoemacs_1.9.1/")
 
 
 ;; main
