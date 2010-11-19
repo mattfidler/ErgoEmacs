@@ -18,6 +18,10 @@ or svn command 「svn log」.
 
 HISTORY
 
+* Version 1.9.1: 2010-11-08.
+
+** Added 【Ctrl+Shift+t】 for open-last-closed. (this follows browser hotkey convention)
+
 * Version 1.9.0: 2010-11-08.
 This version require emacs 23.2.
 
@@ -174,7 +178,7 @@ Call “highlight-*” to see all emacs command names starting with “highlight
 
 See also: http://xahlee.org/emacs/modernization_isearch.html 
 
-*** Template set for HTML (with yasnippet mode).
+*** Template set for HTML (in yasnippet mode).
 
 When you work in html-mode, there are now 84 templates for tag completion.
 
@@ -182,7 +186,7 @@ For example, type “p” then Tab, then it becomes “<p></p>” with your curs
 
 For basics use, see: http://xahlee.org/emacs/emacs_templates.html
 
-*** Template set for emacs lisp (for yasnippet mode).
+*** Template set for emacs lisp (in yasnippet mode).
 
 When you work in emacs lisp (emacs-lisp-mode), there are now ~140 templates for function completion.
 

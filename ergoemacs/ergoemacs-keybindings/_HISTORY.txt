@@ -6,7 +6,7 @@ Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherw
 
 * version x.x.x, yyyy-mm-dd
 
-2010-11-18 added a hotkey Ctrl+Shift+t for open-last-closed in ErgoEmacs keybinding package.
+2010-11-18 r556 added a hotkey 【Ctrl+Shift+t】 for open-last-closed in ErgoEmacs keybinding package. This key follows browser convention. But won't work in Terminal...
 
 * version 5.3.7, 2010-11-15
 
