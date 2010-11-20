@@ -3,17 +3,14 @@
 ;; Xah Lee
 ;; 2010-11-16
 
-;; when defining abbrev for emacs-lisp-mode, it goes into lisp-mode
-;; instead, because emacs-lisp-mode is written on top of
-;; lisp-mode. Not sure if there's way to define just for
-;; emacs-lisp-mode.
+;; a abbrev set for emacs-list-mode.
 
 ;; Place this file in the dir 〔~/.emacs.d/〕.
 ;; Then, restart emacs.
 ;; Then, you'll have these abbrevations when your are in emac-lisp-mode.
 ;; See also: 
-;; 〈Yasnippet Templates for Emacs Lisp Mode〉  http://xahlee.org/emacs/elisp_idiom_templates.html
 ;; 〈Using Emacs's Abbrev Mode for Abbreviation〉 http://xahlee.org/emacs/emacs_abbrev_mode.html
+;; 〈Yasnippet Templates for Emacs Lisp Mode〉  http://xahlee.org/emacs/elisp_idiom_templates.html
 
 (define-abbrev-table 'lisp-mode-abbrev-table '(
  ("ah" "add-hook" nil 0)
