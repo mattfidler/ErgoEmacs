@@ -4,7 +4,7 @@ all:
 	gcc $(CFLAGS) -c ErgoEmacs.c -o ErgoEmacs.o 
 	gcc $(CFLAGS) -c string_utils.c -o string_utils.o
 	windres -O coff -o ErgoEmacs.res -i ErgoEmacs.rc
-	gcc -s -o ErgoEmacs.exe ErgoEmacs.o string_utils.o ErgoEmacs.res -mwindows
+	gcc -s -o ErgoEmacs.exe ErgoEmacs.o string_utils.o ErgoEmacs.res -mwindows -static
 	rm *.o ErgoEmacs.res
 
 test:
