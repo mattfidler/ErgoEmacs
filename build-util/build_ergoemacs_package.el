@@ -38,7 +38,7 @@
 
 (setq destDirWithZipPath (concat destDirRoot zipDirName "/"))
 
-;; set to full path if not already
+;; set to absolute path if not already
 (setq sourceDir (expand-file-name sourceDir ) ) 
 (setq destDirRoot (expand-file-name destDirRoot ) )
 (setq destDirWithZipPath (expand-file-name destDirWithZipPath ) )
@@ -46,13 +46,10 @@
 ;; main
 
 ;; if previous build dir and zip file exist, remove them.
-(let (destDirNoSlash)
-  (setq destDirNoSlash (substring destDirRoot 0 -1))
-  (if (file-exists-p destDirNoSlash) (shell-command (concat "rm -R " destDirNoSlash) ))
-  (if (file-exists-p (concat destDirNoSlash ".zip" )) 
-      (delete-file (concat destDirNoSlash ".zip" ))
-    )
-  )
+(let ()
+  (if (file-exists-p destDirWithZipPath) (delete-directory destDirWithZipPath t))
+  (if (file-exists-p (concat destDirWithZipPath ".zip" )) (delete-file (concat destDirWithZipPath ".zip" )) ) )
+
 
 ;; create the new dest dir
 (make-directory destDirWithZipPath t)
@@ -87,12 +84,9 @@
 ;; byte compile elc files
 (load-file (concat destDirWithZipPath "build-util/byte-compile_lisp_files.el"))
 
-(cd destDirRoot)
 ;; zip it
-(let (destDirNoSlash)
-  (setq destDirNoSlash (substring destDirWithZipPath 0 -1)  )
-  (shell-command (concat "zip -r " zipDirName ".zip " zipDirName ) )
-)
+(cd destDirRoot)
+(shell-command (concat "zip -r " zipDirName ".zip " zipDirName ) )
 
 ;; change current dir back
 (cd (expand-file-name (file-name-directory buffer-file-name)))
