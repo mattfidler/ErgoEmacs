@@ -29,19 +29,7 @@
   "Put the whole buffer content into the kill-ring.
 If narrow-to-region is in effect, then copy that region only."
   (interactive)
-  (kill-ring-save (point-min) (point-max))
-  (message "Buffer content copied")
-  )
-
-(defun copy-all ()
-  "Put the whole buffer content into the kill-ring.
-If narrow-to-region is in effect, then copy that region only."
-  (interactive)
-  (kill-new (buffer-string) )
-  ;; kill-new is better than the following
-  ;; (kill-ring-save (point-min) (point-max))
-  ;; (copy-region-as-kill (point-min) (point-max))
-  ;; because if you do a kill before copy-all, that kill will become part of the text.
+  (kill-new (buffer-string))
   (message "Buffer content copied copy-region-as-kill")
   )
 
