@@ -38,14 +38,22 @@ all:
 compile:
 	-$(RM) -f $(ELC_FILES)
 	$(EMACS) -L packages \
+		 -L packages/auto-complete-1.3 \
+		 -L packages/bookmarkplus \
+		 -L packages/erlang \
+		 -L packages/scala-mode \
 		 -L packages/yasnippet-0.6.1c \
 		 -batch -f batch-byte-compile ergoemacs/*.el
-	$(EMACS) -batch -f batch-byte-compile ergoemacs/ergoemacs-keybindings/*.el
-	$(EMACS) -batch -f batch-byte-compile packages/*.el
+	-$(EMACS) -batch -f batch-byte-compile ergoemacs/ergoemacs-keybindings/*.el
+	-$(EMACS) -batch -f batch-byte-compile packages/*.el
+	$(EMACS) -L packages/auto-complete-1.3 -batch -f batch-byte-compile packages/auto-complete-1.3/*.el
+	$(EMACS) -L packages/bookmarkplus -batch -f batch-byte-compile packages/bookmarkplus/*.el
 	$(EMACS) -L packages/dictionary-1.8.7 -batch -f batch-byte-compile packages/dictionary-1.8.7/*.el
+	$(EMACS) -batch -f batch-byte-compile packages/erlang/*.el
 	$(EMACS) -L packages/haskell-mode-2.7.0 -batch -f batch-byte-compile packages/haskell-mode-2.7.0/*.el
 	$(EMACS) -batch -f batch-byte-compile packages/pov-mode-3.2/*.el
 	$(EMACS) -batch -f batch-byte-compile packages/rw-hunspell/*.el
+	$(EMACS) -L packages/scala-mode -batch -f batch-byte-compile packages/scala-mode/*.el
 	$(EMACS) -L packages/tuareg-mode-1.45.7 -batch -f batch-byte-compile packages/tuareg-mode-1.45.7/*.el
 	$(EMACS) -batch -f batch-byte-compile packages/yasnippet-0.6.1c/*.el
 	$(EMACS) -batch -f batch-byte-compile site-lisp/*.el
