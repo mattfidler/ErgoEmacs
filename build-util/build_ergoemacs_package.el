@@ -4,13 +4,17 @@
 ;; This elisp script builds a ErgoEmacs elisp package.
 ;; Effectively, it creates a new zip file, nothing else.
 
+;; This script is experimental. Best to use the make util at
+;; ergoemacs/Makefile
+;; for now.
+
 ;; What does it do:
 ;; copy the whole “ergoemacs” dir into some dest dir. The “ergoemacs” is the dir from root checked out from svn.
 ;; remove all .svn dirs.
 ;; remove other files and dir such as Makefile and win32-setup etc.
 
 ;; HOW TO RUN IT
-;; First, change the version number in variable “destDir”.
+;; First, change the version number in variable zipDirName”.
 ;; then, just eval-buffer.
 ;; The result will be a new zip file (and a unzipped dir) at the root of your svn checkout.
 ;; For example, if your svn checkout path is
@@ -21,42 +25,77 @@
 
 ;; This script requires unix “find”, “rm”, “cp”, etc.
 
-(defvar sourceDir nil "The ergoemacs source code dir in repository.")
-(setq sourceDir "../")
+(defvar zipDirName nil "the zip file/dir name")
+(setq zipDirName "ergoemacs_1.9.1.1")
 
-(defvar destDir nil "The output dir.")
-(setq destDir "../../ergoemacs_1.9.1/")
 
 
+(defvar sourceDir nil "The ergoemacs source code dir in repository. By default, this is parent dir of the dir this file is in.")
+(setq sourceDir (expand-file-name  (concat (file-name-directory buffer-file-name) "../")) ) ; e.g. "c:/Users/xah/ErgoEmacs_Source/ergoemacs/"
+
+(defvar destDirRoot nil "The output dir. Will be created if doesn't exit. By default, this is 2 dir above this file.")
+(setq destDirRoot (expand-file-name  (concat (file-name-directory buffer-file-name) "../../"))) ;
+
+(setq destDirWithZipPath (concat destDirRoot zipDirName "/"))
+
+;; set to full path if not already
+(setq sourceDir (expand-file-name sourceDir ) ) 
+(setq destDirRoot (expand-file-name destDirRoot ) )
+(setq destDirWithZipPath (expand-file-name destDirWithZipPath ) )
+
 ;; main
 
-
 ;; if previous build dir and zip file exist, remove them.
-(let (destDirNoSlash) 
-  (setq destDirNoSlash (substring destDir 0 -1))
+(let (destDirNoSlash)
+  (setq destDirNoSlash (substring destDirRoot 0 -1))
   (if (file-exists-p destDirNoSlash) (shell-command (concat "rm -R " destDirNoSlash) ))
   (if (file-exists-p (concat destDirNoSlash ".zip" )) 
       (delete-file (concat destDirNoSlash ".zip" ))
     )
   )
 
-(make-directory destDir t)
- (shell-command (concat "cp -R " sourceDir " " destDir) )
+;; create the new dest dir
+(make-directory destDirWithZipPath t)
 
-(shell-command (concat "find " destDir " -depth -name \".svn\" -type d -exec rm -R {} ';'" ) )
+;; copy stuff over to dest dir
+;; (shell-command (concat "cp -R " sourceDir " " destDirRoot) )
+(copy-directory sourceDir destDirWithZipPath )
 
-(shell-command (concat " rm -R " destDir "win32-setup"))
-(delete-file (concat destDir "Makefile"))
-(delete-file (concat destDir "build-util/build_ergoemacs_package.el"))
+;; delete “.svn” dir and other files we don't want
+(shell-command (concat "find " destDirWithZipPath " -depth -name \".svn\" -type d -exec rm -R {} ';'" ) )
+
+;; (require 'find-lisp)
+;; (mapc 'my-process-file
+;;  (find-lisp-find-files destDirWithZipPath "\\.svn$")
+;;  (find-lisp-find-files "c:/Users/xah/xx2/ergoemacs_1.9.1.1/build-util/" "")
+;;  (find-lisp-find-dired-subdirectories "c:/Users/xah/xx2/ergoemacs_1.9.1.1/build-util/")
+;; )
+
+;; delete emacs backup files
+;; (shell-command (concat "find " destDirWithZipPath " -name \"*~\" -exec rm {} ';'" ) )
+(require 'find-lisp)
+(mapc 'delete-file (find-lisp-find-files destDirWithZipPath "~$"))
+
+;; delete Windows specific setup dir
+;; (shell-command (concat " rm -R " destDirWithZipPath "win32-setup"))
+(delete-directory (concat destDirWithZipPath "win32-setup") t)
+
+;; delete misc files we dont need
+(delete-file (concat destDirWithZipPath "Makefile"))
+(delete-file (concat destDirWithZipPath "build-util/build_ergoemacs_package.el"))
 
 ;; byte compile elc files
-(load-file (concat destDir "build-util/byte-compile_lisp_files.el"))
+(load-file (concat destDirWithZipPath "build-util/byte-compile_lisp_files.el"))
 
+(cd destDirRoot)
 ;; zip it
-(let ((destDirSansSlash (substring destDir 0 -1)))
-  (shell-command (concat "zip -r " destDirSansSlash ".zip " destDirSansSlash ) )
+(let (destDirNoSlash)
+  (setq destDirNoSlash (substring destDirWithZipPath 0 -1)  )
+  (shell-command (concat "zip -r " zipDirName ".zip " zipDirName ) )
 )
 
+;; change current dir back
+(cd (expand-file-name (file-name-directory buffer-file-name)))
 
 
 ;; TODO
