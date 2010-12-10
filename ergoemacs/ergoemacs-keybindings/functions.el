@@ -48,7 +48,7 @@ If narrow-to-region is in effect, then cut that region only."
        (list (region-beginning) (region-end))
      (progn
        (message "Current line is copied.")
-       (list (line-beginning-position) (line-end-position)) ) ) ))
+       (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
 
 (defadvice kill-region (before slick-copy activate compile)
   "When called interactively with no active region, cut the current line."
@@ -56,18 +56,17 @@ If narrow-to-region is in effect, then cut that region only."
    (if mark-active
        (list (region-beginning) (region-end))
      (progn
-       (message "Current line is cut.")
-       (list (line-beginning-position) (line-end-position)) ) ) ))
+       (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
 
 ;;; TEXT SELECTION RELATED
 
 (defun select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
 Delimiters are paired characters:
- ()[]{}«»‹›“”〖〗【】「」『』（）〈〉《》〔〕⦗⦘〘〙
+ () [] {} «» ‹› “” 〖〗 【】 「」 『』 （） 〈〉 《》 〔〕 ⦗⦘ 〘〙
 
 For practical purposes, it also includes double straight quote
-\", but except single quote matching pairs ‘’, because that is
+\", but not curly single quote matching pairs ‘’, because that is
 often used as apostrophy. It also consider both left and right
 angle brackets <> as either beginning or ending pair, so that it
 is easy to get content inside html tags."
