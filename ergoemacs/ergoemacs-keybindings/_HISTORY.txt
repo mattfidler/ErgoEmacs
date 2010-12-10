@@ -8,6 +8,8 @@ Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherw
 
 2010-11-18 r556 added a hotkey 【Ctrl+Shift+t】 for open-last-closed in ErgoEmacs keybinding package. This key follows browser convention. But won't work in Terminal...
 
+2010-12-10 r578. modified ErgoEmacs keybinding so that copy/cut with no text selection will include the line ending. Thanks to Max Arnold.
+
 * version 5.3.7, 2010-11-15
 
 ** Added open-in-desktop command with key 【Ctrl+Shift+O】.
