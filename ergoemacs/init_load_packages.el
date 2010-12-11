@@ -94,6 +94,10 @@
 ;;; xub-mode for browsing Unicode characters
 (autoload 'xub-mode "xub-mode" "Load Unicode browsing mode." t)
 
+;;; xmsi-math-symbols-input for inputting math (Unicode) symbols.
+(autoload 'xmsi-math-symbols-input "xmsi-mode" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
+(xmsi-mode 1)
+
 
 ;;;; productivity, enhancement, or minor modes
 

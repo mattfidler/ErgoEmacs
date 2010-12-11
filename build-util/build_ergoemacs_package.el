@@ -46,10 +46,8 @@
 ;; main
 
 ;; if previous build dir and zip file exist, remove them.
-(let ()
-  (if (file-exists-p destDirWithZipPath) (delete-directory destDirWithZipPath t))
-  (if (file-exists-p (concat destDirWithZipPath ".zip" )) (delete-file (concat destDirWithZipPath ".zip" )) ) )
-
+(if (file-exists-p destDirWithZipPath) (delete-directory destDirWithZipPath t))
+(if (file-exists-p (concat destDirWithZipPath ".zip" )) (delete-file (concat destDirWithZipPath ".zip" )) )
 
 ;; create the new dest dir
 (make-directory destDirWithZipPath t)

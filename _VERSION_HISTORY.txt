@@ -18,6 +18,10 @@ or svn command 「svn log」.
 
 HISTORY
 
+* Version x.x.x: 2010-12-11.
+
+** Added xmsi-mode. 〔xmsi-math-symbols-input.el〕 A minor mode for inputting hundreds math (Unicode) symbols.
+
 * Version 1.9.1: 2010-11-08.
 
 ** Added 【Ctrl+Shift+t】 for open-last-closed. (this follows browser hotkey convention)
