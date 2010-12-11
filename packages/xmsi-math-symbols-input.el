@@ -593,7 +593,7 @@
           (if (re-search-forward "\t\\|\n\\| " nil t) 
               (progn (backward-char)
                      (setq p2 (point) ))
-            (setq p2 line-end-position ) ) )) )
+            (setq p2 (line-end-position) ) ) )) )
     (setq myWord (buffer-substring-no-properties p1 p2) )
     (message "%s" myWord)
 
@@ -611,7 +611,7 @@
 (define-minor-mode xmsi-mode
   "Toggle math symbol input mode.
 
-Type “inf”, then press 5 on number pad, then it becomes “∞”.
+Type “inf”, then press 【Shift+Space】, then it becomes “∞”.
 The abbreviations are based on Mathematica'setq aliase, LaTeX's “\symbolName”, and SGML/HTML/XML char entities abbreviations.
 
 Without argument, toggles the minor mode.
