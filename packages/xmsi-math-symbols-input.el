@@ -19,33 +19,49 @@
 ;; To have emacs automatically load the file when it restarts, follow these steps:
 
 ;; Rename the file to 〔xmsi-math-symbols-input.el〕 (if the file is not already that name).
-;; place the file in the dir 〔~/.emacs.d/〕. On Windows, it's 〔$HOMEPATH\.emacs.d\〕. Create the 〔.emacs.d〕 if you don't have it.
+;; place the file in the dir 〔~/.emacs.d/〕. On Windows, it's 〔$HOMEPATH\.emacs.d\〕. Create the 〔.emacs.d〕 folder if you don't have it.
 
 ;; Now, put the following lines in your emacs init file “.emacs”:
 
+;;; xmsi-mode 〔xmsi-math-symbols-input.el〕 for inputting math (Unicode) symbols.
 ;; (add-to-list 'load-path "~/.emacs.d/")
-;; (autoload 'xmsi-mode "xmsi-math-symbols-input.el" "Load xmsi-math-symbols-input mode for inserting math symbols." t)
-;; (xmsi-mode 1)  ;; activate the mode.
+;; (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
+;; (xmsi-mode 1) ; activate the mode.
 
 ;; Then, restart emacs.
 
 ;;; DOCUMENTATION
 
+;; Type “inf”, then press 【Shift+Space】, then it becomes “∞”.
+;; Type “a”, then press 【Shift+Space】, then it becomes “α”.
+;; Type “p”, then press 【Shift+Space】, then it becomes “π”.
+;; Type “!=”, then press 【Shift+Space】, then it becomes “≠”.
+;; Type “>=”, then press 【Shift+Space】, then it becomes “≥”.
+;; Type “=>”, then press 【Shift+Space】, then it becomes “⇒”.
+;; Type “->”, then press 【Shift+Space】, then it becomes “→”.
+;; Type “and”, then press 【Shift+Space】, then it becomes “∧”.
+;; etc.
+
+;; For full list, call “xmsi-list-math-symbols”.
+
+;; The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】, LaTeX's 「 ymbolName」, and SGML/HTML/XML char entity abbreviations.
+
 ;; Full documentation is at: http://xahlee.org/emacs/xmsi-math-symbols-input.html
 
-;; To see the inline documentation in emacs, type 【Ctrl+h m】
-;; (describe-mode). (if you have not load the mode type, first
-;; type【Alt+x xmsi-mode】)
+;; To see the inline documentation, call “describe-function” 【Ctrl+h f】, then type “xmsi-mode”.
+;; (if you have not load the mode yet, first load it by typing 【Alt+x xmsi-mode】)
 
 ;;; HISTORY
 ;; version 1.0, 2010-12-08. First version.
 
-;;; Code:
-
-;; some helpful reference
+;;; References
 ;; http://ia.wikipedia.org/wiki/Wikipedia:LaTeX_symbols
 ;; http://en.wikipedia.org/wiki/Help:Displaying_a_formula
 ;; http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
+;;  〈Math Symbols in Unicode〉 http://xahlee.org/comp/unicode_math_operators.html
+
+
+;;; Code:
 
 (setq xmsi-version "1.0")
 
@@ -295,163 +311,225 @@
   (puthash "hearts" "♥" xmsi-abrvs)
   (puthash "diams" "♦" xmsi-abrvs)
 
-(puthash "a`" "à" xmsi-abrvs)
-(puthash "e`" "è" xmsi-abrvs)
-(puthash "i`" "ì" xmsi-abrvs)
-(puthash "o`" "ò" xmsi-abrvs)
-(puthash "u`" "ù" xmsi-abrvs)
-(puthash "A`" "À" xmsi-abrvs)
-(puthash "E`" "È" xmsi-abrvs)
-(puthash "I`" "Ì" xmsi-abrvs)
-(puthash "O`" "Ò" xmsi-abrvs)
-(puthash "U`" "Ù" xmsi-abrvs)
+  (puthash "a`" "à" xmsi-abrvs)
+  (puthash "e`" "è" xmsi-abrvs)
+  (puthash "i`" "ì" xmsi-abrvs)
+  (puthash "o`" "ò" xmsi-abrvs)
+  (puthash "u`" "ù" xmsi-abrvs)
+  (puthash "A`" "À" xmsi-abrvs)
+  (puthash "E`" "È" xmsi-abrvs)
+  (puthash "I`" "Ì" xmsi-abrvs)
+  (puthash "O`" "Ò" xmsi-abrvs)
+  (puthash "U`" "Ù" xmsi-abrvs)
 
-(puthash "a^" "â" xmsi-abrvs)
-(puthash "e^" "ê" xmsi-abrvs)
-(puthash "i^" "î" xmsi-abrvs)
-(puthash "o^" "ô" xmsi-abrvs)
-(puthash "u^" "û" xmsi-abrvs)
-(puthash "A^" "Â" xmsi-abrvs)
-(puthash "E^" "Ê" xmsi-abrvs)
-(puthash "I^" "Î" xmsi-abrvs)
-(puthash "O^" "Ô" xmsi-abrvs)
-(puthash "U^" "Û" xmsi-abrvs)
+  (puthash "a^" "â" xmsi-abrvs)
+  (puthash "e^" "ê" xmsi-abrvs)
+  (puthash "i^" "î" xmsi-abrvs)
+  (puthash "o^" "ô" xmsi-abrvs)
+  (puthash "u^" "û" xmsi-abrvs)
+  (puthash "A^" "Â" xmsi-abrvs)
+  (puthash "E^" "Ê" xmsi-abrvs)
+  (puthash "I^" "Î" xmsi-abrvs)
+  (puthash "O^" "Ô" xmsi-abrvs)
+  (puthash "U^" "Û" xmsi-abrvs)
 
-(puthash "a'" "á" xmsi-abrvs)
-(puthash "e'" "é" xmsi-abrvs)
-(puthash "i'" "í" xmsi-abrvs)
-(puthash "o'" "ó" xmsi-abrvs)
-(puthash "u'" "ú" xmsi-abrvs)
-(puthash "y'" "ý" xmsi-abrvs)
-(puthash "A'" "Á" xmsi-abrvs)
-(puthash "E'" "É" xmsi-abrvs)
-(puthash "I'" "Í" xmsi-abrvs)
-(puthash "O'" "Ó" xmsi-abrvs)
-(puthash "U'" "Ú" xmsi-abrvs)
-(puthash "Y'" "Ý" xmsi-abrvs)
+  (puthash "a'" "á" xmsi-abrvs)
+  (puthash "e'" "é" xmsi-abrvs)
+  (puthash "i'" "í" xmsi-abrvs)
+  (puthash "o'" "ó" xmsi-abrvs)
+  (puthash "u'" "ú" xmsi-abrvs)
+  (puthash "y'" "ý" xmsi-abrvs)
+  (puthash "A'" "Á" xmsi-abrvs)
+  (puthash "E'" "É" xmsi-abrvs)
+  (puthash "I'" "Í" xmsi-abrvs)
+  (puthash "O'" "Ó" xmsi-abrvs)
+  (puthash "U'" "Ú" xmsi-abrvs)
+  (puthash "Y'" "Ý" xmsi-abrvs)
 
-(puthash "A\"" "Ä" xmsi-abrvs)
-(puthash "E\"" "Ë" xmsi-abrvs)
-(puthash "I\"" "Ï" xmsi-abrvs)
-(puthash "O\"" "Ö" xmsi-abrvs)
-(puthash "U\"" "Ü" xmsi-abrvs)
-(puthash "a\"" "ä" xmsi-abrvs)
-(puthash "e\"" "ë" xmsi-abrvs)
-(puthash "i\"" "ï" xmsi-abrvs)
-(puthash "o\"" "ö" xmsi-abrvs)
-(puthash "u\"" "ü" xmsi-abrvs)
-(puthash "s\"" "ß" xmsi-abrvs)
-(puthash "y\"" "ÿ" xmsi-abrvs)
+  (puthash "A\"" "Ä" xmsi-abrvs)
+  (puthash "E\"" "Ë" xmsi-abrvs)
+  (puthash "I\"" "Ï" xmsi-abrvs)
+  (puthash "O\"" "Ö" xmsi-abrvs)
+  (puthash "U\"" "Ü" xmsi-abrvs)
+  (puthash "a\"" "ä" xmsi-abrvs)
+  (puthash "e\"" "ë" xmsi-abrvs)
+  (puthash "i\"" "ï" xmsi-abrvs)
+  (puthash "o\"" "ö" xmsi-abrvs)
+  (puthash "u\"" "ü" xmsi-abrvs)
+  (puthash "s\"" "ß" xmsi-abrvs)
+  (puthash "y\"" "ÿ" xmsi-abrvs)
 
-(puthash "Ao" "Å" xmsi-abrvs)
-(puthash "ao" "å" xmsi-abrvs)
+  (puthash "Ao" "Å" xmsi-abrvs)
+  (puthash "ao" "å" xmsi-abrvs)
 
-(puthash "AE" "Æ" xmsi-abrvs)
-(puthash "ae" "æ" xmsi-abrvs)
+  (puthash "AE" "Æ" xmsi-abrvs)
+  (puthash "ae" "æ" xmsi-abrvs)
 
-(puthash "a~" "ã" xmsi-abrvs)
-(puthash "n~" "ñ" xmsi-abrvs)
-(puthash "o~" "õ" xmsi-abrvs)
-(puthash "A~" "Ã" xmsi-abrvs)
-(puthash "N~" "Ñ" xmsi-abrvs)
-(puthash "O~" "Õ" xmsi-abrvs)
+  (puthash "a~" "ã" xmsi-abrvs)
+  (puthash "n~" "ñ" xmsi-abrvs)
+  (puthash "o~" "õ" xmsi-abrvs)
+  (puthash "A~" "Ã" xmsi-abrvs)
+  (puthash "N~" "Ñ" xmsi-abrvs)
+  (puthash "O~" "Õ" xmsi-abrvs)
 
-;2010-12-10
-;
-;"		Prefix Command
-;'		Prefix Command
-;*		Prefix Command
-;,		Prefix Command
-;/		Prefix Command
-;1		Prefix Command
-;3		Prefix Command
-;^		Prefix Command
-;_		Prefix Command
-;`		Prefix Command
-;~		Prefix Command
-;
-;SPC		 
-;!		¡
-;c		¢
-;L		£
-;$		¤
-;Y		¥
-;|		¦
-;S		§
-;C		©
-;<		«
-;-		­
-;R		®
-;=		¯
-;o		°
-;+		±
-;P		¶
-;.		·
-;>		»
-;?		¿
-;x		×
-;
-;~ SPC     ~
-;~ D		Ð
-;
-;~ T		Þ
-;~ d		ð
-;~ t		þ
-;
-;_ a		ª
-;_ o		º
-;
-;^ SPC     ^
-;^ 1		¹
-;^ 2		²
-;^ 3		³
-;
-;/ /		÷
-;/ O		Ø
-;/ o		ø
-;
-;, ,		¸
-;, C		Ç
-;, c		ç
-;
-;' SPC     '
-;' '		´
-;
-;" "		¨
-;
-;* SPC      
-;* !		¡
-;* $		¤
-;* +		±
-;* -		­
-;* .		·
-;* <		«
-;* =		¯
-;* >		»
-;* ?		¿
-;* C		©
-;* L		£
-;* P		¶
-;* R		®
-;* S		§
-;* Y		¥
-;* c		¢
-;* |		¦
-;
-;3/4		¾
-;1/2		½
-;1/4		¼
+;; 2010-12-10
 
+;; "		Prefix Command
+;; '		Prefix Command
+;; *		Prefix Command
+;; ,		Prefix Command
+;; /		Prefix Command
+;; 1		Prefix Command
+;; 3		Prefix Command
+;; ^		Prefix Command
+;; _		Prefix Command
+;; `		Prefix Command
+;; ~		Prefix Command
 
-  ;; add entries
+;; SPC		 
+;; !		¡
+;; c		¢
+;; L		£
+;; $		¤
+;; Y		¥
+;; |		¦
+;; S		§
+;; C		©
+;; <		«
+;; -		­
+;; R		®
+;; =		¯
+;; o		°
+;; +		±
+;; P		¶
+;; .		·
+;; >		»
+;; ?		¿
+;; x		×
+
+;; ~ SPC     ~
+;; ~ D		Ð
+
+;; ~ T		Þ
+;; ~ d		ð
+;; ~ t		þ
+
+;; _ a		ª
+;; _ o		º
+
+;; ^ SPC     ^
+;; ^ 1		¹
+;; ^ 2		²
+;; ^ 3		³
+
+;; / /		÷
+;; / O		Ø
+;; / o		ø
+
+;; , ,		¸
+;; , C		Ç
+;; , c		ç
+
+;; ' SPC     '
+;; ' '		´
+
+;; " "		¨
+
+;; * SPC      
+;; * !		¡
+
+  (puthash "currency" "¤" xmsi-abrvs)
+
+  (puthash "tm" "™" xmsi-abrvs)
+
+  (puthash "3/4" "¾" xmsi-abrvs)
+  (puthash "1/2" "½" xmsi-abrvs)
+  (puthash "1/4" "¼" xmsi-abrvs)
+
   (puthash "--" "—" xmsi-abrvs) (puthash "emdash" "—" xmsi-abrvs)
   (puthash "*5" "★" xmsi-abrvs) (puthash "star" "★" xmsi-abrvs)
   (puthash "<3" "♥" xmsi-abrvs) (puthash "heart" "♥" xmsi-abrvs)
   (puthash ":)" "☺" xmsi-abrvs)
+  (puthash ":(" "☹" xmsi-abrvs)
+
+  (puthash "+-" "±" xmsi-abrvs)
+  (puthash "-+" "∓" xmsi-abrvs)
+
+  (puthash "dag" "†" xmsi-abrvs)
+  (puthash "ddag" "‡" xmsi-abrvs)
+
+  ;; operators
+  (puthash "'" "′" xmsi-abrvs)
+  (puthash "''" "″" xmsi-abrvs)
+  (puthash "'''" "‴" xmsi-abrvs)
+  (puthash "." "·" xmsi-abrvs)
+
+  ;; superscripts
+  (puthash "^0" "⁰" xmsi-abrvs)
+  (puthash "^1" "¹" xmsi-abrvs)
+  (puthash "^2" "²" xmsi-abrvs)
+  (puthash "^3" "³" xmsi-abrvs)
+  (puthash "^4" "⁴" xmsi-abrvs)
+  (puthash "^5" "⁵" xmsi-abrvs)
+  (puthash "^6" "⁶" xmsi-abrvs)
+  (puthash "^7" "⁷" xmsi-abrvs)
+  (puthash "^8" "⁸" xmsi-abrvs)
+  (puthash "^9" "⁹" xmsi-abrvs)
+  (puthash "^+" "⁺" xmsi-abrvs)
+  (puthash "^-" "⁻" xmsi-abrvs)
+  (puthash "^=" "⁼" xmsi-abrvs)
+  (puthash "^(" "⁽" xmsi-abrvs)
+  (puthash "^)" "⁾" xmsi-abrvs)
+  (puthash "^n" "ⁿ" xmsi-abrvs)
+  (puthash "^i" "ⁱ" xmsi-abrvs)
+
+  ;; subscripts
+  (puthash "_0" "₀" xmsi-abrvs)
+  (puthash "_1" "₁" xmsi-abrvs)
+  (puthash "_2" "₂" xmsi-abrvs)
+  (puthash "_3" "₃" xmsi-abrvs)
+  (puthash "_4" "₄" xmsi-abrvs)
+  (puthash "_5" "₅" xmsi-abrvs)
+  (puthash "_6" "₆" xmsi-abrvs)
+  (puthash "_7" "₇" xmsi-abrvs)
+  (puthash "_8" "₈" xmsi-abrvs)
+  (puthash "_9" "₉" xmsi-abrvs)
+  (puthash "_+" "₊" xmsi-abrvs)
+  (puthash "_-" "₋" xmsi-abrvs)
+  (puthash "_=" "₌" xmsi-abrvs)
+  (puthash "_(" "₍" xmsi-abrvs)
+  (puthash "_)" "₎" xmsi-abrvs)
+  (puthash "_a" "ₐ" xmsi-abrvs)
+  (puthash "_e" "ₑ" xmsi-abrvs)
+  (puthash "_o" "ₒ" xmsi-abrvs)
+  (puthash "_x" "ₓ" xmsi-abrvs)
+  (puthash "_schwa" "ₔ" xmsi-abrvs)
+
+  ;; forms for constants-like things
   (puthash "pi" "π" xmsi-abrvs)
   (puthash "inf" "∞" xmsi-abrvs) (puthash "infinity" "∞" xmsi-abrvs)
   (puthash "deg" "°" xmsi-abrvs) (puthash "degree" "°" xmsi-abrvs)
+  (puthash "O/" "∅" xmsi-abrvs)
 
+  ;; brackets, matching pairs
+  (puthash "(" "〔〕" xmsi-abrvs)
+  (puthash "[(w" "〖〗" xmsi-abrvs)
+  (puthash "[(" "【】" xmsi-abrvs)
+  (puthash "<" "〈〉" xmsi-abrvs)
+  (puthash "<<" "《》" xmsi-abrvs)
+  (puthash "[" "「」" xmsi-abrvs)
+  (puthash "[[" "『』" xmsi-abrvs)
+  (puthash "\"" "“”" xmsi-abrvs)
+  (puthash "'(" "‘’" xmsi-abrvs)
+  (puthash "[f" "‹›" xmsi-abrvs)
+  (puthash "[[f" "«»" xmsi-abrvs)
+  (puthash "floor" "⌊⌋" xmsi-abrvs)
+  (puthash "ceiling" "⌈⌉" xmsi-abrvs)
+
+  (puthash "angle" "∠" xmsi-abrvs)
+  (puthash "rightangle" "⦜" xmsi-abrvs)
+  (puthash "measuredangle" "∡" xmsi-abrvs)
+  (puthash "sphericalangle" "∢" xmsi-abrvs)
 
   ;; letters
   ;; greek alphabets http://en.wikipedia.org/wiki/Greek_alphabet
@@ -508,6 +586,48 @@
   (puthash "Y" "Ψ" xmsi-abrvs)
   (puthash "O" "Ω" xmsi-abrvs)
 
+  ;; letter-like forms
+  (puthash "alef" "ℵ" xmsi-abrvs)
+  (puthash "aleph" "ℵ" xmsi-abrvs)
+  (puthash "al" "ℵ" xmsi-abrvs)
+  (puthash "wp" "℘" xmsi-abrvs)
+  (puthash "angstrom" "Å" xmsi-abrvs)
+
+  ;; Double struck letter forms (aka Double struck; double stroke)
+  ;; others outside of the BMP. Not much font supports it.
+  ;; named like
+  ;; MATHEMATICAL DOUBLE-STRUCK CAPITAL F
+  ;; MATHEMATICAL DOUBLE-STRUCK SMALL F
+  (puthash "dsC" "ℂ" xmsi-abrvs) ; complex
+  (puthash "dsH" "ℍ" xmsi-abrvs)
+  (puthash "dsN" "ℕ" xmsi-abrvs)
+  (puthash "dsP" "ℙ" xmsi-abrvs)
+  (puthash "dsQ" "ℚ" xmsi-abrvs) ; rational
+  (puthash "dsR" "ℝ" xmsi-abrvs) ; real
+  (puthash "dsZ" "ℤ" xmsi-abrvs) ; integer. Double stroke Z
+
+  ;; gothic letter forms (aka FRANKTUR). Many are outside BMP. Named like
+  ;; MATHEMATICAL FRANKTUR CAPITAL F (aka “gothic”)
+  ;; MATHEMATICAL FRANKTUR SMALL F
+
+  ;; Scripted letter forms. Others are outside BMP. Named like:
+  ;; MATHEMATICAL SCRIPT CAPITAL Z
+  ;; MATHEMATICAL SCRIPT SMALL Z
+  (puthash "sce" "ℯ" xmsi-abrvs)
+  (puthash "scg" "ℊ" xmsi-abrvs)
+  (puthash "scl" "ℓ" xmsi-abrvs)
+  (puthash "sco" "ℴ" xmsi-abrvs)
+
+  (puthash "scB" "ℬ" xmsi-abrvs)
+  (puthash "scE" "ℰ" xmsi-abrvs)
+  (puthash "scF" "ℱ" xmsi-abrvs)
+  (puthash "scH" "ℋ" xmsi-abrvs)
+  (puthash "scI" "ℐ" xmsi-abrvs)
+  (puthash "scL" "ℒ" xmsi-abrvs)
+  (puthash "scM" "ℳ" xmsi-abrvs)
+  (puthash "scP" "℘" xmsi-abrvs)
+  (puthash "scR" "ℛ" xmsi-abrvs)
+
   ;; relations
   (puthash "<=" "≤" xmsi-abrvs)
   (puthash ">=" "≥" xmsi-abrvs)
@@ -534,24 +654,19 @@
   (puthash "<=2" "⇐" xmsi-abrvs)
   (puthash "=>" "⇒" xmsi-abrvs)
 
-  (puthash "dsZ" "ℤ" xmsi-abrvs) ; integer. Double stroke Z
-  (puthash "dsQ" "ℚ" xmsi-abrvs) ; rational
-  (puthash "dsR" "ℝ" xmsi-abrvs) ; real
-  (puthash "dsC" "ℂ" xmsi-abrvs) ; complex
-
   )
-
 
 (defun xmsi-hash-to-list (hashtable)
   "Return a list that represent the HASHTABLE."
   (let (mylist)
     (maphash (lambda (kk vv) (setq mylist (cons (list vv kk) mylist))) hashtable)
     mylist
+    )
   )
-)
 
 (defun xmsi-list-math-symbols ()
-  "DOCSTRING t"
+  "Print a list of math symbols and their input abbreviations.
+See `xmsi-mode'."
   (interactive)
 
   (let (mylist mylistSorted)
@@ -560,17 +675,20 @@
 
     ;; sort and print it out
     (setq mylistSorted (sort mylist (lambda (a b) (string< (car a) (car b)))) )
-    (princ mylistSorted)
-    )
-)
+
+    (with-output-to-temp-buffer "*xmsi math symbol input*"
+
+      (mapc (lambda (tt) "" (interactive) 
+              (princ (concat (car tt) " " (car (cdr tt)) "\n")) )
+            mylistSorted) ) ) )
 
 (defvar xmsi-keymap nil "Keymap for xmsi-math-symbols-input mode.")
 
-(when t
+(progn
   (setq xmsi-keymap (make-sparse-keymap))
 
   (define-key xmsi-keymap (kbd "S-SPC") 'xmsi-change-to-symbol)
- )
+  )
 
 (defun xmsi-change-to-symbol ()
   "DOCSTRING"
@@ -609,15 +727,28 @@
   )
 
 (define-minor-mode xmsi-mode
-  "Toggle math symbol input mode.
+  "Toggle math symbol input (minor) mode.
+
+A mode for inputting a few hundred math (Unicode) symbols.
 
 Type “inf”, then press 【Shift+Space】, then it becomes “∞”.
-The abbreviations are based on Mathematica'setq aliase, LaTeX's “\symbolName”, and SGML/HTML/XML char entities abbreviations.
+Type “a”, then press 【Shift+Space】, then it becomes “α”.
+Type “p”, then press 【Shift+Space】, then it becomes “π”.
+Type “!=”, then press 【Shift+Space】, then it becomes “≠”.
+Type “>=”, then press 【Shift+Space】, then it becomes “≥”.
+Type “=>”, then press 【Shift+Space】, then it becomes “⇒”.
+Type “->”, then press 【Shift+Space】, then it becomes “→”.
+Type “and”, then press 【Shift+Space】, then it becomes “∧”.
+etc.
+
+For full list, call `xmsi-list-math-symbols'.
+
+The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】, LaTeX's 「\symbolName」, and SGML/HTML/XML char entity abbreviations.
 
 Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
-Argument of t or nil should not be used.
+
 For full documentation, see: 
 URL `http://xahlee.org/emacs/xmsi-math-symbols-input.html'"
   nil
