@@ -44,7 +44,7 @@
 
 ;; For full list, call “xmsi-list-math-symbols”.
 
-;; The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】, LaTeX's 「 ymbolName」, and SGML/HTML/XML char entity abbreviations.
+;; The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】, LaTeX's 「\symbolName」, and SGML/HTML/XML char entity abbreviations.
 
 ;; Full documentation is at: http://xahlee.org/emacs/xmsi-math-symbols-input.html
 
@@ -463,6 +463,9 @@
   (puthash "''" "″" xmsi-abrvs)
   (puthash "'''" "‴" xmsi-abrvs)
   (puthash "." "·" xmsi-abrvs)
+  (puthash "root" "√" xmsi-abrvs)
+  (puthash "sqrt" "√" xmsi-abrvs)
+  (puthash "rt" "√" xmsi-abrvs)
 
   ;; superscripts
   (puthash "^0" "⁰" xmsi-abrvs)
@@ -484,6 +487,10 @@
   (puthash "^i" "ⁱ" xmsi-abrvs)
 
   ;; subscripts
+  (puthash "_(" "₍" xmsi-abrvs)
+  (puthash "_)" "₎" xmsi-abrvs)
+  (puthash "_+" "₊" xmsi-abrvs)
+  (puthash "_-" "₋" xmsi-abrvs)
   (puthash "_0" "₀" xmsi-abrvs)
   (puthash "_1" "₁" xmsi-abrvs)
   (puthash "_2" "₂" xmsi-abrvs)
@@ -494,16 +501,17 @@
   (puthash "_7" "₇" xmsi-abrvs)
   (puthash "_8" "₈" xmsi-abrvs)
   (puthash "_9" "₉" xmsi-abrvs)
-  (puthash "_+" "₊" xmsi-abrvs)
-  (puthash "_-" "₋" xmsi-abrvs)
   (puthash "_=" "₌" xmsi-abrvs)
-  (puthash "_(" "₍" xmsi-abrvs)
-  (puthash "_)" "₎" xmsi-abrvs)
   (puthash "_a" "ₐ" xmsi-abrvs)
   (puthash "_e" "ₑ" xmsi-abrvs)
+  (puthash "_i" "ᵢ" xmsi-abrvs)
+  (puthash "_j" "ⱼ" xmsi-abrvs)
   (puthash "_o" "ₒ" xmsi-abrvs)
-  (puthash "_x" "ₓ" xmsi-abrvs)
   (puthash "_schwa" "ₔ" xmsi-abrvs)
+  (puthash "_v" "ᵥ" xmsi-abrvs)
+  (puthash "_x" "ᵣ" xmsi-abrvs)
+  (puthash "_x" "ᵤ" xmsi-abrvs)
+  (puthash "_x" "ₓ" xmsi-abrvs)
 
   ;; forms for constants-like things
   (puthash "pi" "π" xmsi-abrvs)
@@ -606,9 +614,14 @@
   (puthash "dsR" "ℝ" xmsi-abrvs) ; real
   (puthash "dsZ" "ℤ" xmsi-abrvs) ; integer. Double stroke Z
 
+;; http://en.wikipedia.org/wiki/Double_struck
+
   ;; gothic letter forms (aka FRANKTUR). Many are outside BMP. Named like
   ;; MATHEMATICAL FRANKTUR CAPITAL F (aka “gothic”)
   ;; MATHEMATICAL FRANKTUR SMALL F
+;; http://en.wikipedia.org/wiki/Blackletter
+    ;; 𝔄 𝔅 ℭ 𝔇 𝔈 𝔉 𝔊 ℌ ℑ 𝔍 𝔎 𝔏 𝔐 𝔑 𝔒 𝔓 𝔔 ℜ 𝔖 𝔗 𝔘 𝔙 𝔚 𝔛 𝔜 ℨ 𝔞 𝔟 𝔠 𝔡 𝔢 𝔣 𝔤 𝔥 𝔦 𝔧 𝔨 𝔩 𝔪 𝔫 𝔬 𝔭 𝔮 𝔯 𝔰 𝔱 𝔲 𝔳 𝔴 𝔵 𝔶 𝔷
+    ;; 𝕬 𝕭 𝕮 𝕯 𝕰 𝕱 𝕲 𝕳 𝕴 𝕵 𝕶 𝕷 𝕸 𝕹 𝕺 𝕻 𝕼 𝕽 𝕾 𝕿 𝖀 𝖁 𝖂 𝖃 𝖄 𝖅 𝖆 𝖇 𝖈 𝖉 𝖊 𝖋 𝖌 𝖍 𝖎 𝖏 𝖐 𝖑 𝖒 𝖓 𝖔 𝖕 𝖖 𝖗 𝖘 𝖙 𝖚 𝖛 𝖜 𝖝 𝖞 𝖟
 
   ;; Scripted letter forms. Others are outside BMP. Named like:
   ;; MATHEMATICAL SCRIPT CAPITAL Z
