@@ -52,18 +52,20 @@
 ;; (if you have not load the mode yet, first load it by typing 【Alt+x xmsi-mode】)
 
 ;;; HISTORY
+;; version 1.1, 2010-12-12. added more symbols.
 ;; version 1.0, 2010-12-08. First version.
 
 ;;; References
 ;; http://ia.wikipedia.org/wiki/Wikipedia:LaTeX_symbols
 ;; http://en.wikipedia.org/wiki/Help:Displaying_a_formula
 ;; http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
+;; http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf
 ;;  〈Math Symbols in Unicode〉 http://xahlee.org/comp/unicode_math_operators.html
 
 
 ;;; Code:
 
-(setq xmsi-version "1.0")
+(setq xmsi-version "1.1")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -438,10 +440,10 @@
 ;; * SPC      
 ;; * !		¡
 
+
+  ;; misc non-math symbols
   (puthash "currency" "¤" xmsi-abrvs)
-
   (puthash "tm" "™" xmsi-abrvs)
-
   (puthash "3/4" "¾" xmsi-abrvs)
   (puthash "1/2" "½" xmsi-abrvs)
   (puthash "1/4" "¼" xmsi-abrvs)
@@ -452,11 +454,12 @@
   (puthash ":)" "☺" xmsi-abrvs)
   (puthash ":(" "☹" xmsi-abrvs)
 
-  (puthash "+-" "±" xmsi-abrvs)
-  (puthash "-+" "∓" xmsi-abrvs)
-
   (puthash "dag" "†" xmsi-abrvs)
   (puthash "ddag" "‡" xmsi-abrvs)
+
+  ;; misc math
+  (puthash "+-" "±" xmsi-abrvs)
+  (puthash "-+" "∓" xmsi-abrvs)
 
   ;; operators
   (puthash "'" "′" xmsi-abrvs)
@@ -595,9 +598,15 @@
   (puthash "O" "Ω" xmsi-abrvs)
 
   ;; letter-like forms
+  (puthash "al" "ℵ" xmsi-abrvs)
   (puthash "alef" "ℵ" xmsi-abrvs)
   (puthash "aleph" "ℵ" xmsi-abrvs)
-  (puthash "al" "ℵ" xmsi-abrvs)
+  (puthash "beth" "ב" xmsi-abrvs)
+  (puthash "gimel" "ג" xmsi-abrvs)
+  (puthash "dalet" "ד" xmsi-abrvs)
+  (puthash "daleth" "ד" xmsi-abrvs)
+  (puthash "Digamma" "Ϝ" xmsi-abrvs)
+  (puthash "digamma" "ϝ" xmsi-abrvs)
   (puthash "wp" "℘" xmsi-abrvs)
   (puthash "angstrom" "Å" xmsi-abrvs)
 
@@ -606,22 +615,83 @@
   ;; named like
   ;; MATHEMATICAL DOUBLE-STRUCK CAPITAL F
   ;; MATHEMATICAL DOUBLE-STRUCK SMALL F
+  ;; http://en.wikipedia.org/wiki/Double_struck
   (puthash "dsC" "ℂ" xmsi-abrvs) ; complex
   (puthash "dsH" "ℍ" xmsi-abrvs)
   (puthash "dsN" "ℕ" xmsi-abrvs)
   (puthash "dsP" "ℙ" xmsi-abrvs)
   (puthash "dsQ" "ℚ" xmsi-abrvs) ; rational
   (puthash "dsR" "ℝ" xmsi-abrvs) ; real
-  (puthash "dsZ" "ℤ" xmsi-abrvs) ; integer. Double stroke Z
+  (puthash "dsZ" "ℤ" xmsi-abrvs) ; integer.
 
-;; http://en.wikipedia.org/wiki/Double_struck
+  (puthash "dd" "ⅆ" xmsi-abrvs)
+  (puthash "ee" "ⅇ" xmsi-abrvs)
+  (puthash "ii" "ⅈ" xmsi-abrvs)
+  (puthash "jj" "ⅉ" xmsi-abrvs)
 
-  ;; gothic letter forms (aka FRANKTUR). Many are outside BMP. Named like
-  ;; MATHEMATICAL FRANKTUR CAPITAL F (aka “gothic”)
-  ;; MATHEMATICAL FRANKTUR SMALL F
-;; http://en.wikipedia.org/wiki/Blackletter
-    ;; 𝔄 𝔅 ℭ 𝔇 𝔈 𝔉 𝔊 ℌ ℑ 𝔍 𝔎 𝔏 𝔐 𝔑 𝔒 𝔓 𝔔 ℜ 𝔖 𝔗 𝔘 𝔙 𝔚 𝔛 𝔜 ℨ 𝔞 𝔟 𝔠 𝔡 𝔢 𝔣 𝔤 𝔥 𝔦 𝔧 𝔨 𝔩 𝔪 𝔫 𝔬 𝔭 𝔮 𝔯 𝔰 𝔱 𝔲 𝔳 𝔴 𝔵 𝔶 𝔷
-    ;; 𝕬 𝕭 𝕮 𝕯 𝕰 𝕱 𝕲 𝕳 𝕴 𝕵 𝕶 𝕷 𝕸 𝕹 𝕺 𝕻 𝕼 𝕽 𝕾 𝕿 𝖀 𝖁 𝖂 𝖃 𝖄 𝖅 𝖆 𝖇 𝖈 𝖉 𝖊 𝖋 𝖌 𝖍 𝖎 𝖏 𝖐 𝖑 𝖒 𝖓 𝖔 𝖕 𝖖 𝖗 𝖘 𝖙 𝖚 𝖛 𝖜 𝖝 𝖞 𝖟
+  (puthash "dsd" "ⅆ" xmsi-abrvs)
+  (puthash "dse" "ⅇ" xmsi-abrvs)
+  (puthash "dsi" "ⅈ" xmsi-abrvs)
+  (puthash "dsj" "ⅉ" xmsi-abrvs)
+
+  ;; gothic letter forms (aka FRANKTUR). They are outside BMP
+  ;; http://en.wikipedia.org/wiki/Blackletter 
+;; http://en.wikipedia.org/wiki/Fraktur_%28script%29
+  ;; http://en.wikipedia.org/wiki/Mathematical_alphanumeric_symbols
+  ;; 𝔄 𝔅 ℭ 𝔇 𝔈 𝔉 𝔊 ℌ ℑ 𝔍 𝔎 𝔏 𝔐 𝔑 𝔒 𝔓 𝔔 ℜ 𝔖 𝔗 𝔘 𝔙 𝔚 𝔛 𝔜 ℨ 𝔞 𝔟 𝔠 𝔡 𝔢 𝔣 𝔤 𝔥 𝔦 𝔧 𝔨 𝔩 𝔪 𝔫 𝔬 𝔭 𝔮 𝔯 𝔰 𝔱 𝔲 𝔳 𝔴 𝔵 𝔶 𝔷
+  ;; 𝕬 𝕭 𝕮 𝕯 𝕰 𝕱 𝕲 𝕳 𝕴 𝕵 𝕶 𝕷 𝕸 𝕹 𝕺 𝕻 𝕼 𝕽 𝕾 𝕿 𝖀 𝖁 𝖂 𝖃 𝖄 𝖅 𝖆 𝖇 𝖈 𝖉 𝖊 𝖋 𝖌 𝖍 𝖎 𝖏 𝖐 𝖑 𝖒 𝖓 𝖔 𝖕 𝖖 𝖗 𝖘 𝖙 𝖚 𝖛 𝖜 𝖝 𝖞 𝖟
+(puthash "goA" "𝔄" xmsi-abrvs)
+(puthash "goB" "𝔅" xmsi-abrvs)
+(puthash "goC" "ℭ" xmsi-abrvs)
+(puthash "goD" "𝔇" xmsi-abrvs)
+(puthash "goE" "𝔈" xmsi-abrvs)
+(puthash "goF" "𝔉" xmsi-abrvs)
+(puthash "goG" "𝔊" xmsi-abrvs)
+(puthash "goH" "ℌ" xmsi-abrvs)
+(puthash "goI" "ℑ" xmsi-abrvs)
+(puthash "goJ" "𝔍" xmsi-abrvs)
+(puthash "goK" "𝔎" xmsi-abrvs)
+(puthash "goL" "𝔏" xmsi-abrvs)
+(puthash "goM" "𝔐" xmsi-abrvs)
+(puthash "goN" "𝔑" xmsi-abrvs)
+(puthash "goO" "𝔒" xmsi-abrvs)
+(puthash "goP" "𝔓" xmsi-abrvs)
+(puthash "goQ" "𝔔" xmsi-abrvs)
+(puthash "goR" "ℜ" xmsi-abrvs)
+(puthash "goS" "𝔖" xmsi-abrvs)
+(puthash "goT" "𝔗" xmsi-abrvs)
+(puthash "goU" "𝔘" xmsi-abrvs)
+(puthash "goV" "𝔙" xmsi-abrvs)
+(puthash "goW" "𝔚" xmsi-abrvs)
+(puthash "goX" "𝔛" xmsi-abrvs)
+(puthash "goY" "𝔜" xmsi-abrvs)
+(puthash "goZ" "ℨ" xmsi-abrvs)
+(puthash "goa" "𝔞" xmsi-abrvs)
+(puthash "gob" "𝔟" xmsi-abrvs)
+(puthash "goc" "𝔠" xmsi-abrvs)
+(puthash "god" "𝔡" xmsi-abrvs)
+(puthash "goe" "𝔢" xmsi-abrvs)
+(puthash "gof" "𝔣" xmsi-abrvs)
+(puthash "gog" "𝔤" xmsi-abrvs)
+(puthash "goh" "𝔥" xmsi-abrvs)
+(puthash "goi" "𝔦" xmsi-abrvs)
+(puthash "goj" "𝔧" xmsi-abrvs)
+(puthash "gok" "𝔨" xmsi-abrvs)
+(puthash "gol" "𝔩" xmsi-abrvs)
+(puthash "gom" "𝔪" xmsi-abrvs)
+(puthash "gon" "𝔫" xmsi-abrvs)
+(puthash "goo" "𝔬" xmsi-abrvs)
+(puthash "gop" "𝔭" xmsi-abrvs)
+(puthash "goq" "𝔮" xmsi-abrvs)
+(puthash "gor" "𝔯" xmsi-abrvs)
+(puthash "gos" "𝔰" xmsi-abrvs)
+(puthash "got" "𝔱" xmsi-abrvs)
+(puthash "gou" "𝔲" xmsi-abrvs)
+(puthash "gov" "𝔳" xmsi-abrvs)
+(puthash "gow" "𝔴" xmsi-abrvs)
+(puthash "gox" "𝔵" xmsi-abrvs)
+(puthash "goy" "𝔶" xmsi-abrvs)
+(puthash "goz" "𝔷" xmsi-abrvs)
 
   ;; Scripted letter forms. Others are outside BMP. Named like:
   ;; MATHEMATICAL SCRIPT CAPITAL Z
@@ -734,10 +804,7 @@ See `xmsi-mode'."
           (delete-region p1 p2 )
           (insert resultSymbol)
           )
-      (error "not a valid abbrev." )
-      )
-    )
-  )
+      (error "not a valid abbrev." ) ) ) )
 
 (define-minor-mode xmsi-mode
   "Toggle math symbol input (minor) mode.
