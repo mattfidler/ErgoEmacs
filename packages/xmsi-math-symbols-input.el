@@ -61,7 +61,9 @@
 ;; http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
 ;; http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf
 ;;  〈Math Symbols in Unicode〉 http://xahlee.org/comp/unicode_math_operators.html
-
+;; http://en.wikipedia.org/wiki/Blackletter 
+;; http://en.wikipedia.org/wiki/Fraktur_%28script%29
+;; http://en.wikipedia.org/wiki/Mathematical_alphanumeric_symbols
 
 ;;; Code:
 
@@ -611,7 +613,7 @@
   (puthash "angstrom" "Å" xmsi-abrvs)
 
   ;; Double struck letter forms (aka Double struck; double stroke)
-  ;; others outside of the BMP. Not much font supports it.
+  ;; others outside of the BMP (Unicode's Basic Multilingual Plane). Not much font supports it.
   ;; named like
   ;; MATHEMATICAL DOUBLE-STRUCK CAPITAL F
   ;; MATHEMATICAL DOUBLE-STRUCK SMALL F
@@ -634,12 +636,7 @@
   (puthash "dsi" "ⅈ" xmsi-abrvs)
   (puthash "dsj" "ⅉ" xmsi-abrvs)
 
-  ;; gothic letter forms (aka FRANKTUR). They are outside BMP
-  ;; http://en.wikipedia.org/wiki/Blackletter 
-;; http://en.wikipedia.org/wiki/Fraktur_%28script%29
-  ;; http://en.wikipedia.org/wiki/Mathematical_alphanumeric_symbols
-  ;; 𝔄 𝔅 ℭ 𝔇 𝔈 𝔉 𝔊 ℌ ℑ 𝔍 𝔎 𝔏 𝔐 𝔑 𝔒 𝔓 𝔔 ℜ 𝔖 𝔗 𝔘 𝔙 𝔚 𝔛 𝔜 ℨ 𝔞 𝔟 𝔠 𝔡 𝔢 𝔣 𝔤 𝔥 𝔦 𝔧 𝔨 𝔩 𝔪 𝔫 𝔬 𝔭 𝔮 𝔯 𝔰 𝔱 𝔲 𝔳 𝔴 𝔵 𝔶 𝔷
-  ;; 𝕬 𝕭 𝕮 𝕯 𝕰 𝕱 𝕲 𝕳 𝕴 𝕵 𝕶 𝕷 𝕸 𝕹 𝕺 𝕻 𝕼 𝕽 𝕾 𝕿 𝖀 𝖁 𝖂 𝖃 𝖄 𝖅 𝖆 𝖇 𝖈 𝖉 𝖊 𝖋 𝖌 𝖍 𝖎 𝖏 𝖐 𝖑 𝖒 𝖓 𝖔 𝖕 𝖖 𝖗 𝖘 𝖙 𝖚 𝖛 𝖜 𝖝 𝖞 𝖟
+  ;; gothic letter forms (aka FRANKTUR). Most are outside BMP
 (puthash "goA" "𝔄" xmsi-abrvs)
 (puthash "goB" "𝔅" xmsi-abrvs)
 (puthash "goC" "ℭ" xmsi-abrvs)
@@ -693,13 +690,29 @@
 (puthash "goy" "𝔶" xmsi-abrvs)
 (puthash "goz" "𝔷" xmsi-abrvs)
 
-  ;; Scripted letter forms. Others are outside BMP. Named like:
-  ;; MATHEMATICAL SCRIPT CAPITAL Z
-  ;; MATHEMATICAL SCRIPT SMALL Z
-  (puthash "sce" "ℯ" xmsi-abrvs)
-  (puthash "scg" "ℊ" xmsi-abrvs)
-  (puthash "scl" "ℓ" xmsi-abrvs)
-  (puthash "sco" "ℴ" xmsi-abrvs)
+  ;; Scripted letter forms. Most are outside BMP.
+  (puthash "sca" "𝒶" xmsi-abrvs)
+  (puthash "scb" "𝒷" xmsi-abrvs)
+  (puthash "scc" "𝒸" xmsi-abrvs)
+  (puthash "scd" "𝒹" xmsi-abrvs)
+  (puthash "sce" "ℯ" xmsi-abrvs) ; in BMP
+  (puthash "scf" "𝒻" xmsi-abrvs)
+  (puthash "scg" "ℊ" xmsi-abrvs)        ; in BMP
+  (puthash "sch" "𝒽" xmsi-abrvs)
+  (puthash "sci" "𝒾" xmsi-abrvs)
+  (puthash "scj" "𝒿" xmsi-abrvs)
+  (puthash "sck" "𝓀" xmsi-abrvs)
+  (puthash "scl2" "𝓁" xmsi-abrvs)
+  (puthash "scl" "ℓ" xmsi-abrvs)        ;in BMP
+  (puthash "scm" "𝓂" xmsi-abrvs)
+  (puthash "scn" "𝓃" xmsi-abrvs)
+  (puthash "sco" "ℴ" xmsi-abrvs)        ; in BMP
+  (puthash "scp" "𝓅" xmsi-abrvs)
+  (puthash "scq" "𝓆" xmsi-abrvs)
+  (puthash "scw" "𝓌" xmsi-abrvs)
+  (puthash "scx" "𝓍" xmsi-abrvs)
+  (puthash "scy" "𝓎" xmsi-abrvs)
+  (puthash "scz" "𝓏" xmsi-abrvs)
 
   (puthash "scB" "ℬ" xmsi-abrvs)
   (puthash "scE" "ℰ" xmsi-abrvs)
@@ -710,6 +723,9 @@
   (puthash "scM" "ℳ" xmsi-abrvs)
   (puthash "scP" "℘" xmsi-abrvs)
   (puthash "scR" "ℛ" xmsi-abrvs)
+
+; a b c d e f g h i j k l m n o p q w x y z
+; A B C D E F G H I J K L M N O P Q W X Y Z
 
   ;; relations
   (puthash "<=" "≤" xmsi-abrvs)
