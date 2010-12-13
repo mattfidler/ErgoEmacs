@@ -64,6 +64,8 @@
 ;; http://en.wikipedia.org/wiki/Blackletter 
 ;; http://en.wikipedia.org/wiki/Fraktur_%28script%29
 ;; http://en.wikipedia.org/wiki/Mathematical_alphanumeric_symbols
+;; http://en.wikipedia.org/wiki/Astronomical_symbol
+;; http://en.wikipedia.org/wiki/Double_struck
 
 ;;; Code:
 
@@ -471,6 +473,11 @@
   (puthash "root" "√" xmsi-abrvs)
   (puthash "sqrt" "√" xmsi-abrvs)
   (puthash "rt" "√" xmsi-abrvs)
+  (puthash "del" "∇" xmsi-abrvs)
+  (puthash "part" "∂" xmsi-abrvs)
+  (puthash "partial" "∂" xmsi-abrvs)
+  (puthash "pd" "∂" xmsi-abrvs)
+
 
   ;; superscripts
   (puthash "^0" "⁰" xmsi-abrvs)
@@ -523,6 +530,34 @@
   (puthash "inf" "∞" xmsi-abrvs) (puthash "infinity" "∞" xmsi-abrvs)
   (puthash "deg" "°" xmsi-abrvs) (puthash "degree" "°" xmsi-abrvs)
   (puthash "O/" "∅" xmsi-abrvs)
+  (puthash "es" "∅" xmsi-abrvs)
+
+  (puthash "ltrib" "◀" xmsi-abrvs)
+  (puthash "rtrib" "▶" xmsi-abrvs)
+  (puthash "utrib" "▲" xmsi-abrvs)
+  (puthash "dtrib" "▼" xmsi-abrvs)
+  (puthash "ltri" "◁" xmsi-abrvs)
+  (puthash "rtri" "▷" xmsi-abrvs)
+  (puthash "utri" "△" xmsi-abrvs)
+  (puthash "dtri" "▽" xmsi-abrvs)
+
+  ;; astronomy
+  (puthash "sun" "☉" xmsi-abrvs)
+  (puthash "sunray" "☼" xmsi-abrvs)
+  (puthash "moonl" "☾" xmsi-abrvs)
+  (puthash "moonr" "☽" xmsi-abrvs)
+  (puthash "mercury" "☿" xmsi-abrvs)
+  (puthash "earth" "♁" xmsi-abrvs)
+  (puthash "saturn" "♄" xmsi-abrvs)
+  (puthash "uranus" "♅" xmsi-abrvs)
+  (puthash "neptune" "♆" xmsi-abrvs)
+  (puthash "pluto" "♇" xmsi-abrvs)
+  (puthash "jupiter" "♃" xmsi-abrvs)
+  (puthash "male" "♂" xmsi-abrvs)
+  (puthash "mars" "♂" xmsi-abrvs)
+  (puthash "female" "♀" xmsi-abrvs)
+  (puthash "venus" "♀" xmsi-abrvs)
+  (puthash "comet" "☄" xmsi-abrvs)
 
   ;; brackets, matching pairs
   (puthash "(" "〔〕" xmsi-abrvs)
@@ -611,13 +646,11 @@
   (puthash "digamma" "ϝ" xmsi-abrvs)
   (puthash "wp" "℘" xmsi-abrvs)
   (puthash "angstrom" "Å" xmsi-abrvs)
+  (puthash "R2" "ℝ²" xmsi-abrvs)
+  (puthash "R3" "ℝ³" xmsi-abrvs)
 
   ;; Double struck letter forms (aka Double struck; double stroke)
   ;; others outside of the BMP (Unicode's Basic Multilingual Plane). Not much font supports it.
-  ;; named like
-  ;; MATHEMATICAL DOUBLE-STRUCK CAPITAL F
-  ;; MATHEMATICAL DOUBLE-STRUCK SMALL F
-  ;; http://en.wikipedia.org/wiki/Double_struck
   (puthash "dsC" "ℂ" xmsi-abrvs) ; complex
   (puthash "dsH" "ℍ" xmsi-abrvs)
   (puthash "dsN" "ℕ" xmsi-abrvs)
@@ -697,16 +730,16 @@
   (puthash "scd" "𝒹" xmsi-abrvs)
   (puthash "sce" "ℯ" xmsi-abrvs) ; in BMP
   (puthash "scf" "𝒻" xmsi-abrvs)
-  (puthash "scg" "ℊ" xmsi-abrvs)        ; in BMP
+  (puthash "scg" "ℊ" xmsi-abrvs) ; in BMP
   (puthash "sch" "𝒽" xmsi-abrvs)
   (puthash "sci" "𝒾" xmsi-abrvs)
   (puthash "scj" "𝒿" xmsi-abrvs)
   (puthash "sck" "𝓀" xmsi-abrvs)
   (puthash "scl2" "𝓁" xmsi-abrvs)
-  (puthash "scl" "ℓ" xmsi-abrvs)        ;in BMP
+  (puthash "scl" "ℓ" xmsi-abrvs) ;in BMP
   (puthash "scm" "𝓂" xmsi-abrvs)
   (puthash "scn" "𝓃" xmsi-abrvs)
-  (puthash "sco" "ℴ" xmsi-abrvs)        ; in BMP
+  (puthash "sco" "ℴ" xmsi-abrvs) ; in BMP
   (puthash "scp" "𝓅" xmsi-abrvs)
   (puthash "scq" "𝓆" xmsi-abrvs)
   (puthash "scw" "𝓌" xmsi-abrvs)
