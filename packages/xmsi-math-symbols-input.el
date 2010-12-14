@@ -457,6 +457,7 @@
   (puthash "<3" "♥" xmsi-abrvs) (puthash "heart" "♥" xmsi-abrvs)
   (puthash ":)" "☺" xmsi-abrvs)
   (puthash ":(" "☹" xmsi-abrvs)
+  (puthash "..." "…" xmsi-abrvs)
 
   (puthash "dag" "†" xmsi-abrvs)
   (puthash "ddag" "‡" xmsi-abrvs)
@@ -568,14 +569,15 @@
   (puthash "[" "「」" xmsi-abrvs)
   (puthash "[[" "『』" xmsi-abrvs)
   (puthash "\"" "“”" xmsi-abrvs)
-  (puthash "'(" "‘’" xmsi-abrvs)
   (puthash "[f" "‹›" xmsi-abrvs)
   (puthash "[[f" "«»" xmsi-abrvs)
   (puthash "floor" "⌊⌋" xmsi-abrvs)
   (puthash "ceiling" "⌈⌉" xmsi-abrvs)
 
   (puthash "angle" "∠" xmsi-abrvs)
+  (puthash "/_" "∠" xmsi-abrvs)
   (puthash "rightangle" "⦜" xmsi-abrvs)
+  (puthash "|_" "⦜" xmsi-abrvs)
   (puthash "measuredangle" "∡" xmsi-abrvs)
   (puthash "sphericalangle" "∢" xmsi-abrvs)
 
@@ -844,16 +846,26 @@ See `xmsi-mode'."
               (progn (backward-char)
                      (setq p2 (point) ))
             (setq p2 (line-end-position) ) ) )) )
-    (setq myWord (buffer-substring-no-properties p1 p2) )
-    (message "%s" myWord)
 
-    (setq resultSymbol (gethash myWord xmsi-abrvs))
-    (if resultSymbol
+    (setq myWord (buffer-substring-no-properties p1 p2) )
+
+    ;; If string is XML syntax such as 「&#945;」 or 「&#x3b1」
+    (if (string-match "&#[0-9]+" myWord) ; e.g. &#945;
+        (let ( (num (substring myWord 2)) )
+          (delete-region p1 p2) (ucs-insert (string-to-number num)) )
+
+      (if (string-match "&#x.+" myWord) ; e.g. &#x3b1
+          (let ( (hexnum (substring myWord 3)) )
+            (delete-region p1 p2) (ucs-insert (string-to-number hexnum 16) ) )
         (progn 
-          (delete-region p1 p2 )
-          (insert resultSymbol)
-          )
-      (error "not a valid abbrev." ) ) ) )
+          (setq resultSymbol (gethash myWord xmsi-abrvs))
+          (if resultSymbol
+              (progn 
+                (delete-region p1 p2)
+                (insert resultSymbol)
+                )
+            (error "Not a valid abbrev. See “xmsi-list-math-symbols” or use XML entity names or use &#945; or &#x3b1; to enter 「α」. The ending 「;」 is optional." ) ) )
+        ) ) ) )
 
 (define-minor-mode xmsi-mode
   "Toggle math symbol input (minor) mode.
