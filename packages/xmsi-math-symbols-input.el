@@ -70,7 +70,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.1")
+(setq xmsi-version "1.2")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
