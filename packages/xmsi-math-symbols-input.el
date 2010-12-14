@@ -52,8 +52,9 @@
 ;; (if you have not load the mode yet, first load it by typing 【Alt+x xmsi-mode】)
 
 ;;; HISTORY
-;; version 1.1, 2010-12-12. added more symbols.
-;; version 1.0, 2010-12-08. First version.
+;; version 1.2, 2010-12-14 Added support to enter char by unicode decimal or hexadecimal.
+;; version 1.1, 2010-12-12 added more symbols.
+;; version 1.0, 2010-12-08 First version.
 
 ;;; References
 ;; http://ia.wikipedia.org/wiki/Wikipedia:LaTeX_symbols
@@ -882,9 +883,26 @@ Type “->”, then press 【Shift+Space】, then it becomes “→”.
 Type “and”, then press 【Shift+Space】, then it becomes “∧”.
 etc.
 
+If you have a text selection, then selected word will be taken as
+input. For example, type 「sin(a)」, select the “a”, then press
+ 【Shift+Space】, then it becomse 「sin(α)」.
+
 For full list, call `xmsi-list-math-symbols'.
 
-The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】, LaTeX's 「\symbolName」, and SGML/HTML/XML char entity abbreviations.
+All XML char entity abbrevs are supported. For example, 「copy」 becomes 「©」.
+
+To type a unicode by decimal, e.g.  「&#945;」 becomes 「α」.
+
+To type a unicode by hexadecimal, e.g., 「&#x3b1;」 becomes 「α」.
+
+Ending semicolon “;” is optional.
+
+To type any unicode by the char's unicode full name, type
+ 【Ctrl+x 8 Enter】 (ucs-insert). Asterisk “*” can be used as a
+wildcard to find the char. For example, calling “ucs-insert”,
+then type 「*arrow」 then Tab, then emacs will list all unicode
+char names that has “arrow” in it. (this feature is part of Emacs
+23)
 
 Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
