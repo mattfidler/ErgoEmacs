@@ -52,6 +52,7 @@
 ;; (if you have not load the mode yet, first load it by typing 【Alt+x xmsi-mode】)
 
 ;;; HISTORY
+;; version 1.2.1, 2010-12-14 Added about 10 more symbols.
 ;; version 1.2, 2010-12-14 Added support to enter char by unicode decimal or hexadecimal.
 ;; version 1.1, 2010-12-12 added more symbols.
 ;; version 1.0, 2010-12-08 First version.
@@ -70,7 +71,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2")
+(setq xmsi-version "1.2.1")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -318,6 +319,118 @@
   (puthash "hearts" "♥" xmsi-abrvs)
   (puthash "diams" "♦" xmsi-abrvs)
 
+  ;; Double struck letter forms (aka Double struck; double stroke)
+  ;; others outside of the BMP (Unicode's Basic Multilingual Plane). Not much font supports it.
+  (puthash "dsC" "ℂ" xmsi-abrvs) ; complex
+  (puthash "dsH" "ℍ" xmsi-abrvs)
+  (puthash "dsN" "ℕ" xmsi-abrvs)
+  (puthash "dsP" "ℙ" xmsi-abrvs)
+  (puthash "dsQ" "ℚ" xmsi-abrvs) ; rational
+  (puthash "dsR" "ℝ" xmsi-abrvs) ; real
+  (puthash "dsZ" "ℤ" xmsi-abrvs) ; integer.
+
+  (puthash "dd" "ⅆ" xmsi-abrvs)
+  (puthash "ee" "ⅇ" xmsi-abrvs)
+  (puthash "ii" "ⅈ" xmsi-abrvs)
+  (puthash "jj" "ⅉ" xmsi-abrvs)
+
+  (puthash "dsd" "ⅆ" xmsi-abrvs)
+  (puthash "dse" "ⅇ" xmsi-abrvs)
+  (puthash "dsi" "ⅈ" xmsi-abrvs)
+  (puthash "dsj" "ⅉ" xmsi-abrvs)
+
+  ;; gothic letter forms (aka FRANKTUR). Most are outside BMP
+(puthash "goA" "𝔄" xmsi-abrvs)
+(puthash "goB" "𝔅" xmsi-abrvs)
+(puthash "goC" "ℭ" xmsi-abrvs)
+(puthash "goD" "𝔇" xmsi-abrvs)
+(puthash "goE" "𝔈" xmsi-abrvs)
+(puthash "goF" "𝔉" xmsi-abrvs)
+(puthash "goG" "𝔊" xmsi-abrvs)
+(puthash "goH" "ℌ" xmsi-abrvs)
+(puthash "goI" "ℑ" xmsi-abrvs)
+(puthash "goJ" "𝔍" xmsi-abrvs)
+(puthash "goK" "𝔎" xmsi-abrvs)
+(puthash "goL" "𝔏" xmsi-abrvs)
+(puthash "goM" "𝔐" xmsi-abrvs)
+(puthash "goN" "𝔑" xmsi-abrvs)
+(puthash "goO" "𝔒" xmsi-abrvs)
+(puthash "goP" "𝔓" xmsi-abrvs)
+(puthash "goQ" "𝔔" xmsi-abrvs)
+(puthash "goR" "ℜ" xmsi-abrvs)
+(puthash "goS" "𝔖" xmsi-abrvs)
+(puthash "goT" "𝔗" xmsi-abrvs)
+(puthash "goU" "𝔘" xmsi-abrvs)
+(puthash "goV" "𝔙" xmsi-abrvs)
+(puthash "goW" "𝔚" xmsi-abrvs)
+(puthash "goX" "𝔛" xmsi-abrvs)
+(puthash "goY" "𝔜" xmsi-abrvs)
+(puthash "goZ" "ℨ" xmsi-abrvs)
+(puthash "goa" "𝔞" xmsi-abrvs)
+(puthash "gob" "𝔟" xmsi-abrvs)
+(puthash "goc" "𝔠" xmsi-abrvs)
+(puthash "god" "𝔡" xmsi-abrvs)
+(puthash "goe" "𝔢" xmsi-abrvs)
+(puthash "gof" "𝔣" xmsi-abrvs)
+(puthash "gog" "𝔤" xmsi-abrvs)
+(puthash "goh" "𝔥" xmsi-abrvs)
+(puthash "goi" "𝔦" xmsi-abrvs)
+(puthash "goj" "𝔧" xmsi-abrvs)
+(puthash "gok" "𝔨" xmsi-abrvs)
+(puthash "gol" "𝔩" xmsi-abrvs)
+(puthash "gom" "𝔪" xmsi-abrvs)
+(puthash "gon" "𝔫" xmsi-abrvs)
+(puthash "goo" "𝔬" xmsi-abrvs)
+(puthash "gop" "𝔭" xmsi-abrvs)
+(puthash "goq" "𝔮" xmsi-abrvs)
+(puthash "gor" "𝔯" xmsi-abrvs)
+(puthash "gos" "𝔰" xmsi-abrvs)
+(puthash "got" "𝔱" xmsi-abrvs)
+(puthash "gou" "𝔲" xmsi-abrvs)
+(puthash "gov" "𝔳" xmsi-abrvs)
+(puthash "gow" "𝔴" xmsi-abrvs)
+(puthash "gox" "𝔵" xmsi-abrvs)
+(puthash "goy" "𝔶" xmsi-abrvs)
+(puthash "goz" "𝔷" xmsi-abrvs)
+
+  ;; Scripted letter forms. Most are outside BMP.
+  (puthash "sca" "𝒶" xmsi-abrvs)
+  (puthash "scb" "𝒷" xmsi-abrvs)
+  (puthash "scc" "𝒸" xmsi-abrvs)
+  (puthash "scd" "𝒹" xmsi-abrvs)
+  (puthash "sce" "ℯ" xmsi-abrvs) ; in BMP
+  (puthash "scf" "𝒻" xmsi-abrvs)
+  (puthash "scg" "ℊ" xmsi-abrvs) ; in BMP
+  (puthash "sch" "𝒽" xmsi-abrvs)
+  (puthash "sci" "𝒾" xmsi-abrvs)
+  (puthash "scj" "𝒿" xmsi-abrvs)
+  (puthash "sck" "𝓀" xmsi-abrvs)
+  (puthash "scl2" "𝓁" xmsi-abrvs)
+  (puthash "scl" "ℓ" xmsi-abrvs) ;in BMP
+  (puthash "scm" "𝓂" xmsi-abrvs)
+  (puthash "scn" "𝓃" xmsi-abrvs)
+  (puthash "sco" "ℴ" xmsi-abrvs) ; in BMP
+  (puthash "scp" "𝓅" xmsi-abrvs)
+  (puthash "scq" "𝓆" xmsi-abrvs)
+  (puthash "scw" "𝓌" xmsi-abrvs)
+  (puthash "scx" "𝓍" xmsi-abrvs)
+  (puthash "scy" "𝓎" xmsi-abrvs)
+  (puthash "scz" "𝓏" xmsi-abrvs)
+
+  (puthash "scB" "ℬ" xmsi-abrvs)
+  (puthash "scE" "ℰ" xmsi-abrvs)
+  (puthash "scF" "ℱ" xmsi-abrvs)
+  (puthash "scH" "ℋ" xmsi-abrvs)
+  (puthash "scI" "ℐ" xmsi-abrvs)
+  (puthash "scL" "ℒ" xmsi-abrvs)
+  (puthash "scM" "ℳ" xmsi-abrvs)
+  (puthash "scP" "℘" xmsi-abrvs)
+  (puthash "scR" "ℛ" xmsi-abrvs)
+
+; a b c d e f g h i j k l m n o p q w x y z
+; A B C D E F G H I J K L M N O P Q W X Y Z
+
+  ;; accented letters
   (puthash "a`" "à" xmsi-abrvs)
   (puthash "e`" "è" xmsi-abrvs)
   (puthash "i`" "ì" xmsi-abrvs)
@@ -467,20 +580,6 @@
   (puthash "+-" "±" xmsi-abrvs)
   (puthash "-+" "∓" xmsi-abrvs)
 
-  ;; operators
-  (puthash "'" "′" xmsi-abrvs)
-  (puthash "''" "″" xmsi-abrvs)
-  (puthash "'''" "‴" xmsi-abrvs)
-  (puthash "." "·" xmsi-abrvs)
-  (puthash "root" "√" xmsi-abrvs)
-  (puthash "sqrt" "√" xmsi-abrvs)
-  (puthash "rt" "√" xmsi-abrvs)
-  (puthash "del" "∇" xmsi-abrvs)
-  (puthash "part" "∂" xmsi-abrvs)
-  (puthash "partial" "∂" xmsi-abrvs)
-  (puthash "pd" "∂" xmsi-abrvs)
-
-
   ;; superscripts
   (puthash "^0" "⁰" xmsi-abrvs)
   (puthash "^1" "¹" xmsi-abrvs)
@@ -527,22 +626,6 @@
   (puthash "_x" "ᵤ" xmsi-abrvs)
   (puthash "_x" "ₓ" xmsi-abrvs)
 
-  ;; forms for constants-like things
-  (puthash "pi" "π" xmsi-abrvs)
-  (puthash "inf" "∞" xmsi-abrvs) (puthash "infinity" "∞" xmsi-abrvs)
-  (puthash "deg" "°" xmsi-abrvs) (puthash "degree" "°" xmsi-abrvs)
-  (puthash "O/" "∅" xmsi-abrvs)
-  (puthash "es" "∅" xmsi-abrvs)
-
-  (puthash "ltrib" "◀" xmsi-abrvs)
-  (puthash "rtrib" "▶" xmsi-abrvs)
-  (puthash "utrib" "▲" xmsi-abrvs)
-  (puthash "dtrib" "▼" xmsi-abrvs)
-  (puthash "ltri" "◁" xmsi-abrvs)
-  (puthash "rtri" "▷" xmsi-abrvs)
-  (puthash "utri" "△" xmsi-abrvs)
-  (puthash "dtri" "▽" xmsi-abrvs)
-
   ;; astronomy
   (puthash "sun" "☉" xmsi-abrvs)
   (puthash "sunray" "☼" xmsi-abrvs)
@@ -560,6 +643,22 @@
   (puthash "female" "♀" xmsi-abrvs)
   (puthash "venus" "♀" xmsi-abrvs)
   (puthash "comet" "☄" xmsi-abrvs)
+
+  ;; forms for constants-like things
+  (puthash "pi" "π" xmsi-abrvs)
+  (puthash "inf" "∞" xmsi-abrvs) (puthash "infinity" "∞" xmsi-abrvs)
+  (puthash "deg" "°" xmsi-abrvs) (puthash "degree" "°" xmsi-abrvs)
+  (puthash "O/" "∅" xmsi-abrvs)
+  (puthash "es" "∅" xmsi-abrvs)
+
+  (puthash "ltrib" "◀" xmsi-abrvs)
+  (puthash "rtrib" "▶" xmsi-abrvs)
+  (puthash "utrib" "▲" xmsi-abrvs)
+  (puthash "dtrib" "▼" xmsi-abrvs)
+  (puthash "ltri" "◁" xmsi-abrvs)
+  (puthash "rtri" "▷" xmsi-abrvs)
+  (puthash "utri" "△" xmsi-abrvs)
+  (puthash "dtri" "▽" xmsi-abrvs)
 
   ;; brackets, matching pairs
   (puthash "(" "〔〕" xmsi-abrvs)
@@ -652,117 +751,6 @@
   (puthash "R2" "ℝ²" xmsi-abrvs)
   (puthash "R3" "ℝ³" xmsi-abrvs)
 
-  ;; Double struck letter forms (aka Double struck; double stroke)
-  ;; others outside of the BMP (Unicode's Basic Multilingual Plane). Not much font supports it.
-  (puthash "dsC" "ℂ" xmsi-abrvs) ; complex
-  (puthash "dsH" "ℍ" xmsi-abrvs)
-  (puthash "dsN" "ℕ" xmsi-abrvs)
-  (puthash "dsP" "ℙ" xmsi-abrvs)
-  (puthash "dsQ" "ℚ" xmsi-abrvs) ; rational
-  (puthash "dsR" "ℝ" xmsi-abrvs) ; real
-  (puthash "dsZ" "ℤ" xmsi-abrvs) ; integer.
-
-  (puthash "dd" "ⅆ" xmsi-abrvs)
-  (puthash "ee" "ⅇ" xmsi-abrvs)
-  (puthash "ii" "ⅈ" xmsi-abrvs)
-  (puthash "jj" "ⅉ" xmsi-abrvs)
-
-  (puthash "dsd" "ⅆ" xmsi-abrvs)
-  (puthash "dse" "ⅇ" xmsi-abrvs)
-  (puthash "dsi" "ⅈ" xmsi-abrvs)
-  (puthash "dsj" "ⅉ" xmsi-abrvs)
-
-  ;; gothic letter forms (aka FRANKTUR). Most are outside BMP
-(puthash "goA" "𝔄" xmsi-abrvs)
-(puthash "goB" "𝔅" xmsi-abrvs)
-(puthash "goC" "ℭ" xmsi-abrvs)
-(puthash "goD" "𝔇" xmsi-abrvs)
-(puthash "goE" "𝔈" xmsi-abrvs)
-(puthash "goF" "𝔉" xmsi-abrvs)
-(puthash "goG" "𝔊" xmsi-abrvs)
-(puthash "goH" "ℌ" xmsi-abrvs)
-(puthash "goI" "ℑ" xmsi-abrvs)
-(puthash "goJ" "𝔍" xmsi-abrvs)
-(puthash "goK" "𝔎" xmsi-abrvs)
-(puthash "goL" "𝔏" xmsi-abrvs)
-(puthash "goM" "𝔐" xmsi-abrvs)
-(puthash "goN" "𝔑" xmsi-abrvs)
-(puthash "goO" "𝔒" xmsi-abrvs)
-(puthash "goP" "𝔓" xmsi-abrvs)
-(puthash "goQ" "𝔔" xmsi-abrvs)
-(puthash "goR" "ℜ" xmsi-abrvs)
-(puthash "goS" "𝔖" xmsi-abrvs)
-(puthash "goT" "𝔗" xmsi-abrvs)
-(puthash "goU" "𝔘" xmsi-abrvs)
-(puthash "goV" "𝔙" xmsi-abrvs)
-(puthash "goW" "𝔚" xmsi-abrvs)
-(puthash "goX" "𝔛" xmsi-abrvs)
-(puthash "goY" "𝔜" xmsi-abrvs)
-(puthash "goZ" "ℨ" xmsi-abrvs)
-(puthash "goa" "𝔞" xmsi-abrvs)
-(puthash "gob" "𝔟" xmsi-abrvs)
-(puthash "goc" "𝔠" xmsi-abrvs)
-(puthash "god" "𝔡" xmsi-abrvs)
-(puthash "goe" "𝔢" xmsi-abrvs)
-(puthash "gof" "𝔣" xmsi-abrvs)
-(puthash "gog" "𝔤" xmsi-abrvs)
-(puthash "goh" "𝔥" xmsi-abrvs)
-(puthash "goi" "𝔦" xmsi-abrvs)
-(puthash "goj" "𝔧" xmsi-abrvs)
-(puthash "gok" "𝔨" xmsi-abrvs)
-(puthash "gol" "𝔩" xmsi-abrvs)
-(puthash "gom" "𝔪" xmsi-abrvs)
-(puthash "gon" "𝔫" xmsi-abrvs)
-(puthash "goo" "𝔬" xmsi-abrvs)
-(puthash "gop" "𝔭" xmsi-abrvs)
-(puthash "goq" "𝔮" xmsi-abrvs)
-(puthash "gor" "𝔯" xmsi-abrvs)
-(puthash "gos" "𝔰" xmsi-abrvs)
-(puthash "got" "𝔱" xmsi-abrvs)
-(puthash "gou" "𝔲" xmsi-abrvs)
-(puthash "gov" "𝔳" xmsi-abrvs)
-(puthash "gow" "𝔴" xmsi-abrvs)
-(puthash "gox" "𝔵" xmsi-abrvs)
-(puthash "goy" "𝔶" xmsi-abrvs)
-(puthash "goz" "𝔷" xmsi-abrvs)
-
-  ;; Scripted letter forms. Most are outside BMP.
-  (puthash "sca" "𝒶" xmsi-abrvs)
-  (puthash "scb" "𝒷" xmsi-abrvs)
-  (puthash "scc" "𝒸" xmsi-abrvs)
-  (puthash "scd" "𝒹" xmsi-abrvs)
-  (puthash "sce" "ℯ" xmsi-abrvs) ; in BMP
-  (puthash "scf" "𝒻" xmsi-abrvs)
-  (puthash "scg" "ℊ" xmsi-abrvs) ; in BMP
-  (puthash "sch" "𝒽" xmsi-abrvs)
-  (puthash "sci" "𝒾" xmsi-abrvs)
-  (puthash "scj" "𝒿" xmsi-abrvs)
-  (puthash "sck" "𝓀" xmsi-abrvs)
-  (puthash "scl2" "𝓁" xmsi-abrvs)
-  (puthash "scl" "ℓ" xmsi-abrvs) ;in BMP
-  (puthash "scm" "𝓂" xmsi-abrvs)
-  (puthash "scn" "𝓃" xmsi-abrvs)
-  (puthash "sco" "ℴ" xmsi-abrvs) ; in BMP
-  (puthash "scp" "𝓅" xmsi-abrvs)
-  (puthash "scq" "𝓆" xmsi-abrvs)
-  (puthash "scw" "𝓌" xmsi-abrvs)
-  (puthash "scx" "𝓍" xmsi-abrvs)
-  (puthash "scy" "𝓎" xmsi-abrvs)
-  (puthash "scz" "𝓏" xmsi-abrvs)
-
-  (puthash "scB" "ℬ" xmsi-abrvs)
-  (puthash "scE" "ℰ" xmsi-abrvs)
-  (puthash "scF" "ℱ" xmsi-abrvs)
-  (puthash "scH" "ℋ" xmsi-abrvs)
-  (puthash "scI" "ℐ" xmsi-abrvs)
-  (puthash "scL" "ℒ" xmsi-abrvs)
-  (puthash "scM" "ℳ" xmsi-abrvs)
-  (puthash "scP" "℘" xmsi-abrvs)
-  (puthash "scR" "ℛ" xmsi-abrvs)
-
-; a b c d e f g h i j k l m n o p q w x y z
-; A B C D E F G H I J K L M N O P Q W X Y Z
-
   ;; relations
   (puthash "<=" "≤" xmsi-abrvs)
   (puthash ">=" "≥" xmsi-abrvs)
@@ -780,14 +768,37 @@
   (puthash "c+" "⊕" xmsi-abrvs)
   (puthash "c*" "⊗" xmsi-abrvs)
   (puthash "*" "×" xmsi-abrvs)
+  (puthash "'" "′" xmsi-abrvs)
+  (puthash "''" "″" xmsi-abrvs)
+  (puthash "'''" "‴" xmsi-abrvs)
+  (puthash "." "·" xmsi-abrvs)
+  (puthash "root" "√" xmsi-abrvs)
+  (puthash "sqrt" "√" xmsi-abrvs)
+  (puthash "rt" "√" xmsi-abrvs)
+  (puthash "del" "∇" xmsi-abrvs)
+  (puthash "part" "∂" xmsi-abrvs)
+  (puthash "partial" "∂" xmsi-abrvs)
+  (puthash "pd" "∂" xmsi-abrvs)
+  (puthash "cross" "⨯" xmsi-abrvs)
+  (puthash "cint" "∮" xmsi-abrvs) ; contour integral
+  (puthash "ccint" "∲" xmsi-abrvs) 
+  (puthash "cccint" "∳" xmsi-abrvs) 
 
-  (puthash "uparrow" "↑" xmsi-abrvs)
-  (puthash "downarrow" "↓" xmsi-abrvs)
-  (puthash "<-" "←" xmsi-abrvs) (puthash "leftarrow" "←" xmsi-abrvs)
-  (puthash "->" "→" xmsi-abrvs) (puthash "rightarrow" "→" xmsi-abrvs)
+
+;; arrows and maps
+  (puthash "<-" "←" xmsi-abrvs)
+  (puthash "->" "→" xmsi-abrvs)
 
   (puthash "<=2" "⇐" xmsi-abrvs)
   (puthash "=>" "⇒" xmsi-abrvs)
+
+  (puthash "<-|" "↤" xmsi-abrvs)
+  (puthash "|->" "↦" xmsi-abrvs)
+
+  (puthash "xor" "⊻" xmsi-abrvs)
+  (puthash "nand" "⊼" xmsi-abrvs)
+  (puthash "nor" "⊽" xmsi-abrvs)
+;;↥ ↧ ⇤ ⇥ ⤒ ⤓ ↨
 
   )
 
