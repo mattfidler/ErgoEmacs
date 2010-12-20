@@ -1,2 +1,0 @@
-# --
-llSetVehicleFloatParam(integer param, float value)

@@ -1,2 +1,0 @@
-# --
-llSetPayPrice(integer price, list quick_pay_buttons)

@@ -1,2 +1,0 @@
-# --
-llSetVehicleRotationParam(integer param, rotation rot)

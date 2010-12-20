@@ -1,2 +1,0 @@
-# --
-llSetVehicleVectorParam(integer param, vector vec)

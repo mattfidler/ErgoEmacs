@@ -1,2 +1,0 @@
-# --
-llSetHoverHeight(float height, integer water, float tau)

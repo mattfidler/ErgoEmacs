@@ -1,2 +1,0 @@
-# --
-llGetHTTPHeader(key request_id, string header)
