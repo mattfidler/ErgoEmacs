@@ -1,6 +1,0 @@
-# --
-$>integer i;
-$>for( i = 0; i < num_detected; i++)
-$>{
-$>$1;
-$>}
