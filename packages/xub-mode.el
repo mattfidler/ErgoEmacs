@@ -6,9 +6,7 @@
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Keywords: unicode, character map
 
-;; You can redistribute this program and/or modify it under the terms
-;; of the GNU General Public License version 3, as published by the
-;; Free Software Foundation.
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.
 
 ;;; DESCRIPTION
 
@@ -57,6 +55,7 @@
 
 ;;; HISTORY
 
+;; version 1.1.4, 2010-12-20 • The keys 【Alt+12】 for zoom-in and 【Alt+11】 for zoom-out are removed. New keys are: 【Ctrl++】 (zoom-in) and 【Ctrl+-】 zoom-out. Holding down Ctrl and scroll mouse wheel also works. These are more compatible with web browsers.
 ;; version 1.1.3, 2010-11-18 • Fixed a bug where describe-major-mode generates a error.
 ;; version 1.1.2, 2010-08-13 • renamed file frome “xub-unicode-browser-mode.el” to “xub-mode.el”. The feature name is also renamed from “xub-unicode-browser-mode” to “xub-mode”.
 ;; version 1.1.1, 2010-06-21 • Added xub-forward-to-space and xub-backward-to-space.
@@ -65,7 +64,7 @@
 
 ;;; Code:
 
-(setq xub-version "1.1.3")
+(setq xub-version "1.1.4")
 
 (defvar xub-map nil "Keymap for xub")
 
@@ -77,8 +76,10 @@
 (define-key xub-map (kbd "<mouse-1>") 'xub-left-click)
 (define-key xub-map [remap forward-word] 'xub-forward-to-space)
 (define-key xub-map [remap backward-word] 'xub-backward-to-space)
-(define-key xub-map (kbd "<M-f12>") 'xub-zoom-in)
-(define-key xub-map (kbd "<M-f11>") 'xub-zoom-out)
+(define-key xub-map (kbd "C-+") 'xub-zoom-in)
+(define-key xub-map (kbd "C--") 'xub-zoom-out)
+(define-key xub-map (kbd "<C-wheel-up>") 'xub-zoom-in)
+(define-key xub-map (kbd "<C-wheel-down>") 'xub-zoom-out)
 
 (define-key xub-map [menu-bar] (make-sparse-keymap))
 (let ((menuMap (make-sparse-keymap "XUB")))

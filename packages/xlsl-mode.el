@@ -6,10 +6,7 @@
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Keywords: LSL, Second Life, Linden Scripting Language
 
-;; You can redistribute this program and/or modify it under the terms
-;; of the GNU General Public License as published by the Free Software
-;; Foundation; either version 2, or (at your option) any later
-;; version.
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.
 
 ;;; DESCRIPTION
 

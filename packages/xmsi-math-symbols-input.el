@@ -6,6 +6,8 @@
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Keywords: math symbols, unicode, input
 
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.
+
 ;;; DESCRIPTION
 
 ;; A minor mode for inputing hundreds of math symbols
