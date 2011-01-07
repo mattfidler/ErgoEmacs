@@ -55,7 +55,7 @@
 
 ;;; HISTORY
 
-;; version 1.2.3, 2011-01-06 More clean up, adding symbols. The input string is changed. Now, it's from the cursor position to the left. Before this change, the input is determined by whitespace chars to the left and right.
+;; version 1.2.3, 2011-01-06 More clean up, adding symbols. The input string is changed. Now, it's from the cursor position to the left whitespace. Before this change, the input is determined by whitespace chars to the left and right.
 ;; version 1.2.2, 2010-12-22 Added nbsp for non-breaking-space and some others symbols.
 ;; version 1.2.1, 2010-12-14 Added about 10 more symbols.
 ;; version 1.2, 2010-12-14 Added support to enter char by unicode decimal or hexadecimal.
