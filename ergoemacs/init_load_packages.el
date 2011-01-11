@@ -158,18 +158,30 @@
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
 
 
-;; auto-complete (a enhanced word completion)
+;; ;; auto-complete v1.3 (a enhanced word completion)
+;; (add-to-list 'load-path
+;;  (concat (file-name-directory (or load-file-name buffer-file-name))
+;;                      "../packages/auto-complete-1.3/" ) )
+;; (require 'auto-complete-config)
+;; (add-to-list 'ac-dictionary-directories
+;;  (concat (file-name-directory (or load-file-name buffer-file-name))
+;;                      "../packages/auto-complete-1.3/ac-dict/" ))
+;; (ac-config-default)
+;; (auto-complete-mode 1)
+;; (defun ac-css-mode-setup()) ; this is a workaround a crash http://github.com/m2ym/auto-complete/issues#issue/27 http://github.com/m2ym/auto-complete/issues#issue/31
+
+
+;; auto-complete v1.3.1 (a enhanced word completion)
 (add-to-list 'load-path
  (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete-1.3/" ) )
+                     "../packages/auto-complete-1.3.1/" ) )
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories
  (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete-1.3/ac-dict/" ))
+                     "../packages/auto-complete-1.3.1/ac-dict/" ))
 (ac-config-default)
-;; had experience of crashing my emacs
 (auto-complete-mode 1)
-(defun ac-css-mode-setup()) ; bug workaround http://github.com/m2ym/auto-complete/issues#issue/27 http://github.com/m2ym/auto-complete/issues#issue/31
+
 
 ;; enhanced bookmark, bookmarkplus
 (add-to-list 'load-path
