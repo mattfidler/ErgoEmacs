@@ -94,15 +94,19 @@
 ;;; xub-mode for browsing Unicode characters
 (autoload 'xub-mode "xub-mode" "Load Unicode browsing mode." t)
 
-;;; xmsi-math-symbols-input for inputting math (Unicode) symbols.
+;;; xmsi-mode 〔xmsi-math-symbols-input.el〕 for inputting math (Unicode) symbols.
 (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
 (xmsi-mode 1)
 
 
 ;;;; productivity, enhancement, or minor modes
 
-; redo mode
-(require 'redo)
+;; ; redo mode
+;; (require 'redo)
+
+; redo+ mode
+(require 'redo+)
+;; (setq undo-no-redo t)
 
 ;; ;; Hunspell
 ;; (when (string-equal system-type "windows-nt")
