@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; version 1.2.4, 2011-01-11 made the error message more clear. • added symbol for circled number ① ② ... ⒈⒉ ... 🄂 🄃 ...
 ;; version 1.2.3, 2011-01-06 More clean up, adding symbols. The input string is changed. Now, it's from the cursor position to the left whitespace. Before this change, the input is determined by whitespace chars to the left and right.
 ;; version 1.2.2, 2010-12-22 Added nbsp for non-breaking-space and some others symbols.
 ;; version 1.2.1, 2010-12-14 Added about 10 more symbols.
@@ -76,7 +77,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2.3")
+(setq xmsi-version "1.2.4")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -656,6 +657,40 @@
   (puthash "flr" "⌊⌋" xmsi-abrvs)
   (puthash "ceil" "⌈⌉" xmsi-abrvs)
 
+  ;; number forms
+  (puthash "c1" "①" xmsi-abrvs)
+  (puthash "c2" "②" xmsi-abrvs)
+  (puthash "c3" "③" xmsi-abrvs)
+  (puthash "c4" "④" xmsi-abrvs)
+  (puthash "c5" "⑤" xmsi-abrvs)
+  (puthash "c6" "⑥" xmsi-abrvs)
+  (puthash "c7" "⑦" xmsi-abrvs)
+  (puthash "c8" "⑧" xmsi-abrvs)
+  (puthash "c9" "⑨" xmsi-abrvs)
+  (puthash "c0" "⓪" xmsi-abrvs)
+
+(puthash "1." "⒈" xmsi-abrvs)
+(puthash "2." "⒉" xmsi-abrvs)
+(puthash "3." "⒊" xmsi-abrvs)
+(puthash "4." "⒋" xmsi-abrvs)
+(puthash "5." "⒌" xmsi-abrvs)
+(puthash "6." "⒍" xmsi-abrvs)
+(puthash "7." "⒎" xmsi-abrvs)
+(puthash "8." "⒏" xmsi-abrvs)
+(puthash "9." "⒐" xmsi-abrvs)
+(puthash "0." "🄀" xmsi-abrvs)
+
+(puthash "1," "🄂" xmsi-abrvs)
+(puthash "2," "🄃" xmsi-abrvs)
+(puthash "3," "🄄" xmsi-abrvs)
+(puthash "4," "🄅" xmsi-abrvs)
+(puthash "5," "🄆" xmsi-abrvs)
+(puthash "6," "🄇" xmsi-abrvs)
+(puthash "7," "🄈" xmsi-abrvs)
+(puthash "8," "🄉" xmsi-abrvs)
+(puthash "9," "🄊" xmsi-abrvs)
+(puthash "0," "🄁" xmsi-abrvs)
+
   ;; music
 (puthash "notes4" "♩" xmsi-abrvs)
 (puthash "notes8" "♪" xmsi-abrvs)
@@ -894,7 +929,7 @@ See `xmsi-mode'."
                 (delete-region p1 p2)
                 (insert resultSymbol)
                 )
-            (error "Not a valid abbrev. See “xmsi-list-math-symbols” or use XML entity names or use &#945; or &#x3b1; to enter 「α」. The ending 「;」 is optional." ) ) )
+            (error "Not a valid abbrev. Call “xmsi-list-math-symbols” for a list. Or use XML entity names. Or use &#945; or &#x3b1; to enter α. Ending semicolon is optional." ) ) )
         ) ) ) )
 
 (define-minor-mode xmsi-mode
