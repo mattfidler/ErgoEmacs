@@ -1,9 +1,9 @@
 ;-*- coding: utf-8 -*-
 
-;; Ergohotkey for Dvorak layout
+;; Ergohotkey for pt-nativo layout
 ;; A AutoHotkey script for system-wide ErgoEmacs keybinding
 ;;
-;;   Copyright © 2009 Milan Santosi
+;;   Copyright © 2009 Milan Santosi, Xavier Gomes Pinho
 ;;   This program is free software: you can redistribute it and/or modify
 ;;   it under the terms of the GNU General Public License as published by
 ;;   the Free Software Foundation, either version 3 of the License, or
@@ -22,15 +22,8 @@
 ;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
-;; Version 0.3: 
-;; - added a #SingleInstance directive, by Xah Lee
-;; Version 0.2: 
-;; - 'Fixed' malfunctioning kill-line-backwards by remapping it to
-;;   something without a shift modifier. Not very happy about it.
-;; - Replaced Send with SendInput
-;; - Replaced occurences of DEL with C-x to 'kill' to the clipboard
+;; Version 0.1: 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; don't run multiple instance of this script
 #SingleInstance force
 
@@ -38,49 +31,49 @@
 #IfWinNotActive ahk_class Emacs
 
 ;; make arrow keys on righthand home position
-!c::
+!t::
   SendInput {Up}
   return
-!h::
+!d::
   SendInput {Left}
   return
-!t::
+!s::
   SendInput {Down}
   return
-!n::
+!r::
   SendInput {Right}
   return
 
 ;; move by word
-!g::
+!l::
   SendInput {Ctrl down}
   SendInput {Left}
   SendInput {Ctrl up}
   return
-!r::
+!c::
   SendInput {Ctrl down}
   SendInput {Right}
   SendInput {Ctrl up}
   return
 
 ;; move to home/end
-!d::
+!m::
   SendInput {Home}
   return
-+!d::
++!m::
   SendInput {End}
   return
 
 ;; delete char forwards/backwards (no yank needed)
-!u::
+!o::
   SendInput {Delete} 
   return
-!e::
+!a::
   SendInput {Backspace}
   return
 
 ;; kill rest of line forwards
-!i::				  
+!u::
   SendInput {Shift down}
   SendInput {End}
   SendInput {Shift up}
@@ -90,7 +83,7 @@
   return
 
 ;; kill line backwards (shift-home key combo mapped to a !+-key causes trouble)
-!x::
+!k::
   SendInput {Shift down}
   SendInput {Home}
   SendInput {Shift up}
@@ -112,7 +105,7 @@
   return
 
 ;; delete word forwards
-!p::
+!h::
   SendInput {Ctrl down}
   SendInput {Shift down}
   SendInput {Right}
@@ -124,7 +117,7 @@
   return
 
 ;; cut copy paste
-!q::
+!ç::
   SendInput {Ctrl down}
   SendInput {x}
   SendInput {Ctrl up}
@@ -134,29 +127,30 @@
   SendInput {c}
   SendInput {Ctrl up}
   return
-!k::
+!b::
   SendInput {Ctrl down}
   SendInput {v}
   SendInput {Ctrl up}
   return
 
 ;; undo/redo
-!`;::
+!y::
   SendInput {Ctrl down}
   SendInput {z}
   SendInput {Ctrl up}
   return
-+!`;::
+!+y::
   SendInput {Ctrl down}
   SendInput {y}
   SendInput {Ctrl up}
   return
 
 
+
 ;;Not quite ergo-emacs but still useful to have globally:
 
 ;; put parens around a word
-!b::
+!q::
   SendInput {Ctrl down}
   SendInput {Left}
   SendInput {Ctrl up}
@@ -168,7 +162,7 @@
   return
 
 ;; deletes first and last char of a word (removing parens)
-!+b::
+!+q::
   SendInput {Ctrl down}
   SendInput {Left}
   SendInput {Ctrl up}
@@ -180,7 +174,7 @@
   return
 
 ;; copy rest of line (broken because of '!+' again)
-; !+i::				  
+; !+g::				  
 ;   SendInput {Shift down}
 ;   SendInput {End}
 ;   SendInput {Shift up}

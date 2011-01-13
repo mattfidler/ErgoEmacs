@@ -1,9 +1,9 @@
 ;-*- coding: utf-8 -*-
 
-;; Ergohotkey, global editing shortcuts for Autohotkey:
-;; giving the power of ErgoEmacs to notepad.exe
+;; Ergohotkey for QWERTY layout
+;; A AutoHotkey script for system-wide ErgoEmacs keybinding
 ;;
-;;   Copyright (C) 2009 Milan Santosi
+;;   Copyright © 2009 Milan Santosi
 ;;   This program is free software: you can redistribute it and/or modify
 ;;   it under the terms of the GNU General Public License as published by
 ;;   the Free Software Foundation, either version 3 of the License, or
@@ -15,16 +15,11 @@
 ;;   GNU General Public License for more details.
 ;;
 ;;   You should have received a copy of the GNU General Public License
-;;   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;;   along with this program.  If not, see http://www.gnu.org/licenses/
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global ergonomic editing command shortcuts for 
-;; use with autohotkey <http://www.autohotkey.com/>
-;; shortcut layout taken from ErgoEmacs
-;; <http://code.google.com/p/ergoemacs/>
-;; Further details:
-;; <http://xahlee.org/emacs/ergonomic_emacs_keybinding.html/>
-;; Version 0.1 for us-qwerty layout,
-;; created on Windows 7 evaluation build 7100
+;; use with autohotkey http://www.autohotkey.com/
+;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
 ;; Version 0.3: 
@@ -39,10 +34,10 @@
 ;; don't run multiple instance of this script
 #SingleInstance force
 
-;; try to avoid redundancy  with ErgoEmacs
+;; Don't activate when in ErgoEmacs (because ErgoEmacs already defines them)
 #IfWinNotActive ahk_class Emacs
 
-;; navigation keys should be on the homerow
+;; make arrow keys on righthand home position
 !i:
   SendInput {Up}
   return
