@@ -1,4 +1,12 @@
 ; -*- coding: utf-8 -*-
+
+;; ; redo mode
+;; (require 'redo)
+
+; redo+ mode
+(require 'redo+)
+;; (setq undo-no-redo t)
+
 
 ;;;; language modes
 
@@ -91,22 +99,15 @@
 (add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))
 (autoload 'xbbcode-mode "xbbcode-mode" "Load xbbcode-mode for editing BBCode." t)
 
+
+;;;; productivity, enhancement, or minor modes
+
 ;;; xub-mode for browsing Unicode characters
 (autoload 'xub-mode "xub-mode" "Load Unicode browsing mode." t)
 
 ;;; xmsi-mode 〔xmsi-math-symbols-input.el〕 for inputting math (Unicode) symbols.
 (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
 (xmsi-mode 1)
-
-
-;;;; productivity, enhancement, or minor modes
-
-;; ; redo mode
-;; (require 'redo)
-
-; redo+ mode
-(require 'redo+)
-;; (setq undo-no-redo t)
 
 ;; ;; Hunspell
 ;; (when (string-equal system-type "windows-nt")
@@ -146,7 +147,7 @@
 ;; (setq speck-hunspell-library-directory (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/"))
 ;; (setq speck-hunspell-default-dictionary-name "en_US")
 
-;; yasnippet template system
+;;; yasnippet template system
 (add-to-list 'load-path
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/")
              )
@@ -183,17 +184,12 @@
 (auto-complete-mode 1)
 
 
-;; enhanced bookmark, bookmarkplus
+;;; enhanced bookmark, bookmarkplus
 (add-to-list 'load-path
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
 (require 'bookmark+)
 
-;; add a tab bar widget
-(require 'tabbar)
-(tabbar-mode 1)
-;; 2010-09-30. problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
-
-;; enhanced “directory viewer”/“file manager” (diredplus mode)
+;;; enhanced “directory viewer”/“file manager” (diredplus mode)
 (require 'dired+)
 
 ;; Highlight occurrence of current word, and move cursor to next/prev occurrence
@@ -212,6 +208,11 @@
 (command-frequency-table-load)
 (command-frequency-mode 1)
 (command-frequency-autosave-mode 1)
+
+;;; add a tab bar widget
+(require 'tabbar)
+(tabbar-mode 1)
+;; 2010-09-30. problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
 
 ;; display horizontal line for the Form Feed char (ASCII 12, ^L)
 ;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.
