@@ -17,7 +17,7 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
-;; make cursor movement thru camelCase words.
+;; make cursor movement stop in between camelCase words.
 (when (fboundp 'global-subword-mode ) (global-subword-mode 1))
 
 ;; Save minibuffer history
@@ -34,7 +34,7 @@
 ;; Make emacs open all files in last emacs session.
 ;;
 ;; This functionality is provided by desktop-save-mode (“feature”
-;; name: “desktop”). The mode is not on by default in emacs 23, and
+;; name: “desktop”). The mode is not on by default in emacs 23.1, and
 ;; has a lot options. The following is init settings for the mode for
 ;; ErgoEmacs.
 ;;
@@ -46,8 +46,8 @@
 ;; “desktop” are confusing to most users because it can have many
 ;; meanings.
 
-;; Some tech detail: set the desktop session file at
-;; ‹user-emacs-directory› (default is “~/.emacs.d/.emacs.desktop”).  This file
+;; Some tech detail: set the desktop session file 〔.emacs.desktop〕 at the variable
+;; “user-emacs-directory” (default value is “~/.emacs.d/”).  This file
 ;; is our desktop file. It will be auto created and or over-written.
 ;; if a emacs expert has other desktop session files elsewhere, he can
 ;; still use or manage those.
@@ -76,12 +76,12 @@
     ;; Make sure that even if emacs or OS crashed, emacs
     ;; still have last opened files.
     (add-hook 'find-file-hook
-              (lambda ()
-                (run-with-timer 5 nil
-                                (lambda ()
-                                  ;; Reset desktop modification time so the user is not bothered
-                                  (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
-                                  (desktop-save user-emacs-directory)))))
+     (lambda ()
+       (run-with-timer 5 nil
+          (lambda ()
+            ;; Reset desktop modification time so the user is not bothered
+            (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
+            (desktop-save user-emacs-directory)))))
 
     ;; Read default desktop
     (if (file-exists-p (concat desktop-dirname desktop-base-file-name))
