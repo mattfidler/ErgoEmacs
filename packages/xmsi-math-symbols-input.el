@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; version 1.2.5, 2011-02-01 added a figure dash.
 ;; version 1.2.4, 2011-01-11 made the error message more clear. • added symbol for circled number ① ② ... ⒈⒉ ... 🄂 🄃 ...
 ;; version 1.2.3, 2011-01-06 More clean up, adding symbols. The input string is changed. Now, it's from the cursor position to the left whitespace. Before this change, the input is determined by whitespace chars to the left and right.
 ;; version 1.2.2, 2010-12-22 Added nbsp for non-breaking-space and some others symbols.
@@ -77,7 +78,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2.4")
+(setq xmsi-version "1.2.5")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -509,6 +510,7 @@
   (puthash "dag" "†" xmsi-abrvs)
   (puthash "ddag" "‡" xmsi-abrvs)
   (puthash "--" "—" xmsi-abrvs)
+  (puthash "-" "‒" xmsi-abrvs)
   (puthash "&" "＆"xmsi-abrvs)
   (puthash "s&" "﹠" xmsi-abrvs)
 
