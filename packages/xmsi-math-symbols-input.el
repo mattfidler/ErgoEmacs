@@ -55,6 +55,8 @@
 
 ;;; HISTORY
 
+;; version 1.2.7, 2011-02-12 added: ⟵ ⟶ ⟷ ⇔ ⟸ ⟹ ⟺. A few other are also added, might missed it here. Changed keys for several brackets. They now all start with “b”.
+;; version 1.2.6, 2011-02-11 emdash, endash, figure dash, now have keys m- n- f-. Also, removed some full words keys: “degree” (deg), “pi” (p), “infinity” (inf), “angle” (ang).
 ;; version 1.2.5, 2011-02-01 added a figure dash.
 ;; version 1.2.4, 2011-01-11 made the error message more clear. • added symbol for circled number ① ② ... ⒈⒉ ... 🄂 🄃 ...
 ;; version 1.2.3, 2011-01-06 More clean up, adding symbols. The input string is changed. Now, it's from the cursor position to the left whitespace. Before this change, the input is determined by whitespace chars to the left and right.
@@ -78,7 +80,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2.5")
+(setq xmsi-version "1.2.7")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -646,18 +648,18 @@
   (puthash "es" "Ø" xmsi-abrvs)
 
   ;; brackets, matching pairs
-  (puthash "(" "〔〕" xmsi-abrvs)
-  (puthash "[(w" "〖〗" xmsi-abrvs)
-  (puthash "[(" "【】" xmsi-abrvs)
-  (puthash "<" "〈〉" xmsi-abrvs)
-  (puthash "<<" "《》" xmsi-abrvs)
-  (puthash "[" "「」" xmsi-abrvs)
-  (puthash "[[" "『』" xmsi-abrvs)
-  (puthash "\"" "“”" xmsi-abrvs)
-  (puthash "<2" "‹›" xmsi-abrvs)
-  (puthash "<<2" "«»" xmsi-abrvs)
   (puthash "flr" "⌊⌋" xmsi-abrvs)
   (puthash "ceil" "⌈⌉" xmsi-abrvs)
+  (puthash "b\"" "“”" xmsi-abrvs)
+  (puthash "b[" "「」" xmsi-abrvs)
+  (puthash "b[[" "『』" xmsi-abrvs)
+  (puthash "b[2" "【】" xmsi-abrvs)
+  (puthash "b[3" "〖〗" xmsi-abrvs)
+  (puthash "b(" "〔〕" xmsi-abrvs)
+  (puthash "b<" "〈〉" xmsi-abrvs)
+  (puthash "b<<" "《》" xmsi-abrvs)
+  (puthash "b<2" "‹›" xmsi-abrvs)
+  (puthash "b<<2" "«»" xmsi-abrvs)
 
   ;; number forms
   (puthash "c1" "①" xmsi-abrvs)
@@ -822,24 +824,29 @@
   (puthash "<-" "←" xmsi-abrvs)
   (puthash "->" "→" xmsi-abrvs)
 
-  (puthash "<=2" "⇐" xmsi-abrvs)
-  (puthash "=>" "⇒" xmsi-abrvs)
-
+(puthash "<=2" "⇐" xmsi-abrvs)
+(puthash "=>" "⇒" xmsi-abrvs)
+(puthash "<=>" "⇔" xmsi-abrvs)
+(puthash "<==" "⟸" xmsi-abrvs)
+(puthash "==>" "⟹" xmsi-abrvs)
+(puthash "<==>" "⟺" xmsi-abrvs)
+ 
   (puthash "<-|" "↤" xmsi-abrvs)
   (puthash "|->" "↦" xmsi-abrvs)
+
+  (puthash "<->" "↔" xmsi-abrvs)
+  (puthash "<--" "⟵" xmsi-abrvs)
+  (puthash "-->" "⟶" xmsi-abrvs)
+  (puthash "<-->" "⟷" xmsi-abrvs)
 
   (puthash "xor" "⊻" xmsi-abrvs)
   (puthash "nand" "⊼" xmsi-abrvs)
   (puthash "nor" "⊽" xmsi-abrvs)
 
   ;; duplicates. full word as input or variant abbrev. Only duplicates appear here.
-  (puthash "angle" "∠" xmsi-abrvs)
-  (puthash "infinity" "∞" xmsi-abrvs)
-  (puthash "degree" "°" xmsi-abrvs)
-  (puthash "pi" "π" xmsi-abrvs)
-  (puthash "empty" "Ø" xmsi-abrvs)
-  (puthash "currency" "¤" xmsi-abrvs)
-  (puthash "emdash" "—" xmsi-abrvs)
+  (puthash "m-" "—" xmsi-abrvs)
+  (puthash "f-" "‒" xmsi-abrvs)
+  (puthash "n-" "–" xmsi-abrvs)
   (puthash "square" "□" xmsi-abrvs)
   (puthash "circle" "○" xmsi-abrvs)
   (puthash "diamond" "◇" xmsi-abrvs)
