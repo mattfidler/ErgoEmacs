@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; version 1.2.7.1, 2011-02-12 Reverted most changes to the bracket keys.
 ;; version 1.2.7, 2011-02-12 added: ⟵ ⟶ ⟷ ⇔ ⟸ ⟹ ⟺. A few other are also added, might missed it here. Changed keys for several brackets. They now all start with “b”.
 ;; version 1.2.6, 2011-02-11 emdash, endash, figure dash, now have keys m- n- f-. Also, removed some full words keys: “degree” (deg), “pi” (p), “infinity” (inf), “angle” (ang).
 ;; version 1.2.5, 2011-02-01 added a figure dash.
@@ -80,7 +81,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2.7")
+(setq xmsi-version "1.2.7.1")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -650,16 +651,16 @@
   ;; brackets, matching pairs
   (puthash "flr" "⌊⌋" xmsi-abrvs)
   (puthash "ceil" "⌈⌉" xmsi-abrvs)
-  (puthash "b\"" "“”" xmsi-abrvs)
-  (puthash "b[" "「」" xmsi-abrvs)
-  (puthash "b[[" "『』" xmsi-abrvs)
-  (puthash "b[2" "【】" xmsi-abrvs)
-  (puthash "b[3" "〖〗" xmsi-abrvs)
-  (puthash "b(" "〔〕" xmsi-abrvs)
-  (puthash "b<" "〈〉" xmsi-abrvs)
-  (puthash "b<<" "《》" xmsi-abrvs)
-  (puthash "b<2" "‹›" xmsi-abrvs)
-  (puthash "b<<2" "«»" xmsi-abrvs)
+  (puthash "\"" "“”" xmsi-abrvs)
+  (puthash "[" "「」" xmsi-abrvs)
+  (puthash "[[" "『』" xmsi-abrvs)
+  (puthash "[2" "【】" xmsi-abrvs)
+  (puthash "[3" "〖〗" xmsi-abrvs)
+  (puthash "(" "〔〕" xmsi-abrvs)
+  (puthash "<" "〈〉" xmsi-abrvs)
+  (puthash "<<" "《》" xmsi-abrvs)
+  (puthash "<2" "‹›" xmsi-abrvs)
+  (puthash "<<2" "«»" xmsi-abrvs)
 
   ;; number forms
   (puthash "c1" "①" xmsi-abrvs)
