@@ -46,6 +46,7 @@ Source: "..\..\hunspell\*"; DestDir: "{app}\hunspell"; Flags: ignoreversion recu
 Source: "..\packages\*"; Excludes: "*~,#*#"; DestDir: "{app}\packages"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\ergoemacs\*"; Excludes: "*~,#*#"; DestDir: "{app}\ergoemacs"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\site-lisp\*"; Excludes: "*~,#*#"; DestDir: "{app}\site-lisp"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\extra\*"; Excludes: "*~,#*#"; DestDir: "{app}\extra"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "ErgoEmacs.exe"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
