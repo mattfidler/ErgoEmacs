@@ -6,7 +6,7 @@
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Keywords: emacs lisp, string, find replace
 
-;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; DESCRIPTION
 

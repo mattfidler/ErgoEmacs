@@ -6,7 +6,7 @@
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Keywords: math symbols, unicode, input
 
-;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; DESCRIPTION
 
@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; version 1.2.8.1, 2011-02-12 fixed the key for ⇎
 ;; version 1.2.8, 2011-02-12 Added ⟵ ⟶ ⟷ ⇔ ⟸ ⟹ ⟺ ↚ ↛ ↮ ⇍ ⇏ ⇎. (few other chars may have been added but missed being mentioned here.)
 ;; version 1.2.6, 2011-02-11 emdash, endash, figure dash, now have keys m- n- f-. Also, removed some full words keys: “degree” (deg), “pi” (p), “infinity” (inf), “angle” (ang).
 ;; version 1.2.5, 2011-02-01 added a figure dash.
@@ -80,7 +81,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2.8")
+(setq xmsi-version "1.2.8.1")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -833,7 +834,7 @@
 (puthash "<=>" "⇔" xmsi-abrvs)
 (puthash "!<=" "⇍" xmsi-abrvs)
 (puthash "!=>" "⇏" xmsi-abrvs)
-(puthash "!=>" "⇎" xmsi-abrvs)
+(puthash "!<=>" "⇎" xmsi-abrvs)
   
 (puthash "<==" "⟸" xmsi-abrvs)
 (puthash "==>" "⟹" xmsi-abrvs)
