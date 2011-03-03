@@ -38,8 +38,6 @@
 
 Returns a vector [text a b], where text is the string and a and b are its boundary.
 
-If `region-active-p' is true, then the region is the unit.
-Else, it depends on the UNIT.
 UNIT can be:
 • 'word — sequence of 0 to 9, A to Z, a to z, and hyphen.
 • 'glyphs — sequence of visible glyphs. Useful for file name, url, …, that doesn't have spaces in it.
@@ -117,9 +115,12 @@ The main differences are:
 (defun get-selection-or-unit  (unit)
   "Return the string and boundary of text selection or UNIT.
 
-Returns a vector [text a b], where text is the string and a and b are its boundary.
+If `region-active-p' is true, then the region is the unit.  Else,
+it depends on the UNIT. See `unit-at-cursor' for detail about
+UNIT.
 
-See `unit-at-cursor' for detail."
+Returns a vector [text a b], where text is the string and a and b
+are its boundary."
   (interactive)
 
   (let (mytext p1 p2)
