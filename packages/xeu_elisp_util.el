@@ -34,7 +34,7 @@
 ;;; Code:
 
 (defun unit-at-cursor  (unit)
-  "Return the string and boundary UNIT.
+  "Return the string and boundary of UNIT.
 
 Returns a vector [text a b], where text is the string and a and b are its boundary.
 
