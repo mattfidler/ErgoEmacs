@@ -33,8 +33,8 @@
 
 ;;; Code:
 
-(defun unit-at-cursor  (unit)
-  "Return the string and boundary of UNIT.
+(defun unit-at-cursor (unit)
+  "Return the string and boundary of UNIT under cursor.
 
 Returns a vector [text a b], where text is the string and a and b are its boundary.
 
@@ -47,8 +47,8 @@ UNIT can be:
 • a vector [beginRegex endRegex] — The elements are regex strings used to determine the beginning/end of boundary chars. They are passed to `skip-chars-backward' and `skip-chars-forward'. For example, if you want paren as delimiter, use [\"^(\" \"^)\"]
 
 Example usage:
-    (setq bds (unit-at-cursor 'line))
-    (setq myText (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )
+ (setq bds (unit-at-cursor 'line))
+ (setq inputstr (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )
 
 This function is similar to `thing-at-point' and `bounds-of-thing-at-point'.
 The main differences are:
@@ -112,15 +112,19 @@ The main differences are:
     (vector (buffer-substring-no-properties p1 p2) p1 p2 )
     ) )
 
-(defun get-selection-or-unit  (unit)
-  "Return the string and boundary of text selection or UNIT.
+(defun get-selection-or-unit (unit)
+  "Return the string and boundary of text selection or UNIT under cursor.
 
 If `region-active-p' is true, then the region is the unit.  Else,
 it depends on the UNIT. See `unit-at-cursor' for detail about
 UNIT.
 
 Returns a vector [text a b], where text is the string and a and b
-are its boundary."
+are its boundary.
+
+Example usage:
+ (setq bds (get-selection-or-unit 'line))
+ (setq inputstr (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )"
   (interactive)
 
   (let (mytext p1 p2)
