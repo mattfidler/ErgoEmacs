@@ -45,9 +45,9 @@ Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm
 Name: associate; Description: "&Associate .el files with ErgoEmacs"; GroupDescription: "File Associations:"; Flags: unchecked
 
 [Files]
-Source: "{#EmacsDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#MsysDir}"; DestDir: "{app}\msys"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MsysDir}\*"; DestDir: "{app}\msys"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#HunspellDir}\*"; DestDir: "{app}\hunspell"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#EmacsDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\packages\*"; Excludes: "*~,#*#"; DestDir: "{app}\packages"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\ergoemacs\*"; Excludes: "*~,#*#"; DestDir: "{app}\ergoemacs"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\site-lisp\*"; Excludes: "*~,#*#"; DestDir: "{app}\site-lisp"; Flags: ignoreversion recursesubdirs createallsubdirs
