@@ -5,7 +5,7 @@
 ; <root>
 ;   |
 ;   |- ErgoEmacs-trunk/
-;   |- emacs-23.2/
+;   |- emacs-23.3/
 ;   |- msys/
 ;   `- hunspell/
 ;
@@ -13,23 +13,28 @@
 ; http://code.google.com/p/ergoemacs/wiki/CreatingErgoEmacsWindowsInstaller
 ; 
 
+#define AppVersion    "1.9.3"
+#define EmacsDir      "..\..\emacs-23.3"
+#define MsysDir       "..\..\msys"
+#define HunspellDir   "..\..\hunspell"
+
 [Setup]
 AppName=ErgoEmacs
-AppVerName=ErgoEmacs 1.9.2
+AppVerName=ErgoEmacs {#AppVersion}
 AppPublisherURL=http://ergoemacs.org/
 AppSupportURL=http://ergoemacs.org/
 AppUpdatesURL=http://ergoemacs.org/
 DefaultDirName={pf}\ErgoEmacs
 DefaultGroupName=ErgoEmacs
 AllowNoIcons=yes
-LicenseFile=..\..\emacs-23.2\COPYING
+LicenseFile={#EmacsDir}\COPYING
 OutputDir=.
-OutputBaseFilename=ErgoEmacs 1.9.2 Setup
-SetupIconFile=..\..\emacs-23.2\etc\icons\emacs.ico
+OutputBaseFilename=ErgoEmacs {#AppVersion} Setup
+SetupIconFile={#EmacsDir}\etc\icons\emacs.ico
 ;Compression=none
 Compression=lzma
 SolidCompression=yes
-VersionInfoVersion=1.9.2
+VersionInfoVersion={#AppVersion}
 ChangesAssociations=yes
 
 [Languages]
@@ -40,9 +45,9 @@ Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm
 Name: associate; Description: "&Associate .el files with ErgoEmacs"; GroupDescription: "File Associations:"; Flags: unchecked
 
 [Files]
-Source: "..\..\emacs-23.2\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\msys\*"; DestDir: "{app}\msys"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\hunspell\*"; DestDir: "{app}\hunspell"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#EmacsDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#MsysDir}"; DestDir: "{app}\msys"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#HunspellDir}\*"; DestDir: "{app}\hunspell"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\packages\*"; Excludes: "*~,#*#"; DestDir: "{app}\packages"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\ergoemacs\*"; Excludes: "*~,#*#"; DestDir: "{app}\ergoemacs"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\site-lisp\*"; Excludes: "*~,#*#"; DestDir: "{app}\site-lisp"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -61,4 +66,3 @@ Root: HKCR; Subkey: ".el"; ValueType: string; ValueName: ""; ValueData: "ErgoEma
 Root: HKCR; Subkey: "ErgoEmacsFile"; ValueType: string; ValueName: ""; ValueData: "ErgoEmacs File"; Flags: uninsdeletekey; Tasks: associate
 Root: HKCR; Subkey: "ErgoEmacsFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\ErgoEmacs.exe,0"; Tasks: associate
 Root: HKCR; Subkey: "ErgoEmacsFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\ErgoEmacs.exe"" ""%1"""; Tasks: associate
-

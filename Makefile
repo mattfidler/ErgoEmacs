@@ -17,12 +17,23 @@ endif
 RM = rm
 ELC_FILES = $(wildcard *.elc) $(wildcard */*.elc) $(wildcard */*/*.elc)
 
+PACKAGE_AUTOCOMPLETE = auto-complete-1.3.1
+PACKAGE_BOOKMARKPLUS = bookmarkplus
+PACKAGE_DICTIONARY = dictionary-1.8.7
+PACKAGE_ERLANG = erlang
+PACKAGE_HASKELL = haskell-mode-2.7.0
+PACKAGE_POV = pov-mode-3.2
+PACKAGE_HUNSPELL = rw-hunspell
+PACKAGE_SCALA = scala-mode
+PACKAGE_TUAREG = tuareg-mode-1.45.7
+PACKAGE_YASNIPPET = yasnippet-0.6.1c
+
 all:
 	@echo "Usage:"
 	@echo "  make compile"
 	@echo "    Byte-compiles all .el files with the specified emacs in EMACS variable."
 	@echo "    E.g. You can use it as:"
-	@echo "      make compile EMACS=../emacs-23.2/bin/emacs.exe"
+	@echo "      make compile EMACS=../emacs-23.3/bin/emacs.exe"
 	@echo
 	@echo "  make clean"
 	@echo "    Removes all .elc files."
@@ -38,24 +49,24 @@ all:
 compile:
 	-$(RM) -f $(ELC_FILES)
 	$(EMACS) -L packages \
-		 -L packages/auto-complete-1.3 \
-		 -L packages/bookmarkplus \
-		 -L packages/erlang \
-		 -L packages/scala-mode \
-		 -L packages/yasnippet-0.6.1c \
+		 -L packages/$(PACKAGE_AUTOCOMPLETE) \
+		 -L packages/$(PACKAGE_BOOKMARKPLUS) \
+		 -L packages/$(PACKAGE_ERLANG) \
+		 -L packages/$(PACKAGE_SCALA) \
+		 -L packages/$(PACKAGE_YASNIPPET) \
 		 -batch -f batch-byte-compile ergoemacs/*.el
 	-$(EMACS) -batch -f batch-byte-compile ergoemacs/ergoemacs-keybindings/*.el
 	-$(EMACS) -batch -f batch-byte-compile packages/*.el
-	$(EMACS) -L packages/auto-complete-1.3 -batch -f batch-byte-compile packages/auto-complete-1.3/*.el
-	$(EMACS) -L packages/bookmarkplus -batch -f batch-byte-compile packages/bookmarkplus/*.el
-	$(EMACS) -L packages/dictionary-1.8.7 -batch -f batch-byte-compile packages/dictionary-1.8.7/*.el
-	$(EMACS) -batch -f batch-byte-compile packages/erlang/*.el
-	$(EMACS) -L packages/haskell-mode-2.7.0 -batch -f batch-byte-compile packages/haskell-mode-2.7.0/*.el
-	$(EMACS) -batch -f batch-byte-compile packages/pov-mode-3.2/*.el
-	$(EMACS) -batch -f batch-byte-compile packages/rw-hunspell/*.el
-	$(EMACS) -L packages/scala-mode -batch -f batch-byte-compile packages/scala-mode/*.el
-	$(EMACS) -L packages/tuareg-mode-1.45.7 -batch -f batch-byte-compile packages/tuareg-mode-1.45.7/*.el
-	$(EMACS) -batch -f batch-byte-compile packages/yasnippet-0.6.1c/*.el
+	$(EMACS) -L packages/$(PACKAGE_AUTOCOMPLETE) -batch -f batch-byte-compile packages/$(PACKAGE_AUTOCOMPLETE)/*.el
+	$(EMACS) -L packages/$(PACKAGE_BOOKMARKPLUS) -batch -f batch-byte-compile packages/$(PACKAGE_BOOKMARKPLUS)/*.el
+	$(EMACS) -L packages/$(PACKAGE_DICTIONARY) -batch -f batch-byte-compile packages/$(PACKAGE_DICTIONARY)/*.el
+	$(EMACS) -L packages/$(PACKAGE_ERLANG) -batch -f batch-byte-compile packages/$(PACKAGE_ERLANG)/*.el
+	$(EMACS) -L packages/$(PACKAGE_HASKELL) -batch -f batch-byte-compile packages/$(PACKAGE_HASKELL)/*.el
+	$(EMACS) -L packages/$(PACKAGE_POV) -batch -f batch-byte-compile packages/$(PACKAGE_POV)/*.el
+	$(EMACS) -L packages/$(PACKAGE_HUNSPELL) -batch -f batch-byte-compile packages/$(PACKAGE_HUNSPELL)/*.el
+	$(EMACS) -L packages/$(PACKAGE_SCALA) -batch -f batch-byte-compile packages/$(PACKAGE_SCALA)/*.el
+	$(EMACS) -L packages/$(PACKAGE_TUAREG) -batch -f batch-byte-compile packages/$(PACKAGE_TUAREG)/*.el
+	$(EMACS) -L packages/$(PACKAGE_YASNIPPET) -batch -f batch-byte-compile packages/$(PACKAGE_YASNIPPET)/*.el
 	$(EMACS) -batch -f batch-byte-compile site-lisp/*.el
 
 # Removes all .elc files
@@ -73,9 +84,7 @@ update-version:
 		> tmp
 	mv tmp ergoemacs/init_version.el
 	cat win32-setup/ErgoEmacs.iss \
-		| sed -e "s/AppVerName=ErgoEmacs [0-9.]*/AppVerName=ErgoEmacs $(VERSION)/" \
-		      -e "s/OutputBaseFilename=ErgoEmacs [0-9.]*/OutputBaseFilename=ErgoEmacs $(VERSION)/" \
-		      -e "s/VersionInfoVersion=[0-9.]*/VersionInfoVersion=$(VERSION)/" \
+		| sed -e "s/\(#define AppVersion *\)\"[0-9.]*\"/\1\"$(VERSION)\"/" \
 		> tmp
 	mv tmp win32-setup/ErgoEmacs.iss
 	cat win32-setup/ErgoEmacs.rc \
