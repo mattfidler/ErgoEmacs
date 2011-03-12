@@ -326,8 +326,6 @@ FILE-NAME is nil uses `command-frequency-table-file'."
                (insert-file-contents file-name)
                (goto-char (point-min))
                (read (current-buffer)))))
-      (message (prin1-to-string l))
-
       ; Was it valid sexp?
       (if (or (not (listp l)) (null l))
           (progn
