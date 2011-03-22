@@ -5,7 +5,7 @@
 ;; Copyright © 2009, 2010 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: 5.3.7
+;; Version: 5.3.8
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.3.7"
+(defconst ergoemacs-mode-version "5.3.8"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -476,6 +476,17 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-ido-keymap))
   )
 
+(defun ergoemacs-auto-complete-mode-hook ()
+  "Hook for `auto-complete-mode-hook'.
+
+When the `auto-complete-mode' is on, and when a word completion
+is in process, Ctrl+s does `ac-isearch'.
+This fixes it."
+
+(define-key ac-completing-map ergoemacs-isearch-forward-key 'ac-isearch)
+(define-key ac-completing-map (kbd "C-s") nil)
+  )
+
 (defvar ergoemacs-hook-list (list)
   "List of hook and hook-function pairs.")
 
@@ -491,6 +502,7 @@ ergoemacs hooks."
 (ergoemacs-add-hook 'minibuffer-setup-hook 'ergoemacs-minibuffer-setup-hook)
 (ergoemacs-add-hook 'iswitchb-minibuffer-setup-hook 'ergoemacs-iswitchb-hook)
 (ergoemacs-add-hook 'ido-minibuffer-setup-hook 'ergoemacs-ido-minibuffer-setup-hook)
+(ergoemacs-add-hook 'auto-complete-mode-hook 'ergoemacs-auto-complete-mode-hook)
 
 (defun ergoemacs-hook-modes ()
   "Installs/Removes ErgoEmacs minor mode hooks from major modes
