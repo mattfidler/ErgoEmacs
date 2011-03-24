@@ -6,7 +6,7 @@
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Keywords: math symbols, unicode, input
 
-;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.
 
 ;;; DESCRIPTION
 
@@ -55,7 +55,7 @@
 
 ;;; HISTORY
 
-;; version 1.2.8.1, 2011-02-12 fixed the key for ⇎
+;; version 1.2.9, 2011-03-24 Added about 102 full width version chars. Example, “fw&” becomes “＆”. Abbrev all start with “fw”. Remove about 5 redundant abbrevs.
 ;; version 1.2.8, 2011-02-12 Added ⟵ ⟶ ⟷ ⇔ ⟸ ⟹ ⟺ ↚ ↛ ↮ ⇍ ⇏ ⇎. (few other chars may have been added but missed being mentioned here.)
 ;; version 1.2.6, 2011-02-11 emdash, endash, figure dash, now have keys m- n- f-. Also, removed some full words keys: “degree” (deg), “pi” (p), “infinity” (inf), “angle” (ang).
 ;; version 1.2.5, 2011-02-01 added a figure dash.
@@ -81,7 +81,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2.8.1")
+(setq xmsi-version "1.2.9")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -514,7 +514,6 @@
   (puthash "ddag" "‡" xmsi-abrvs)
   (puthash "--" "—" xmsi-abrvs)
   (puthash "-" "‒" xmsi-abrvs)
-  (puthash "&" "＆"xmsi-abrvs)
   (puthash "s&" "﹠" xmsi-abrvs)
 
   (puthash "ltrib" "◀" xmsi-abrvs)
@@ -811,7 +810,6 @@
   (puthash "union" "∩" xmsi-abrvs)
   (puthash "intersection" "∪" xmsi-abrvs)
 
-
   (puthash "/_" "∠" xmsi-abrvs)
   (puthash "rightangle" "⦜" xmsi-abrvs)
   (puthash "|_" "⦜" xmsi-abrvs)
@@ -834,7 +832,7 @@
 (puthash "<=>" "⇔" xmsi-abrvs)
 (puthash "!<=" "⇍" xmsi-abrvs)
 (puthash "!=>" "⇏" xmsi-abrvs)
-(puthash "!<=>" "⇎" xmsi-abrvs)
+(puthash "!=>" "⇎" xmsi-abrvs)
   
 (puthash "<==" "⟸" xmsi-abrvs)
 (puthash "==>" "⟹" xmsi-abrvs)
@@ -855,12 +853,121 @@
   (puthash "m-" "—" xmsi-abrvs)
   (puthash "f-" "‒" xmsi-abrvs)
   (puthash "n-" "–" xmsi-abrvs)
-  (puthash "square" "□" xmsi-abrvs)
-  (puthash "circle" "○" xmsi-abrvs)
-  (puthash "diamond" "◇" xmsi-abrvs)
   (puthash "star" "★" xmsi-abrvs)
-  (puthash "triangle" "△" xmsi-abrvs)
   (puthash "(c)" "©" xmsi-abrvs)
+
+(puthash "fw," "，" xmsi-abrvs)
+(puthash "fw." "．" xmsi-abrvs)
+(puthash "fw:" "：" xmsi-abrvs)
+(puthash "fw;" "；" xmsi-abrvs)
+(puthash "fw!" "！" xmsi-abrvs)
+(puthash "fw?" "？" xmsi-abrvs)
+(puthash "fw`" "｀" xmsi-abrvs)
+(puthash "fw'" "＇" xmsi-abrvs)
+(puthash "fw\"" "＂" xmsi-abrvs)
+(puthash "fw&" "＆" xmsi-abrvs)
+
+(puthash "fw(" "（" xmsi-abrvs)
+(puthash "fw)" "）" xmsi-abrvs)
+(puthash "fw[" "［" xmsi-abrvs)
+(puthash "fw]" "］" xmsi-abrvs)
+(puthash "fw{" "｛" xmsi-abrvs)
+(puthash "fw}" "｝" xmsi-abrvs)
+
+(puthash "fw@" "＠" xmsi-abrvs)
+(puthash "fw^" "＾" xmsi-abrvs) ; CIRCUMFLEX ACCENT
+(puthash "fw`" "｀" xmsi-abrvs) ; GRAVE ACCENT
+(puthash "fw~" "～" xmsi-abrvs)
+(puthash "fw_" "＿" xmsi-abrvs)
+(puthash "fw¯" "￣" xmsi-abrvs) ; MACRON
+
+(puthash "fw#" "＃" xmsi-abrvs)
+(puthash "fw+" "＋" xmsi-abrvs)
+(puthash "fw-" "－" xmsi-abrvs)
+(puthash "fw*" "＊" xmsi-abrvs)
+(puthash "fw=" "＝" xmsi-abrvs)
+(puthash "fw<" "＜" xmsi-abrvs)
+(puthash "fw>" "＞" xmsi-abrvs)
+(puthash "fw%" "％" xmsi-abrvs)
+
+(puthash "fw|" "｜" xmsi-abrvs)
+(puthash "fw¦" "￤" xmsi-abrvs)
+(puthash "fw/" "／" xmsi-abrvs)
+(puthash "fw\\" "＼" xmsi-abrvs)
+(puthash "fw¬" "￢" xmsi-abrvs)
+
+(puthash "fw((" "｟" xmsi-abrvs)
+(puthash "fw))" "｠" xmsi-abrvs)
+
+(puthash "fw$" "＄" xmsi-abrvs)
+(puthash "fw£" "￡" xmsi-abrvs)
+(puthash "fw¢" "￠" xmsi-abrvs)
+(puthash "fw₩" "￦" xmsi-abrvs) ; WON SIGN
+(puthash "fw¥" "￥" xmsi-abrvs) ; YEN SIGN
+
+(puthash "fw0" "０" xmsi-abrvs)
+(puthash "fw1" "１" xmsi-abrvs)
+(puthash "fw2" "２" xmsi-abrvs)
+(puthash "fw3" "３" xmsi-abrvs)
+(puthash "fw4" "４" xmsi-abrvs)
+(puthash "fw5" "５" xmsi-abrvs)
+(puthash "fw6" "６" xmsi-abrvs)
+(puthash "fw7" "７" xmsi-abrvs)
+(puthash "fw8" "８" xmsi-abrvs)
+(puthash "fw9" "９" xmsi-abrvs)
+
+(puthash "fwA" "Ａ" xmsi-abrvs)
+(puthash "fwB" "Ｂ" xmsi-abrvs)
+(puthash "fwC" "Ｃ" xmsi-abrvs)
+(puthash "fwD" "Ｄ" xmsi-abrvs)
+(puthash "fwE" "Ｅ" xmsi-abrvs)
+(puthash "fwF" "Ｆ" xmsi-abrvs)
+(puthash "fwG" "Ｇ" xmsi-abrvs)
+(puthash "fwH" "Ｈ" xmsi-abrvs)
+(puthash "fwI" "Ｉ" xmsi-abrvs)
+(puthash "fwJ" "Ｊ" xmsi-abrvs)
+(puthash "fwK" "Ｋ" xmsi-abrvs)
+(puthash "fwL" "Ｌ" xmsi-abrvs)
+(puthash "fwM" "Ｍ" xmsi-abrvs)
+(puthash "fwN" "Ｎ" xmsi-abrvs)
+(puthash "fwO" "Ｏ" xmsi-abrvs)
+(puthash "fwP" "Ｐ" xmsi-abrvs)
+(puthash "fwQ" "Ｑ" xmsi-abrvs)
+(puthash "fwR" "Ｒ" xmsi-abrvs)
+(puthash "fwS" "Ｓ" xmsi-abrvs)
+(puthash "fwT" "Ｔ" xmsi-abrvs)
+(puthash "fwU" "Ｕ" xmsi-abrvs)
+(puthash "fwV" "Ｖ" xmsi-abrvs)
+(puthash "fwW" "Ｗ" xmsi-abrvs)
+(puthash "fwX" "Ｘ" xmsi-abrvs)
+(puthash "fwY" "Ｙ" xmsi-abrvs)
+(puthash "fwZ" "Ｚ" xmsi-abrvs)
+(puthash "fwa" "ａ" xmsi-abrvs)
+(puthash "fwb" "ｂ" xmsi-abrvs)
+(puthash "fwc" "ｃ" xmsi-abrvs)
+(puthash "fwd" "ｄ" xmsi-abrvs)
+(puthash "fwe" "ｅ" xmsi-abrvs)
+(puthash "fwf" "ｆ" xmsi-abrvs)
+(puthash "fwg" "ｇ" xmsi-abrvs)
+(puthash "fwh" "ｈ" xmsi-abrvs)
+(puthash "fwi" "ｉ" xmsi-abrvs)
+(puthash "fwj" "ｊ" xmsi-abrvs)
+(puthash "fwk" "ｋ" xmsi-abrvs)
+(puthash "fwl" "ｌ" xmsi-abrvs)
+(puthash "fwm" "ｍ" xmsi-abrvs)
+(puthash "fwn" "ｎ" xmsi-abrvs)
+(puthash "fwo" "ｏ" xmsi-abrvs)
+(puthash "fwp" "ｐ" xmsi-abrvs)
+(puthash "fwq" "ｑ" xmsi-abrvs)
+(puthash "fwr" "ｒ" xmsi-abrvs)
+(puthash "fws" "ｓ" xmsi-abrvs)
+(puthash "fwt" "ｔ" xmsi-abrvs)
+(puthash "fwu" "ｕ" xmsi-abrvs)
+(puthash "fwv" "ｖ" xmsi-abrvs)
+(puthash "fww" "ｗ" xmsi-abrvs)
+(puthash "fwx" "ｘ" xmsi-abrvs)
+(puthash "fwy" "ｙ" xmsi-abrvs)
+(puthash "fwz" "ｚ" xmsi-abrvs)
 
   ;; 2010-12-10. char to add
   ;; soft hyphen ­
