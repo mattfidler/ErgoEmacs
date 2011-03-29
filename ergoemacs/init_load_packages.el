@@ -214,11 +214,11 @@
 (tabbar-mode 1)
 ;; 2010-09-30. problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
 
-;; display horizontal line for the Form Feed char (ASCII 12, ^L)
-;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.
-(require 'pp-c-l)
-(setq pp^L-^L-string "                                                           ")
-(pretty-control-l-mode 1)
+;; ;; display horizontal line for the Form Feed char (ASCII 12, ^L)
+;; ;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.
+;; (require 'pp-c-l)
+;; (setq pp^L-^L-string "                                                           ")
+;; (pretty-control-l-mode 1)
 
 ;; dictionary client for dict.org . To use, call dictionary-lookup-definition to lookup def of word under cursor.
 (add-to-list 'load-path
