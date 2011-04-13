@@ -6,7 +6,7 @@
 ;; ; redo+ mode
 ;; (require 'redo+)
 ;; ;; (setq undo-no-redo t)
-;; 2011-04-08 redo+ mode got major problems. Sometimes in a “.txt” file buffer, it simply says no un
+;; 2011-04-08 redo+ mode got major problems. Sometimes in a “.txt” file buffer, it simply says no un. http://xahlee.org/emacs/emacs_undo_cult_problem.html
 
 ;;;;§----------------------------------------
 ;;;; language modes
@@ -90,10 +90,10 @@
 
 ;;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-mode-1.45.7/")
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-2.0.4/")
              )
-(add-to-list 'auto-mode-alist '("\\.ml\\w?" . tuareg-mode))
-(autoload 'tuareg-mode "tuareg" "Major mode for editing ML/Caml/OCaml code." t)
+(add-to-list 'auto-mode-alist '("\\.ml[iylp]?" . tuareg-mode))
+(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
 (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
 
 ;;; xbbcode-mode for editing BBCode
