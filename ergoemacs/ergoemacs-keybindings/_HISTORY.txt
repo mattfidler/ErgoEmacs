@@ -6,26 +6,29 @@ Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherw
 
 * version 5.3.9, 2011-04-17
 
-** 2011-04-17 r647
-ergoemacs-mode.el 5.3.9.
+** 2011-04-17 Fixed shift key selection with cua-mode
+r647
 Fixed a bug
 http://code.google.com/p/ergoemacs/issues/detail?id=91
 with a default GNU Emacs, when cua-mode is NOT turned on, load ergoemacs-mode and turn it on, then keys with Shift will also highlight text. This is because ergoemacs-fix-cua--pre-command-handler-1 tries to set symbols from cua-mode but they are not there.
 
+thanks to zyangm...@gmail.com for bug report.
+
 fixed by temp turning on cua-mode.
 
-** 2011-03-22 r638
+** 2011-03-22 Added a compatibility fix for auto-complete-mode
+Added a ergoemacs-auto-complete-mode-hook.
 http://code.google.com/p/ergoemacs/source/detail?r=638
-ergoemacs-mode.el 5.3.8. Added a ergoemacs-auto-complete-mode-hook.
 
-Thanks to Renier (renierm@gmail.com)
-http://groups.google.com/group/ergoemacs/msg/f5f9337e34b4eab3?hl=en
+Thanks to Renier (renierm@gmail.com) for code. http://groups.google.com/group/ergoemacs/msg/f5f9337e34b4eab3?hl=en
 
-** 2010-11-18 r556
-added a hotkey 【Ctrl+Shift+t】 for open-last-closed in ErgoEmacs keybinding package. This key follows browser convention. But won't work in Terminal.
+** 2010-11-18 added a hotkey 【Ctrl+Shift+t】 for open-last-closed
+r556
+This key follows browser convention. But won't work in Terminal.
 
-** 2010-12-10 r578. 
-modified ErgoEmacs keybinding so that copy/cut with no text selection will include the line ending. Thanks to Max Arnold.
+** 2010-12-10 copy/cut with no text selection will include the line ending.
+r578. 
+Thanks to Max Arnold for bug report.
 
 * version 5.3.7, 2010-11-15
 
