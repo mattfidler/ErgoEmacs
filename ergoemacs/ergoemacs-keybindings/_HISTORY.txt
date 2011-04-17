@@ -4,7 +4,7 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed Alt+y to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”). But when talking about code, such as “remap M-r to something”, that means the letter r on whatever layout.
 
-* version x.x.x, yyyy-mm-dd
+* version 5.3.9, 2011-04-17
 
 ** 2011-04-17 r647
 ergoemacs-mode.el 5.3.9.
@@ -22,14 +22,14 @@ Thanks to Renier (renierm@gmail.com)
 http://groups.google.com/group/ergoemacs/msg/f5f9337e34b4eab3?hl=en
 
 ** 2010-11-18 r556
-added a hotkey 【Ctrl+Shift+t】 for open-last-closed in ErgoEmacs keybinding package. This key follows browser convention. But won't work in Terminal...
+added a hotkey 【Ctrl+Shift+t】 for open-last-closed in ErgoEmacs keybinding package. This key follows browser convention. But won't work in Terminal.
 
 ** 2010-12-10 r578. 
 modified ErgoEmacs keybinding so that copy/cut with no text selection will include the line ending. Thanks to Max Arnold.
 
 * version 5.3.7, 2010-11-15
 
-** Added open-in-desktop command with key 【Ctrl+Shift+O】.
+** Added open-in-desktop command with key 【Ctrl+Shift+o】.
 
 ** Added open-last-closed command.
 
