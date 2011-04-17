@@ -5,7 +5,7 @@
 ;; Copyright © 2009, 2010 by David Capello
 
 ;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: 5.3.8
+;; Version: 5.3.9
 ;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -18,7 +18,7 @@
 ;; This keybinding set puts the most frequently used emacs keyboard
 ;; shortcuts into the most easy-to-type spots.
 ;;
-;; For complete detail, see: 
+;; For complete detail, see:
 ;; http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 
 ;;; INSTALL
@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.3.8"
+(defconst ergoemacs-mode-version "5.3.9"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -256,6 +256,9 @@ Valid values are:
 ;;----------------------------------------------------------------------
 ;; CUA fix
 
+(let (cuaModeState cua-mode)
+(cua-mode 1) ; turn on cua-mode first so the command ergoemacs-fix-cua--pre-command-handler-1 will be able to set some symbols from cua-mode
+
 (defun ergoemacs-fix-cua--pre-command-handler-1 ()
   "Fixes CUA minor mode so selection is highlighted only when
 Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
@@ -347,6 +350,8 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   (setq cua--buffer-and-point-before-command
         (if cua--rectangle (cons (current-buffer) (point)))))
  )
+(if cuaModeState (cua-mode 1) (cua-mode 0))
+  )
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs hooks
@@ -569,7 +574,7 @@ any key unbound or claimed by ergoemacs."
   "Set a key in the ergoemacs local map."
   ;; install keymap if not already installed
   (interactive)
-  (progn 
+  (progn
     (unless ergoemacs-local-keymap
       (setq ergoemacs-local-keymap (copy-keymap ergoemacs-keymap))
       (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-local-keymap)))
@@ -617,7 +622,7 @@ Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
 Argument of t or nil should not be used.
-For full documentation, see: 
+For full documentation, see:
 URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
 
 If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
