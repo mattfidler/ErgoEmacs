@@ -6,6 +6,14 @@ Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherw
 
 * version x.x.x, yyyy-mm-dd
 
+** 2011-04-17 r647
+ergoemacs-mode.el 5.3.9.
+Fixed a bug
+http://code.google.com/p/ergoemacs/issues/detail?id=91
+with a default GNU Emacs, when cua-mode is NOT turned on, load ergoemacs-mode and turn it on, then keys with Shift will also highlight text. This is because ergoemacs-fix-cua--pre-command-handler-1 tries to set symbols from cua-mode but they are not there.
+
+fixed by temp turning on cua-mode.
+
 ** 2011-03-22 r638
 http://code.google.com/p/ergoemacs/source/detail?r=638
 ergoemacs-mode.el 5.3.8. Added a ergoemacs-auto-complete-mode-hook.
