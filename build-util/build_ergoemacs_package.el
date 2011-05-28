@@ -20,13 +20,13 @@
 ;; For example, if your svn checkout path is
 ;;   ~/ErgoEmacs_Source
 ;; then the following are created
-;;   ~/ErgoEmacs_Source/ergoemacs_1.9.1
-;;   ~/ErgoEmacs_Source/ergoemacs_1.9.1.zip
+;;   ~/ErgoEmacs_Source/ergoemacs_1.9.3.1
+;;   ~/ErgoEmacs_Source/ergoemacs_1.9.3.1.zip
 
 ;; This script requires unix “find”, “rm”, “cp”, etc.
 
 (defvar zipDirName nil "the zip file/dir name")
-(setq zipDirName "ergoemacs_1.9.1.1")
+(setq zipDirName "ergoemacs_1.9.3.1")
 
 
 ;;;;§----------------------------------------
@@ -64,8 +64,8 @@
 ;; (require 'find-lisp)
 ;; (mapc 'my-process-file
 ;;  (find-lisp-find-files destDirWithZipPath "\\.svn$")
-;;  (find-lisp-find-files "~/xx2/ergoemacs_1.9.1.1/build-util/" "")
-;;  (find-lisp-find-dired-subdirectories "~/xx2/ergoemacs_1.9.1.1/build-util/")
+;;  (find-lisp-find-files "~/xx2/ergoemacs_1.9.3.1/build-util/" "")
+;;  (find-lisp-find-dired-subdirectories "~/xx2/ergoemacs_1.9.3.1/build-util/")
 ;; )
 
 ;; delete emacs backup files
