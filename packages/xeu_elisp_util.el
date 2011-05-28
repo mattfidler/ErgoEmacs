@@ -10,7 +10,7 @@
 
 ;;; DESCRIPTION
 
-;; this package is some misc emacs lisp utility.
+;; this package is some misc emacs lisp utility. The purpose is similar to “thing-at-point”.
 ;; It provides the following functions:
 
 ;; unit-at-cursor
@@ -21,6 +21,10 @@
 ;; read-lines
 ;; get-html-file-title
 
+;; For detailed discussion, see:
+;; 〈Emacs Lisp: Using thing-at-point〉 http://xahlee.org/emacs/elisp_thing-at-point.html
+;; 〈Emacs Lisp: get-selection-or-unit〉 http://xahlee.org/emacs/elisp_get-selection-or-unit.html
+
 ;;; INSTALL
 
 ;; Place the file in your emacs load path. Then
@@ -28,6 +32,7 @@
 
 ;;; HISTORY
 
+;; version 1.1, 2011-05-28. Added some comment in source code.
 ;; version 1.0, 2011-03-02. First version.
 
 
