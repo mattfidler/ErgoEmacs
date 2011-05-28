@@ -111,6 +111,17 @@
 (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
 (xmsi-mode 1)
 
+;; Hunspell only for Windows until we fix http://code.google.com/p/ergoemacs/issues/detail?id=51
+(when (and (string-equal system-type "windows-nt")
+	   (executable-find "hunspell"))
+  (progn
+    (add-to-list 'load-path
+		 (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/"))
+    (require 'rw-hunspell)
+    (rw-hunspell-setup)
+    )
+  )
+
 ;; ;; Hunspell
 ;; (when (string-equal system-type "windows-nt")
 ;;   (when (or (file-exists-p "../hunspell")
