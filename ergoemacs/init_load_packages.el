@@ -202,14 +202,13 @@
 (global-set-key (kbd "<f11>") 'highlight-symbol-next)
 (global-set-key (kbd "<f12>") 'highlight-symbol-prev)
 
-;; command-frequency minor mode. To use, call command-frequency.
-(autoload 'command-frequency "command-frequency" "minor mode for logging emacs command calls for usage insights by statistics." t)
-
-;; turn command-frequency on
-(require 'command-frequency)
-(command-frequency-table-load)
-(command-frequency-mode 1)
-(command-frequency-autosave-mode 1)
+;; keyfreq minor mode.
+(require 'keyfreq)
+(setq keyfreq-file "~/.emacs.d/.emacs.keyfreq")
+(setq keyfreq-file-lock "~/.emacs.d/.emacs.keyfreq.lock")
+(setq keyfreq-autosave-timeout 600)
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)
 
 ;;; add a tab bar widget
 (require 'tabbar)
