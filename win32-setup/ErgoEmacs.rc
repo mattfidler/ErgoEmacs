@@ -1,4 +1,4 @@
-1 ICON "..\\..\\emacs-23.2\\etc\\icons\\emacs.ico"
+1 ICON "..\\..\\emacs-23.3\\etc\\icons\\emacs.ico"
 
 #ifndef VS_VERSION_INFO
 #define VS_VERSION_INFO 1
