@@ -37,7 +37,7 @@ This version require emacs 23.2.
 ** New version of ErgoEmacs keybinding package
 
 For release notes, see the folder 〔ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕 or
-http://code.google.com/p/ergoemacs/source/browse/trunk/ergoemacs/ergoemacs-keybindings/_HISTORY.txt-
+http://code.google.com/p/ergoemacs/source/browse/trunk/ergoemacs/ergoemacs-keybindings/_HISTORY.txt
 *** release Highlights:
 **** Many new international layouts:
  US
