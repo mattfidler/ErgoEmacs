@@ -4,10 +4,11 @@
 ;
 ; <root>
 ;   |
-;   |- ErgoEmacs-trunk/
+;   |- bin-extra/
 ;   |- emacs-23.3/
-;   |- msys/
-;   `- hunspell/
+;   |- ergoemacs/            <-- SVN trunk content
+;   |- hunspell/
+;   `- msys/
 ;
 ; More information here:
 ; http://code.google.com/p/ergoemacs/wiki/CreatingErgoEmacsWindowsInstaller
@@ -17,6 +18,7 @@
 #define EmacsDir      "..\..\emacs-23.3"
 #define MsysDir       "..\..\msys"
 #define HunspellDir   "..\..\hunspell"
+#define BinExtraDir   "..\..\bin-extra"
 
 [Setup]
 AppName=ErgoEmacs
@@ -48,6 +50,7 @@ Name: associate; Description: "&Associate .el files with ErgoEmacs"; GroupDescri
 Source: "{#MsysDir}\*"; DestDir: "{app}\msys"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#HunspellDir}\*"; DestDir: "{app}\hunspell"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#EmacsDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#BinExtraDir}\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\packages\*"; Excludes: "*~,#*#"; DestDir: "{app}\packages"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\ergoemacs\*"; Excludes: "*~,#*#"; DestDir: "{app}\ergoemacs"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\site-lisp\*"; Excludes: "*~,#*#"; DestDir: "{app}\site-lisp"; Flags: ignoreversion recursesubdirs createallsubdirs
