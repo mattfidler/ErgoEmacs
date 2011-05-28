@@ -58,6 +58,15 @@ the frame title bar."
       (delete-frame)
     (save-buffers-kill-terminal)))
 
+(defadvice elisp-index-search (before interactive-default activate)
+  "Provide the symbol at point as the default when reading TOPIC interactively."
+  (interactive
+   (let ((mysymbol (thing-at-point 'symbol)))
+     (list (read-string (if mysymbol
+                            (format "Topic (%s): " mysymbol)
+                          (format "Topic: "))
+                        nil nil mysymbol)))))
+
 (defun list-text-editing-modes ()
   "Display a list of all text editing related major modes.
 
@@ -108,3 +117,53 @@ cmd.exe • dos-mode"
          )
   )
   )
+
+(defun toggle-whitespace-setting ()
+  "Toggle some display settings for `whitespace-mode'."
+  (interactive)
+  (let (stateBefore stateAfter (statesList '(0 1)))
+    (setq stateBefore (if (get 'toggle-whitespace-setting 'state) (get 'toggle-whitespace-setting 'state) (elt statesList 0)))
+    (setq stateAfter (% (+ stateBefore (length statesList) 1) (length statesList)))
+    (put 'toggle-whitespace-setting 'state stateAfter)
+
+    (cond
+     ((equal stateAfter 0)
+      (progn
+        (setq whitespace-style '(tabs spaces trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))
+        (setq whitespace-display-mappings
+              '((space-mark 32 [183] [46])
+                (space-mark 160 [164] [95])
+                (space-mark 2208 [2212] [95])
+                (space-mark 2336 [2340] [95])
+                (space-mark 3616 [3620] [95])
+                (space-mark 3872 [3876] [95])
+                (newline-mark 10 [36 10])
+                (tab-mark 9 [187 9] [92 9]))
+              )
+        (message "whitespace-setting set to default.")
+))
+     ((equal stateAfter 1)
+      (progn
+        ;; Make whitespace-mode with very basic background coloring for whitespaces
+        (setq whitespace-style '( spaces tabs newline space-mark tab-mark newline-mark ))
+
+        ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and ▷ for tab.
+        (setq whitespace-display-mappings
+              '(
+                (space-mark 32 [183] [46]) ; normal space, MIDDLE DOT, FULL STOP.
+                (space-mark 160 [164] [95])
+                (space-mark 2208 [2212] [95])
+                (space-mark 2336 [2340] [95])
+                (space-mark 3616 [3620] [95])
+                (space-mark 3872 [3876] [95])
+                (newline-mark 10 [182 10]) ; newlne
+                (tab-mark 9 [9655 9] [92 9]) ; tab
+                )) 
+        (message "whitespace-setting set to using ▷ for tab and ¶ for newline.")
+))
+     )
+
+    (when global-whitespace-mode (global-whitespace-mode 0) (global-whitespace-mode 1))
+    (when whitespace-mode (whitespace-mode 0) (whitespace-mode 1))
+
+    ))
