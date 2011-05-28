@@ -2,30 +2,107 @@
 
 (If you are viewing this file in emacs, type Shift+Tab 3 times to open all headers.)
 
-This file is a version history for developers.
+This file is a version history for ErgoEmacs ( http://ergoemacs.org/ ).
 
-A Release Notes for users can be based on this file.
-
-The ideas is that developers can write down what largish changes are made between releases here. The writing is more oriented for developers with tech detail, and no worry about representation. All non-trivial changes can be written down here.
-
-Then, when we have a new release, we can write a Release Notes for the users, using info in this file as basis.
-
-This is just a idea how version history and release notes can be done... open to suggestions or may change depending how things works out. For example, possibly the Google Code's wiki can be used instead of this file. 
-
-This file is now based on the svn log commit history.
+This file is now based on the svn commit log, viewable at
 http://code.google.com/p/ergoemacs/updates/list
 or svn command 「svn log」.
 
 HISTORY
 
+* Version 1.9.?: ?
+
+write any new update here
+
 * Version 1.9.3: 2011-03-12.
+** New version of the ergoemacs-mode minor mode, at v5.3.9
+For detail, see: 〔ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕
 
-** Included emacs-23.3.
-** Fix: Included auto-complete-1.3.1 byte-compiled in the installer.
+** new command: toggle-whitespace-setting for whitespace-mode (r656)
+When you call whitespace-mode, spaces and tabs are shown with special glyphs. You can toggle 2 settings for how whitespaces are shown, by calling “toggle-whitespace-setting”.
+** Caps Lock key for execute-extended-command
+For Windows users, there's new AutoHotkey utility for making Caps Lock key do
+emacs execute-extended-command.
 
-* Version 1.9.2: 2010-12-11.
+Get it at: http://xahlee.org/emacs/ergonomic_emacs_keybinding_system-wide.html
+** Windows system-wide ErgoEmacs keys for Nativo layout 
+Get it at: http://xahlee.org/emacs/ergonomic_emacs_keybinding_system-wide.html
 
-** Added xmsi-mode. 〔xmsi-math-symbols-input.el〕 A minor mode for inputting hundreds math (Unicode) symbols.
+Thanks to Milan Santosi, Xavier Gomes Pinho.
+
+You can get the source code at:
+http://code.google.com/p/ergoemacs/source/browse/#svn%2Ftrunk%2Fextra
+** Backspace key = previous viewed page, in emacs's Info-mode
+In Info-mode, Backspace key goes to the previous viewed page.  Shift+Backspace moves forward. Similar to browsers in Windows and Mac.
+** new version of xmsi-mode for math symbols and unicode input
+For read release history, call “describe-function”, then “xmsi-mode”, then click on the file name 〔xmsi-math-symbols-input.el〕, then scroll to file's top.
+** New: keyfreq.el replaces command-frequencies.el
+
+command-frequencies.el no longer flood your “*Messages*” buffer when you start emacs. However, it's considered defunct.
+
+A new package keyfreq.el replaces it. This package is not compatible with command-frequencies. This new package may be renamed to command-frequencies.el, but currently not done.
+
+David Capello wrote keyfreq.el fresh. View the file to see usage.
+The file is at 〔ergoemacs/packages/keyfreq.el〕.
+
+We haven't set it up to auto load.
+** Change: abbreviations in emacs-lisp-mode. (r657)
+About 8 abbreviations in emacs-lisp-mode changed.
+
+For example, before, when you type “ i ”, it becomes “insert”. There are about 8 such single letter abbreviations. The expansion is often annoying.
+
+These are removed. To use them, you have to type “8” as a prefix. e.g. “ 8i ” becomes “ insert ”. This is not perfect, but not sure what's better.
+
+You can view the list of abbrevs at 〔ergoemacs/init_abbrevs-lisp-mode.el〕.
+
+** Change: pretty print control L
+The package 〔ergoemacs/packages/pp-c-l.el〕 for rendering the form feed character (^L) as a horizontal line is updated.
+
+However, it is no longer loaded by default. The reason is that it interfere with settings of whitespace-mode.
+
+*** Reference
+〈compatibility problem of whitespace-mode & PrettyControlL?〉 (2011-03-29)
+http://groups.google.com/group/gnu.emacs.help/browse_frm/thread/12e5a1e6a8b22c14/
+
+〈Emacs Form Feed (^L) Display Suggestion and Tips〉 http://xahlee.org/emacs/modernization_formfeed.html
+
+〈Emacs: Form Feed and Source Code Section Paging Commands〉
+http://xahlee.org/emacs/emacs_form_feed_section_paging.html
+** Fix: ergoemacs-mode and auto-complete-mode (r638)
+2011-03-22 When auto-complete-mode is on and a completion is in progress, Ctrl+s calls ac-isearch instead of save-buffer. Fixed. Thanks to Renier.
+
+See
+• http://groups.google.com/group/ergoemacs/browse_frm/thread/5e42e724d72a6fcf
+• http://code.google.com/p/ergoemacs/source/detail?r=638
+** Update: Second Life, xlsl-mode new version.
+For version history, call “describe-function”, then “xlsl-mode”, then click the source file to read it in the header at top.
+
+Also improved are ~20 new yasnippets templates for lsl-mode.
+** Update: dos-mode update to v2.16
+** Update: new version of tuareg-mode for OCaml/ML language
+** Update: htmlize.el updated to v1.3.9
+htmlize mode lets you syntax color source code for html.
+
+For a tutorial, see: 〈Emacs: Syntax Color Source Code in HTML〉 http://xahlee.org/emacs/elisp_htmlize.html
+
+** New: xeu_elisp_util.el for elisp coders
+xeu_elisp_util has some functions similar in purpose to “thing-at-point”.
+
+See:
+〈Emacs Lisp: get-selection-or-unit〉 http://xahlee.org/emacs/elisp_get-selection-or-unit.html
+The file is at 〔packages/xeu_elisp_util.el〕. View the header for description.
+
+* Version 1.9.2: 2011-02-12. ErgoEmacs binary for Windows release
+
+ErgoEmacs binary for Windows, version 1.9.2, is released. (by David Capello)
+
+This is built with GNU Emacs 23.3 code base, plus ErgoEmacs packages.
+
+** Added xmsi-mode. 〔xmsi-math-symbols-input.el〕 A minor mode for inputting math and Unicode symbols.
+
+* Version 1.9.1.1: 2010-12-01. ErgoEmacs elisp package release
+
+New build of ErgoEmacs elisp package is released. Version 1.9.1.1.
 
 * Version 1.9.1: 2010-11-08.
 
