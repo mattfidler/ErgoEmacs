@@ -4,7 +4,8 @@
 ;; Rationale:
 ;; • Emacs's Menu Usability Problem
 ;;   http://xahlee.org/emacs/modernization_menu.html
-
+
+;;;;§----------------------------------------
 ;; File menu
 (setq menu-bar-file-menu
       '(keymap
@@ -66,7 +67,8 @@
 	"File"))
 
 (define-key global-map [menu-bar file] (cons "File" menu-bar-file-menu))
-
+
+;;;;§----------------------------------------
 ;; Edit menu
 (setq menu-bar-edit-menu
       '(keymap
@@ -176,7 +178,8 @@
 	"Edit"))
 
 (define-key global-map [menu-bar edit] (cons "Edit" menu-bar-edit-menu))
-
+
+;;;;§----------------------------------------
 ;; Options menu
 
 ; remove stuff
@@ -231,7 +234,8 @@
 	       (zoom-out menu-item "Zoom Out" text-scale-decrease)
 	       (zoom-reset menu-item "Zoom Reset" text-scale-normal-size)))
   'menu-set-font)
-
+
+;;;;§----------------------------------------
 ;; Buffer menu
 (defun ergoemacs-update-buffers (&optional force)
   (define-key global-buffers-menu-map [next-buffer]
@@ -250,7 +254,8 @@
   )
 
 (add-hook 'menu-bar-update-hook 'ergoemacs-update-buffers t)
-
+
+;;;;§----------------------------------------
 ;; Tools menu
 
 (define-key menu-bar-tools-menu [shell]
@@ -306,7 +311,8 @@
 (define-key menu-bar-help-menu [sep2] nil)
 (define-key menu-bar-help-menu [about-gnu-project] nil)
 
-
+
+;;;;§----------------------------------------
 ;; Process menu keyboard bindings
 
 (defun ergoemacs-shortcut-for-command (cmd)
@@ -393,7 +399,8 @@
 
 (ergoemacs-preprocess-menu-keybindings
  (lookup-key lisp-interaction-mode-map [menu-bar lisp-interaction]))
-
+
+;;;;§----------------------------------------
 ;; TODO:
 
 ;; • call ergoemacs-preprocess-menu-keybindings for global-map (all menus of all modes)
