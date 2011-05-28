@@ -14,7 +14,7 @@ HISTORY
 
 write any new update here
 
-* Version 1.9.3: 2011-03-12.
+* Version 1.9.3: 2011-05-28.
 ** New version of the ergoemacs-mode minor mode, at v5.3.9
 For detail, see: 〔ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕
 
