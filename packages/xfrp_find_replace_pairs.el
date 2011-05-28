@@ -31,6 +31,7 @@
 
 ;;; HISTORY
 
+;; version 1.1, 2011-03-14. • fixed a doc error in replace-pairs-region. • fixed a code error in replace-regexp-pairs-in-string (this fix has no change in behavior).
 ;; version 1.0, 2010-08-17. First version.
 
 
@@ -113,17 +114,14 @@ This function calls `replace-regexp-in-string' to do its work.
 
 See also `replace-pairs-in-string'."
   (let ((mystr str))
-    (setq mystr str)
     (mapc
-     (lambda (x) (setq mystr (replace-regexp-in-string
-                              (elt x 0)
-                              (elt x 1) mystr fixedcase)))
+     (lambda (x) (setq mystr (replace-regexp-in-string (elt x 0) (elt x 1) mystr fixedcase)))
      pairs)
     mystr))
 
 
 (defun replace-pairs-region (start end pairs)
-  "Replace regex string find/replace PAIRS in region.
+  "Replace string find/replace PAIRS in region.
 
 For detail, see `replace-pairs-in-string'."
   (let (mystr)
@@ -159,9 +157,7 @@ See `replace-pairs-in-string' for full doc."
   (let (mystr)
     (setq mystr str)
     (mapc
-     (lambda (x) (setq mystr (replace-regexp-in-string
-                              (regexp-quote (elt x 0))
-                              (elt x 1) mystr t t)))
+     (lambda (x) (setq mystr (replace-regexp-in-string (regexp-quote (elt x 0)) (elt x 1) mystr t t)))
      pairs)
     mystr))
 
