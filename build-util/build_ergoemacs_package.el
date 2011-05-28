@@ -18,20 +18,21 @@
 ;; then, just eval-buffer.
 ;; The result will be a new zip file (and a unzipped dir) at the root of your svn checkout.
 ;; For example, if your svn checkout path is
-;;   c:/Users/xah/ErgoEmacs_Source
+;;   ~/ErgoEmacs_Source
 ;; then the following are created
-;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.1
-;;   c:/Users/xah/ErgoEmacs_Source/ergoemacs_1.9.1.zip
+;;   ~/ErgoEmacs_Source/ergoemacs_1.9.1
+;;   ~/ErgoEmacs_Source/ergoemacs_1.9.1.zip
 
 ;; This script requires unix “find”, “rm”, “cp”, etc.
 
 (defvar zipDirName nil "the zip file/dir name")
 (setq zipDirName "ergoemacs_1.9.1.1")
 
-
+
+;;;;§----------------------------------------
 
 (defvar sourceDir nil "The ergoemacs source code dir in repository. By default, this is parent dir of the dir this file is in.")
-(setq sourceDir (expand-file-name  (concat (file-name-directory buffer-file-name) "../")) ) ; e.g. "c:/Users/xah/ErgoEmacs_Source/ergoemacs/"
+(setq sourceDir (expand-file-name  (concat (file-name-directory buffer-file-name) "../")) ) ; e.g. "~/ErgoEmacs_Source/ergoemacs/"
 
 (defvar destDirRoot nil "The output dir. Will be created if doesn't exit. By default, this is 2 dir above this file.")
 (setq destDirRoot (expand-file-name  (concat (file-name-directory buffer-file-name) "../../"))) ;
@@ -42,7 +43,8 @@
 (setq sourceDir (expand-file-name sourceDir ) ) 
 (setq destDirRoot (expand-file-name destDirRoot ) )
 (setq destDirWithZipPath (expand-file-name destDirWithZipPath ) )
-
+
+;;;;§----------------------------------------
 ;; main
 
 ;; if previous build dir and zip file exist, remove them.
@@ -62,8 +64,8 @@
 ;; (require 'find-lisp)
 ;; (mapc 'my-process-file
 ;;  (find-lisp-find-files destDirWithZipPath "\\.svn$")
-;;  (find-lisp-find-files "c:/Users/xah/xx2/ergoemacs_1.9.1.1/build-util/" "")
-;;  (find-lisp-find-dired-subdirectories "c:/Users/xah/xx2/ergoemacs_1.9.1.1/build-util/")
+;;  (find-lisp-find-files "~/xx2/ergoemacs_1.9.1.1/build-util/" "")
+;;  (find-lisp-find-dired-subdirectories "~/xx2/ergoemacs_1.9.1.1/build-util/")
 ;; )
 
 ;; delete emacs backup files
