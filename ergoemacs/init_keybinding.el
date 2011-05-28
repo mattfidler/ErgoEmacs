@@ -9,12 +9,13 @@
 (defun browser-nav-keys ()
   "Add some browser styled nav keys for Info-mode.
   The following keys and mouse buttons are added:
- 【Backspace】 and <mouse-4> for `Info-history-back'
- 【Shift+Backspace】 and <mouse-5> for `Info-history-forward'."
- (local-set-key (kbd "<backspace>") 'Info-history-back)
- (local-set-key (kbd "<S-backspace>") 'Info-history-forward)
- (local-set-key (kbd "<mouse-4>") 'Info-history-back)
- (local-set-key (kbd "<mouse-5>") 'Info-history-forward)
+ 【Backspace】 for `Info-history-back'
+ 【Shift+Backspace】 for `Info-history-forward'."
+  (progn
+    (local-set-key (kbd "<backspace>") 'Info-history-back)
+    (local-set-key (kbd "<S-backspace>") 'Info-history-forward)
+    )
+  ;; note: Backspace key for previous page isn't support by Firefox on Linux. That key isn't support in Mac's Safari neither until i think 2008 or so.
   )
 
 (add-hook 'Info-mode-hook 'browser-nav-keys)
