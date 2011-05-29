@@ -17,7 +17,6 @@ write any new update here
 * Version 1.9.3: 2011-05-28.
 ** New version of the ergoemacs-mode minor mode, at v5.3.9
 For detail, see: 〔ergoemacs/ergoemacs-keybindings/_HISTORY.txt〕
-
 ** new command: toggle-whitespace-setting for whitespace-mode (r656)
 When you call whitespace-mode, spaces and tabs are shown with special glyphs. You can toggle 2 settings for how whitespaces are shown, by calling “toggle-whitespace-setting”.
 ** Caps Lock key for execute-extended-command
@@ -30,28 +29,45 @@ Get it at: http://xahlee.org/emacs/ergonomic_emacs_keybinding_system-wide.html
 
 Thanks to Milan Santosi, Xavier Gomes Pinho.
 
-You can get the source code at:
+You can get the AutoHotkey script source code at:
 http://code.google.com/p/ergoemacs/source/browse/#svn%2Ftrunk%2Fextra
-** Backspace key = previous viewed page, in emacs's Info-mode
+** emacs's Info-mode, Backspace key = previous viewed page
 In Info-mode, Backspace key goes to the previous viewed page.  Shift+Backspace moves forward. Similar to browsers in Windows and Mac.
+
+(Info-mode is a mode to view emacs documentations. Type 【Ctrl+h i】 to view it. You can then use mouse to navigate.)
 ** new version of xmsi-mode for math symbols and unicode input
 For read release history, call “describe-function”, then “xmsi-mode”, then click on the file name 〔xmsi-math-symbols-input.el〕, then scroll to file's top.
 ** New: keyfreq.el replaces command-frequencies.el
+〔command-frequencies.el〕 no longer flood your “*Messages*” buffer when you start emacs. However, this package is now defunct. 
 
-command-frequencies.el no longer flood your “*Messages*” buffer when you start emacs. However, it's considered defunct.
+David Capello wrote keyfreq fresh, replacing 〔command-frequencies.el〕. The two are not compatible. The data files are not compatible, the commands and features, are also slightly different.
 
-A new package keyfreq.el replaces it. This package is not compatible with command-frequencies. This new package may be renamed to command-frequencies.el, but currently not done.
+ErgoEmacs now loads keyfreq instead of command-frequencies.
+*** Some tip about command-frequencies.el
+The data file of “command-frequencies” is at 〔~/.emacs.d/.emacs.command.frequency〕.
+To view your command frequency, call “command-frequency”.
+The source file is at 〔ergoemacs/packages/command-frequency.el〕.
+*** some tip about keyfreq.el
+The data file is saved at 〔~/.emacs.d/.emacs.keyfreq〕.
 
-David Capello wrote keyfreq.el fresh. View the file to see usage.
-The file is at 〔ergoemacs/packages/keyfreq.el〕.
+Call “keyfreq-show” to see your command frequency.
 
-We haven't set it up to auto load.
+To turn it on or off, call “keyfreq-mode”.
+
+Here's a list of commands:
+ keyfreq-mode
+ keyfreq-show
+ keyfreq-autosave-mode
+ keyfreq-html
+ keyfreq-json
+
+The source code is at 〔ergoemacs/packages/keyfreq.el〕.
 ** Change: abbreviations in emacs-lisp-mode. (r657)
 About 8 abbreviations in emacs-lisp-mode changed.
 
-For example, before, when you type “ i ”, it becomes “insert”. There are about 8 such single letter abbreviations. The expansion is often annoying.
+For example, before, when you type “i ”, it becomes “insert ”. There are about 8 such single letter abbreviations. The expansion is often annoying.
 
-These are removed. To use them, you have to type “8” as a prefix. e.g. “ 8i ” becomes “ insert ”. This is not perfect, but not sure what's better.
+These are removed. To use them, you have to type “8” as a prefix. e.g. “8i ” becomes “insert ”. This is not perfect, but not sure what's better.
 
 You can view the list of abbrevs at 〔ergoemacs/init_abbrevs-lisp-mode.el〕.
 
