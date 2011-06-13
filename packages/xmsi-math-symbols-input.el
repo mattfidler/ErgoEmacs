@@ -25,7 +25,6 @@
 
 ;; Now, put the following lines in your emacs init file “.emacs”:
 
-;;; xmsi-mode 〔xmsi-math-symbols-input.el〕 for inputting math (Unicode) symbols.
 ;; (add-to-list 'load-path "~/.emacs.d/")
 ;; (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
 ;; (xmsi-mode 1) ; activate the mode.
@@ -35,53 +34,55 @@
 ;;; DOCUMENTATION
 
 ;; Type “inf”, then press 【Shift+Space】, then it becomes “∞”.
-;; Type “a”, then press 【Shift+Space】, then it becomes “α”.
-;; Type “p”, then press 【Shift+Space】, then it becomes “π”.
-;; Type “!=”, then press 【Shift+Space】, then it becomes “≠”.
-;; Type “>=”, then press 【Shift+Space】, then it becomes “≥”.
-;; Type “=>”, then press 【Shift+Space】, then it becomes “⇒”.
-;; Type “->”, then press 【Shift+Space】, then it becomes “→”.
-;; Type “and”, then press 【Shift+Space】, then it becomes “∧”.
+;; Other examples:
+;; “a” ⇒ “α”.
+;; “p” ⇒ “π”.
+;; “!=” ⇒ “≠”.
+;; “>=” ⇒ “≥”.
+;; “=>” ⇒ “⇒”.
+;; “->” ⇒ “→”.
+;; “and” ⇒ “∧”.
 ;; etc.
 
 ;; For full list, call “xmsi-list-math-symbols”.
 
-;; The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】, LaTeX's 「\symbolName」, and SGML/HTML/XML char entity abbreviations.
+;; The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】 and SGML/HTML/XML char entity abbreviations.
 
 ;; Full documentation is at: http://xahlee.org/emacs/xmsi-math-symbols-input.html
 
-;; To see the inline documentation, call “describe-function” 【Ctrl+h f】, then type “xmsi-mode”.
-;; (if you have not load the mode yet, first load it by typing 【Alt+x xmsi-mode】)
+;; To see the inline documentation, call “describe-function”, then type “xmsi-mode”.
+;; (if you have not load the mode yet, first load it by calling “xmsi-mode”.)
 
 ;;; HISTORY
 
-;; version 1.2.9, 2011-03-24 Added about 102 full width version chars. Example, “fw&” becomes “＆”. Abbrev all start with “fw”. Remove about 5 redundant abbrevs.
-;; version 1.2.8, 2011-02-12 Added ⟵ ⟶ ⟷ ⇔ ⟸ ⟹ ⟺ ↚ ↛ ↮ ⇍ ⇏ ⇎. (few other chars may have been added but missed being mentioned here.)
-;; version 1.2.6, 2011-02-11 emdash, endash, figure dash, now have keys m- n- f-. Also, removed some full words keys: “degree” (deg), “pi” (p), “infinity” (inf), “angle” (ang).
-;; version 1.2.5, 2011-02-01 added a figure dash.
-;; version 1.2.4, 2011-01-11 made the error message more clear. • added symbol for circled number ① ② ... ⒈⒉ ... 🄂 🄃 ...
-;; version 1.2.3, 2011-01-06 More clean up, adding symbols. The input string is changed. Now, it's from the cursor position to the left whitespace. Before this change, the input is determined by whitespace chars to the left and right.
-;; version 1.2.2, 2010-12-22 Added nbsp for non-breaking-space and some others symbols.
-;; version 1.2.1, 2010-12-14 Added about 10 more symbols.
-;; version 1.2, 2010-12-14 Added support to enter char by unicode decimal or hexadecimal.
-;; version 1.1, 2010-12-12 added more symbols.
-;; version 1.0, 2010-12-08 First version.
+;; v1.2.10, 2011-06-10 Added/Changed “dell”, “delr”, “tabl”, “tabr”, “_”, “!?”, “?!”, “!!”.
+;; v1.2.9, 2011-03-24 Added about 102 full width version chars. Example, “fw&” becomes “＆”. Abbrev all start with “fw”. Remove about 5 redundant abbrevs.
+;; v1.2.8, 2011-02-12 Added ⟵ ⟶ ⟷ ⇔ ⟸ ⟹ ⟺ ↚ ↛ ↮ ⇍ ⇏ ⇎. (few other chars may have been added but missed being mentioned here.)
+;; v1.2.6, 2011-02-11 emdash, endash, figure dash, now have keys m- n- f-. Also, removed some full words keys: “degree” (deg), “pi” (p), “infinity” (inf), “angle” (ang).
+;; v1.2.5, 2011-02-01 added a figure dash.
+;; v1.2.4, 2011-01-11 made the error message more clear. • added symbol for circled number ① ② ... ⒈⒉ ... 🄂 🄃 ...
+;; v1.2.3, 2011-01-06 More clean up, adding symbols. The input string is changed. Now, it's from the cursor position to the left whitespace. Before this change, the input is determined by whitespace chars to the left and right.
+;; v1.2.2, 2010-12-22 Added nbsp for non-breaking-space and some others symbols.
+;; v1.2.1, 2010-12-14 Added about 10 more symbols.
+;; v1.2, 2010-12-14 Added support to enter char by unicode decimal or hexadecimal.
+;; v1.1, 2010-12-12 added more symbols.
+;; v1.0, 2010-12-08 First version.
 
 ;;; References
+;; 〈Math Symbols in Unicode〉 http://xahlee.org/comp/unicode_math_operators.html
+;; 〈HTML/XML Entities (Character/Unicode/Symbol) List〉 http://xahlee.org/comp/unicode_html_entities.html
+;; 〈Math Font, Unicode, Gothic Letters, Double Struck〉 http://xahlee.org/math/math_font_unicode.html
+;; 〈How Mathematica does Unicode?〉 http://xahlee.org/math/mathematica_unicode.html
 ;; http://ia.wikipedia.org/wiki/Wikipedia:LaTeX_symbols
 ;; http://en.wikipedia.org/wiki/Help:Displaying_a_formula
-;; http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
 ;; http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf
-;;  〈Math Symbols in Unicode〉 http://xahlee.org/comp/unicode_math_operators.html
-;; http://en.wikipedia.org/wiki/Blackletter
-;; http://en.wikipedia.org/wiki/Fraktur_%28script%29
 ;; http://en.wikipedia.org/wiki/Mathematical_alphanumeric_symbols
 ;; http://en.wikipedia.org/wiki/Astronomical_symbol
 ;; http://en.wikipedia.org/wiki/Double_struck
 
 ;;; Code:
 
-(setq xmsi-version "1.2.9")
+(setq xmsi-version "1.2.10")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -90,7 +91,7 @@
 
   (progn
     ;; sgml/html/xhtml/xml entities
-    (puthash "nbsp" " " xmsi-abrvs)
+    (puthash "nbsp" " " xmsi-abrvs)
     (puthash "bull" "•" xmsi-abrvs)
     (puthash "iexcl" "¡" xmsi-abrvs)
     (puthash "cent" "¢" xmsi-abrvs)
@@ -515,6 +516,9 @@
   (puthash "--" "—" xmsi-abrvs)
   (puthash "-" "‒" xmsi-abrvs)
   (puthash "s&" "﹠" xmsi-abrvs)
+  (puthash "?!" "⁈" xmsi-abrvs)
+  (puthash "!?" "⁉" xmsi-abrvs)
+  (puthash "!!" "‼" xmsi-abrvs)
 
   (puthash "ltrib" "◀" xmsi-abrvs)
   (puthash "rtrib" "▶" xmsi-abrvs)
@@ -543,25 +547,31 @@
   (puthash "pgdn" "⇟"xmsi-abrvs)
   (puthash "nwarr" "↖"xmsi-abrvs)
   (puthash "searr" "↘"xmsi-abrvs)
-  (puthash "ldel" "⌫"xmsi-abrvs)
-  (puthash "del" "⌦"xmsi-abrvs)
   (puthash "power" "⎋"xmsi-abrvs)
   (puthash "eject" "⏏"xmsi-abrvs)
   (puthash "undo" "↶"xmsi-abrvs)
   (puthash "redo" "↷"xmsi-abrvs)
   (puthash "shift" "⇧"xmsi-abrvs)
-  (puthash "enter" "⌤"xmsi-abrvs)
 
-  (puthash "lrarr" "⇄"xmsi-abrvs)
-  (puthash "|<-" "⇤"xmsi-abrvs)
-  (puthash "->|" "⇥"xmsi-abrvs)
-  (puthash "tab" "↹"xmsi-abrvs)
+  (puthash "enter" "⌤"xmsi-abrvs)
   (puthash "return3" "↵"xmsi-abrvs)
   (puthash "return2" "↩"xmsi-abrvs)
   (puthash "return" "⏎"xmsi-abrvs)
+
+  (puthash "dell" "⌫"xmsi-abrvs)
+  (puthash "delr" "⌦"xmsi-abrvs)
+  (puthash "kbd" "⌨"xmsi-abrvs)
+  (puthash "_" "␣"xmsi-abrvs)
+
+  (puthash "lrarr" "⇄"xmsi-abrvs)
+
+  (puthash "|<-" "⇤"xmsi-abrvs)
+  (puthash "->|" "⇥"xmsi-abrvs)
+
+  (puthash "tabl" "⇤"xmsi-abrvs)
+  (puthash "tabr" "⇥"xmsi-abrvs)
+  (puthash "tab" "↹"xmsi-abrvs)
   (puthash "clear" "⌧"xmsi-abrvs)
-  (puthash "keyboard" "⌨"xmsi-abrvs)
-  (puthash "tt" "␣"xmsi-abrvs)
   (puthash "ibeam" "⌶"xmsi-abrvs)
   (puthash "prevpage" "⎗"xmsi-abrvs)
   (puthash "nextpage" "⎘"xmsi-abrvs)
@@ -770,7 +780,7 @@
   (puthash "Digamma" "Ϝ" xmsi-abrvs)
   (puthash "digamma" "ϝ" xmsi-abrvs)
   (puthash "wp" "℘" xmsi-abrvs)
-  (puthash "angstrom" "Å" xmsi-abrvs)
+  (puthash "angstrom" "Å" xmsi-abrvs)
   (puthash "R2" "ℝ²" xmsi-abrvs)
   (puthash "R3" "ℝ³" xmsi-abrvs)
   (puthash "fun" "ƒ" xmsi-abrvs)
@@ -1059,23 +1069,24 @@ See `xmsi-mode'."
 (define-minor-mode xmsi-mode
   "Toggle math symbol input (minor) mode.
 
-A mode for inputting a few hundred math (Unicode) symbols.
+A mode for inputting a few math and other Unicode symbols.
 
 Type “inf”, then press 【Shift+Space】, then it becomes “∞”.
-Type “a”, then press 【Shift+Space】, then it becomes “α”.
-Type “p”, then press 【Shift+Space】, then it becomes “π”.
-Type “!=”, then press 【Shift+Space】, then it becomes “≠”.
-Type “>=”, then press 【Shift+Space】, then it becomes “≥”.
-Type “=>”, then press 【Shift+Space】, then it becomes “⇒”.
-Type “->”, then press 【Shift+Space】, then it becomes “→”.
-Type “and”, then press 【Shift+Space】, then it becomes “∧”.
+Other examples:
+ a ⇒ α
+ p ⇒ π
+ != ⇒ ≠
+ >= ⇒ ≥
+ => ⇒ ⇒
+ -> ⇒ →
+ and ⇒ ∧
 etc.
 
 If you have a text selection, then selected word will be taken as
 input. For example, type 「sin(a)」, select the “a”, then press
  【Shift+Space】, then it becomse 「sin(α)」.
 
-For full list, call `xmsi-list-math-symbols'.
+For the complete list of abbrevs, call `xmsi-list-math-symbols'.
 All XML char entity abbrevs are supported. For example, 「copy」 becomes 「©」.
 To type a unicode by decimal, e.g.  「&#945;」 becomes 「α」.
 To type a unicode by hexadecimal, e.g., 「&#x3b1;」 becomes 「α」.
@@ -1092,8 +1103,7 @@ Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
 
-For full documentation, see:
-URL `http://xahlee.org/emacs/xmsi-math-symbols-input.html'"
+Home page at: URL `http://xahlee.org/emacs/xmsi-math-symbols-input.html'"
   nil
   :global t
   :lighter " ∑"
