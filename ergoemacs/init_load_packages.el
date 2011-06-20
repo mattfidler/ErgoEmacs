@@ -41,7 +41,9 @@
 (add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode)) ; PowerShell script
 
 ;;; powershell interactive shell
-(autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
+(when (string-equal system-type "windows-nt")
+  (autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
+)
 
 ;;; mode for clojure language
 (autoload 'clojure-mode "clojure-mode" "mode for editing clojure language." t)
@@ -170,20 +172,6 @@
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
-
-
-;; ;; auto-complete v1.3 (a enhanced word completion)
-;; (add-to-list 'load-path
-;;  (concat (file-name-directory (or load-file-name buffer-file-name))
-;;                      "../packages/auto-complete-1.3/" ) )
-;; (require 'auto-complete-config)
-;; (add-to-list 'ac-dictionary-directories
-;;  (concat (file-name-directory (or load-file-name buffer-file-name))
-;;                      "../packages/auto-complete-1.3/ac-dict/" ))
-;; (ac-config-default)
-;; (auto-complete-mode 1)
-;; (defun ac-css-mode-setup()) ; this is a workaround a crash http://github.com/m2ym/auto-complete/issues#issue/27 http://github.com/m2ym/auto-complete/issues#issue/31
-
 
 ;; auto-complete v1.3.1 (a enhanced word completion)
 (add-to-list 'load-path
