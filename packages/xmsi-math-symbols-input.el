@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.2.11, 2011-06-24 Added about 20 white/black shapes. e.g. square, circle, star, club …. Some are have existing abbrev but now with more intuitive name. Also a couple other changes.
 ;; v1.2.10, 2011-06-10 Added/Changed “dell”, “delr”, “tabl”, “tabr”, “_”, “!?”, “?!”, “!!”.
 ;; v1.2.9, 2011-03-24 Added about 102 full width version chars. Example, “fw&” becomes “＆”. Abbrev all start with “fw”. Remove about 5 redundant abbrevs.
 ;; v1.2.8, 2011-02-12 Added ⟵ ⟶ ⟷ ⇔ ⟸ ⟹ ⟺ ↚ ↛ ↮ ⇍ ⇏ ⇎. (few other chars may have been added but missed being mentioned here.)
@@ -859,12 +860,31 @@
   (puthash "nand" "⊼" xmsi-abrvs)
   (puthash "nor" "⊽" xmsi-abrvs)
 
-  ;; duplicates. full word as input or variant abbrev. Only duplicates appear here.
+  ;; some of the following are duplicates using full words as abbrev
   (puthash "m-" "—" xmsi-abrvs)
   (puthash "f-" "‒" xmsi-abrvs)
   (puthash "n-" "–" xmsi-abrvs)
-  (puthash "star" "★" xmsi-abrvs)
   (puthash "(c)" "©" xmsi-abrvs)
+
+(puthash "delete" "⌫"xmsi-abrvs)
+(puthash "square" "■" xmsi-abrvs)
+(puthash "square2" "□" xmsi-abrvs)
+(puthash "circle" "●" xmsi-abrvs)
+(puthash "circle2" "○" xmsi-abrvs)
+(puthash "triangle" "▲" xmsi-abrvs)
+(puthash "triangle2" "△" xmsi-abrvs)
+(puthash "diamond" "◆" xmsi-abrvs)
+(puthash "diamond2" "◇" xmsi-abrvs)
+(puthash "star" "★" xmsi-abrvs)
+(puthash "star2" "☆" xmsi-abrvs)
+(puthash "spade" "♠" xmsi-abrvs)
+(puthash "spade2" "♤" xmsi-abrvs)
+(puthash "club" "♣" xmsi-abrvs)
+(puthash "club2" "♧" xmsi-abrvs)
+(puthash "heart" "♥" xmsi-abrvs)
+(puthash "heart2" "♡" xmsi-abrvs)
+(puthash "diam" "♦" xmsi-abrvs)
+(puthash "diam2" "♢" xmsi-abrvs)
 
 (puthash "fw," "，" xmsi-abrvs)
 (puthash "fw." "．" xmsi-abrvs)
