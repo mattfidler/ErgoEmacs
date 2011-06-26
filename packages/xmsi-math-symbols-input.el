@@ -55,6 +55,8 @@
 
 ;;; HISTORY
 
+
+;; v1.2.12, 2011-06-26 Fixed nbsp. It was inserting normal space. Now it's non-breaking space.
 ;; v1.2.11, 2011-06-24 Added about 20 white/black shapes. e.g. square, circle, star, club …. Some are have existing abbrev but now with more intuitive name. Also a couple other changes.
 ;; v1.2.10, 2011-06-10 Added/Changed “dell”, “delr”, “tabl”, “tabr”, “_”, “!?”, “?!”, “!!”.
 ;; v1.2.9, 2011-03-24 Added about 102 full width version chars. Example, “fw&” becomes “＆”. Abbrev all start with “fw”. Remove about 5 redundant abbrevs.
@@ -92,7 +94,7 @@
 
   (progn
     ;; sgml/html/xhtml/xml entities
-    (puthash "nbsp" " " xmsi-abrvs)
+    (puthash "nbsp" " " xmsi-abrvs)
     (puthash "bull" "•" xmsi-abrvs)
     (puthash "iexcl" "¡" xmsi-abrvs)
     (puthash "cent" "¢" xmsi-abrvs)
