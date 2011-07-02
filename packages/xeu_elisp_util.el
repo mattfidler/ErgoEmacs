@@ -32,6 +32,7 @@
 
 ;;; HISTORY
 
+;; version 1.2, 2011-07-02  inline doc improvement for get-image-dimensions get-image-dimensions-imk
 ;; version 1.1, 2011-05-28. Added some comment in source code.
 ;; version 1.0, 2011-03-02. First version.
 
@@ -147,6 +148,7 @@ Example usage:
   "Returns a image file's width and height as a vector.
 Support png jpg and any image type emacs supports.
  (Does not support gif.)
+Bug: for large size png, sometimes this returns a wrong dimension 30×30.
 See also: `get-image-dimensions-imk'"
   (let (tmp dimen)
     (clear-image-cache)
@@ -157,7 +159,7 @@ See also: `get-image-dimensions-imk'"
 
 (defun get-image-dimensions-imk (img-file-path)
   "Returns a image file's width and height as a vector.
-This function requires ImageMagick's “identity” shell command.
+This function requires ImageMagick's “identify” shell command.
 See also: `get-image-dimensions'."
   (let (cmd-name sh-output width height)
     (setq cmd-name "identify")
