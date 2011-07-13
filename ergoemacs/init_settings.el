@@ -4,11 +4,14 @@
 (set-language-environment "UTF-8")
 
 ;; ----------------------------------------------------------------------------
+;; use cperl-mode instead of perl-mode
+(setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.\\(p\\([lm]\\)\\)\\'" . cperl-mode))
 
-;; For htmlize.el.
-;; Rationale: use unicode whenever possible, since it's widely supported today.
-(setq htmlize-convert-nonascii-to-entities nil) ; make htmlize generate unicode directly instead of html entities
-(setq htmlize-html-charset "utf-8") ; make the output html use utf-8 charset 
+(setq interpreter-mode-alist (rassq-delete-all 'perl-mode interpreter-mode-alist))
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+(add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
 
 ;; ----------------------------------------------------------------------------
 
@@ -111,12 +114,6 @@
           t) ;; append this hook to the tail
 
 ;; ----------------------------------------------------------------------------
-
-;; Lets user type y and n instead of the full yes and no.
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-;; ----------------------------------------------------------------------------
-
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
 
@@ -156,6 +153,13 @@
 ;; make the formfeed char display as a line
 ;; (setq pp^L-^L-string "                                                           ")
 ;; (pretty-control-l-mode 1)
+
+;; ----------------------------------------------------------------------------
+
+;; For htmlize.el.
+;; Rationale: use unicode whenever possible, since it's widely supported today.
+(setq htmlize-convert-nonascii-to-entities nil) ; make htmlize generate unicode directly instead of html entities
+(setq htmlize-html-charset "utf-8") ; make the output html use utf-8 charset 
 
 ;; ----------------------------------------------------------------------------
 
