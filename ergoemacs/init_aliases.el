@@ -32,6 +32,9 @@
 (defalias 'cmd-mode 'dos-mode)
 (defalias 'lsl-mode 'xlsl-mode)
 (defalias 'ocaml-mode 'tuareg-mode)
+(defalias 'math-symbol-input-mode 'xmsi-mode)
 
-(defalias 'spell-check 'speck-mode)
+;; (defalias 'spell-check 'speck-mode)
 
+;; Lets user type y and n instead of the full yes and no.
+(defalias 'yes-or-no-p 'y-or-n-p)
