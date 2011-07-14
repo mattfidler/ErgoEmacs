@@ -3,7 +3,8 @@
 ;; UTF-8 as default encoding
 (set-language-environment "UTF-8")
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 ;; use cperl-mode instead of perl-mode
 (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
 (add-to-list 'auto-mode-alist '("\\.\\(p\\([lm]\\)\\)\\'" . cperl-mode))
@@ -13,7 +14,8 @@
 (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
 (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 
 ;; No backup or auto-save
 (setq backup-by-copying t)
@@ -33,16 +35,19 @@
 (require 'saveplace)
 (setq-default save-place t)
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 ;; make buffer names easily identifiable
 (require 'uniquify) ; bundled with GNU emacs 23.2.1 or before
 (setq uniquify-buffer-name-style 'forward)
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 ;; auto compile elisp files after save
 (add-hook 'emacs-lisp-mode-hook (lambda () (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t)) )
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 ;; Make emacs open all files in last emacs session.
 ;;
 ;; This functionality is provided by desktop-save-mode (“feature”
@@ -122,7 +127,8 @@
             )
           t) ;; append this hook to the tail
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
 
@@ -139,7 +145,8 @@
 ;; Alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 
 (progn 
   ;; Make whitespace-mode with very basic background coloring for whitespaces
@@ -158,19 +165,24 @@
           (tab-mark 9 [9655 9] [92 9]) ; tab
           )) )
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 ;; make the formfeed char display as a line
+;; 2011-07-14 commented out due to a display problem with whitespace-mode
+;; http://groups.google.com/group/gnu.emacs.help/browse_frm/thread/12e5a1e6a8b22c14/c642875edeb7ea20
 ;; (setq pp^L-^L-string "                                                           ")
 ;; (pretty-control-l-mode 1)
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 
 ;; For htmlize.el.
 ;; Rationale: use unicode whenever possible, since it's widely supported today.
 (setq htmlize-convert-nonascii-to-entities nil) ; make htmlize generate unicode directly instead of html entities
 (setq htmlize-html-charset "utf-8") ; make the output html use utf-8 charset 
 
-;; ----------------------------------------------------------------------------
+
+;; § ----------------------------------------
 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
