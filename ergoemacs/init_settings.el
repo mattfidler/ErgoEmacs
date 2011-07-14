@@ -34,6 +34,15 @@
 (setq-default save-place t)
 
 ;; ----------------------------------------------------------------------------
+;; make buffer names easily identifiable
+(require 'uniquify) ; bundled with GNU emacs 23.2.1 or before
+(setq uniquify-buffer-name-style 'forward)
+
+;; ----------------------------------------------------------------------------
+;; auto compile elisp files after save
+(add-hook 'emacs-lisp-mode-hook (lambda () (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t)) )
+
+;; ----------------------------------------------------------------------------
 ;; Make emacs open all files in last emacs session.
 ;;
 ;; This functionality is provided by desktop-save-mode (“feature”
