@@ -43,8 +43,17 @@
 
 
 ;; § ----------------------------------------
-;; auto compile elisp files after save
-(add-hook 'emacs-lisp-mode-hook (lambda () (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t)) )
+;; auto compile elisp files after save, do so only if there's exists a byte-compiled file
+(defun auto-recompile-el-buffer ()
+  (interactive)
+  (when (and (eq major-mode 'emacs-lisp-mode)
+             (file-exists-p (byte-compile-dest-file buffer-file-name)))
+    (byte-compile-file buffer-file-name)))
+
+(add-hook 'after-save-hook 'auto-recompile-el-buffer)
+
+;; auto compile elisp files after save.
+;; (add-hook 'emacs-lisp-mode-hook (lambda () (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t)) )
 
 
 ;; § ----------------------------------------
