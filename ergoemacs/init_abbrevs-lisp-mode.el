@@ -72,6 +72,7 @@
  ("rb" "region-beginning" nil 0)
  ("re" "region-end" nil 0)
  ("rf" "rename-file" nil 0)
+ ("rm" "replace-match" nil 0)
  ("rq" "regexp-quote" nil 0)
  ("rr" "replace-regexp" nil 0)
  ("rris" "replace-regexp-in-string" nil 0)
