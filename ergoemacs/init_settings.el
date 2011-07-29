@@ -43,6 +43,11 @@
 
 
 ;; § ----------------------------------------
+;; 2011-07-29 yasnippet. Make the “yas/minor-mode”'s expansion behavior to take input word including hyphen.
+(setq  yas/key-syntaxes '("w_" "w_." "^ ")) ; default is '("w" "w_" "w_." "^ ") as of 2011-07-29
+
+
+;; § ----------------------------------------
 ;; auto compile elisp files after save, do so only if there's exists a byte-compiled file
 (defun auto-recompile-el-buffer ()
   (interactive)
