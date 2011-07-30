@@ -186,13 +186,11 @@ See also: `get-image-dimensions'."
 (defun get-html-file-title (fname)
 "Return FNAME <title> tag's text.
 Assumes that the file contains the string
-“<title>...</title>”."
+“<title>…</title>”."
  (let (x1 x2 linkText)
-
    (with-temp-buffer
-     (goto-char 1)
      (insert-file-contents fname nil nil nil t)
-
+     (goto-char 1)
      (setq x1 (search-forward "<title>"))
      (search-forward "</title>")
      (setq x2 (search-backward "<"))
