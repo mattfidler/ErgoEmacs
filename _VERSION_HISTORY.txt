@@ -14,6 +14,36 @@ HISTORY
 
 write any new update here
 
+* Version 1.9.4: 2011-07-30
+
+• Buffer names of files of the same name will now show the directory, for easy visual identification. (toggle-uniquify-buffer-names)
+
+• “cperl-mode” is now default mode for perl code, instead of “perl-mode”.
+
+• A complete revamped set of html templates for html-mode. (yasnippet; “yas/minor-mode”) The new set has templates for all HTML5 tags, and only HTML5 ones.
+
+• “elisp-index-search” will default to the symbol under cursor.
+
+• New function “toggle-whitespace-setting” 
+
+• “keyfreq-mode” is now loaded by default, instead of “command-frequency”.
+
+• New version of 〔xmsi-math-symbols-input.el〕. Call “xmsi-mode” for detail.
+
+• Added a alias “math-symbol-input-mode” for “xmsi-mode”.
+
+• The spec-mode and hunspell for spell checking has been in dev hell (or my laziness). Now they officially doesn't work. The default is just fly-spell with aspell.
+
+• updated visual-basic-mode.el to v1.4.12
+
+• xlsl-mode.el at version 1.6.1 (for Second Life LSL scripting.)
+
+• when working with emacs lisp files (“.el”), it a byte-compile will be done automatically after a save, if the file already has a byte-compiled “.elc” version.
+
+• new version of the elisp util 〔xfrp_find_replace_pairs.el〕 See: 〈Emacs Lisp: Multi-Pair String Replacement: xfrp_find_replace_pairs.el〉 @ http://xahlee.org/emacs/elisp_replace_string_region.html
+
+• removed abbrevs for emacs-lisp-mode that's only single letter. Because they often expand when you don't want to. Replaced them using 8 as prefix for now. (e.g. type “8m” for “message”)
+
 * Version 1.9.3.1: 2011-05-28
 
 A beta release of zipped ErgoEmacs elisp packages.
