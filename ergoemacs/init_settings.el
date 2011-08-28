@@ -205,5 +205,7 @@
   ;; If there is more than one, they won't work right.
  '(completions-common-part ((t (:inherit default :foreground "red"))))
  '(diredp-ignored-file-name ((t (:foreground "#bebebe"))))
+ '(diredp-compressed-file-suffix ((t (:foreground "#7b68ee"))))
+ '(diredp-ignored-file-name ((t (:foreground "#6495ed"))))
  '(isearch ((((class color) (min-colors 88) (background light)) (:background "black" :foreground "white"))))
  '(show-paren-match ((((class color) (background light)) (:background "azure2")))))
