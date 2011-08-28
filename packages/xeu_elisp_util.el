@@ -32,9 +32,10 @@
 
 ;;; HISTORY
 
-;; version 1.2, 2011-07-02  inline doc improvement for get-image-dimensions get-image-dimensions-imk
-;; version 1.1, 2011-05-28. Added some comment in source code.
-;; version 1.0, 2011-03-02. First version.
+;; version 1.3, 2011-08-27 fixed a bug in unit-at-cursor when argument is 「'block」. Now it doesn't grab a extra line ending.
+;; version 1.2, 2011-07-02 inline doc improvement for get-image-dimensions get-image-dimensions-imk
+;; version 1.1, 2011-05-28 Added some comment in source code.
+;; version 1.0, 2011-03-02 First version.
 
 
 ;;; Code:
@@ -101,7 +102,7 @@ The main differences are:
               )
 
             (if (re-search-forward "\n\n" nil t)
-                (progn (backward-char)
+                (progn (backward-char 2)
                        (setq p2 (point) ))
               (setq p2 (line-end-position) ) ) ))
 
