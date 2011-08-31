@@ -31,6 +31,7 @@
 
 ;;; HISTORY
 
+;; version 1.2, 2011-08-31 • change made to replace-pairs-region so that inserting occurs only if there are changes made. The function's user level behavior is the same, except the function might be slower when the region's text is large.
 ;; version 1.1, 2011-03-14. • fixed a doc error in replace-pairs-region. • fixed a code error in replace-regexp-pairs-in-string (this fix has no change in behavior).
 ;; version 1.0, 2010-08-17. First version.
 
@@ -119,15 +120,21 @@ See also `replace-pairs-in-string'."
      pairs)
     mystr))
 
-
 (defun replace-pairs-region (start end pairs)
   "Replace string find/replace PAIRS in region.
+The replacement is done only if there are changes
+made. (i.e. only if the find strings occurs in the region.)
 
 For detail, see `replace-pairs-in-string'."
-  (let (mystr)
-    (setq mystr (buffer-substring-no-properties start end))
-    (delete-region start end)
-    (insert (replace-pairs-in-string mystr pairs))))
+  (let (inputStr newStr)
+    (setq inputStr (buffer-substring-no-properties start end))
+    (setq newStr (replace-pairs-in-string inputStr pairs))
+
+    (when (not (string-equal inputStr newStr))
+      (delete-region start end)
+      (insert newStr)
+      )
+    ))
 
 (defun replace-regexp-pairs-region (start end pairs &optional fixedcase)
   "Replace regex string find/replace PAIRS in region.
