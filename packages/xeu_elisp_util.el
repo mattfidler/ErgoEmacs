@@ -32,6 +32,7 @@
 
 ;;; HISTORY
 
+;; version 1.4, 2011-09-16 added “trim-string”.
 ;; version 1.3, 2011-08-27 fixed a bug in unit-at-cursor when argument is 「'block」. Now it doesn't grab a extra line ending.
 ;; version 1.2, 2011-07-02 inline doc improvement for get-image-dimensions get-image-dimensions-imk
 ;; version 1.1, 2011-05-28 Added some comment in source code.
@@ -39,6 +40,18 @@
 
 
 ;;; Code:
+
+(defun trim-string (string)
+  "Remove white spaces in beginning and ending of STRING.
+White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
+(replace-regexp-in-string "^[ 	
+]*" "" (replace-regexp-in-string "[ 	
+]*$" "" string))
+
+;; alternative implementation for just space
+;; not used because i thought it might be less efficient if string is large
+;; (setq ξinput (replace-regexp-in-string "^ *\\(.+\\) *$" "\\1" ξinput))
+)
 
 (defun unit-at-cursor (unit)
   "Return the string and boundary of UNIT under cursor.
