@@ -50,7 +50,7 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 
 ;; alternative implementation for just space
 ;; not used because i thought it might be less efficient if string is large
-;; (setq ξinput (replace-regexp-in-string "^ *\\(.+\\) *$" "\\1" ξinput))
+;; (replace-regexp-in-string "^ *\\(.+\\) *$" "\\1" string)
 )
 
 (defun unit-at-cursor (unit)
