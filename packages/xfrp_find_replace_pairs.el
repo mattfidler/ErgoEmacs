@@ -31,6 +31,7 @@
 
 ;;; HISTORY
 
+;; version 1.3, 2011-09-28 • slight change to replace-pairs-in-string to improve speed. The function's user level behavior is the same.
 ;; version 1.2, 2011-08-31 • change made to replace-pairs-region so that inserting occurs only if there are changes made. The function's user level behavior is the same, except the function might be slower when the region's text is large.
 ;; version 1.1, 2011-03-14. • fixed a doc error in replace-pairs-region. • fixed a code error in replace-regexp-pairs-in-string (this fix has no change in behavior).
 ;; version 1.0, 2010-08-17. First version.
@@ -52,7 +53,7 @@ If you want search strings to be case sensitive, set
 case-fold-search to nil. Like this:
 
  (let ((case-fold-search nil)) 
-   (replace-regexp-in-string-pairs ...)
+   (replace-regexp-in-string-pairs …)
 
 Once a subsring in the input string is replaced, that part is not changed again.
 For example, if the input string is “abcd”, and the pairs are
@@ -62,16 +63,14 @@ See also `replace-pairs-in-string-recursive'.
 This function calls `replace-regexp-in-string' to do its work.
 
 See also `replace-regexp-pairs-in-string'."
-  (let (ii (mystr str) (randomStrList '()))
-    (random t) ; set a seed
-
+  ;; code outline. Replace first item in each pair to a unique random string, then replace this list to the desired string.
+  (let (ii (mystr str) (tempMapPoints '()))
     ;; generate a random string list for intermediate replacement
     (setq ii 0)
     (while (< ii (length pairs))
-      (setq randomStrList (cons
-                    (concat "ㄦ" (number-to-string (random)) "ㄎ")
- ; use rarely used unicode char to prevent match in input string
-                    randomStrList ))
+      ;; use rarely used unicode char to prevent match in input string
+      ;; was using random number for the intermediate string. The problem is: ① there might be collision if there are hundreds or thousands of pairs. ② the random number are too long, even in hex notation, and slows down string replacement.
+      (setq tempMapPoints (cons (format "⚎%x" ii ) tempMapPoints ))
       (setq ii (1+ ii))
       )
 
@@ -80,7 +79,7 @@ See also `replace-regexp-pairs-in-string'."
     (while (< ii (length pairs))
       (setq mystr (replace-regexp-in-string
                    (regexp-quote (elt (elt pairs ii) 0))
-                   (elt randomStrList ii)
+                   (elt tempMapPoints ii)
                    mystr t t))
       (setq ii (1+ ii))
       )
@@ -89,7 +88,7 @@ See also `replace-regexp-pairs-in-string'."
     (setq ii 0)
     (while (< ii (length pairs))
       (setq mystr (replace-regexp-in-string
-                   (elt randomStrList ii)
+                   (elt tempMapPoints ii)
                    (elt (elt pairs ii) 1)
                    mystr t t))
       (setq ii (1+ ii))
@@ -102,14 +101,14 @@ See also `replace-regexp-pairs-in-string'."
 
 Form:
  (replace-regexp-in-string-pairs
- '([REGEX1 REPLACE1] [REGEX2 REPLACE2] ...)
+ '([REGEX1 REPLACE1] [REGEX2 REPLACE2] …)
   FIXEDCASE)
 
 The PAIRS can be any lisp sequence data type.
 
 The third argument FIXEDCASE, if non-nil, changes the case of the replacement in a smart way matching the letter case of the find string.
 
-If you want the regex to be case sensitive, set the global variable case-fold-search to nil. Like this: (let ((case-fold-search nil)) (replace-regexp-in-string-pairs ...)
+If you want the regex to be case sensitive, set the global variable case-fold-search to nil. Like this: (let ((case-fold-search nil)) (replace-regexp-in-string-pairs …)
 
 This function calls `replace-regexp-in-string' to do its work.
 
