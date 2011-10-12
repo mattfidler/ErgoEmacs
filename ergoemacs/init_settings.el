@@ -150,11 +150,12 @@
 (setq dired-recursive-copies (quote always))
 (setq dired-recursive-deletes (quote top))
 
-(setq mouse-drag-copy-region nil)
+(setq mouse-drag-copy-region t)
 
 (delete-selection-mode 1)
 (cua-mode 1)
 (iswitchb-mode 1)
+(global-linum-mode 1)
 
 ;; Alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
