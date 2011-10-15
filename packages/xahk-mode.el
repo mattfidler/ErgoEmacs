@@ -21,10 +21,10 @@
 ;; source code syntax colored.
 
 ;; To have emacs automatically load the file when it restarts, and
-;; automatically use the mode when opening files ending in “.ahk”, put
-;; the following lines in your emacs init file “.emacs”:
+;; automatically use the mode when opening files ending in “.ahk”, do this:
 
-;; (add-to-list 'load-path "/path/to/parent/dir/") ;; make sure dir is the file's parent
+;; ① Put the file 〔xahk-mode.el〕 in the dir 〔~/.emacs.d/〕
+;; ② Put the following lines in your emacs init file (usually at 〔~/.emacs〕).
 ;; (autoload 'xahk-mode "xahk-mode" "Load xahk-mode for editing AutoHotkey scripts." t)
 ;; (add-to-list 'auto-mode-alist '("\\.ahk\\'" . xahk-mode))
 ;; (defalias 'ahk-mode 'xahk-mode) ; make it easier to remember.
@@ -33,6 +33,7 @@
 
 ;;; HISTORY
 
+;; version 1.2.1, 2011-10-15 Minor changes. No visible behavior change.
 ;; version 1.2, 2010-02-17 fixed a defect where if source contains “"C:\"”, everything after is badly syntax colored. Thanks to “xinlu.h” and “iain.tuddenham”. Detail at http://code.google.com/p/ergoemacs/issues/detail?id=66
 ;; version 1.1, 2010-01-14 Added indentation feature. (press Tab to indent.)
 ;; version 1.0, 2010-01-09 First version.
@@ -41,14 +42,13 @@
 
 (require 'thingatpt )
 
-(setq xahk-mode-version "1.2.0")
+(setq xahk-mode-version "1.2.1")
 
 (defgroup xahk-mode nil
   "Major mode for editing AutoHotKey script."
   :group 'languages)
 
-(defvar xahk-mode-command-name-face	'xahk-mode-command-name-face
-  "Face name to use for AHK command names.")
+(defvar xahk-mode-command-name-face 'xahk-mode-command-name-face "Face name to use for AHK command names.")
 
 (defface xahk-mode-command-name-face
   '((((class color) (min-colors 88) (background light)) (:foreground "Blue1"))
@@ -153,7 +153,7 @@ Launches default browser and opens the doc's url."
  (interactive)
  (let (myword myurl)
    (setq myword
-         (if (and transient-mark-mode mark-active)
+         (if (region-active-p)
              (buffer-substring-no-properties (region-beginning) (region-end))
            (thing-at-point 'symbol)))
 
@@ -245,7 +245,7 @@ Keywords include all AHK's event handlers, functions, and CONSTANTS."
 (setq xahk-keys nil)
 
 (defun xahk-mode ()
-  "Major mode for editing AHK (AutoHotKey script.).
+  "Major mode for editing AutoHotKey script (AHK).
 
 Shortcuts             Command Name
 \\[comment-dwim]       `comment-dwim'
