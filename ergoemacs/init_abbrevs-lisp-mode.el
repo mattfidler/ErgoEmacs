@@ -67,6 +67,7 @@
  ("mlv" "make-local-variable" nil 0)
  ("ms" "match-string" nil 0)
  ("nts" "number-to-string" nil 0)
+ ("ntr" "narrow-to-region" nil 0)
  ("pm" "point-min" nil 0)
  ("rap" "region-active-p" nil 0)
  ("rb" "region-beginning" nil 0)
