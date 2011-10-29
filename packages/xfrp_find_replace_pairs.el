@@ -146,26 +146,25 @@ Same as `replace-pairs-in-string' except does on a region."
       (setq ξi (1+ ξi))
       )
     (save-excursion 
-      (narrow-to-region p1 p2)
+      (save-restriction 
+        (narrow-to-region p1 p2)
 
-      ;; replace each find string by corresponding item in random string list
-      (setq ξi 0)
-      (while (< ξi (length pairs))
-        (goto-char (point-min))
-        (while (search-forward (elt (elt pairs ξi) 0) nil t)
-          (replace-match (elt tempMapPoints ξi) t t) )
-        (setq ξi (1+ ξi))
-        )
+        ;; replace each find string by corresponding item in random string list
+        (setq ξi 0)
+        (while (< ξi (length pairs))
+          (goto-char (point-min))
+          (while (search-forward (elt (elt pairs ξi) 0) nil t)
+            (replace-match (elt tempMapPoints ξi) t t) )
+          (setq ξi (1+ ξi))
+          )
 
-      ;; replace each random string by corresponding replacement string
-      (setq ξi 0)
-      (while (< ξi (length pairs))
-        (goto-char (point-min))
-        (while (search-forward (elt tempMapPoints ξi) nil t)
-          (replace-match (elt (elt pairs ξi) 1) t t) )
-        (setq ξi (1+ ξi)) ) 
-      (widen)
-) ) )
+        ;; replace each random string by corresponding replacement string
+        (setq ξi 0)
+        (while (< ξi (length pairs))
+          (goto-char (point-min))
+          (while (search-forward (elt tempMapPoints ξi) nil t)
+            (replace-match (elt (elt pairs ξi) 1) t t) )
+          (setq ξi (1+ ξi)) ) ) ) ) )
 
 (defun replace-regexp-pairs-region (p1 p2 pairs &optional fixedcase)
   "Replace regex string find/replace PAIRS in region.
