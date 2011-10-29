@@ -55,7 +55,7 @@
 
 ;;; HISTORY
 
-
+;; v1.2.13, 2011-10-28 Corrected a abbrev for Greek lowercase rho “ρ” with abbrev “r”.
 ;; v1.2.12, 2011-06-26 Fixed nbsp. It was inserting normal space. Now it's non-breaking space.
 ;; v1.2.11, 2011-06-24 Added about 20 white/black shapes. e.g. square, circle, star, club …. Some are have existing abbrev but now with more intuitive name. Also a couple other changes.
 ;; v1.2.10, 2011-06-10 Added/Changed “dell”, “delr”, “tabl”, “tabr”, “_”, “!?”, “?!”, “!!”.
@@ -85,7 +85,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "1.2.10")
+(setq xmsi-version "v1.2.13")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -763,7 +763,7 @@
   (puthash "X" "Ξ" xmsi-abrvs)
   ;; (Puthash "A" "Ο" xmsi-abrvs)
   (puthash "P" "Π" xmsi-abrvs)
-  (puthash "r" "Ρ" xmsi-abrvs)
+  (puthash "R" "Ρ" xmsi-abrvs)
   (puthash "S" "Σ" xmsi-abrvs)
   (puthash "T" "Τ" xmsi-abrvs)
   (puthash "V" "Υ" xmsi-abrvs)
