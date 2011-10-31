@@ -365,7 +365,7 @@ Works in Microsoft Windows, Mac OS X, Linux."
    ) )
 
 (defvar recently-closed-buffers (cons nil nil) "A list of recently closed buffers. The max number to track is controlled by the variable recently-closed-buffers-max.")
-(defvar recently-closed-buffers-max 20 "The maximum length for recently-closed-buffers.")
+(defvar recently-closed-buffers-max 30 "The maximum length for recently-closed-buffers.")
 
 (defun close-current-buffer ()
 "Close the current buffer.
