@@ -31,7 +31,8 @@
 
 ;;; HISTORY
 
-;; version 1.4, 2011-10-29 • major update on the implementation of “replace-pairs-region”, and minor update on others. No user visible change.
+;; version 1.4.4, 2011-10-30 • fix a important error on documentation of replace-regexp-pairs-in-string, about the reversal of its 3rd argument fixedcase.
+;; version 1.4.3, 2011-10-29 • major update on the implementation of “replace-pairs-region”, and minor update on others. No user visible change.
 ;; version 1.3, 2011-09-28 • slight change to replace-pairs-in-string to improve speed. The function's user level behavior is the same.
 ;; version 1.2, 2011-08-31 • change made to replace-pairs-region so that inserting occurs only if there are changes made. The function's user level behavior is the same, except the function might be slower when the region's text is large.
 ;; version 1.1, 2011-03-14. • fixed a doc error in replace-pairs-region. • fixed a code error in replace-regexp-pairs-in-string (this fix has no change in behavior).
@@ -98,18 +99,16 @@ See also `replace-regexp-pairs-in-string' and `replace-pairs-region'."
 (defun replace-regexp-pairs-in-string (str pairs &optional fixedcase)
   "Replace string STR recursively by regex find/replace pairs PAIRS sequence.
 
-Form:
- (replace-regexp-in-string-pairs
- '([REGEX1 REPLACE1] [REGEX2 REPLACE2] …)
-  FIXEDCASE)
+The second argument PAIRS should be a sequence of pairs, e.g.
+ [[regexStr1 replaceStr1] [regexStr2 replaceStr2] …]
+ It can be list or vector.
 
-The PAIRS can be any lisp sequence data type.
+If third arg FIXEDCASE is non-nil, do not alter case of replacement text.
+ (same as in `replace-match')
 
-The third argument FIXEDCASE, if non-nil, changes the case of the replacement in a smart way matching the letter case of the find string.
-
-If you want the regex to be case sensitive, set the global variable case-fold-search to nil. Like this: (let ((case-fold-search nil)) (replace-regexp-in-string-pairs …)
-
-This function calls `replace-regexp-in-string' to do its work.
+If you want the regex to be case sensitive, set the global
+variable `case-fold-search' to “nil”. Like this:
+ (let ((case-fold-search nil)) (replace-regexp-pairs-in-string …)
 
 See also `replace-pairs-in-string'."
   (let ((myStr str))
