@@ -32,6 +32,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.2, 2011-10-30 trivial implementation change on get-html-file-title. No user visible effect.
 ;; version 1.4.1, 2011-09-29 fixed a error in “trim-string”.
 ;; version 1.4, 2011-09-16 added “trim-string”.
 ;; version 1.3, 2011-08-27 fixed a bug in unit-at-cursor when argument is 「'block」. Now it doesn't grab a extra line ending.
@@ -54,11 +55,17 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 Returns a vector [text a b], where text is the string and a and b are its boundary.
 
 UNIT can be:
+
 • 'word — sequence of 0 to 9, A to Z, a to z, and hyphen.
-• 'glyphs — sequence of visible glyphs. Useful for file name, url, …, that doesn't have spaces in it.
-• 'line — delimited by “\\n”.
-• 'block — delimited by “\\n\\n” or beginning/end of buffer.
+
+• 'glyphs — sequence of visible glyphs. Useful for file name, URL, …, anything doesn't have white spaces in it.
+
+• 'line — delimited by “\\n”. (captured text does not include a ending “\\n”.)
+
+• 'block — delimited by “\\n\\n” or beginning/end of buffer. (captured text does not include a ending “\\n”.)
+
 • 'buffer — whole buffer. (respects `narrow-to-region')
+
 • a vector [beginRegex endRegex] — The elements are regex strings used to determine the beginning/end of boundary chars. They are passed to `skip-chars-backward' and `skip-chars-forward'. For example, if you want paren as delimiter, use [\"^(\" \"^)\"]
 
 Example usage:
@@ -67,10 +74,12 @@ Example usage:
 
 This function is similar to `thing-at-point' and `bounds-of-thing-at-point'.
 The main differences are:
-• this function returns the text and the 2 boundaries as a vector in one shot.
+
+• This function returns the text and the 2 boundaries as a vector in one shot.
+
 • 'line always returns the line without end of line character, avoiding inconsistency when the line is at end of buffer.
-• 'word does not depend on syntax table.
-• 'block does not depend on syntax table."
+
+• This function's behavior does not depend on syntax table. e.g. for units 「'word」, 「'block」, etc."
   (let (p1 p2)
     (save-excursion
         (cond
@@ -192,19 +201,15 @@ See also: `get-image-dimensions'."
     (insert-file-contents filePath) 
     (split-string (buffer-string) "\n" t)))
 
-(defun get-html-file-title (fname)
-"Return FNAME <title> tag's text.
+(defun get-html-file-title (fName)
+  "Return FNAME <title> tag's text.
 Assumes that the file contains the string
 “<title>…</title>”."
- (let (x1 x2 linkText)
-   (with-temp-buffer
-     (insert-file-contents fname nil nil nil t)
-     (goto-char 1)
-     (setq x1 (search-forward "<title>"))
-     (search-forward "</title>")
-     (setq x2 (search-backward "<"))
-     (buffer-substring-no-properties x1 x2)
-     )
-   ))
+  (with-temp-buffer
+      (insert-file-contents fName nil nil nil t)
+      (goto-char 1)
+      (buffer-substring-no-properties
+       (search-forward "<title>") (- (search-forward "</title>") 8))
+      ))
 
 (provide 'xeu_elisp_util)
