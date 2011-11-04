@@ -54,7 +54,7 @@ The replacement are literal and case sensitive.
 If you want search strings to be case sensitive, set
 `case-fold-search' to nil. Like this:
 
- (let ((case-fold-search nil)) 
+ (let ((case-fold-search nil))
    (replace-regexp-in-string-pairs …)
 
 Once a subsring in the input string is replaced, that part is not changed again.
@@ -93,7 +93,7 @@ See also `replace-regexp-pairs-in-string' and `replace-pairs-region'."
                    myStr t t))
       (setq ξi (1+ ξi))
       )
-    
+
     myStr))
 
 (defun replace-regexp-pairs-in-string (str pairs &optional fixedcase)
@@ -117,22 +117,7 @@ See also `replace-pairs-in-string'."
      pairs)
     myStr))
 
-(defun replace-pairs-region-old (p1 p2 pairs)
-  "Replace string find/replace PAIRS in region.
-The replacement is done only if there are changes
-made. (i.e. only if the find strings occurs in the region.)
-
-For detail, see `replace-pairs-in-string'."
-  (let (inputStr newStr)
-    (setq inputStr (buffer-substring-no-properties p1 p2))
-    (setq newStr (replace-pairs-in-string inputStr pairs))
-
-    (when (not (string-equal inputStr newStr))
-      (delete-region p1 p2)
-      (insert newStr)
-      )
-    ))
-
+;; 2011-11-04 implemented using narrow-to-region.
 (defun replace-pairs-region (p1 p2 pairs)
   "Replace string find/replace PAIRS in region.
 
@@ -144,8 +129,8 @@ Same as `replace-pairs-in-string' except does on a region."
       (setq tempMapPoints (cons (format "⚎ด%x" ξi) tempMapPoints ))
       (setq ξi (1+ ξi))
       )
-    (save-excursion 
-      (save-restriction 
+    (save-excursion
+      (save-restriction
         (narrow-to-region p1 p2)
 
         ;; replace each find string by corresponding item in random string list
@@ -165,6 +150,60 @@ Same as `replace-pairs-in-string' except does on a region."
             (replace-match (elt (elt pairs ξi) 1) t t) )
           (setq ξi (1+ ξi)) ) ) ) ) )
 
+(defun replace-pairs-region2 (p1 p2 pairs)
+  "Variant implementation of `replace-pairs-region'.
+Implemented using `with-temp-buffer'."
+  (let (ξi myStr newStr (tempMapPoints '()))
+    ;; generate a random string list for intermediate replacement
+    (setq ξi 0)
+    (while (< ξi (length pairs))
+      (setq tempMapPoints (cons (format "⚎ด%x" ξi) tempMapPoints ))
+      (setq ξi (1+ ξi))
+      )
+
+    (setq myStr (buffer-substring-no-properties p1 p2))
+    (setq newStr
+          (with-temp-buffer
+            (insert myStr)
+            ;; replace each find string by corresponding item in random string list
+            (setq ξi 0)
+            (while (< ξi (length pairs))
+              (goto-char (point-min))
+              (while (search-forward (elt (elt pairs ξi) 0) nil t)
+                (replace-match (elt tempMapPoints ξi) t t) )
+              (setq ξi (1+ ξi))
+              )
+
+            ;; replace each random string by corresponding replacement string
+            (setq ξi 0)
+            (while (< ξi (length pairs))
+              (goto-char (point-min))
+              (while (search-forward (elt tempMapPoints ξi) nil t)
+                (replace-match (elt (elt pairs ξi) 1) t t) )
+              (setq ξi (1+ ξi)) )
+
+            (buffer-string) ))
+
+    (save-excursion 
+      (delete-region p1 p2)
+      (goto-char p1)
+      (insert newStr)
+      )
+ ) )
+
+(defun replace-pairs-region3 (p1 p2 pairs)
+"Variant implementation of `replace-pairs-region'.
+Implemented by working with string."
+  (let (inputStr newStr)
+    (setq inputStr (buffer-substring-no-properties p1 p2))
+    (setq newStr (replace-pairs-in-string inputStr pairs))
+
+    (when (not (string-equal inputStr newStr))
+      (delete-region p1 p2)
+      (insert newStr)
+      )
+    ))
+
 (defun replace-regexp-pairs-region (p1 p2 pairs &optional fixedcase)
   "Replace regex string find/replace PAIRS in region.
 
@@ -172,6 +211,7 @@ For detail, see `replace-regexp-pairs-in-string'."
   (let (myStr)
     (setq myStr (buffer-substring-no-properties p1 p2))
     (delete-region p1 p2)
+    (goto-char p1)
     (insert (replace-regexp-pairs-in-string myStr pairs fixedcase))))
 
 (defun replace-pairs-in-string-recursive (str pairs)
