@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.3.0, 2011-11-04 • Added support of input using unicode names. For example: 「greek small letter alpha」 • Added support of input using decimal forms, for examples: {「955」, 「#955」} or hexadimal forms {「x3bb」, 「#x3bb」}. XML entities forms such as {「&#955;」, 「&#x3bb;」, 「alpha」} are still supported. • When no valid input are found, xmsi-list-math-symbols is now automatically called.
 ;; v1.2.13, 2011-10-28 Corrected a abbrev for Greek lowercase rho “ρ” with abbrev “r”.
 ;; v1.2.12, 2011-06-26 Fixed nbsp. It was inserting normal space. Now it's non-breaking space.
 ;; v1.2.11, 2011-06-24 Added about 20 white/black shapes. e.g. square, circle, star, club …. Some are have existing abbrev but now with more intuitive name. Also a couple other changes.
@@ -85,7 +86,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.2.13")
+(setq xmsi-version "v1.3.0")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1041,52 +1042,54 @@ See `xmsi-mode'."
   (define-key xmsi-keymap (kbd "S-SPC") 'xmsi-change-to-symbol)
   )
 
-(defun xmsi-change-to-symbol ()
-  "DOCSTRING"
-  (interactive)
+(defun xmsi-change-to-symbol (&optional print-message-when-error)
+  "Change the string under cursor into a Unicode character.
 
+A valid string under cursor can be any abbreviation listed in `xmsi-list-math-symbols'.
+Or, any of the following form:
+
+ 945     ← decimal
+ #945    ← decimal with prefix #
+ &#945;  ← XML entity syntax
+
+ x3b1    ← hexadimal with prefix x
+ #x3b1   ← hexadimal with prefix #x
+ &#x3b1; ← XML entity syntax
+
+Full Unicode name can also be used, e.g. 「greek small letter alpha」.
+
+If there is a text selection, use that as current word.
+
+See `xmsi-mode'"
+  (interactive "p")
   (let (p1 p2 myWord resultSymbol)
-    (if (and transient-mark-mode mark-active)
+    (if (region-active-p)
         (progn
           (setq p1 (region-beginning))
           (setq p2 (region-end))
           )
       (save-excursion
         (progn
-
           (setq p2 (point) )
-          (if (re-search-backward "\t\\|\n\\| " nil t)
+          (if (re-search-backward "\t\\|\n\\| \\| " nil t)
               (progn (forward-char)
                      (setq p1 (point) ) )
-            (setq p1 (line-beginning-position) )
-            )
-
-          ;; (if (re-search-forward "\t\\|\n\\| " nil t)
-          ;;     (progn (backward-char)
-          ;;            (setq p2 (point) ))
-          ;;   (setq p2 (line-end-position) ) )
-
- )) )
+            (setq p1 (line-beginning-position) ) ) )) )
 
     (setq myWord (buffer-substring-no-properties p1 p2) )
 
-    ;; If string is XML syntax such as 「&#945;」 or 「&#x3b1」
-    (if (string-match "&#[0-9]+" myWord) ; e.g. &#945;
-        (let ( (num (substring myWord 2)) )
-          (delete-region p1 p2) (ucs-insert (string-to-number num)) )
+    (setq resultSymbol (gethash myWord xmsi-abrvs))
 
-      (if (string-match "&#x.+" myWord) ; e.g. &#x3b1
-          (let ( (hexnum (substring myWord 3)) )
-            (delete-region p1 p2) (ucs-insert (string-to-number hexnum 16) ) )
-        (progn
-          (setq resultSymbol (gethash myWord xmsi-abrvs))
-          (if resultSymbol
-              (progn
-                (delete-region p1 p2)
-                (insert resultSymbol)
-                )
-            (error "Not a valid abbrev. Call “xmsi-list-math-symbols” for a list. Or use XML entity names. Or use &#945; or &#x3b1; to enter α. Ending semicolon is optional." ) ) )
-        ) ) ) )
+    (cond
+     (resultSymbol (progn (delete-region p1 p2) (insert resultSymbol)))
+     ((string-match "^#?\\([0-9]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord)))))
+     ((string-match "^&#\\([0-9]+\\);*$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord)))))
+
+     ((string-match "^&#x\\([^;]+\\);$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
+     ((string-match "^#x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
+     ((string-match "^x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
+     ((string-match "^\\([ a-zA-Z0-9]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (cdr (assoc-string "GREEK SMALL LETTER ALPHA" (ucs-names) t)))))
+     (t (progn (when print-message-when-error (xmsi-list-math-symbols) (error "「%s」 is not a valid abbrevation or input. Call “xmsi-list-math-symbols” for a list. Or use a decimal such as 「945」 or 「#945」. Or, use hexadecimal such as 「x3b1」 or 「#x3b1」, or XML syntax 「&#945;」, 「&#x3b1;」, or full Unicode name e.g. 「greek small letter alpha」."  myWord)) ) ) ) ) )
 
 (define-minor-mode xmsi-mode
   "Toggle math symbol input (minor) mode.
@@ -1109,17 +1112,26 @@ input. For example, type 「sin(a)」, select the “a”, then press
  【Shift+Space】, then it becomse 「sin(α)」.
 
 For the complete list of abbrevs, call `xmsi-list-math-symbols'.
-All XML char entity abbrevs are supported. For example, 「copy」 becomes 「©」.
-To type a unicode by decimal, e.g.  「&#945;」 becomes 「α」.
-To type a unicode by hexadecimal, e.g., 「&#x3b1;」 becomes 「α」.
-Ending semicolon “;” is optional.
+All XML char entity abbrevs are supported. For example, 「copy」 ⇒ 「©」.
 
-To type any unicode by the char's unicode full name, type
- 【Ctrl+x 8 Enter】 (ucs-insert). Asterisk “*” can be used as a
-wildcard to find the char. For example, calling “ucs-insert”,
-then type 「*arrow」 then Tab, then emacs will list all unicode
-char names that has “arrow” in it. (this feature is part of Emacs
-23)
+Decimal and hexadecimal can also be used. Example:
+
+ 945     ← decimal
+ #945    ← decimal with prefix #
+ &#945;  ← XML entity syntax
+
+ x3b1    ← hexadimal with prefix x
+ #x3b1   ← hexadimal with prefix #x
+ &#x3b1; ← XML entity syntax
+
+Full Unicode name can also be used, e.g. 「greek small letter alpha」.
+
+If you wish to enter a symbor by full unicode name but do not
+know the full name, call `ucs-insert'. Asterisk “*” can be used
+as a wildcard to find the char. For example, call
+“ucs-insert”, then type 「*arrow」 then Tab, then emacs will list
+all unicode char names that has “arrow” in it. (this feature is
+part of Emacs 23)
 
 Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
