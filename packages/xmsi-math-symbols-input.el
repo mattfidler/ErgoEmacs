@@ -1,7 +1,7 @@
 ;;-*- coding: utf-8 -*-
 ;; xmsi-math-symbols-input.el -- a mode to input math chars
 
-;; Copyright © 2010-12-08 by Xah Lee
+;; Copyright © 2010, 2011 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Keywords: math symbols, unicode, input
@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.3.1, 2011-11-05 • fixed a showstopper bug. in v1.3.0. support of input using unicode names. Before, it always just insert greek alpha char.
 ;; v1.3.0, 2011-11-04 • Added support of input using unicode names. For example: 「greek small letter alpha」 • Added support of input using decimal forms, for examples: {「955」, 「#955」} or hexadimal forms {「x3bb」, 「#x3bb」}. XML entities forms such as {「&#955;」, 「&#x3bb;」, 「alpha」} are still supported. • When no valid input are found, xmsi-list-math-symbols is now automatically called.
 ;; v1.2.13, 2011-10-28 Corrected a abbrev for Greek lowercase rho “ρ” with abbrev “r”.
 ;; v1.2.12, 2011-06-26 Fixed nbsp. It was inserting normal space. Now it's non-breaking space.
@@ -86,7 +87,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.0")
+(setq xmsi-version "v1.3.1")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1088,7 +1089,7 @@ See `xmsi-mode'"
      ((string-match "^&#x\\([^;]+\\);$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
      ((string-match "^#x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
      ((string-match "^x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
-     ((string-match "^\\([ a-zA-Z0-9]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (cdr (assoc-string "GREEK SMALL LETTER ALPHA" (ucs-names) t)))))
+     ((string-match "^\\([ a-zA-Z0-9]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (cdr (assoc-string myWord (ucs-names) t)))))
      (t (progn (when print-message-when-error (xmsi-list-math-symbols) (error "「%s」 is not a valid abbrevation or input. Call “xmsi-list-math-symbols” for a list. Or use a decimal such as 「945」 or 「#945」. Or, use hexadecimal such as 「x3b1」 or 「#x3b1」, or XML syntax 「&#945;」, 「&#x3b1;」, or full Unicode name e.g. 「greek small letter alpha」."  myWord)) ) ) ) ) )
 
 (define-minor-mode xmsi-mode
