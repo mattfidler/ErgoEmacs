@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.3.2, 2011-11-05 • fixed a major bug in v1.3.1. When no valid input are found, xmsi-list-math-symbols is now automatically called, but isn't. • Added about 5 more subscript symbols, e.g _h _k _l etc.
 ;; v1.3.1, 2011-11-05 • fixed a showstopper bug. in v1.3.0. support of input using unicode names. Before, it always just insert greek alpha char.
 ;; v1.3.0, 2011-11-04 • Added support of input using unicode names. For example: 「greek small letter alpha」 • Added support of input using decimal forms, for examples: {「955」, 「#955」} or hexadimal forms {「x3bb」, 「#x3bb」}. XML entities forms such as {「&#955;」, 「&#x3bb;」, 「alpha」} are still supported. • When no valid input are found, xmsi-list-math-symbols is now automatically called.
 ;; v1.2.13, 2011-10-28 Corrected a abbrev for Greek lowercase rho “ρ” with abbrev “r”.
@@ -87,7 +88,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.1")
+(setq xmsi-version "v1.3.2")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -629,14 +630,23 @@
   (puthash "_=" "₌" xmsi-abrvs)
   (puthash "_a" "ₐ" xmsi-abrvs)
   (puthash "_e" "ₑ" xmsi-abrvs)
+
+  (puthash "_h" "ₕ" xmsi-abrvs)
   (puthash "_i" "ᵢ" xmsi-abrvs)
   (puthash "_j" "ⱼ" xmsi-abrvs)
+  (puthash "_k" "ₖ" xmsi-abrvs)
+  (puthash "_l" "ₗ" xmsi-abrvs)
+  (puthash "_m" "ₘ" xmsi-abrvs)
+  (puthash "_n" "ₙ" xmsi-abrvs)
   (puthash "_o" "ₒ" xmsi-abrvs)
-  (puthash "_schwa" "ₔ" xmsi-abrvs)
+  (puthash "_p" "ₚ" xmsi-abrvs)
+  (puthash "_r" "ᵣ" xmsi-abrvs)
+  (puthash "_s" "ₛ" xmsi-abrvs)
+  (puthash "_t" "ₜ" xmsi-abrvs)
+  (puthash "_u" "ᵤ" xmsi-abrvs)
   (puthash "_v" "ᵥ" xmsi-abrvs)
-  (puthash "_x" "ᵣ" xmsi-abrvs)
-  (puthash "_x" "ᵤ" xmsi-abrvs)
   (puthash "_x" "ₓ" xmsi-abrvs)
+  (puthash "_schwa" "ₔ" xmsi-abrvs)
 
   ;; astronomy
   (puthash "sun" "☉" xmsi-abrvs)
@@ -1063,7 +1073,7 @@ If there is a text selection, use that as current word.
 
 See `xmsi-mode'"
   (interactive "p")
-  (let (p1 p2 myWord resultSymbol)
+  (let (p1 p2 myWord resultSymbol charByNameResult)
     (if (region-active-p)
         (progn
           (setq p1 (region-beginning))
@@ -1080,6 +1090,7 @@ See `xmsi-mode'"
     (setq myWord (buffer-substring-no-properties p1 p2) )
 
     (setq resultSymbol (gethash myWord xmsi-abrvs))
+    (setq charByNameResult (assoc-string myWord (ucs-names) t) )
 
     (cond
      (resultSymbol (progn (delete-region p1 p2) (insert resultSymbol)))
@@ -1089,7 +1100,7 @@ See `xmsi-mode'"
      ((string-match "^&#x\\([^;]+\\);$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
      ((string-match "^#x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
      ((string-match "^x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
-     ((string-match "^\\([ a-zA-Z0-9]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (cdr (assoc-string myWord (ucs-names) t)))))
+     ((and (string-match "^\\([- a-zA-Z0-9]+\\)$" myWord) charByNameResult) (progn (delete-region p1 p2) (ucs-insert (cdr charByNameResult))))
      (t (progn (when print-message-when-error (xmsi-list-math-symbols) (error "「%s」 is not a valid abbrevation or input. Call “xmsi-list-math-symbols” for a list. Or use a decimal such as 「945」 or 「#945」. Or, use hexadecimal such as 「x3b1」 or 「#x3b1」, or XML syntax 「&#945;」, 「&#x3b1;」, or full Unicode name e.g. 「greek small letter alpha」."  myWord)) ) ) ) ) )
 
 (define-minor-mode xmsi-mode
