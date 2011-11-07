@@ -32,6 +32,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.3, 2011-11-06 unit-at-cursor with 「'block」 argument will work when the text block is at beginning/end of buffer. Also, lines with just space or tab is also considered a empty line.
 ;; version 1.4.2, 2011-10-30 trivial implementation change on get-html-file-title. No user visible effect.
 ;; version 1.4.1, 2011-09-29 fixed a error in “trim-string”.
 ;; version 1.4, 2011-09-16 added “trim-string”.
@@ -62,7 +63,7 @@ UNIT can be:
 
 • 'line — delimited by “\\n”. (captured text does not include a ending “\\n”.)
 
-• 'block — delimited by “\\n\\n” or beginning/end of buffer. (captured text does not include a ending “\\n”.)
+• 'block — delimited by empty lines or beginning/end of buffer. Lines with just spaces or tabs are also considered empty line. (captured text does not include a ending “\\n”.)
 
 • 'buffer — whole buffer. (respects `narrow-to-region')
 
@@ -112,16 +113,15 @@ The main differences are:
             (setq p2 (line-end-position))))
          ((eq unit 'block)
           (progn
-            (if (re-search-backward "\n\n" nil t)
-                (progn (forward-char 2)
+            (if (re-search-backward "\n[ \t]*\n" nil "move")
+                (progn (re-search-forward "\n[ \t]*\n")
                        (setq p1 (point) ) )
-              (setq p1 (line-beginning-position) )
+              (setq p1 (point) )
               )
-
-            (if (re-search-forward "\n\n" nil t)
-                (progn (backward-char 2)
+            (if (re-search-forward "\n[ \t]*\n" nil "move")
+                (progn (re-search-backward "\n[ \t]*\n")
                        (setq p2 (point) ))
-              (setq p2 (line-end-position) ) ) ))
+              (setq p2 (point) ) ) ))
 
          ((vectorp unit)
           (let (p0)
@@ -151,12 +151,12 @@ Example usage:
  (setq inputstr (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )"
   (interactive)
 
-  (let (mytext p1 p2)
+  (let (myText p1 p2)
     (if (region-active-p)
         (progn
           (setq p1 (region-beginning))
           (setq p2 (region-end))
-          (setq mytext (buffer-substring p1 p2) )
+          (setq myText (buffer-substring p1 p2) )
           (vector (buffer-substring-no-properties p1 p2) p1 p2 )
           )
       (unit-at-cursor unit)
