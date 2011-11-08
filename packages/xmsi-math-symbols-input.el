@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.3.3, 2011-11-08 • much improved handling of getting current abbrev. This means, it works in minibuffer. For example, type 【M-x】 then type 【a】, then 【Shift+Space】, then that “a” becomes “α”. Before, it was a error.
 ;; v1.3.2, 2011-11-05 • fixed a major bug in v1.3.1. When no valid input are found, xmsi-list-math-symbols is now automatically called, but isn't. • Added about 5 more subscript symbols, e.g _h _k _l etc.
 ;; v1.3.1, 2011-11-05 • fixed a showstopper bug. in v1.3.0. support of input using unicode names. Before, it always just insert greek alpha char.
 ;; v1.3.0, 2011-11-04 • Added support of input using unicode names. For example: 「greek small letter alpha」 • Added support of input using decimal forms, for examples: {「955」, 「#955」} or hexadimal forms {「x3bb」, 「#x3bb」}. XML entities forms such as {「&#955;」, 「&#x3bb;」, 「alpha」} are still supported. • When no valid input are found, xmsi-list-math-symbols is now automatically called.
@@ -88,7 +89,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.2")
+(setq xmsi-version "v1.3.3")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1077,15 +1078,12 @@ See `xmsi-mode'"
     (if (region-active-p)
         (progn
           (setq p1 (region-beginning))
-          (setq p2 (region-end))
-          )
+          (setq p2 (region-end)) )
       (save-excursion
-        (progn
-          (setq p2 (point) )
-          (if (re-search-backward "\t\\|\n\\| \\| " nil t)
-              (progn (forward-char)
-                     (setq p1 (point) ) )
-            (setq p1 (line-beginning-position) ) ) )) )
+        (setq p2 (point) )
+        (skip-chars-backward "[:graph:]")
+        (setq p1 (point) )
+        ))
 
     (setq myWord (buffer-substring-no-properties p1 p2) )
 
