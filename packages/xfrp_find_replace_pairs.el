@@ -31,6 +31,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.5, 2011-11-12 • added a optional argument to replace-regexp-pairs-region.
 ;; version 1.4.4, 2011-10-30 • fix a important error on documentation of replace-regexp-pairs-in-string, about the reversal of its 3rd argument fixedcase.
 ;; version 1.4.3, 2011-10-29 • major update on the implementation of “replace-pairs-region”, and minor update on others. No user visible change.
 ;; version 1.3, 2011-09-28 • slight change to replace-pairs-in-string to improve speed. The function's user level behavior is the same.
@@ -204,7 +205,34 @@ Implemented by working with string."
       )
     ))
 
-(defun replace-regexp-pairs-region (p1 p2 pairs &optional fixedcase)
+(defun replace-regexp-pairs-region (p1 p2 pairs &optional fixedcase literal)
+  "Replace regex string find/replace PAIRS in region.
+
+P1 P2 are the region boundaries.
+
+PAIRS is 
+ [[regexStr1 replaceStr1] [regexStr2 replaceStr2] …]
+ It can be list or vector.
+
+The optional arguments FIXEDCASE and LITERAL is the same as in `replace-match'.
+
+If you want the regex to be case sensitive, set the global
+variable `case-fold-search' to “nil”. Like this:
+ (let ((case-fold-search nil)) (replace-regexp-pairs-region …)"
+  (let ( ξi currentPair (pairLength (length pairs)))
+    (save-restriction 
+      (narrow-to-region p1 p2)
+      
+      (setq ξi 0)
+      (while (< ξi pairLength)
+        (setq currentPair (elt pairs ξi))
+        (goto-char (point-min))
+
+        (while (search-forward-regexp (elt currentPair 0) (point-max) t)
+          (replace-match (elt currentPair 1) fixedcase literal) )
+        (setq ξi (1+ ξi) ) ) ) ) )
+
+(defun replace-regexp-pairs-region-old (p1 p2 pairs &optional fixedcase)
   "Replace regex string find/replace PAIRS in region.
 
 For detail, see `replace-regexp-pairs-in-string'."
