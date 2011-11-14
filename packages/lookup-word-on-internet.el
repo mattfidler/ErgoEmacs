@@ -7,6 +7,11 @@
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
+;;; REQUIREMENT
+
+;; You also need to install elisp util “xeu_elisp_util”, available at
+;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xeu_elisp_util.el
+
 ;;; INSTALL
 
 ;; To install, place this file in the directory 〔~/.emacs.d/〕.
@@ -20,6 +25,11 @@
 ;; (autoload 'lookup-word-definition "lookup-word-on-internet" "Lookup in browser" t)
 ;; (autoload 'lookup-wiktionary "lookup-word-on-internet" "Lookup word in browser" t)
 ;; (autoload 'lookup-php-ref "lookup-word-on-internet" "Lookup word in browser" t)
+
+;; ;; Suggested keys
+;; (global-set-key (kbd "C-h C-g") 'lookup-google)
+;; (global-set-key (kbd "C-h C-w") 'lookup-wikipedia)
+;; (global-set-key (kbd "C-h C-d") 'lookup-word-definition)
 
 ;;; DOCUMENTATION
 
