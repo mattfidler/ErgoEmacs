@@ -1,9 +1,11 @@
 ;-*- coding: utf-8 -*-
 
+;; changing font size
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-0") 'text-scale-normal-size)
 
+;; redo
 (global-set-key (kbd "C-S-z") 'redo)
 
 (defun browser-nav-keys ()
@@ -23,3 +25,12 @@
 ;; In Windows, Alt+F4 closes the frame (or kill emacs if it is the last frame)
 (if (and (boundp 'w32-initialized) w32-initialized)
     (global-set-key (kbd "M-<f4>") 'close-frame))
+
+;; highlight current word
+(global-set-key (kbd "<f10>") 'highlight-symbol-at-point) ; this is a toggle
+(global-set-key (kbd "<f11>") 'highlight-symbol-prev)
+(global-set-key (kbd "<f12>") 'highlight-symbol-next)
+
+(global-set-key (kbd "C-h C-g") 'lookup-google)
+(global-set-key (kbd "C-h C-w") 'lookup-wikipedia)
+(global-set-key (kbd "C-h C-d") 'lookup-word-definition)
