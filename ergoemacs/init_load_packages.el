@@ -196,12 +196,8 @@
 ;; Highlight occurrence of current word, and move cursor to next/prev occurrence
 ;; see http://xahlee.org/emacs/modernization_isearch.html
 (require 'highlight-symbol)
-;; temp hotkeys
-(global-set-key (kbd "<f10>") 'highlight-symbol-at-point) ; this is a toggle
-(global-set-key (kbd "<f11>") 'highlight-symbol-next)
-(global-set-key (kbd "<f12>") 'highlight-symbol-prev)
 
-;; keyfreq minor mode.
+;; record command call statistics
 (require 'keyfreq)
 (setq keyfreq-file "~/.emacs.d/.emacs.keyfreq")
 (setq keyfreq-file-lock "~/.emacs.d/.emacs.keyfreq.lock")
@@ -217,6 +213,14 @@
 ;; display horizontal line for the Form Feed char (ASCII 12, ^L)
 ;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.
 ;; (require 'pp-c-l)
+
+;; some convenient commands to lookup reference sites on web
+(autoload 'lookup-google "lookup-word-on-internet" "Lookup in browser" t)
+(autoload 'lookup-wikipedia "lookup-word-on-internet" "Lookup in browser" t)
+(autoload 'lookup-word-dict-org "lookup-word-on-internet" "Lookup in browser" t)
+(autoload 'lookup-word-definition "lookup-word-on-internet" "Lookup in browser" t)
+(autoload 'lookup-wiktionary "lookup-word-on-internet" "Lookup word in browser" t)
+(autoload 'lookup-php-ref "lookup-word-on-internet" "Lookup word in browser" t)
 
 ;; dictionary client for dict.org . To use, call dictionary-lookup-definition to lookup def of word under cursor.
 (add-to-list 'load-path
