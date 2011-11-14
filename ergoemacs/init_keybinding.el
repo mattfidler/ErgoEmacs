@@ -27,10 +27,11 @@
     (global-set-key (kbd "M-<f4>") 'close-frame))
 
 ;; highlight current word
-(global-set-key (kbd "<f10>") 'highlight-symbol-at-point) ; this is a toggle
+(global-set-key (kbd "<f10>") 'highlight-symbol-at-point)
 (global-set-key (kbd "<f11>") 'highlight-symbol-prev)
 (global-set-key (kbd "<f12>") 'highlight-symbol-next)
 
+;; lookup web
 (global-set-key (kbd "C-h C-g") 'lookup-google)
 (global-set-key (kbd "C-h C-w") 'lookup-wikipedia)
 (global-set-key (kbd "C-h C-d") 'lookup-word-definition)
