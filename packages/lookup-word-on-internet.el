@@ -1,5 +1,5 @@
 ;-*- coding: utf-8 -*-
-;; lookup_word_on_internet.el -- helpful commands for looking up reference
+;; lookup-word-on-internet.el -- helpful commands for looking up the internet
 
 ;; Copyright © 2011 by Xah Lee
 
@@ -7,9 +7,14 @@
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
+;;; DESCRIPTION
+
+;; this package provide some convenient commands for looking up the web.
+;; For example: lookup-google, lookup-wikipedia, etc.
+
 ;;; REQUIREMENT
 
-;; You also need to install elisp util “xeu_elisp_util”, available at
+;; You need to install elisp util “xeu_elisp_util”, available at
 ;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xeu_elisp_util.el
 
 ;;; INSTALL
