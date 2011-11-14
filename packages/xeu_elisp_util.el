@@ -20,9 +20,9 @@
 ;; get-string-from-file
 ;; read-lines
 ;; get-html-file-title
+;; asciify-text
 
 ;; For detailed discussion, see:
-;; 〈Emacs Lisp: Using thing-at-point〉 http://xahlee.org/emacs/elisp_thing-at-point.html
 ;; 〈Emacs Lisp: get-selection-or-unit〉 http://xahlee.org/emacs/elisp_get-selection-or-unit.html
 
 ;;; INSTALL
