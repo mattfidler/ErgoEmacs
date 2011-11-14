@@ -9,7 +9,7 @@
 
 ;;; DESCRIPTION
 
-;; this package provide some convenient commands for looking up the web.
+;; this package provides some convenient commands for looking up the web.
 ;; For example: lookup-google, lookup-wikipedia, etc.
 
 ;;; REQUIREMENT
