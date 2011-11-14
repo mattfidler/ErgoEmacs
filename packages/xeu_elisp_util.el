@@ -32,6 +32,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.5, 2011-11-14 corrected a critical error in asciify-text.
 ;; version 1.4.4, 2011-11-14 added function asciify-text.
 ;; version 1.4.3, 2011-11-06 unit-at-cursor with 「'block」 argument will work when the text block is at beginning/end of buffer. Also, lines with just space or tab is also considered a empty line.
 ;; version 1.4.2, 2011-10-30 trivial implementation change on get-html-file-title. No user visible effect.
@@ -229,7 +230,7 @@ When called in lisp code, if ξfrom is nil, returns a changed string, else, chan
        (list nil (car bds) (cdr bds)) ) ) )
 
   (let (workOnStringP inputStr outputStr)
-    (setq workOnStringP (if ξfrom t nil))
+    (setq workOnStringP (if ξfrom nil t))
     (setq inputStr (if workOnStringP ξstring (buffer-substring-no-properties ξfrom ξto)))
     (setq outputStr
           (let ((case-fold-search t))
