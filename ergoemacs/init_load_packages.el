@@ -215,6 +215,8 @@
 ;; (require 'pp-c-l)
 
 ;; some convenient commands to lookup reference sites on web
+(require 'xfrp_find_replace_pairs)
+(require 'xeu_elisp_util)
 (autoload 'lookup-google "lookup-word-on-internet" "Lookup in browser" t)
 (autoload 'lookup-wikipedia "lookup-word-on-internet" "Lookup in browser" t)
 (autoload 'lookup-word-dict-org "lookup-word-on-internet" "Lookup in browser" t)
