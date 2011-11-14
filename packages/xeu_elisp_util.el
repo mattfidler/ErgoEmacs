@@ -10,7 +10,7 @@
 
 ;;; DESCRIPTION
 
-;; this package is some misc emacs lisp utility. The purpose is similar to “thing-at-point”.
+;; this package is some misc emacs lisp utility.
 ;; It provides the following functions:
 
 ;; unit-at-cursor
@@ -22,8 +22,10 @@
 ;; get-html-file-title
 ;; asciify-text
 
-;; For detailed discussion, see:
-;; 〈Emacs Lisp: get-selection-or-unit〉 http://xahlee.org/emacs/elisp_get-selection-or-unit.html
+;; the most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://xahlee.org/emacs/elisp_get-selection-or-unit.html
+
+;; The function 「asciify-text」 needs 〔xfrp_find_replace_pairs.el〕, available at 
+;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xfrp_find_replace_pairs.el
 
 ;;; INSTALL
 
@@ -228,6 +230,8 @@ When called in lisp code, if ξfrom is nil, returns a changed string, else, chan
        (list nil (region-beginning) (region-end))
      (let ((bds (bounds-of-thing-at-point 'paragraph)) )
        (list nil (car bds) (cdr bds)) ) ) )
+
+  (require 'xfrp_find_replace_pairs)
 
   (let (workOnStringP inputStr outputStr)
     (setq workOnStringP (if ξfrom nil t))
