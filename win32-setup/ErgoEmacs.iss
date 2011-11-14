@@ -14,7 +14,7 @@
 ; http://code.google.com/p/ergoemacs/wiki/CreatingErgoEmacsWindowsInstaller
 ; 
 
-#define AppVersion    "1.9.3"
+#define AppVersion    "1.9.4"
 #define EmacsDir      "..\..\emacs-23.3"
 #define MsysDir       "..\..\msys"
 #define HunspellDir   "..\..\hunspell"
