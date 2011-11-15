@@ -120,7 +120,7 @@ This version is now a full featured minor mode. It supports 3 different keyboard
 ** unbind 「M-{」 (use 【Alt+u】 for backward-paragraph). 
 ** unbind 「M-}」 (use 【Alt+o】 for forward-paragraph). Thanks to marciomazza
 * version 4.3.8, 2009-06-14
-** added 【】 to select-text-in-quote.
+** added 【Alt+7】 to select-text-in-quote.
 * version 4.3.7, 2009-05-27
 ** ibuffer's 「M-s」 changed in emacs 23, such that 「M-s」 is now a prefix. For Dvorak users, 「M-s」 should be isearch. This is reclaimed to be isearch. For qwerty users, 「M-s」 should be other-window. Fixed.
 * version 4.3.6, 2009-05-26
