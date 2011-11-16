@@ -14,16 +14,18 @@
 
 ;;; REQUIREMENT
 
-;; You need to install elisp util “xeu_elisp_util”, available at
+;; You need have 2 elisp util 〔xeu_elisp_util.el〕 and 〔xfrp_find_replace_pairs.el〕, available at
 ;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xeu_elisp_util.el
+;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xfrp_find_replace_pairs.el
 
 ;;; INSTALL
 
-;; To install, place this file in the directory 〔~/.emacs.d/〕.
+;; To install, place this file 〔lookup-word-on-internet.el〕 in the directory 〔~/.emacs.d/〕.
+
+;; also place the files 〔xeu_elisp_util.el〕 and 〔xfrp_find_replace_pairs.el〕 in 〔~/.emacs.d/〕, if you haven't done already.
 
 ;; Then, place the following code in your emacs init file
 
-;; ;; some convenient commands to lookup reference sites on web
 ;; (autoload 'lookup-google "lookup-word-on-internet" "Lookup in browser" t)
 ;; (autoload 'lookup-wikipedia "lookup-word-on-internet" "Lookup in browser" t)
 ;; (autoload 'lookup-word-dict-org "lookup-word-on-internet" "Lookup in browser" t)
