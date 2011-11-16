@@ -19,7 +19,7 @@
 ;; replace-regexp-pairs-region
 ;; replace-pairs-in-string-recursive
 
-;; These are convenient wrapper functions to emacs's replace-regexp-in-string
+;; these are convenient functions that lets you do multiple find/replace pairs.
 
 ;; For some explanation of the need for these functions, see:
 ;;  http://xahlee.org/emacs/elisp_replace_string_region.html
