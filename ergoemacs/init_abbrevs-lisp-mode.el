@@ -89,6 +89,7 @@
  ("sfm" "set-file-modes" nil 0)
  ("sfr" "search-forward-regexp" nil 0)
  ("sm" "string-match" nil 0)
+ ("sr" "save-restriction" nil 0)
  ("ss" "split-string" nil 0)
  ("stn" "string-to-number" nil 0)
  ("str" "string" nil 0)
