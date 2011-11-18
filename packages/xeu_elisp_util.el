@@ -276,9 +276,9 @@ Capitalize first letter of each word, except words like {to, of,
 the, a, in, or, and, …}. If a word already contains cap letters
 such as HTTP, URL, they are left as is.
 
-When called in a elisp program, if ξREGION-BOUNDARY is nil,
-returns the changed ξSTRING, else, work on the region.
-ξREGION-BOUNDARY is a pair [from to], it can be a vector or
+When called in a elisp program, if ΞREGION-BOUNDARY is nil,
+returns the changed ΞSTRING, else, work on the region.
+ΞREGION-BOUNDARY is a pair [from to], it can be a vector or
 list."
   (interactive
    (let ((bds (get-selection-or-unit 'line)))
