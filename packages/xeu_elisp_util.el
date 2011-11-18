@@ -20,39 +20,37 @@
 ;; get-string-from-file
 ;; read-lines
 ;; get-html-file-title
+;; trim-string
 ;; asciify-text
+;; title-case-string-region-or-line
 
-;; the most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://xahlee.org/emacs/elisp_get-selection-or-unit.html
+;; The most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://xahlee.org/emacs/elisp_get-selection-or-unit.html
 
-;; The function 「asciify-text」 needs 〔xfrp_find_replace_pairs.el〕, available at 
+;; This package requires 〔xfrp_find_replace_pairs.el〕, available at 
 ;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xfrp_find_replace_pairs.el
 
 ;;; INSTALL
 
 ;; Place the file in your emacs load path. Then
+;; (require 'xfrp_find_replace_pairs)
 ;; (require 'xeu_elisp_util)
 
 ;;; HISTORY
 
-;; version 1.4.5, 2011-11-14 corrected a critical error in asciify-text.
-;; version 1.4.4, 2011-11-14 added function asciify-text.
+;; version 1.4.6, 2011-11-18 Added a “title-case-string-region-or-line”.
+;; version 1.4.5, 2011-11-14 corrected a critical error in “asciify-text”.
+;; version 1.4.4, 2011-11-14 added function “asciify-text”.
 ;; version 1.4.3, 2011-11-06 unit-at-cursor with 「'block」 argument will work when the text block is at beginning/end of buffer. Also, lines with just space or tab is also considered a empty line.
-;; version 1.4.2, 2011-10-30 trivial implementation change on get-html-file-title. No user visible effect.
+;; version 1.4.2, 2011-10-30 trivial implementation change on “get-html-file-title”. No user visible effect.
 ;; version 1.4.1, 2011-09-29 fixed a error in “trim-string”.
 ;; version 1.4, 2011-09-16 added “trim-string”.
-;; version 1.3, 2011-08-27 fixed a bug in unit-at-cursor when argument is 「'block」. Now it doesn't grab a extra line ending.
-;; version 1.2, 2011-07-02 inline doc improvement for get-image-dimensions get-image-dimensions-imk
+;; version 1.3, 2011-08-27 fixed a bug in “unit-at-cursor” when argument is 「'block」. Now it doesn't grab a extra line ending.
+;; version 1.2, 2011-07-02 inline doc improvement for “get-image-dimensions” “get-image-dimensions-imk”.
 ;; version 1.1, 2011-05-28 Added some comment in source code.
 ;; version 1.0, 2011-03-02 First version.
 
 
 ;;; Code:
-
-(defun trim-string (string)
-  "Remove white spaces in beginning and ending of STRING.
-White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
-(replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
-)
 
 (defun unit-at-cursor (unit)
   "Return the string and boundary of UNIT under cursor.
@@ -166,6 +164,8 @@ Example usage:
       (unit-at-cursor unit)
  ) ) )
 
+
+
 (defun get-image-dimensions (img-file-relative-path)
   "Returns a image file's width and height as a vector.
 Support png jpg and any image type emacs supports.
@@ -192,6 +192,7 @@ See also: `get-image-dimensions'."
     (setq height (match-string 2 sh-output))
     (vector (string-to-number width) (string-to-number height))))
 
+
 (defun get-string-from-file (filePath)
   "Return FILEPATH's content."
 ;; thanks to “Pascal J Bourguignon” and “TheFlyingDutchman <zzbba...@aol.com>”. 2010-09-02
@@ -205,6 +206,7 @@ See also: `get-image-dimensions'."
     (insert-file-contents filePath) 
     (split-string (buffer-string) "\n" t)))
 
+
 (defun get-html-file-title (fName)
   "Return FNAME <title> tag's text.
 Assumes that the file contains the string
@@ -216,6 +218,12 @@ Assumes that the file contains the string
        (search-forward "<title>") (- (search-forward "</title>") 8))
       ))
 
+
+(defun trim-string (string)
+  "Remove white spaces in beginning and ending of STRING.
+White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
+(replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
+)
 (defun asciify-text (ξstring &optional ξfrom ξto)
 "Change some Unicode characters into equivalent ASCII ones.
 For example, “passé” becomes “passe”.
@@ -260,5 +268,61 @@ When called in lisp code, if ξfrom is nil, returns a changed string, else, chan
         (delete-region ξfrom ξto)
         (goto-char ξfrom)
         (insert outputStr) )) ) )
+
+(defun title-case-string-region-or-line (ξstring &optional ξregion-boundary)
+  "Capitalize the current line or text selection, following title conventions.
+
+Capitalize first letter of each word, except words like {to, of,
+the, a, in, or, and, …}. If a word already contains cap letters
+such as HTTP, URL, they are left as is.
+
+When called in a elisp program, if ξREGION-BOUNDARY is nil,
+returns the changed ξSTRING, else, work on the region.
+ξREGION-BOUNDARY is a pair [from to], it can be a vector or
+list."
+  (interactive
+   (let ((bds (get-selection-or-unit 'line)))
+     (list nil (vector (elt bds 1) (elt bds 2)) ) ) )
+
+  (let ( replacePairs
+         (workOnStringP (if ξregion-boundary nil t ) )
+         (p1 (elt ξregion-boundary 0))
+         (p2 (elt ξregion-boundary 1))
+         )
+    
+    (setq replacePairs '(
+                         [" A " " a "]
+                         [" And " " and "]
+                         [" At " " at "]
+                         [" As " " as "]
+                         [" By " " by "]
+                         [" Be " " be "]
+                         [" Into " " into "]
+                         [" In " " in "]
+                         [" Is " " is "]
+                         [" It " " it "]
+                         [" For " " for "]
+                         [" Of " " of "]
+                         [" Or " " or "]
+                         [" On " " on "]
+                         [" The " " the "]
+                         [" That " " that "]
+                         [" To " " to "]
+                         [" Vs " " vs "]
+                         [" With " " with "]
+                         [" From " " from "]
+                         ))
+
+    (let ((case-fold-search nil))
+      (if workOnStringP
+          (progn 
+            (replace-pairs-in-string-recursive (upcase-initials ξstring) replacePairs)
+            )
+        (progn 
+          (save-restriction 
+            (narrow-to-region p1 p2)
+            (upcase-initials-region (point-min) (point-max) )
+            (replace-regexp-pairs-region (point-min) (point-max) replacePairs t t)
+            ) ) ) ) ) )
 
 (provide 'xeu_elisp_util)
