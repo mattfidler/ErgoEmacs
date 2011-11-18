@@ -3,6 +3,9 @@
 # when viewing this file in emacs, press 【Shift+Tab】 3 times to expand all headings.
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7. (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
+
+* version x.x.x, 2011-11-18
+** 2011-11-18 minor improvemnt on “toggle-letter-case”. Now better guess at initial state.
 * version 5.3.9, 2011-04-17
 ** 2011-04-17 Fixed shift key selection with cua-mode
 r647
