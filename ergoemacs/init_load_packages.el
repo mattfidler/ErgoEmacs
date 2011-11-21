@@ -111,7 +111,6 @@
 
 ;;; xmsi-mode 〔xmsi-math-symbols-input.el〕 for inputting math (Unicode) symbols.
 (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
-(xmsi-mode 1)
 
 ;; Hunspell only for Windows until we fix http://code.google.com/p/ergoemacs/issues/detail?id=51
 (when (and (string-equal system-type "windows-nt")
@@ -236,3 +235,6 @@
 (autoload 'dictionary-popup-matching-words "dictionary" "Display entries matching the word at the point" t)
 (autoload 'dictionary-tooltip-mode "dictionary" "Display tooltips for the current word" t)
 (autoload 'global-dictionary-tooltip-mode "dictionary" "Enable/disable dictionary-tooltip-mode for all buffers" t)
+
+;; loads tramp. This is to fix a dired recursive load bug, see: http://xahlee.org/emacs/emacs_on_ubuntu_linux.html 
+(require 'tramp)
