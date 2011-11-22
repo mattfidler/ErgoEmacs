@@ -47,7 +47,6 @@
      "C-x C-f"
      "C-x C-s"
      "C-x C-w"
-     "C-x d"
      "C-x h"
      "C-x o"
      "C-y"
