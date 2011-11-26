@@ -172,8 +172,7 @@ Example usage:
 Support png jpg svg gif and any image type emacs supports.
  (for gif, it calls `get-image-dimensions-imk')
 Bug: for large size png, sometimes this returns a wrong dimension 30×30."
-  (let (tmp ξxy ξx ξy)
-
+  (let (ξx ξy)
     (cond
      ((string-match "\.gif$" ξfile-path) (get-image-dimensions-imk ξfile-path))
      ((string-match "\.svg$" ξfile-path) 
@@ -189,12 +188,12 @@ Bug: for large size png, sometimes this returns a wrong dimension 30×30."
         ))
      (t (progn 
           (clear-image-cache t)
-          (setq ξxy (image-size
+          (vconcat (image-size
                      (create-image
-                      (if (file-name-absolute-p ξfile-path) ξfile-path (concat default-directory ξfile-path) )) t))
-          (vector (car ξxy) (cdr ξxy)) ))
-     )
-    ))
+                      (if (file-name-absolute-p ξfile-path)
+                          ξfile-path
+                        (concat default-directory ξfile-path) ))
+                     t)) )) ) ))
 
 (defun get-image-dimensions-imk (img-file-path)
   "Returns a image file's width and height as a vector.
