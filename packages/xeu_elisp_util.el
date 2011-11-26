@@ -186,14 +186,18 @@ Bug: for large size png, sometimes this returns a wrong dimension 30×30."
         (setq ξy (match-string 1 ))
         (vector (string-to-number ξx) (string-to-number ξy))
         ))
-     (t (progn 
-          (clear-image-cache t)
-          (vconcat (image-size
-                     (create-image
-                      (if (file-name-absolute-p ξfile-path)
-                          ξfile-path
-                        (concat default-directory ξfile-path) ))
-                     t)) )) ) ))
+     (t (let (ξxy )
+          (progn 
+            (clear-image-cache t)
+            (setq ξxy (image-size
+                       (create-image
+                        (if (file-name-absolute-p ξfile-path)
+                            ξfile-path
+                          (concat default-directory ξfile-path) ))
+                       t))
+            )
+          (vector (car ξxy) (cdr ξxy)) )
+        ) ) ))
 
 (defun get-image-dimensions-imk (img-file-path)
   "Returns a image file's width and height as a vector.
