@@ -37,6 +37,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.7, 2011-11-26 major change on “get-image-dimensions”. It now supports svn and gif. For gif, it calls “get-image-dimensions-imk”.
 ;; version 1.4.6, 2011-11-18 Added a “title-case-string-region-or-line”.
 ;; version 1.4.5, 2011-11-14 corrected a critical error in “asciify-text”.
 ;; version 1.4.4, 2011-11-14 added function “asciify-text”.
@@ -166,18 +167,34 @@ Example usage:
 
 
 
-(defun get-image-dimensions (img-file-relative-path)
+(defun get-image-dimensions (ξfile-path)
   "Returns a image file's width and height as a vector.
-Support png jpg and any image type emacs supports.
- (Does not support gif.)
-Bug: for large size png, sometimes this returns a wrong dimension 30×30.
-See also: `get-image-dimensions-imk'"
-  (let (tmp dimen)
-    (clear-image-cache)
-    (setq tmp (create-image (concat default-directory img-file-relative-path)))
-    (setq dimen (image-size tmp t))
-    (vector (car dimen) (cdr dimen))
-))
+Support png jpg svg gif and any image type emacs supports.
+ (for gif, it calls `get-image-dimensions-imk')
+Bug: for large size png, sometimes this returns a wrong dimension 30×30."
+  (let (tmp ξxy ξx ξy)
+
+    (cond
+     ((string-match "\.gif$" ξfile-path) (get-image-dimensions-imk ξfile-path))
+     ((string-match "\.svg$" ξfile-path) 
+      (with-temp-buffer
+        (insert-file-contents ξfile-path)
+        (goto-char (point-min))
+        (search-forward-regexp "width=\"\\([0-9]+\\).*\"")
+        (setq ξx (match-string 1 ))
+        (goto-char (point-min))
+        (search-forward-regexp "height=\"\\([0-9]+\\).*\"")
+        (setq ξy (match-string 1 ))
+        (vector (string-to-number ξx) (string-to-number ξy))
+        ))
+     (t (progn 
+          (clear-image-cache t)
+          (setq ξxy (image-size
+                     (create-image
+                      (if (file-name-absolute-p ξfile-path) ξfile-path (concat default-directory ξfile-path) )) t))
+          (vector (car ξxy) (cdr ξxy)) ))
+     )
+    ))
 
 (defun get-image-dimensions-imk (img-file-path)
   "Returns a image file's width and height as a vector.
