@@ -71,12 +71,11 @@ often used as apostrophy. It also consider both left and right
 angle brackets <> as either beginning or ending pair, so that it
 is easy to get content inside html tags."
  (interactive)
- (let (b1 b2)
+ (let (p1)
    (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃\"")
-   (setq b1 (point))
+   (setq p1 (point))
    (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄\"")
-   (setq b2 (point))
-   (set-mark b1)
+   (set-mark p1)
    )
  )
 
