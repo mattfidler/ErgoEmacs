@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.3.4, 2012-02-22 • The input now won't take “(” as part when calling “xmsi-change-to-symbol”. This means, when coding lisp, if you have 「(a▮」 then after calling ““xmsi-change-to-symbol” it becomes 「(α▮」. • removed “(c)” for “©”, use “copy” instead.
 ;; v1.3.3, 2011-11-08 • much improved handling of getting current abbrev. This means, it works in minibuffer. For example, type 【M-x】 then type 【a】, then 【Shift+Space】, then that “a” becomes “α”. Before, it was a error.
 ;; v1.3.2, 2011-11-05 • fixed a major bug in v1.3.1. When no valid input are found, xmsi-list-math-symbols is now automatically called, but isn't. • Added about 5 more subscript symbols, e.g _h _k _l etc.
 ;; v1.3.1, 2011-11-05 • fixed a showstopper bug. in v1.3.0. support of input using unicode names. Before, it always just insert greek alpha char.
@@ -89,7 +90,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.3")
+(setq xmsi-version "v1.3.4")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -879,7 +880,6 @@
   (puthash "m-" "—" xmsi-abrvs)
   (puthash "f-" "‒" xmsi-abrvs)
   (puthash "n-" "–" xmsi-abrvs)
-  (puthash "(c)" "©" xmsi-abrvs)
 
 (puthash "delete" "⌫"xmsi-abrvs)
 (puthash "square" "■" xmsi-abrvs)
@@ -1081,12 +1081,17 @@ See `xmsi-mode'"
           (setq p2 (region-end)) )
       (save-excursion
         (setq p2 (point) )
-        (skip-chars-backward "[:graph:]")
+        ;; (skip-chars-backward "[:graph:]")
+        (skip-chars-backward "-<>_^+.*\"'!?/|&=:A-Za-z0-9")
+        ;; (skip-chars-backward "\\[-_\\^<>\\+\\.\\*\"'!\\?/|&=:A-Za-z0-9]")
+        ;; (regexp-quote "[-_^<>+.*\"'!?/|&=:A-Za-z0-9]")
+
+        (when (looking-at "(") (forward-char))
         (setq p1 (point) )
         ))
 
     (setq myWord (buffer-substring-no-properties p1 p2) )
-
+(message myWord)
     (setq resultSymbol (gethash myWord xmsi-abrvs))
     (setq charByNameResult (assoc-string myWord (ucs-names) t) )
 
