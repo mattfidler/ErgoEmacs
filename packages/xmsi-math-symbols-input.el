@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.3.5, 2012-02-26 • fixed a bug with 「:)」 in v1.3.4. • added ≔ and ≕.
 ;; v1.3.4, 2012-02-22 • The input now won't take “(” as part when calling “xmsi-change-to-symbol”. This means, when coding lisp, if you have 「(a▮」 then after calling ““xmsi-change-to-symbol” it becomes 「(α▮」. • removed “(c)” for “©”, use “copy” instead.
 ;; v1.3.3, 2011-11-08 • much improved handling of getting current abbrev. This means, it works in minibuffer. For example, type 【M-x】 then type 【a】, then 【Shift+Space】, then that “a” becomes “α”. Before, it was a error.
 ;; v1.3.2, 2011-11-05 • fixed a major bug in v1.3.1. When no valid input are found, xmsi-list-math-symbols is now automatically called, but isn't. • Added about 5 more subscript symbols, e.g _h _k _l etc.
@@ -90,7 +91,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.4")
+(setq xmsi-version "v1.3.5")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -811,6 +812,8 @@
   (puthash "||" "∨" xmsi-abrvs)
   (puthash "not" "¬" xmsi-abrvs) ; not
   (puthash "===" "≡" xmsi-abrvs) ; equivalent
+  (puthash ":=" "≔" xmsi-abrvs) ; define
+  (puthash "=:" "≕" xmsi-abrvs) ; define
   (puthash "!=" "≠" xmsi-abrvs) (puthash "notequal" "≠" xmsi-abrvs) ; not equal
   (puthash "fa" "∀" xmsi-abrvs) (puthash "forall" "∀" xmsi-abrvs) ; FOR ALL
   (puthash "ex" "∃" xmsi-abrvs) ; THERE EXISTS
@@ -1082,9 +1085,7 @@ See `xmsi-mode'"
       (save-excursion
         (setq p2 (point) )
         ;; (skip-chars-backward "[:graph:]")
-        (skip-chars-backward "-<>_^+.*\"'!?/|&=:A-Za-z0-9")
-        ;; (skip-chars-backward "\\[-_\\^<>\\+\\.\\*\"'!\\?/|&=:A-Za-z0-9]")
-        ;; (regexp-quote "[-_^<>+.*\"'!?/|&=:A-Za-z0-9]")
+        (skip-chars-backward "-:)<>_^+.*\"'!?/|&=A-Za-z0-9")
 
         (when (looking-at "(") (forward-char))
         (setq p1 (point) )
