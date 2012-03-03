@@ -322,6 +322,32 @@ Emacs buffers are those whose name starts with *."
 ;; status to offer save
 ;; This custome kill buffer is close-current-buffer.
 
+(defun open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+Works in Microsoft Windows, Mac OS X, Linux."
+  (interactive)
+
+  (let ( doIt
+         (myFileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           (t (list (buffer-file-name))) ) ) )
+
+    (setq doIt (if (<= (length myFileList) 5)
+                   t
+                 (y-or-n-p "Open more than 5 files?") ) )
+    
+    (when doIt
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList)
+        )
+       ((string-equal system-type "darwin")
+        (mapc (lambda (fPath) (shell-command (concat "open " fPath )) )  myFileList) )
+       ((string-equal system-type "gnu/linux")
+        (mapc (lambda (fPath) (shell-command (concat "xdg-open " fPath )) ) myFileList) ) )
+      ) ) )
+
 (defun open-in-desktop ()
   "Open the current file in desktop.
 Works in Microsoft Windows, Mac OS X, Linux."
