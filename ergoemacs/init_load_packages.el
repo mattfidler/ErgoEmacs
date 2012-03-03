@@ -5,13 +5,6 @@
 (defalias 'redo 'undo-tree-redo)
 (global-undo-tree-mode 1)
 
-;; (require 'redo)
-
-;; ; redo+ mode
-;; (require 'redo+)
-;; ;; (setq undo-no-redo t)
-;; 2011-04-08 redo+ mode got major problems. Sometimes in a “.txt” file buffer, it simply says no un. http://xahlee.org/emacs/emacs_undo_cult_problem.html
-
 ;;;;§----------------------------------------
 ;;;; language modes
 

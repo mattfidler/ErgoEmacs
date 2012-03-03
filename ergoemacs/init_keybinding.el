@@ -5,7 +5,6 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 (global-set-key (kbd "C-0") 'text-scale-normal-size)
 
-;; redo
 (global-set-key (kbd "C-S-z") 'redo)
 
 (defun browser-nav-keys ()
