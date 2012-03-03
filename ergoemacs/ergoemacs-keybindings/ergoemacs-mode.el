@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.3.9"
+(defconst ergoemacs-mode-version "5.4.0"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -206,7 +206,7 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "C-n") 'new-empty-buffer)
 (define-key ergoemacs-keymap (kbd "C-S-n") 'make-frame-command)
 (define-key ergoemacs-keymap (kbd "C-o") 'find-file)
-(define-key ergoemacs-keymap (kbd "C-S-o") 'open-in-desktop)
+(define-key ergoemacs-keymap (kbd "C-S-o") 'open-in-external-app)
 (define-key ergoemacs-keymap (kbd "C-S-t") 'open-last-closed)
 (define-key ergoemacs-keymap (kbd "C-w") 'close-current-buffer)
 (define-key ergoemacs-keymap (kbd "C-s") 'save-buffer)
