@@ -1,7 +1,11 @@
 ; -*- coding: utf-8 -*-
 
-; redo mode
-(require 'redo)
+;; ; redo mode
+(require 'undo-tree)
+(defalias 'redo 'undo-tree-redo)
+(global-undo-tree-mode 1)
+
+;; (require 'redo)
 
 ;; ; redo+ mode
 ;; (require 'redo+)
