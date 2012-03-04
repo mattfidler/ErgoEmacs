@@ -343,10 +343,9 @@ Works in Microsoft Windows, Mac OS X, Linux."
         (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList)
         )
        ((string-equal system-type "darwin")
-        (mapc (lambda (fPath) (shell-command (concat "open " fPath )) )  myFileList) )
+        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
        ((string-equal system-type "gnu/linux")
-        (mapc (lambda (fPath) (shell-command (concat "xdg-open " fPath )) ) myFileList) ) )
-      ) ) )
+        (mapc (lambda (fPath) (shell-command (format "xdg-open \"%s\"" fPath)) ) myFileList) ) ) ) ) )
 
 (defun open-in-desktop ()
   "Open the current file in desktop.
