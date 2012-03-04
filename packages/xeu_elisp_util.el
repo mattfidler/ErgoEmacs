@@ -37,6 +37,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.8, 2012-03-03 trivially improved implementation of “get-image-dimensions-imk”.
 ;; version 1.4.7, 2011-11-26 major change on “get-image-dimensions”. It now supports svn and gif. For gif, it calls “get-image-dimensions-imk”.
 ;; version 1.4.6, 2011-11-18 Added a “title-case-string-region-or-line”.
 ;; version 1.4.5, 2011-11-14 corrected a critical error in “asciify-text”.
@@ -199,18 +200,27 @@ Bug: for large size png, sometimes this returns a wrong dimension 30×30."
           (vector (car ξxy) (cdr ξxy)) )
         ) ) ))
 
+;; (defun get-image-dimensions-imk (img-file-path)
+;;   "Returns a image file's width and height as a vector.
+;; This function requires ImageMagick's “identify” shell command.
+;; See also: `get-image-dimensions'."
+;;   (let (cmd-name sh-output width height)
+;;     (setq cmd-name "identify")
+;;     (setq sh-output (shell-command-to-string (concat cmd-name " " img-file-path)))
+;;     ;;  sample output from “identify”:  “xyz.png PNG 520x429+0+0 DirectClass 8-bit 9.1k 0.0u 0:01”
+;;     (string-match "^[^ ]+ [^ ]+ \\([0-9]+\\)x\\([0-9]+\\)" sh-output)
+;;     (setq width (match-string 1 sh-output))
+;;     (setq height (match-string 2 sh-output))
+;;     (vector (string-to-number width) (string-to-number height))))
+
 (defun get-image-dimensions-imk (img-file-path)
   "Returns a image file's width and height as a vector.
 This function requires ImageMagick's “identify” shell command.
 See also: `get-image-dimensions'."
-  (let (cmd-name sh-output width height)
-    (setq cmd-name "identify")
-    (setq sh-output (shell-command-to-string (concat cmd-name " " img-file-path)))
-    ;;  sample output from “identify”:  “xyz.png PNG 520x429+0+0 DirectClass 8-bit 9.1k 0.0u 0:01”
-    (string-match "^[^ ]+ [^ ]+ \\([0-9]+\\)x\\([0-9]+\\)" sh-output)
-    (setq width (match-string 1 sh-output))
-    (setq height (match-string 2 sh-output))
-    (vector (string-to-number width) (string-to-number height))))
+  (let ( sh-output )
+    (setq sh-output (shell-command-to-string (concat "identify -format \"%w %h\" " img-file-path)))
+    (string-match "^\\([0-9]+\\) \\([0-9]+\\)" sh-output)
+    (vector (string-to-number (match-string 1 sh-output)) (string-to-number (match-string 2 sh-output)))))
 
 
 (defun get-string-from-file (filePath)
