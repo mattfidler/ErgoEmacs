@@ -37,6 +37,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.9, 2012-03-15 more trivial improved implementation of “get-image-dimensions-imk”.
 ;; version 1.4.8, 2012-03-03 trivially improved implementation of “get-image-dimensions-imk”.
 ;; version 1.4.7, 2011-11-26 major change on “get-image-dimensions”. It now supports svn and gif. For gif, it calls “get-image-dimensions-imk”.
 ;; version 1.4.6, 2011-11-18 Added a “title-case-string-region-or-line”.
@@ -217,10 +218,11 @@ Bug: for large size png, sometimes this returns a wrong dimension 30×30."
   "Returns a image file's width and height as a vector.
 This function requires ImageMagick's “identify” shell command.
 See also: `get-image-dimensions'."
-  (let ( sh-output )
-    (setq sh-output (shell-command-to-string (concat "identify -format \"%w %h\" " img-file-path)))
-    (string-match "^\\([0-9]+\\) \\([0-9]+\\)" sh-output)
-    (vector (string-to-number (match-string 1 sh-output)) (string-to-number (match-string 2 sh-output)))))
+  (let ( widthHeightList )
+    (setq widthHeightList (split-string (shell-command-to-string (concat "identify -format \"%w %h\" " img-file-path))) )
+    (vector
+     (string-to-number (elt widthHeightList 0))
+     (string-to-number (elt widthHeightList 1)) ) ))
 
 
 (defun get-string-from-file (filePath)
