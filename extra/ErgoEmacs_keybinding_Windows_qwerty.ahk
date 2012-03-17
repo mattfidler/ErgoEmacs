@@ -22,8 +22,10 @@
 ;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
+;; Version 0.4: 
+;; - Fixed a missing colon, that prevents Alt+i to work. Xah Lee
 ;; Version 0.3: 
-;; - added a #SingleInstance directive, by Xah Lee
+;; - added a #SingleInstance directive. Xah Lee
 ;; Version 0.2: 
 ;; - 'Fixed' malfunctioning kill-line-backwards by remapping it to
 ;;   something without a shift modifier. Not very happy about it.
@@ -38,7 +40,7 @@
 #IfWinNotActive ahk_class Emacs
 
 ;; make arrow keys on righthand home position
-!i:
+!i::
   SendInput {Up}
   return
 !j::
