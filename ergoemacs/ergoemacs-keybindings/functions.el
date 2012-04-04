@@ -368,7 +368,7 @@ Similar to (kill-buffer (current-buffer)) with the following addition:
 
 • prompt user to save if the buffer has been modified even if the buffer is not associated with a file.
 • make sure the buffer shown after closing is a user buffer.
-• if the buffer is a file, add the path to the list recently-closed-buffers.
+• if the buffer is a file, add the path to the list `recently-closed-buffers'.
 
 A emacs buffer is one who's name starts with *.
 Else it is a user buffer."
