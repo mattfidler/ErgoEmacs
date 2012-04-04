@@ -387,8 +387,7 @@ Else it is a user buffer."
                 t
                 )
               )
-     (if (y-or-n-p
-            (concat "Buffer " (buffer-name) " modified; Do you want to save?"))
+     (if (y-or-n-p (format "Buffer %s modified; Do you want to save?" (buffer-name)))
        (save-buffer)
        (set-buffer-modified-p nil)))
 
