@@ -55,6 +55,9 @@
 
 ;;; HISTORY
 
+;; v1.3.5.4, 2012-04-04 • stopped printing a message when “xmsi-change-to-symbol” is called. Minor improvement to inline doc of “xmsi-change-to-symbol”.
+;; v1.3.5.3, 2012-04-02 • changed “-” to from “‒” FIGURE DASH to “−” MINUS SIGN.
+;; v1.3.5.2, 2012-04-01 • added ~ for ≈
 ;; v1.3.5, 2012-02-26 • fixed a bug with 「:)」 in v1.3.4. • added ≔ and ≕.
 ;; v1.3.4, 2012-02-22 • The input now won't take “(” as part when calling “xmsi-change-to-symbol”. This means, when coding lisp, if you have 「(a▮」 then after calling ““xmsi-change-to-symbol” it becomes 「(α▮」. • removed “(c)” for “©”, use “copy” instead.
 ;; v1.3.3, 2011-11-08 • much improved handling of getting current abbrev. This means, it works in minibuffer. For example, type 【M-x】 then type 【a】, then 【Shift+Space】, then that “a” becomes “α”. Before, it was a error.
@@ -523,7 +526,7 @@
   (puthash "dag" "†" xmsi-abrvs)
   (puthash "ddag" "‡" xmsi-abrvs)
   (puthash "--" "—" xmsi-abrvs)
-  (puthash "-" "‒" xmsi-abrvs)
+  (puthash "-" "−" xmsi-abrvs)
   (puthash "s&" "﹠" xmsi-abrvs)
   (puthash "?!" "⁈" xmsi-abrvs)
   (puthash "!?" "⁉" xmsi-abrvs)
@@ -812,6 +815,8 @@
   (puthash "||" "∨" xmsi-abrvs)
   (puthash "not" "¬" xmsi-abrvs) ; not
   (puthash "===" "≡" xmsi-abrvs) ; equivalent
+
+  (puthash "~" "≈" xmsi-abrvs) ; ALMOST EQUAL TO
   (puthash ":=" "≔" xmsi-abrvs) ; define
   (puthash "=:" "≕" xmsi-abrvs) ; define
   (puthash "!=" "≠" xmsi-abrvs) (puthash "notequal" "≠" xmsi-abrvs) ; not equal
@@ -1058,9 +1063,9 @@ See `xmsi-mode'."
   )
 
 (defun xmsi-change-to-symbol (&optional print-message-when-error)
-  "Change the string under cursor into a Unicode character.
+  "Change text selection or word to the left of cursor into a Unicode character.
 
-A valid string under cursor can be any abbreviation listed in `xmsi-list-math-symbols'.
+A valid input can be any abbreviation listed in `xmsi-list-math-symbols'.
 Or, any of the following form:
 
  945     ← decimal
@@ -1072,8 +1077,6 @@ Or, any of the following form:
  &#x3b1; ← XML entity syntax
 
 Full Unicode name can also be used, e.g. 「greek small letter alpha」.
-
-If there is a text selection, use that as current word.
 
 See `xmsi-mode'"
   (interactive "p")
@@ -1092,7 +1095,7 @@ See `xmsi-mode'"
         ))
 
     (setq myWord (buffer-substring-no-properties p1 p2) )
-(message myWord)
+
     (setq resultSymbol (gethash myWord xmsi-abrvs))
     (setq charByNameResult (assoc-string myWord (ucs-names) t) )
 
@@ -1105,7 +1108,7 @@ See `xmsi-mode'"
      ((string-match "^#x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
      ((string-match "^x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
      ((and (string-match "^\\([- a-zA-Z0-9]+\\)$" myWord) charByNameResult) (progn (delete-region p1 p2) (ucs-insert (cdr charByNameResult))))
-     (t (progn (when print-message-when-error (xmsi-list-math-symbols) (error "「%s」 is not a valid abbrevation or input. Call “xmsi-list-math-symbols” for a list. Or use a decimal such as 「945」 or 「#945」. Or, use hexadecimal such as 「x3b1」 or 「#x3b1」, or XML syntax 「&#945;」, 「&#x3b1;」, or full Unicode name e.g. 「greek small letter alpha」."  myWord)) ) ) ) ) )
+     (t (progn (when print-message-when-error (xmsi-list-math-symbols) (error "「%s」 is not a valid abbrevation or input. Call “xmsi-list-math-symbols” for a list. Or use a decimal e.g. 「945」 or hexadecimal e.g. 「x3b1」, or full Unicode name e.g. 「greek small letter alpha」."  myWord)) ) ) ) ) )
 
 (define-minor-mode xmsi-mode
   "Toggle math symbol input (minor) mode.
