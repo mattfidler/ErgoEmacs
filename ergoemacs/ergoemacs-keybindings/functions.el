@@ -326,7 +326,6 @@ Emacs buffers are those whose name starts with *."
   "Open the current file or dired marked files in external app.
 Works in Microsoft Windows, Mac OS X, Linux."
   (interactive)
-
   (let ( doIt
          (myFileList
           (cond
@@ -343,9 +342,9 @@ Works in Microsoft Windows, Mac OS X, Linux."
         (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList)
         )
        ((string-equal system-type "darwin")
-        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
+        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "open" fPath)) )  myFileList) )
        ((string-equal system-type "gnu/linux")
-        (mapc (lambda (fPath) (shell-command (format "xdg-open \"%s\"" fPath)) ) myFileList) ) ) ) ) )
+        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
 
 (defun open-in-desktop ()
   "Open the current file in desktop.
