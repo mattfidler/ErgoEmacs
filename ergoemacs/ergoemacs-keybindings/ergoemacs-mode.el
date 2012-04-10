@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.4.0"
+(defconst ergoemacs-mode-version "5.4.1"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -78,7 +78,7 @@ Valid values are:
  “sv” (Swedish)
  “da” (Danish)
  “colemak” (Ergonomic Colemak URL `http://colemak.com/')
- “pt-nativo” (Ergonomic PT-Nativo URL `http://tecladobrasileiro.com.br')"
+ “pt-nativo” (Ergonomic PT-Nativo URL `http://xahlee.org/kbd/pt-nativo_keyboard_layout.html')"
 )
 
 (cond

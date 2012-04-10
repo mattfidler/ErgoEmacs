@@ -4,6 +4,12 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.4.1, 2012-04-09
+trivial changes.
+** fixed a leaked variable “item” in 〔ergoemacs-unbind.el〕.
+** updated 〔_INSTALL.txt〕.
+** updated a few files that points to the dead 〔http://tecladobrasileiro.com.br/〕 to 〔http://xahlee.org/kbd/pt-nativo_keyboard_layout.html〕
+
 * version 5.4.0, 2012-03-03
 ** 2012-03-03 Added a command “open-in-external-app”. The key 【Ctrl+Shift+o】 is now bound to it, instead of “open-in-desktop”.
 

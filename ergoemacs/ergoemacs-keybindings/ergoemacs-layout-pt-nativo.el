@@ -1,6 +1,6 @@
 ;-*- coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=pt-nativo
-;; Keyboard Layout: PT-Nativo from http://tecladobrasileiro.com.br
+;; Keyboard Layout: PT-Nativo, http://xahlee.org/kbd/pt-nativo_keyboard_layout.html
 ;; Contributor: Xavier Pinho
 ;; Creation date: 2010
 

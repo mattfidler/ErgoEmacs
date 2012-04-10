@@ -181,7 +181,7 @@ disabled at `ergoemacs-restore-global-keys'."
 	 (setq yank-menu (copy-sequence saved-yank-menu))
 	 (fset 'yank-menu (cons 'keymap yank-menu))))))
 
-  (let (key-desc item-key item-cmd old-cmd)
+  (let (key-desc item item-key item-cmd old-cmd)
     (setq key-desc (key-description key))
     (setq item ergoemacs-overridden-global-keys)
     (while (and item (not old-cmd))
