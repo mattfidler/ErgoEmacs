@@ -342,7 +342,7 @@ Works in Microsoft Windows, Mac OS X, Linux."
         (mapc (lambda (fPath) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t)) ) myFileList)
         )
        ((string-equal system-type "darwin")
-        (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "open" fPath)) )  myFileList) )
+        (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
        ((string-equal system-type "gnu/linux")
         (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
 
