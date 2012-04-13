@@ -37,8 +37,11 @@
 ;; (describe-mode). (if you have not load the mode type, first type
 ;; Alt+x xlsl-mode)
 
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
+
 ;;; HISTORY
 
+;; version 1.6.2, 2012-04-13 • fixed a few typo (which'd cause memory leak). The typos are related to these {xlsl-keywords-regexp xlsl-type-regexp xlsl-constant-regexp xlsl-event-regexp xlsl-function-regexp}
 ;; version 1.6.1, 2011-05-04 • added constants OBJECT_RUNNING_SCRIPT_COUNT OBJECT_SCRIPT_MEMORY OBJECT_TOTAL_SCRIPT_COUNT
 ;; version 1.6.0, 2011-04-25 • Added function completion for these functions: llCastRay llClearPrimMedia llGetEnv llGetLinkNumberOfSides llGetLinkPrimitiveParams llGetPrimMediaParams llGetSPMaxMemory llGetUsedMemory llGetUsername llLinkParticleSystem llRegionSayTo llRequestUsername llScriptProfiler llSetLinkPrimitiveParamsFast llSetLinkTextureAnim llSetPrimMediaParams llTextBox.
 ;; version 1.5.16, 2010-12-19 • Added completion for AGENT_BY_LEGACY_NAME, AGENT_BY_USERNAME, llGetDisplayName, llRequestDisplayName.
@@ -78,7 +81,7 @@
 (require 'thingatpt )
 
 (defvar xlsl-mode-version)
-(setq xlsl-mode-version "1.6.1")
+(setq xlsl-mode-version "1.6.2")
 
 (defgroup xlsl-mode nil
   "Major mode for editing Linden Scripting Language."
@@ -338,7 +341,7 @@ See also `xlsl-color-vectors-region' and `list-colors-display'."
         (progn
           (delete-region pos1 pos2)
           (if (looking-back "#")
-              (delete-backward-char 1))
+              (delete-char -1))
           (insert "<"
                   (mapconcat
                    (lambda (x)
@@ -989,14 +992,15 @@ See also `xlsl-color-vectors-region' and `list-colors-display'."
 (defvar xlsl-type-regexp (regexp-opt xlsl-types 'words))
 (defvar xlsl-constant-regexp (regexp-opt xlsl-constants 'words))
 (defvar xlsl-event-regexp (regexp-opt xlsl-events 'words))
-(defvar xlsl-functions-regexp (regexp-opt xlsl-functions 'words))
+(defvar xlsl-function-regexp (regexp-opt xlsl-functions 'words))
 
+(defvar xlsl-font-lock-keywords)
 (setq xlsl-font-lock-keywords
   `(
     (,xlsl-type-regexp . font-lock-type-face)
     (,xlsl-constant-regexp . font-lock-constant-face)
     (,xlsl-event-regexp . font-lock-builtin-face)
-    (,xlsl-functions-regexp . font-lock-function-name-face)
+    (,xlsl-function-regexp . font-lock-function-name-face)
     (,xlsl-keywords-regexp . font-lock-keyword-face)
 ;; note: order above matters. Keywords goes last here because, for example, otherwise the keyword “state” in the function “state_entry” would be highlighted.
 ))
@@ -1091,10 +1095,10 @@ Complete documentation at URL `http://xahlee.org/sl/ls-emacs.html'."
 
   ;; clear memory
   (setq xlsl-keywords-regexp nil)
-  (setq xlsl-types-regexp nil)
-  (setq xlsl-constants-regexp nil)
-  (setq xlsl-events-regexp nil)
-  (setq xlsl-functions-regexp nil)
+  (setq xlsl-type-regexp nil)
+  (setq xlsl-constant-regexp nil)
+  (setq xlsl-event-regexp nil)
+  (setq xlsl-function-regexp nil)
 
   ;; if emacs 23, turn on linum-mode
   (when
