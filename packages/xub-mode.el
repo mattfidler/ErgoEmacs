@@ -40,7 +40,6 @@
 
 ;; Then, restart emacs.
 
-
 ;;; DOCUMENTATION
 
 ;; When this mode is on, pressing the arrow keys will automatically
@@ -53,6 +52,8 @@
 ;; (describe-mode). (if you have not load the mode, first type
 ;; Alt+x xub-mode)
 
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
+
 ;;; HISTORY
 
 ;; version 1.1.4, 2010-12-20 • The keys 【Alt+12】 for zoom-in and 【Alt+11】 for zoom-out are removed. New keys are: 【Ctrl++】 (zoom-in) and 【Ctrl+-】 zoom-out. Holding down Ctrl and scroll mouse wheel also works. These are more compatible with web browsers.
@@ -64,6 +65,7 @@
 
 ;;; Code:
 
+(defvar xub-version)
 (setq xub-version "1.1.4")
 
 (defvar xub-map nil "Keymap for xub")
@@ -160,15 +162,15 @@
 (defun xub-show-up ()
   "Move cursor up then show info about the character under cursor."
   (interactive)
- (previous-line)
- (xub-display-info)
+  (previous-line)
+  (xub-display-info)
   )
 
 (defun xub-show-down ()
   "Move cursor down then show info about the character under cursor."
   (interactive)
- (next-line)
- (xub-display-info)
+  (next-line)
+  (xub-display-info)
   )
 
 (defun xub-mode ()

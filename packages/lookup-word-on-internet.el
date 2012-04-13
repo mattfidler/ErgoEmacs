@@ -40,8 +40,10 @@
 
 ;;; DOCUMENTATION
 
-;; just some simple useful commands
-;; for detail, see http://xahlee.org/emacs/emacs_lookup_ref.html
+;; Just some simple useful commands
+;; For detail, see http://xahlee.org/emacs/emacs_lookup_ref.html
+
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
 ;;; HISTORY
 ;; version 1.0, 2011-11-14 First released to public.

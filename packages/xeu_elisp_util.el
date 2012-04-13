@@ -29,6 +29,8 @@
 ;; This package requires 〔xfrp_find_replace_pairs.el〕, available at 
 ;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xfrp_find_replace_pairs.el
 
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
+
 ;;; INSTALL
 
 ;; Place the file in your emacs load path. Then

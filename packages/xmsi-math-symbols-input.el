@@ -53,6 +53,8 @@
 ;; To see the inline documentation, call “describe-function”, then type “xmsi-mode”.
 ;; (if you have not load the mode yet, first load it by calling “xmsi-mode”.)
 
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
+
 ;;; HISTORY
 
 ;; v1.3.5.4, 2012-04-04 • stopped printing a message when “xmsi-change-to-symbol” is called. Minor improvement to inline doc of “xmsi-change-to-symbol”.

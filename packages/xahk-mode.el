@@ -14,6 +14,8 @@
 ;; for download location and documentation, see:
 ;; http://xahlee.org/mswin/emacs_autohotkey_mode.html
 
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
+
 ;;; INSTALL
 
 ;; Open the file, then type “Alt+x eval-buffer”. You are done. Open

@@ -24,6 +24,8 @@
 ;; For some explanation of the need for these functions, see:
 ;;  http://xahlee.org/emacs/elisp_replace_string_region.html
 
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
+
 ;;; INSTALL
 
 ;; Place the file in your emacs load path. Then

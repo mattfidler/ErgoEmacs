@@ -52,6 +52,8 @@
 ;; (describe-mode). (if you have not load the mode, first type
 ;; Alt+x xbbcode-mode)
 
+;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
+
 ;;; HISTORY
 
 ;; version 1.2, 2010-06-20 Added xbbcode-show-bbcode-help. Improved menu items.
@@ -60,7 +62,10 @@
 
 ;;; Code:
 
+(defvar xbbcode-mode-version)
 (setq xbbcode-mode-version "1.2")
+
+(defvar xbbcode-font-lock-keywords)
 
 (defgroup xbbcode-mode nil
   "Major mode for editing bbcode."
