@@ -1,3 +1,4 @@
+;-*- coding: utf-8 -*-
 ;coding: utf-8 -*-
 ;; Shortcuts for ERGOEMACS_KEYBOARD_LAYOUT=sv
 ;; Keyboard Layout: Swedish

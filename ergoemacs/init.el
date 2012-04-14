@@ -1,4 +1,4 @@
-; -*- coding: utf-8 -*-
+;-*- coding: utf-8 -*-
 
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 (add-to-list 'load-path 
