@@ -35,6 +35,17 @@
 (require 'saveplace)
 (setq-default save-place t)
 
+;; when calling “list-colors-display”, make result sorted by hue.
+(when (>= emacs-major-version 24) (setq list-colors-sort 'hsv ) )
+
+
+;; § ----------------------------------------
+
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  )
+
 
 ;; § ----------------------------------------
 ;; make buffer names easily identifiable
