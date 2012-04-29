@@ -4,6 +4,9 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.4.3, 2012-04-29
+Removed 【Ctrl+Shift+w】 for “delete-frame” (close current window).  That should rely on OS. Or, in ErgoEmacs, 【Alt+F4】 does it.  More standard. Less keys.  The reason for a 【Ctrl+Shift+w】 for closing window doesn't seem strong.
+
 * version 5.4.2, 2012-04-11
 Fixed “open-in-external-app”. Before, on linux, emacs freezes until external app is closed. Thanks to Thanks to Ozan Erdem.
 * version 5.4.1, 2012-04-09
