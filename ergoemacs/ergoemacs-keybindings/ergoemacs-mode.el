@@ -213,7 +213,6 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "C-S-s") 'write-file)
 (define-key ergoemacs-keymap (kbd "C-p") 'print-buffer-confirm)
 (define-key ergoemacs-keymap (kbd "C-a") 'mark-whole-buffer)
-(define-key ergoemacs-keymap (kbd "C-S-w") 'delete-frame)
 
 (define-key ergoemacs-keymap (kbd "C-f") 'search-forward)
 
