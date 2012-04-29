@@ -12,9 +12,8 @@
 (autoload 'php-mode "php-mode" "php mode by Aaron S Hawley." t)
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
-;;; javascript. (IDE-like by Steve Yegge. Features a js syntax parser)
-(autoload 'js2-mode "js2-20090723b" "IDE-like Javascript mode; features a on-the-fly syntax parser." t)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; ;;; javascript. (IDE-like by Steve Yegge. Features a js syntax parser)
+;; (autoload 'js2-mode "js2-20090723b" "IDE-like Javascript mode; features a on-the-fly syntax parser." t)
 
 ;;; visual-basic-mode
 (autoload 'visual-basic-mode "visual-basic-mode" "Major moder for editing Visual Basic code." t)
@@ -64,14 +63,14 @@
 (add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
-;;; mode for Haskell lang. http://en.wikipedia.org/wiki/Haskell_(programming_language)
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.7.0/"))
-(load "haskell-mode-2.7.0/haskell-site-file")
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+;; ;;; mode for Haskell lang. http://en.wikipedia.org/wiki/Haskell_(programming_language)
+;; (add-to-list 'load-path
+;;  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.7.0/"))
+;; (load "haskell-mode-2.7.0/haskell-site-file")
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;; ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;; ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
 ;;; mode for erlang lang. 
 (add-to-list 'load-path
