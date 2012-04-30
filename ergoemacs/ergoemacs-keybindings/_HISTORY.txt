@@ -5,8 +5,16 @@
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
 * version 5.4.3, 2012-04-29
-Removed 【Ctrl+Shift+w】 for “delete-frame” (close current window).  That should rely on OS. Or, in ErgoEmacs, 【Alt+F4】 does it.  More standard. Less keys.  The reason for a 【Ctrl+Shift+w】 for closing window doesn't seem strong.
+** Removed 【Ctrl+Shift+w】 for “delete-frame” (close current window).
+rationale: Close Current Window should really follow OS's key convention. Or, in ErgoEmacs, 【Alt+F4】 does it.  This way, it's more standard. Less keys.
 
+On the Mac, current behavior is ok too.
+
+The reason for a 【Ctrl+Shift+w】 for closing window doesn't seem strong.
+** If inside minibuffer, “close-current-buffer” now do do nothing.
+Fixed bug #92 http://code.google.com/p/ergoemacs/issues/detail?id=92
+Previouly, it prompt if user want to save, etc.
+Thanks to dek1999@live.com
 * version 5.4.2, 2012-04-11
 Fixed “open-in-external-app”. Before, on linux, emacs freezes until external app is closed. Thanks to Thanks to Ozan Erdem.
 * version 5.4.1, 2012-04-09
