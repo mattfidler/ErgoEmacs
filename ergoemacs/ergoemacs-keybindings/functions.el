@@ -361,7 +361,7 @@ Works in Microsoft Windows, Mac OS X, Linux."
 (defvar recently-closed-buffers-max 30 "The maximum length for recently-closed-buffers.")
 
 (defun close-current-buffer ()
-"Close the current buffer.
+  "Close the current buffer.
 
 Similar to (kill-buffer (current-buffer)) with the following addition:
 
@@ -371,46 +371,47 @@ Similar to (kill-buffer (current-buffer)) with the following addition:
 
 A emacs buffer is one who's name starts with *.
 Else it is a user buffer."
- (interactive)
- (let (emacsBuff-p isEmacsBufferAfter)
-   (if (string-match "^*" (buffer-name))
-       (setq emacsBuff-p t)
-     (setq emacsBuff-p nil))
+  (interactive)
+  (let (emacsBuff-p isEmacsBufferAfter)
 
-   ;; offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (because kill-buffer does not offer to save buffers that are not associated with files)
-   (when (and (buffer-modified-p)
-              (not emacsBuff-p)
-              (not (string-equal major-mode "dired-mode"))
-              (if (equal (buffer-file-name) nil) 
-                  (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
-                t
-                )
-              )
-     (if (y-or-n-p (format "Buffer %s modified; Do you want to save?" (buffer-name)))
-       (save-buffer)
-       (set-buffer-modified-p nil)))
+    (setq emacsBuff-p (if (string-match "^*" (buffer-name)) t nil) )
 
-   ;; save to a list of closed buffer
-   (when (not (equal buffer-file-name nil))
-     (setq recently-closed-buffers
-           (cons (cons (buffer-name) (buffer-file-name)) recently-closed-buffers))
-     (when (> (length recently-closed-buffers) recently-closed-buffers-max)
-           (setq recently-closed-buffers (butlast recently-closed-buffers 1))
-           )
-     )
+    (if (string= major-mode "minibuffer-inactive-mode")
+        nil ; if minibuffer, do nothing
+      (progn 
+        ;; offer to save buffers that are non-empty and modified, even for non-file visiting buffer. (because kill-buffer does not offer to save buffers that are not associated with files)
+        (when (and (buffer-modified-p)
+                   (not emacsBuff-p)
+                   (not (string-equal major-mode "dired-mode"))
+                   (if (equal (buffer-file-name) nil) 
+                       (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
+                     t
+                     )
+                   )
+          (if (y-or-n-p (format "Buffer %s modified; Do you want to save?" (buffer-name)))
+              (save-buffer)
+            (set-buffer-modified-p nil)))
 
-   ;; close
-   (kill-buffer (current-buffer))
+        ;; save to a list of closed buffer
+        (when (not (equal buffer-file-name nil))
+          (setq recently-closed-buffers
+                (cons (cons (buffer-name) (buffer-file-name)) recently-closed-buffers))
+          (when (> (length recently-closed-buffers) recently-closed-buffers-max)
+            (setq recently-closed-buffers (butlast recently-closed-buffers 1))
+            )
+          )
 
-   ;; if emacs buffer, switch to a user buffer
-   (if (string-match "^*" (buffer-name))
-       (setq isEmacsBufferAfter t)
-     (setq isEmacsBufferAfter nil))
-   (when isEmacsBufferAfter
-     (next-user-buffer)
-     )
-   )
- )
+        ;; close
+        (kill-buffer (current-buffer))
+
+        ;; if emacs buffer, switch to a user buffer
+        (if (string-match "^*" (buffer-name))
+            (setq isEmacsBufferAfter t)
+          (setq isEmacsBufferAfter nil))
+        (when isEmacsBufferAfter
+          (next-user-buffer) ) )
+      )
+    ) )
 
 (defun open-last-closed ()
   "Open the last closed file."
