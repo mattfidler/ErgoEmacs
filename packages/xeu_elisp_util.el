@@ -20,6 +20,8 @@
 ;; get-string-from-file
 ;; read-lines
 ;; get-html-file-title
+;; delete-subdirs-by-regex
+;; delete-files-by-regex
 ;; trim-string
 ;; substract-path
 ;; asciify-text
@@ -40,6 +42,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.11, 2012-05-05 added { “delete-subdirs-by-regex” “delete-files-by-regex”}
 ;; version 1.4.10, 2012-05-05 added “substract-path”.
 ;; version 1.4.9, 2012-03-15 more trivial improved implementation of “get-image-dimensions-imk”.
 ;; version 1.4.8, 2012-03-03 trivially improved implementation of “get-image-dimensions-imk”.
@@ -241,6 +244,27 @@ See also: `get-image-dimensions'."
   (with-temp-buffer 
     (insert-file-contents filePath) 
     (split-string (buffer-string) "\n" t)))
+
+
+
+(defun delete-subdirs-by-regex (ξdir regex-pattern)
+  "Delete sub-directories in ξdir whose path matches REGEX-PATTERN."
+  (require 'find-lisp)
+  (mapc
+   (lambda (ξx) (if (and (file-directory-p ξx) (file-exists-p ξx))
+                    (delete-directory ξx t)))
+   (find-lisp-find-files ξdir regex-pattern)) )
+
+(defun delete-files-by-regex (ξdir regex-pattern)
+  "Delete all files in a ξdir whose path matches a REGEX-PATTERN.
+Example:
+ (delete-files-by-regex \"~/web\" \"~$\")
+This deletes all files ending in “~”."
+  (require 'find-lisp)
+  (mapc
+   (lambda (ξx) (if (and (file-regular-p ξx) (file-exists-p ξx))
+                    (delete-file ξx)) )
+   (find-lisp-find-files ξdir regex-pattern)) )
 
 
 (defun get-html-file-title (fName)
