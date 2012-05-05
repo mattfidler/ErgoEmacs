@@ -21,6 +21,7 @@
 ;; read-lines
 ;; get-html-file-title
 ;; trim-string
+;; substract-path
 ;; asciify-text
 ;; title-case-string-region-or-line
 
@@ -39,6 +40,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.10, 2012-05-05 added “substract-path”.
 ;; version 1.4.9, 2012-03-15 more trivial improved implementation of “get-image-dimensions-imk”.
 ;; version 1.4.8, 2012-03-03 trivially improved implementation of “get-image-dimensions-imk”.
 ;; version 1.4.7, 2011-11-26 major change on “get-image-dimensions”. It now supports svn and gif. For gif, it calls “get-image-dimensions-imk”.
@@ -258,6 +260,17 @@ Assumes that the file contains the string
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10)."
 (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))
 )
+
+(defun substract-path (path1 path2)
+  "Remove string path2 from the beginning of path1.
+length of path1 ≥ to length path2.
+
+e.g. 「c:/Users/lisa/web/a/b」 -  「c:/Users/lisa/web/」 ⇒ 「a/b」"
+  (let ((p2length (length path2)))
+    (if (string= (substring path1 0 p2length) path2 )
+        (substring path1 p2length)
+      (error "error code 2gabc: beginning doesn't match: 「%s」 「%s」" path1 path2) ) ) )
+
 (defun asciify-text (ξstring &optional ξfrom ξto)
 "Change some Unicode characters into equivalent ASCII ones.
 For example, “passé” becomes “passe”.
