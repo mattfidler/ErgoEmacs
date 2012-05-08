@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.3.6, 2012-05-08 • fixed a bug when any abbrev involving tilde ~ won't work.
 ;; v1.3.5.4, 2012-04-04 • stopped printing a message when “xmsi-change-to-symbol” is called. Minor improvement to inline doc of “xmsi-change-to-symbol”.
 ;; v1.3.5.3, 2012-04-02 • changed “-” to from “‒” FIGURE DASH to “−” MINUS SIGN.
 ;; v1.3.5.2, 2012-04-01 • added ~ for ≈
@@ -96,7 +97,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.5")
+(setq xmsi-version "v1.3.6")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1090,7 +1091,7 @@ See `xmsi-mode'"
       (save-excursion
         (setq p2 (point) )
         ;; (skip-chars-backward "[:graph:]")
-        (skip-chars-backward "-:)<>_^+.*\"'!?/|&=A-Za-z0-9")
+        (skip-chars-backward "-:)<>_^+.*\"'!?/|&~=A-Za-z0-9")
 
         (when (looking-at "(") (forward-char))
         (setq p1 (point) )
