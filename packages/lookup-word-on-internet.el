@@ -34,9 +34,9 @@
 ;; (autoload 'lookup-php-ref "lookup-word-on-internet" "Lookup word in browser" t)
 
 ;; ;; Suggested keys
-;; (global-set-key (kbd "C-h C-g") 'lookup-google)
-;; (global-set-key (kbd "C-h C-w") 'lookup-wikipedia)
-;; (global-set-key (kbd "C-h C-d") 'lookup-word-definition)
+;; (global-set-key (kbd "<f1> 1") 'lookup-google)
+;; (global-set-key (kbd "<f1> 2") 'lookup-wikipedia)
+;; (global-set-key (kbd "<f1> 3") 'lookup-word-definition)
 
 ;;; DOCUMENTATION
 
@@ -46,6 +46,7 @@
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
 ;;; HISTORY
+;; version 1.1, 2012-05-09 changed the input from 「'symbol」 to 「'word」. Changed the English dictionary used from 「http://www.answers.com/main/ntquery?s=�」 to 「http://www.thefreedictionary.com/�」.
 ;; version 1.0, 2011-11-14 First released to public.
 
 ;;; Code:
@@ -73,7 +74,7 @@ For a list of online reference sites, see:
               input-word
             (if (region-active-p)
                 (buffer-substring-no-properties (region-beginning) (region-end))
-              (thing-at-point 'symbol) )) )
+              (thing-at-point 'word) )) )
 
     (setq ξword (replace-regexp-in-string " " "%20" (asciify-text ξword)))
 
@@ -115,7 +116,10 @@ For a list of online reference sites, see:
 (defun lookup-word-definition (&optional input-word)
   "See `lookup-word-on-internet'."
   (interactive)
-  (let ((dictUrl "http://www.answers.com/main/ntquery?s=�" ))
+  (let ((dictUrl
+"http://www.thefreedictionary.com/�"
+ ;; "http://www.answers.com/main/ntquery?s=�" 
+) )
     (lookup-word-on-internet input-word dictUrl) ) )
 
 (defun lookup-wiktionary (&optional input-word)
