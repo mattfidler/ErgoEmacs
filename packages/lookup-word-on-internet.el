@@ -9,14 +9,27 @@
 
 ;;; DESCRIPTION
 
-;; this package provides some convenient commands for looking up the web.
-;; For example: lookup-google, lookup-wikipedia, etc.
+;; this package provides convenient commands for looking up the web.
+;; The exposed functions are:
+
+;; lookup-word-on-internet
+;; lookup-google
+;; lookup-wikipedia
+;; lookup-word-dict-org
+;; lookup-word-definition
+;; lookup-answers.com
+;; lookup-wiktionary
+;; lookup-php-ref
 
 ;;; REQUIREMENT
 
-;; You need have 2 elisp util 〔xeu_elisp_util.el〕 and 〔xfrp_find_replace_pairs.el〕, available at
+;; You need to have 2 elisp util 〔xeu_elisp_util.el〕 and 〔xfrp_find_replace_pairs.el〕, available at
 ;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xeu_elisp_util.el
 ;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xfrp_find_replace_pairs.el
+
+;; here's linux shell command to download them:
+;; wget http://ergoemacs.googlecode.com/svn/trunk/packages/xeu_elisp_util.el
+;; wget http://ergoemacs.googlecode.com/svn/trunk/packages/xfrp_find_replace_pairs.el
 
 ;;; INSTALL
 
@@ -37,6 +50,7 @@
 ;; (global-set-key (kbd "<f1> 1") 'lookup-google)
 ;; (global-set-key (kbd "<f1> 2") 'lookup-wikipedia)
 ;; (global-set-key (kbd "<f1> 3") 'lookup-word-definition)
+;; …
 
 ;;; DOCUMENTATION
 
@@ -46,6 +60,8 @@
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
 ;;; HISTORY
+
+;; version 1.2, 2012-05-10 added “lookup-answers.com”. Improved inline docs.
 ;; version 1.1, 2012-05-09 changed the input from 「'symbol」 to 「'word」. Changed the English dictionary used from 「http://www.answers.com/main/ntquery?s=�」 to 「http://www.thefreedictionary.com/�」.
 ;; version 1.0, 2011-11-14 First released to public.
 
@@ -56,8 +72,8 @@
 (require 'xeu_elisp_util)
 
 (defun lookup-word-on-internet (&optional input-word site-to-use)
-  "Look up current word or text selection in a online dictionary.
-This command launches/switchs you to default browser.
+  "Look up current word or text selection in a online reference site.
+This command launches/switches you to default browser.
 
 Optional argument INPUT-WORD and SITE-TO-USE can be given.
 SITE-TO-USE a is URL string in this form: 「http://en.wiktionary.org/wiki/�」.
@@ -95,35 +111,45 @@ For a list of online reference sites, see:
       (browse-url myUrl) ) ) ))
 
 (defun lookup-google (&optional input-word)
-  "See `lookup-word-on-internet'."
+  "Lookup current word or text selection in Google Search.
+See also `lookup-word-on-internet'."
   (interactive)
   (let ((dictUrl "http://www.google.com/search?q=�" ))
     (lookup-word-on-internet input-word dictUrl) ) )
 
 (defun lookup-wikipedia (&optional input-word)
-  "See `lookup-word-on-internet'."
+  "Lookup current word or text selection in Wikipedia.
+See also `lookup-word-on-internet'."
   (interactive)
   (let ((dictUrl "http://en.wikipedia.org/wiki/�" ))
     (lookup-word-on-internet input-word dictUrl) ) )
 
 (defun lookup-word-dict-org (&optional input-word)
-  "See `lookup-word-on-internet'."
+  "Lookup definition of current word or text selection in URL `http://dict.org/'.
+See also `lookup-word-on-internet'."
   (interactive)
   (let ((dictUrl "http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=�" ))
     (lookup-word-on-internet input-word dictUrl)
     ) )
 
 (defun lookup-word-definition (&optional input-word)
-  "See `lookup-word-on-internet'."
+  "Lookup definition of current word or text selection in URL `http://thefreedictionary.com/'.
+See also `lookup-word-on-internet'."
   (interactive)
-  (let ((dictUrl
-"http://www.thefreedictionary.com/�"
- ;; "http://www.answers.com/main/ntquery?s=�" 
+  (let ((dictUrl "http://www.thefreedictionary.com/�") )
+    (lookup-word-on-internet input-word dictUrl) ) )
+
+(defun lookup-answers.com (&optional input-word)
+  "Lookup current word or text selection in URL `http://answers.com/'.
+See also `lookup-word-on-internet'."
+  (interactive)
+  (let ((dictUrl "http://www.answers.com/main/ntquery?s=�" 
 ) )
     (lookup-word-on-internet input-word dictUrl) ) )
 
 (defun lookup-wiktionary (&optional input-word)
-  "See `lookup-word-on-internet'."
+  "Lookup definition of current word or text selection in URL `http://en.wiktionary.org/'
+See also `lookup-word-on-internet'."
   (interactive)
   (let ((dictUrl "http://en.wiktionary.org/wiki/�" ))
     (lookup-word-on-internet input-word dictUrl) ) )
