@@ -61,6 +61,7 @@
 
 ;;; HISTORY
 
+;; version 1.3, 2012-05-11 added “lookup-all-dictionaries”.
 ;; version 1.2, 2012-05-10 added “lookup-answers.com”. Improved inline docs.
 ;; version 1.1, 2012-05-09 changed the input from 「'symbol」 to 「'word」. Changed the English dictionary used from 「http://www.answers.com/main/ntquery?s=�」 to 「http://www.thefreedictionary.com/�」.
 ;; version 1.0, 2011-11-14 First released to public.
@@ -70,6 +71,14 @@
 
 ;; § ----------------------------------------
 (require 'xeu_elisp_util)
+
+(defvar all-dictionaries nil "a vector of dictionaries. Used by `lookup-all-dictionaries'.")
+(setq all-dictionaries [
+"http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=�"
+"http://www.thefreedictionary.com/�"
+"http://www.answers.com/main/ntquery?s=�" 
+"http://en.wiktionary.org/wiki/�"
+] )
 
 (defun lookup-word-on-internet (&optional input-word site-to-use)
   "Look up current word or text selection in a online reference site.
@@ -153,6 +162,15 @@ See also `lookup-word-on-internet'."
   (interactive)
   (let ((dictUrl "http://en.wiktionary.org/wiki/�" ))
     (lookup-word-on-internet input-word dictUrl) ) )
+
+(defun lookup-all-dictionaries (&optional input-word)
+  "Lookup definition in many dictionaries.
+Current word or text selection is used as input.
+The dictionaries used are in `all-dictionaries'.
+
+See also `lookup-word-on-internet'."
+  (interactive)
+  (mapc (lambda (dictUrl) (lookup-word-on-internet input-word dictUrl)) all-dictionaries) )
 
 (defun lookup-php-ref ()
   "Look up current word in PHP's reference doc.
