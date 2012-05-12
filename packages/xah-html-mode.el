@@ -18,19 +18,18 @@
 (defvar xhm-attr-names nil "HTML attributes name list.")
 (setq xhm-attr-names
 '(
-"id="
-"class="
-"style="
-"title="
-
-"href="
-"type="
-"rel="
-"http-equiv="
-"content="
-"charset="
-"width="
-"height="
+"id"
+"class"
+"style"
+"title"
+"href"
+"type"
+"rel"
+"http-equiv"
+"content"
+"charset"
+"width"
+"height"
  ))
 (defvar xhm-attr-names-regexp nil "regex for font locking")
 (setq xhm-attr-names-regexp (regexp-opt xhm-attr-names 'words))
