@@ -2,6 +2,7 @@
 ;; xah-html-mode.el -- Major mode for editing pure html5.
 
 ;;; HISTORY
+;; version 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
 ;; version 0.3, 2012-05-13 added comment handling. improved syntax coloring. Added keymap and syntax table."
 ;; version 0.2, 2012-05-12 first version
 
@@ -27,11 +28,16 @@
 
 ;; keybinding
 
+
 (defvar xhm-keymap nil "Keybinding for `xah-html-mode'")
 (progn
   (setq xhm-keymap (make-sparse-keymap))
   (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
-  )
+  (require 'sgml-mode)
+  (define-key xhm-keymap (kbd "C-c C-d") 'sgml-delete-tag)
+  (define-key xhm-keymap (kbd "C-c C-r") 'sgml-skip-tag-forward)
+  (define-key xhm-keymap (kbd "C-c C-g") 'sgml-skip-tag-backward)
+ )
 
 
 ;; syntax table
