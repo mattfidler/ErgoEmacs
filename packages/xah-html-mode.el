@@ -2,6 +2,7 @@
 ;; xah-html-mode.el -- Major mode for editing pure html5.
 
 ;;; HISTORY
+;; version 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
 ;; version 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
 ;; version 0.3, 2012-05-13 added comment handling. improved syntax coloring. Added keymap and syntax table."
 ;; version 0.2, 2012-05-12 first version
@@ -33,10 +34,9 @@
 (progn
   (setq xhm-keymap (make-sparse-keymap))
   (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
-  (require 'sgml-mode)
-  (define-key xhm-keymap (kbd "C-c C-d") 'sgml-delete-tag)
-  (define-key xhm-keymap (kbd "C-c C-r") 'sgml-skip-tag-forward)
-  (define-key xhm-keymap (kbd "C-c C-g") 'sgml-skip-tag-backward)
+  (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
+  (define-key xhm-keymap (kbd "C-c C-r") 'xhm-skip-tag-forward)
+  (define-key xhm-keymap (kbd "C-c C-g") 'xhm-skip-tag-backward)
  )
 
 
@@ -49,6 +49,24 @@
         synTable))
 
 
+
+(require 'sgml-mode)
+
+(defun xhm-delete-tag ()
+  "Delete the tag under cursor.
+Also delete the matching beginning/ending tag."
+  (interactive)
+  (sgml-delete-tag 1))
+
+(defun xhm-skip-tag-forward ()
+  "Move cursor to the closing tag."
+  (interactive)
+  (sgml-skip-tag-forward 1))
+
+(defun xhm-skip-tag-backward ()
+  "Move cursor to the beginning tag."
+  (interactive)
+  (sgml-skip-tag-backward 1))
 
 (defun xhm-comment-dwim (arg)
 "Comment or uncomment current line or region in a smart way.
@@ -63,7 +81,11 @@ For detail, see `comment-dwim'."
 ;; define the mode
 (define-derived-mode xah-html-mode fundamental-mode
   "xah-html"
-  "Major mode for HTML."
+  "A simple major mode for HTML5.
+HTML5 keywords are colored.
+Basically that's it.
+
+\\{xhm-keymap}"
 
   (setq font-lock-defaults '((xhm-font-lock-keywords)))
 
