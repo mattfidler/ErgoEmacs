@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.4.3"
+(defconst ergoemacs-mode-version "5.4.4"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -229,7 +229,9 @@ Valid values are:
 
 (define-key ergoemacs-keymap (kbd "C-x C-b") 'ibuffer)
 (define-key ergoemacs-keymap (kbd "C-h m") 'describe-major-mode)
+(define-key ergoemacs-keymap (kbd "<f1> m") 'describe-major-mode)
 (define-key ergoemacs-keymap (kbd "C-h o") 'where-is-old-binding)
+(define-key ergoemacs-keymap (kbd "<f1> o") 'where-is-old-binding)
 
 ;; Ctrl+Break is a common IDE shortcut to stop compilation/find/grep
 (define-key ergoemacs-keymap (kbd "C-<pause>") 'kill-compilation)
