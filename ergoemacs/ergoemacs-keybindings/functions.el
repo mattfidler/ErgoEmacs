@@ -58,23 +58,91 @@ If narrow-to-region is in effect, then cut that region only."
      (progn
        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
 
+;;; CURSOR MOVEMENT
+
+(defun forward-open-bracket ()
+  "Move cursor to the next occurrence of left bracket or quotation mark."
+  (interactive)
+  (forward-char 1)
+  (search-forward-regexp "(\\|{\\|\\[\\|<\\|〔\\|【\\|〖\\|〈\\|「\\|『\\|“\\|‘\\|‹\\|«")
+  (backward-char 1)
+  )
+
+(defun backward-open-bracket ()
+  "Move cursor to the previous occurrence of left bracket or quotation mark.."
+  (interactive)
+  (search-backward-regexp "(\\|{\\|\\[\\|<\\|〔\\|【\\|〖\\|〈\\|「\\|『\\|“\\|‘\\|‹\\|«")
+  )
+
+(defun forward-close-bracket ()
+  "Move cursor to the next occurrence of right bracket or quotation mark."
+  (interactive)
+  (search-forward-regexp ")\\|\\]\\|}\\|>\\|〕\\|】\\|〗\\|〉\\|」\\|』\\|”\\|’\\|›\\|»")
+ )
+
+(defun backward-close-bracket ()
+  "Move cursor to the next occurrence of right bracket or quotation mark."
+  (interactive)
+  (backward-char 1)
+  (search-backward-regexp ")\\|\\]\\|}\\|>\\|〕\\|】\\|〗\\|〉\\|」\\|』\\|”\\|’\\|›\\|»")
+  (forward-char 1)
+  )
+
+(defun forward-block ()
+  "Move cursor forward to next occurrence of double newline character.
+In most major modes, this is the same as `forward-paragraph', however,
+this function behaves the same in any mode.
+“forward-paragraph” is mode dependent, because it depends on
+syntax table that has different meaning for “paragraph”."
+  (interactive)
+  (skip-chars-forward "\n")
+  (when (not (search-forward-regexp "\n[[:blank:]]*\n" nil t))
+    (goto-char (point-max)) ) )
+
+(defun backward-block ()
+  "Move cursor backward to previous occurrence of double newline char.
+See: `forward-block'"
+  (interactive)
+  (skip-chars-backward "\n")
+  (when (not (search-backward-regexp "\n[[:blank:]]*\n" nil t))
+    (goto-char (point-min))
+    )
+  )
+
 ;;; TEXT SELECTION RELATED
+
+(defun select-current-line ()
+  "Select the current line"
+  (interactive)
+  (end-of-line) ; move to end of line
+  (set-mark (line-beginning-position)))
+
+(defun select-current-block ()
+  "Select the current block of next between empty lines."
+  (interactive)
+  (let (p1 p2)
+    (progn
+      (if (re-search-backward "\n[ \t]*\n" nil "move")
+          (progn (re-search-forward "\n[ \t]*\n")
+                 (setq p1 (point) ) )
+        (setq p1 (point) )
+        )
+      (if (re-search-forward "\n[ \t]*\n" nil "move")
+          (progn (re-search-backward "\n[ \t]*\n")
+                 (setq p2 (point) ))
+        (setq p2 (point) ) ) )
+    (set-mark p1) ) )
 
 (defun select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
 Delimiters are paired characters:
  () [] {} «» ‹› “” 〖〗 【】 「」 『』 （） 〈〉 《》 〔〕 ⦗⦘ 〘〙 ⦅⦆ 〚〛 ⦃⦄
-
-For practical purposes, it also includes double straight quote
-\", but not curly single quote matching pairs ‘’, because that is
-often used as apostrophy. It also consider both left and right
-angle brackets <> as either beginning or ending pair, so that it
-is easy to get content inside html tags."
+ For practical purposes, also: \" \" ' '"
  (interactive)
  (let (p1)
-   (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃\"")
+   (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃\"'")
    (setq p1 (point))
-   (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄\"")
+   (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄\"'")
    (set-mark p1)
    )
  )

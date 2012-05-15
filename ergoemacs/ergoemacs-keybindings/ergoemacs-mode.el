@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.4.5"
+(defconst ergoemacs-mode-version "5.4.6"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -107,18 +107,6 @@ Valid values are:
  (t ; US qwerty by default
   (load "ergoemacs-layout-us"))
  )
-
-;;; --------------------------------------------------
-;;; Set the menu/apps key to do emacs's M-x, if on Windows
-
-(cond
- ((string-equal system-type "windows-nt")
-  (global-set-key (kbd "<apps>") 'execute-extended-command)
-  )
- ((string-equal system-type "darwin")
-  t )
- ((string-equal system-type "gnu/linux")
-  t ) )
 
 ;;; --------------------------------------------------
 ;;; ergoemacs-keymap
@@ -267,7 +255,7 @@ Valid values are:
 (define-key ergoemacs-keymap ergoemacs-select-text-in-quote-key 'select-text-in-quote)
 
 ;;; --------------------------------------------------
-;;; extra convenient keys starting with F key.
+;;; extra keys not dependent on keyboard layout
 
 (require 'lookup-word-on-internet nil "NOERROR")
 
@@ -294,6 +282,22 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "<C-f5>") 'redo)
 
 (define-key ergoemacs-keymap (kbd "<f8>") ctl-x-map)
+
+;; Set the menu/apps key to do emacs's M-x, if on Windows
+(cond
+ ((string-equal system-type "windows-nt")
+  (define-key ergoemacs-keymap (kbd "<apps>") 'execute-extended-command)
+  )
+ ((string-equal system-type "darwin")
+  t )
+ ((string-equal system-type "gnu/linux")
+  t ) )
+
+;; arrow keys to traverse brackets
+(define-key ergoemacs-keymap (kbd "<M-left>") 'backward-open-bracket) ; Alt+←
+(define-key ergoemacs-keymap (kbd "<M-right>") 'forward-open-bracket) ; Alt+→
+(define-key ergoemacs-keymap (kbd "<M-up>") 'backward-close-bracket)  ; Alt+↑
+(define-key ergoemacs-keymap (kbd "<M-down>") 'forward-close-bracket) ; Alt+↓
 
 ;;----------------------------------------------------------------------
 ;; CUA fix

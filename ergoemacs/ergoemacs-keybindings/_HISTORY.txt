@@ -4,6 +4,28 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.4.6, 2012-05-15
+
+** added commands to traverse brackets.
+“forward-open-bracket” 【Alt+→】
+“backward-open-bracket” 【Alt+←】
+“forward-close-bracket” 【Alt+↓】
+“backward-close-bracket” 【Alt+↑】
+
+Note: other minor modes may over-ride these keys. e.g. “org-mode”.
+
+** added “forward-block”, “backward-block”
+These commands currently don't have a key. You may bind the keys for “forward-paragraph” and “backward-paragraph”. Call “describe-function” on “forward-block” for detail.
+
+** added commands to select line, block text, string
+Added:
+“select-current-line”
+“select-current-block”
+
+Modified 
+“select-text-in-quote”
+to also work on single quotes. e.g. 'some thing'
+
 * version 5.4.5, 2012-05-14
 ** on Windows, now the 【Menu】 key does emacs's “execute-extended-command”,
 just like emacs on linux's default behavior. Rational: This is better than the 【Alt+a】. Because 【a】 is pinky, and it involves 2 keys. Now it's single key. Also, this makes it compatible with emacs on linux .
