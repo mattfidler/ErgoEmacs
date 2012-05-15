@@ -34,8 +34,8 @@
 (defconst ergoemacs-end-of-buffer-key			(kbd "M-I"))
 
 ;; isearch
-(defconst ergoemacs-isearch-forward-key			(kbd "M-o"))
-(defconst ergoemacs-isearch-backward-key		(kbd "M-O"))
+(defconst ergoemacs-isearch-forward-key			(kbd "M-j"))
+(defconst ergoemacs-isearch-backward-key		(kbd "M-J"))
 
 (defconst ergoemacs-recenter-key			(kbd "M-;"))
 

@@ -4,6 +4,40 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.4.5, 2012-05-14
+** on Windows, now the 【Menu】 key does emacs's “execute-extended-command”,
+just like emacs on linux's default behavior. Rational: This is better than the 【Alt+a】. Because 【a】 is pinky, and it involves 2 keys. Now it's single key. Also, this makes it compatible with emacs on linux .
+** interactive search (“isearch-forward”) is now QWERTY 【y】
+, instead of 【;】.
+Rational: this is a highly frequently used command. 【;】 is on homerow, but by pinky. 【y】 is far, but by strong finger. Reaching for y may be a fraction of second slower, but more comfortable and healthy than using pinky.
+** 【Ctrl+f】 is now interactive search (“isearch-forward”).
+(was “search-forward”)
+Feature incomplete. Need to add repeated 【Ctrl+f】 to invoke next match.
+** added more than 10 additional keys starting with function keys.
+【F1 1】 describe-function
+【F1 2】 describe-variable
+【F1 3】 describe-key
+【F1 4】 describe-char
+
+【F1 6】 lookup-all-dictionaries
+【F1 7】 lookup-google
+【F1 8】 lookup-wikipedia
+【F1 9】 lookup-word-definition
+【F1 0】 lookup-answers.com
+【F1 [】 lookup-word-dict-org
+【F1 ]】 lookup-wiktionary
+【F1 `】 elisp-index-search
+
+【F2】      ,cut
+【F3】      ,copy;   【Ctrl+F3】 ,copy-all
+【F4】     ,paste
+
+【F5】      ,undo;    【Ctrl+F5】 ,redo
+
+【F8】      ,ctl-x-map. Emacs's C-x prefix key.
+
+Rational: these are single key or single key sequence additonal keys. The copy, cut, paste, undo, ones are frequently used. Single key is good. The F8 is a additional key for emacs combo key C-x. The F1 key sequences adds many convenient or helpful commands.
+
 * version 5.4.4, 2012-05-12
 ** added  【F1+m】 for “describe-major-mode” and 【F1+o】 for “where-is-old-binding”. Rationale: keep in sync with the 【F1】 = 【Ctrl+h】 equivalence.
 * version 5.4.3, 2012-04-29

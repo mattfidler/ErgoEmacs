@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.4.4"
+(defconst ergoemacs-mode-version "5.4.5"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -107,6 +107,18 @@ Valid values are:
  (t ; US qwerty by default
   (load "ergoemacs-layout-us"))
  )
+
+;;; --------------------------------------------------
+;;; Set the menu/apps key to do emacs's M-x, if on Windows
+
+(cond
+ ((string-equal system-type "windows-nt")
+  (global-set-key (kbd "<apps>") 'execute-extended-command)
+  )
+ ((string-equal system-type "darwin")
+  t )
+ ((string-equal system-type "gnu/linux")
+  t ) )
 
 ;;; --------------------------------------------------
 ;;; ergoemacs-keymap
@@ -214,7 +226,7 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "C-p") 'print-buffer-confirm)
 (define-key ergoemacs-keymap (kbd "C-a") 'mark-whole-buffer)
 
-(define-key ergoemacs-keymap (kbd "C-f") 'search-forward)
+(define-key ergoemacs-keymap (kbd "C-f") 'isearch-forward)
 
 (define-key ergoemacs-keymap (kbd "<delete>") 'delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
 
@@ -253,6 +265,35 @@ Valid values are:
 
 (define-key ergoemacs-keymap ergoemacs-extend-selection-key 'extend-selection)
 (define-key ergoemacs-keymap ergoemacs-select-text-in-quote-key 'select-text-in-quote)
+
+;;; --------------------------------------------------
+;;; extra convenient keys starting with F key.
+
+(require 'lookup-word-on-internet nil "NOERROR")
+
+(define-key ergoemacs-keymap (kbd "<f1> 1") 'describe-function)
+(define-key ergoemacs-keymap (kbd "<f1> 2") 'describe-variable)
+(define-key ergoemacs-keymap (kbd "<f1> 3") 'describe-key)
+(define-key ergoemacs-keymap (kbd "<f1> 4") 'describe-char)
+(define-key ergoemacs-keymap (kbd "<f1> 6") 'lookup-all-dictionaries)
+(define-key ergoemacs-keymap (kbd "<f1> 7") 'lookup-google)
+(define-key ergoemacs-keymap (kbd "<f1> 8") 'lookup-wikipedia)
+(define-key ergoemacs-keymap (kbd "<f1> 9") 'lookup-word-definition)
+(define-key ergoemacs-keymap (kbd "<f1> 0") 'lookup-answers.com)
+(define-key ergoemacs-keymap (kbd "<f1> [") 'lookup-word-dict-org)
+(define-key ergoemacs-keymap (kbd "<f1> ]") 'lookup-wiktionary)
+(define-key ergoemacs-keymap (kbd "<f1> `") 'elisp-index-search)
+
+(define-key ergoemacs-keymap (kbd "<f2>") 'kill-region) ;cut
+(define-key ergoemacs-keymap (kbd "<C-f2>") 'cut-all)
+(define-key ergoemacs-keymap (kbd "<f3>") 'kill-ring-save) ;copy
+(define-key ergoemacs-keymap (kbd "<C-f3>") 'copy-all)
+(define-key ergoemacs-keymap (kbd "<f4>") 'yank)
+
+(define-key ergoemacs-keymap (kbd "<f5>") 'undo)
+(define-key ergoemacs-keymap (kbd "<C-f5>") 'redo)
+
+(define-key ergoemacs-keymap (kbd "<f8>") ctl-x-map)
 
 ;;----------------------------------------------------------------------
 ;; CUA fix
