@@ -263,6 +263,8 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "<f1> 2") 'describe-variable)
 (define-key ergoemacs-keymap (kbd "<f1> 3") 'describe-key)
 (define-key ergoemacs-keymap (kbd "<f1> 4") 'describe-char)
+(define-key ergoemacs-keymap (kbd "<f1> 5") 'woman)
+
 (define-key ergoemacs-keymap (kbd "<f1> 6") 'lookup-all-dictionaries)
 (define-key ergoemacs-keymap (kbd "<f1> 7") 'lookup-google)
 (define-key ergoemacs-keymap (kbd "<f1> 8") 'lookup-wikipedia)
