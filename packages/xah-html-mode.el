@@ -56,7 +56,60 @@
   "Delete the tag under cursor.
 Also delete the matching beginning/ending tag."
   (interactive)
-  (sgml-delete-tag 1))
+(save-excursion 
+  ;; search for current tag.
+  ;; find left nearest >, and right nearest <
+  ;; or left nearest <, and right nearest >
+  ;; determine if it's <…> or >…<.
+
+(let (
+(p1-current (point))
+p2-left<
+p3-left>
+p4-right<
+p5-right>
+cursor>…▮…<-p
+cursor<…▮…>-p
+ )
+(goto-char p1-current)
+(search-backward "<")
+(setq p2-left< (point) )
+
+(goto-char p1-current)
+(search-backward ">")
+(setq p3-left> (point) )
+
+(goto-char p1-current)
+(search-forward "<")
+(setq p4-right< (point) )
+
+(goto-char p1-current)
+(search-forward ">")
+(setq p5-right> (point) )
+
+(when
+    (and 
+     (< p2-left< p3-left>)
+     (< p4-right< p5-right>)
+     )
+    (setq cursor>…▮…<-p  t )
+  )
+
+(when
+    (and 
+     (< p3-left> p2-left< )
+     (< p5-right> p4-right< )
+     )
+    (setq cursor<…▮…>-p  t )
+  )
+
+)
+ 
+
+)
+;  (sgml-delete-tag 1)
+
+)
 
 (defun xhm-skip-tag-forward ()
   "Move cursor to the closing tag."

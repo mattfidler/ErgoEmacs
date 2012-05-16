@@ -18,6 +18,7 @@
 
 ;;; HISTORY
 
+;; version 1.1, 2012-05-11 modified xah-find-text so that same line are not printed.
 ;; version 1.0, 2012-04-02 First version.
 
 
@@ -47,6 +48,8 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
   (let (
         (ξcount 0)
         (outputBuffer "*xah-find-text*")
+        (textBlock "008991033174968")
+        (textBlock-prev "092695046507792-random")
         )
 
     ;; add a ending slash if not there
@@ -66,9 +69,12 @@ Path Regex 「%s」
            (insert-file-contents fPath)
            (setq case-fold-search case-fold-search)
            (while (search-forward searchStr1 nil "NOERROR if not found")
-             (princ (format "「%s」\n" (buffer-substring-no-properties (line-beginning-position) (line-end-position) )))
              (setq ξcount (1+ ξcount))
-             )
+             (setq textBlock
+                   (buffer-substring-no-properties (line-beginning-position) (line-end-position) ) )
+             (when (not (string= textBlock textBlock-prev))
+               (princ (format "「%s」\n" textBlock)))
+             (setq textBlock-prev textBlock))
            (when (> ξcount 0)
              (princ (format "• %d %s\n" ξcount fPath))
              )
@@ -77,7 +83,7 @@ Path Regex 「%s」
        (find-lisp-find-files inputDir pathRegex))
       
       (switch-to-buffer outputBuffer)
-      (highlight-phrase searchStr1 (quote hi-yellow))
+      (highlight-phrase (regexp-quote searchStr1) (quote hi-yellow))
       (highlight-lines-matching-regexp "• " (quote hi-pink))
       )
     ))
