@@ -182,10 +182,6 @@
 ;;; enhanced “directory viewer”/“file manager” (diredplus mode)
 (require 'dired+)
 
-;; Highlight occurrence of current word, and move cursor to next/prev occurrence
-;; see http://xahlee.org/emacs/modernization_isearch.html
-(require 'highlight-symbol)
-
 ;; record command call statistics
 (require 'keyfreq)
 (setq keyfreq-file "~/.emacs.d/.emacs.keyfreq")
