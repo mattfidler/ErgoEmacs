@@ -179,12 +179,6 @@
 (ac-config-default)
 (auto-complete-mode 1)
 
-
-;;; enhanced bookmark, bookmarkplus
-;; (add-to-list 'load-path
-;;  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
-;; (require 'bookmark+)
-
 ;;; enhanced “directory viewer”/“file manager” (diredplus mode)
 (require 'dired+)
 
