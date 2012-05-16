@@ -108,16 +108,16 @@
 ;;; xmsi-mode 〔xmsi-math-symbols-input.el〕 for inputting math (Unicode) symbols.
 (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
 
-;; Hunspell only for Windows until we fix http://code.google.com/p/ergoemacs/issues/detail?id=51
-(when (and (string-equal system-type "windows-nt")
-	   (executable-find "hunspell"))
-  (progn
-    (add-to-list 'load-path
-		 (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/"))
-    (require 'rw-hunspell)
-    (rw-hunspell-setup)
-    )
-  )
+;; ;; Hunspell only for Windows until we fix http://code.google.com/p/ergoemacs/issues/detail?id=51
+;; (when (and (string-equal system-type "windows-nt")
+;; 	   (executable-find "hunspell"))
+;;   (progn
+;;     (add-to-list 'load-path
+;; 		 (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/"))
+;;     (require 'rw-hunspell)
+;;     (rw-hunspell-setup)
+;;     )
+;;   )
 
 ;; ;; Hunspell
 ;; (when (string-equal system-type "windows-nt")
@@ -181,9 +181,9 @@
 
 
 ;;; enhanced bookmark, bookmarkplus
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
-(require 'bookmark+)
+;; (add-to-list 'load-path
+;;  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmarkplus/"))
+;; (require 'bookmark+)
 
 ;;; enhanced “directory viewer”/“file manager” (diredplus mode)
 (require 'dired+)
