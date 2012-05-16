@@ -41,13 +41,6 @@
   (autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
 )
 
-;;; mode for clojure language
-(autoload 'clojure-mode "clojure-mode" "mode for editing clojure language." t)
-
-;;; mode for lua language
-(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
-(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode)) ; lua-mode
-
 ;;; xlsl-mode. http://en.wikipedia.org/wiki/Linden_Scripting_Language
 (autoload 'xlsl-mode "xlsl-mode" "Load xlsl-mode for editing Linden Scripting Lang." t)
 (add-to-list 'auto-mode-alist '("\\.lsl\\'" . xlsl-mode))
@@ -62,29 +55,6 @@
 (autoload 'pov-mode "pov-mode" "Major mode for working with POV-Ray code." t)
 (add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
-
-;; ;;; mode for Haskell lang. http://en.wikipedia.org/wiki/Haskell_(programming_language)
-;; (add-to-list 'load-path
-;;  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/haskell-mode-2.7.0/"))
-;; (load "haskell-mode-2.7.0/haskell-site-file")
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-;; ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;; ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-
-;;; mode for erlang lang. 
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/erlang/"))
-(setq erlang-root-dir "C:/Program Files (x86)/erl5.8.1.1")
-(add-to-list 'exec-path "C:/Program Files (x86)/erl5.8.1.1/bin")
-(require 'erlang-start)
-(require 'erlang-flymake)
-
-
-;;; mode for Scala lang. 
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/scala-mode/"))
-(require 'scala-mode-auto)
 
 ;;; tuareg mode for ML/Caml/OCaml lang
 (add-to-list 'load-path
