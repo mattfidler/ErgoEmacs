@@ -18,12 +18,13 @@
 (AttributeNamesRegexp (regexp-opt '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" ) 'words))
  )
 `(
-(,htmlElementNamesRegex . font-lock-function-name-face)
-(,AttributeNamesRegexp . font-lock-keyword-face)
+;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
 ("“\\([^ ]+?\\)”" . (1 font-lock-string-face))
 ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 ("<!--\\|-->" . font-lock-comment-delimiter-face)
 ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
+(,htmlElementNamesRegex . font-lock-function-name-face)
+(,AttributeNamesRegexp . font-lock-keyword-face)
 ) ) )
 
 
@@ -35,6 +36,7 @@
   (setq xhm-keymap (make-sparse-keymap))
   (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
   (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
+  (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
   (define-key xhm-keymap (kbd "C-c C-r") 'xhm-skip-tag-forward)
   (define-key xhm-keymap (kbd "C-c C-g") 'xhm-skip-tag-backward)
  )
@@ -44,8 +46,58 @@
 (defvar xhm-syntax-table nil "Syntax table for `xah-html-mode'.")
 (setq xhm-syntax-table
       (let ((synTable (make-syntax-table)))
+
+;; (progn                                  ; all on US keyboard
+
+;; (modify-syntax-entry ?\" "\"" synTable)
+;; (modify-syntax-entry ?' "w" synTable)
+
+;; (modify-syntax-entry ?, "." synTable)
+;; (modify-syntax-entry ?. "." synTable)
+;; (modify-syntax-entry ?: "." synTable)
+;; (modify-syntax-entry ?? "." synTable)
+;; (modify-syntax-entry ?\; "." synTable)
+
+
+;; (modify-syntax-entry ?! "." synTable)
+;; (modify-syntax-entry ?@ "." synTable)
+;; (modify-syntax-entry ?# "." synTable)
+;; (modify-syntax-entry ?$ "." synTable)
+;; (modify-syntax-entry ?% "." synTable)
+;; (modify-syntax-entry ?^ "." synTable)
+;; (modify-syntax-entry ?& "." synTable)
+;; (modify-syntax-entry ?* "." synTable)
+;; (modify-syntax-entry ?+ "." synTable)
+;; (modify-syntax-entry ?= "." synTable)
+;; (modify-syntax-entry ?/ "." synTable)
+;; (modify-syntax-entry ?\ "/" synTable)
+
+;; (modify-syntax-entry ?_ "_" synTable)
+;; (modify-syntax-entry ?- "w" synTable)
+
+;; (modify-syntax-entry ?( "(" synTable)
+;; (modify-syntax-entry ?) ")" synTable)
+;; (modify-syntax-entry ?[ "(" synTable)
+;; (modify-syntax-entry ?] ")" synTable)
+;; (modify-syntax-entry ?{ "(" synTable)
+;; (modify-syntax-entry ?} ")" synTable)
+;; (modify-syntax-entry ?< "(" synTable)
+;; (modify-syntax-entry ?> ")" synTable)
+
+;; (modify-syntax-entry ?| "." synTable)
+;; (modify-syntax-entry ?` "." synTable)
+;; (modify-syntax-entry ?~ "." synTable)
+;; )
+
         (modify-syntax-entry ?< "." synTable)
         (modify-syntax-entry ?> "." synTable)
+        (modify-syntax-entry ?' "w" synTable)
+
+
+;; (modify-syntax-entry ?“ "\"" synTable)
+;; (modify-syntax-entry ?” "\"" synTable)
+
+
         synTable))
 
 
