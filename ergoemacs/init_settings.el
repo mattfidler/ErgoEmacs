@@ -41,6 +41,28 @@
 
 ;; § ----------------------------------------
 
+;; seems pointless to warn. There's always undo.
+(put 'narrow-to-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)
+(put 'scroll-left 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+
+
+;; § ----------------------------------------
+
+;; (setq tab-always-indent 'complete)
+
+;; majority of code formatting conventions do no recommend mixed tabs and spaces. So, here.
+(setq-default indent-tabs-mode nil)     ; emacs 23.1 default is t
+
+;; seems 4 is more popular than 8. Need more research.
+(setq tab-width 4)   ; width for display tabs. emacs 23.1 default is 8
+
+
+;; § ----------------------------------------
+
 (when (>= emacs-major-version 24)
   (require 'package)
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
