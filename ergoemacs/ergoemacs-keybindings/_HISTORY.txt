@@ -4,6 +4,8 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.4.8, 2012-05-20
+** added 【alt+Del】 to delete word to the right.
 
 * version 5.4.7, 2012-05-17
 ** added 【F4】 for paste previous “yank-pop”
