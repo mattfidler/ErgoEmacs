@@ -1,16 +1,16 @@
 ;-*- coding: utf-8 -*-
-;; xahk-mode.el -- Major mode for editing AHK (AutoHotKey) scripts.
+;; xahk-mode.el -- Major mode for editing AHK (AutoHotkey) scripts.
 
 ;; Copyright © 2008 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
-;; Keywords: ahk, AutoHotKey, hotkey, keyboard shortcut, automation
+;; Keywords: ahk, AutoHotkey, hotkey, keyboard shortcut, automation
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; DESCRIPTION
 
-;; A major mode for editing AutoHotKey (AHK) script. 
+;; A major mode for editing AutoHotkey (AHK) script. 
 ;; for download location and documentation, see:
 ;; http://xahlee.org/mswin/emacs_autohotkey_mode.html
 
@@ -35,6 +35,7 @@
 
 ;;; HISTORY
 
+;; version 1.2.2, 2012-05-21 modified syntax table so “_” is part of word.
 ;; version 1.2.1, 2011-10-15 Minor changes. No visible behavior change.
 ;; version 1.2, 2010-02-17 fixed a defect where if source contains “"C:\"”, everything after is badly syntax colored. Thanks to “xinlu.h” and “iain.tuddenham”. Detail at http://code.google.com/p/ergoemacs/issues/detail?id=66
 ;; version 1.1, 2010-01-14 Added indentation feature. (press Tab to indent.)
@@ -44,10 +45,10 @@
 
 (require 'thingatpt )
 
-(setq xahk-mode-version "1.2.1")
+(setq xahk-mode-version "1.2.2")
 
 (defgroup xahk-mode nil
-  "Major mode for editing AutoHotKey script."
+  "Major mode for editing AutoHotkey script."
   :group 'languages)
 
 (defvar xahk-mode-command-name-face 'xahk-mode-command-name-face "Face name to use for AHK command names.")
@@ -67,8 +68,7 @@
 (defvar xahk-mode-version nil "xahk-mode version string.")
 
 (defvar xahk-mode-map nil "Keymap for xahk-mode")
-
-(if xahk-mode-map nil
+(progn
   (setq xahk-mode-map (make-sparse-keymap))
   (define-key xahk-mode-map (kbd "C-c C-r") 'xahk-lookup-ahk-ref)
   (define-key xahk-mode-map (kbd "M-TAB") 'xahk-complete-symbol)
@@ -86,7 +86,8 @@
     (define-key menuMap [keyword-completion] '("Keyword Completion" . xahk-complete-symbol))))
 
 ;;; syntax table
-(defvar xahk-mode-syntax-table
+(defvar xahk-mode-syntax-table nil "Syntax table for `xahk-mode'.")
+(setq xahk-mode-syntax-table
   (let ((synTable (make-syntax-table)))
   (modify-syntax-entry ?\; "< b" synTable)
   (modify-syntax-entry ?\n "> b" synTable)
@@ -110,18 +111,10 @@
   (modify-syntax-entry ?. "." synTable)
   (modify-syntax-entry ?/ "." synTable)
   (modify-syntax-entry ?- "." synTable)
-  (modify-syntax-entry ?_ "." synTable)
+  (modify-syntax-entry ?_ "w" synTable)
   (modify-syntax-entry ?\\ "." synTable) ; \ is path separator
   synTable)
-  "Syntax table for `xahk-mode'.")
-
-;; word w
-;; symbol _
-;; punct .
-;; escape \ 
-;; expression prefix '
-; " \
-
+)
 
 ;;; functions
 
@@ -149,7 +142,7 @@ For detail, see `comment-dwim'."
      (comment-dwim arg)))
 
 (defun xahk-lookup-ahk-ref ()
-  "Look up current word in AutoHotKey's reference doc.
+  "Look up current word in AutoHotkey's reference doc.
 If a there is a text selection (a phrase), lookup that phrase.
 Launches default browser and opens the doc's url."
  (interactive)
@@ -247,7 +240,7 @@ Keywords include all AHK's event handlers, functions, and CONSTANTS."
 (setq xahk-keys nil)
 
 (defun xahk-mode ()
-  "Major mode for editing AutoHotKey script (AHK).
+  "Major mode for editing AutoHotkey script (AHK).
 
 Shortcuts             Command Name
 \\[comment-dwim]       `comment-dwim'
