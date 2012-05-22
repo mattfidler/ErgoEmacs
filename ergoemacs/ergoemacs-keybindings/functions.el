@@ -80,7 +80,7 @@ If narrow-to-region is in effect, then cut that region only."
   "Move cursor to the next occurrence of right bracket or quotation mark."
   (interactive)
   ;; (search-forward-regexp ")\\|\\]\\|}\\|>\\|〕\\|】\\|〗\\|〉\\|」\\|』\\|”\\|’\\|›\\|»")
-  (search-backward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›") ;using syntax table
+  (search-forward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›") ;using syntax table
  )
 
 (defun backward-close-bracket ()
