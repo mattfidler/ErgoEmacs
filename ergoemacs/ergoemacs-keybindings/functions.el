@@ -64,27 +64,30 @@ If narrow-to-region is in effect, then cut that region only."
   "Move cursor to the next occurrence of left bracket or quotation mark."
   (interactive)
   (forward-char 1)
-  (search-forward-regexp "(\\|{\\|\\[\\|<\\|〔\\|【\\|〖\\|〈\\|「\\|『\\|“\\|‘\\|‹\\|«")
+  ;; (search-forward-regexp "(\\|{\\|\\[\\|<\\|〔\\|【\\|〖\\|〈\\|「\\|『\\|“\\|‘\\|‹\\|«")
+  (search-forward-regexp "\\s(\\|\\s\"\\|<\\|“\\|‘\\|‹") ; using syntax table
+;;  (search-forward-regexp "\\s\"") ; using syntax table
   (backward-char 1)
   )
 
 (defun backward-open-bracket ()
   "Move cursor to the previous occurrence of left bracket or quotation mark.."
   (interactive)
-  (search-backward-regexp "(\\|{\\|\\[\\|<\\|〔\\|【\\|〖\\|〈\\|「\\|『\\|“\\|‘\\|‹\\|«")
+  (search-backward-regexp "\\s(\\|\\s\"\\|<\\|“\\|‘\\|‹") ;using syntax table
   )
 
 (defun forward-close-bracket ()
   "Move cursor to the next occurrence of right bracket or quotation mark."
   (interactive)
-  (search-forward-regexp ")\\|\\]\\|}\\|>\\|〕\\|】\\|〗\\|〉\\|」\\|』\\|”\\|’\\|›\\|»")
+  ;; (search-forward-regexp ")\\|\\]\\|}\\|>\\|〕\\|】\\|〗\\|〉\\|」\\|』\\|”\\|’\\|›\\|»")
+  (search-backward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›") ;using syntax table
  )
 
 (defun backward-close-bracket ()
-  "Move cursor to the next occurrence of right bracket or quotation mark."
+  "Move cursor to the previous occurrence of right bracket or quotation mark."
   (interactive)
   (backward-char 1)
-  (search-backward-regexp ")\\|\\]\\|}\\|>\\|〕\\|】\\|〗\\|〉\\|」\\|』\\|”\\|’\\|›\\|»")
+  (search-backward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›")
   (forward-char 1)
   )
 
