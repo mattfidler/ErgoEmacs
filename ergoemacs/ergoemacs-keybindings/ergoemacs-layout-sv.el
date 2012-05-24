@@ -32,7 +32,7 @@
 
 ;; Move to beginning/ending of file
 (defconst ergoemacs-backward-open-bracket-key		(kbd "M-J"))
-(defconst ergoemacs-forward-open-bracket-key			(kbd "M-L"))
+(defconst ergoemacs-forward-close-bracket-key			(kbd "M-L"))
 
 ;; isearch
 (defconst ergoemacs-isearch-forward-key			(kbd "M-y"))

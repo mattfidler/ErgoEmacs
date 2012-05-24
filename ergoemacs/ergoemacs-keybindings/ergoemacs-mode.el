@@ -138,7 +138,7 @@ Valid values are:
 
 ;; Move to beginning/ending of file
 (define-key ergoemacs-keymap ergoemacs-backward-open-bracket-key 'backward-open-bracket)
-(define-key ergoemacs-keymap ergoemacs-forward-open-bracket-key 'forward-open-bracket)
+(define-key ergoemacs-keymap ergoemacs-forward-close-bracket-key 'forward-close-bracket)
 
 ;; isearch
 (define-key ergoemacs-keymap ergoemacs-isearch-forward-key 'isearch-forward)
