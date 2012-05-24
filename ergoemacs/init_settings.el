@@ -193,6 +193,8 @@
 ;; Alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
 
+(setq org-src-fontify-natively t)
+
 
 ;; § ----------------------------------------
 
