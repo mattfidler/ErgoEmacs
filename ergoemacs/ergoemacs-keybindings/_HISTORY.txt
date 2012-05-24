@@ -4,6 +4,26 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.5.0, 2012-05-24
+
+Major change.
+
+• 【Alt+Shift+j】 was “beginning-of-buffer”, is now “backward-open-bracket”
+• 【Alt+Shift+l】 was “end-of-buffer”, is now “forward-open-bracket”
+
+• 【Alt+Shift+u】 was “backward-paragraph”, is now “beginning-of-defun”
+• 【Alt+Shift+o】 was “forward-paragraph”, is now “end-of-defun”
+
+Rational: the beginning/end of buffer command is not frequently used. Their replacement, the backward/forward bracket is much more useful in any programing language with brackets: (){}[].
+
+Similarly, the movement by defun is probably more useful than movement by paragraph, because most emacs users are programers. The concept of “paragraph” isn't well defined in programing languages. But the defun movement also work with C-like syntax languages as well as lisp.
+
+Thanks a lot to David Capello for suggestion and discussion. See: http://dacap.com.ar/programming/keyboard-layout/
+
+〈Comandos de programación básicos de Emacs (forward-sexp, beginning-of-defun)〉 @ http://youtu.be/BuxJesmNc64
+
+Also, implementation of {forward-open-bracket, backward-open-bracket, forward-close-bracket, backward-close-bracket} is reverted to not dependent on syntax table. Because, for example, in cperl mode, the curly bracket {} doesn't have bracket syntax.
+
 * version 5.4.9, 2012-05-22
 ** improved implementation of forward-open-bracket, backward-open-bracket, forward-close-bracket, backward-close-bracket
 They now include the straight double quote char (unicode U+22)

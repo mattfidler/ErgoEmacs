@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.4.9"
+(defconst ergoemacs-mode-version "5.5.0"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -125,8 +125,8 @@ Valid values are:
 (define-key ergoemacs-keymap ergoemacs-forward-word-key 'forward-word)
 
 ;; Move by paragraph
-(define-key ergoemacs-keymap ergoemacs-backward-paragraph-key 'backward-paragraph)
-(define-key ergoemacs-keymap ergoemacs-forward-paragraph-key 'forward-paragraph)
+(define-key ergoemacs-keymap ergoemacs-beginning-of-defun-key 'beginning-of-defun)
+(define-key ergoemacs-keymap ergoemacs-end-of-defun-key 'end-of-defun)
 
 ;; Move to beginning/ending of line
 (define-key ergoemacs-keymap ergoemacs-move-beginning-of-line-key 'move-beginning-of-line)
@@ -137,8 +137,8 @@ Valid values are:
 (define-key ergoemacs-keymap ergoemacs-scroll-up-key 'scroll-up)
 
 ;; Move to beginning/ending of file
-(define-key ergoemacs-keymap ergoemacs-beginning-of-buffer-key 'beginning-of-buffer)
-(define-key ergoemacs-keymap ergoemacs-end-of-buffer-key 'end-of-buffer)
+(define-key ergoemacs-keymap ergoemacs-backward-open-bracket-key 'backward-open-bracket)
+(define-key ergoemacs-keymap ergoemacs-forward-open-bracket-key 'forward-open-bracket)
 
 ;; isearch
 (define-key ergoemacs-keymap ergoemacs-isearch-forward-key 'isearch-forward)

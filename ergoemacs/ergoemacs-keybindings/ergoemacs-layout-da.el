@@ -18,8 +18,8 @@
 (defconst ergoemacs-forward-word-key			(kbd "M-o"))
 
 ;; Move by paragraph
-(defconst ergoemacs-backward-paragraph-key		(kbd "M-U"))
-(defconst ergoemacs-forward-paragraph-key		(kbd "M-O"))
+(defconst ergoemacs-beginning-of-defun-key		(kbd "M-U"))
+(defconst ergoemacs-end-of-defun-key		(kbd "M-O"))
 
 ;; Move to beginning/ending of line
 (defconst ergoemacs-move-beginning-of-line-key		(kbd "M-h"))
@@ -30,8 +30,8 @@
 (defconst ergoemacs-scroll-up-key			(kbd "M-K"))
 
 ;; Move to beginning/ending of file
-(defconst ergoemacs-beginning-of-buffer-key		(kbd "M-J"))
-(defconst ergoemacs-end-of-buffer-key			(kbd "M-L"))
+(defconst ergoemacs-backward-open-bracket-key		(kbd "M-J"))
+(defconst ergoemacs-forward-open-bracket-key			(kbd "M-L"))
 
 ;; isearch
 (defconst ergoemacs-isearch-forward-key			(kbd "M-æ"))
