@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.5.0"
+(defconst ergoemacs-mode-version "5.5.1"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -300,9 +300,10 @@ Valid values are:
 
 ;; arrow keys to traverse brackets
 (define-key ergoemacs-keymap (kbd "<M-left>") 'backward-open-bracket) ; Alt+←
-(define-key ergoemacs-keymap (kbd "<M-right>") 'forward-open-bracket) ; Alt+→
-(define-key ergoemacs-keymap (kbd "<M-up>") 'backward-close-bracket)  ; Alt+↑
-(define-key ergoemacs-keymap (kbd "<M-down>") 'forward-close-bracket) ; Alt+↓
+(define-key ergoemacs-keymap (kbd "<M-right>") 'forward-close-bracket) ; Alt+→
+
+(define-key ergoemacs-keymap (kbd "<M-up>") 'backward-block) ; Alt+↑
+(define-key ergoemacs-keymap (kbd "<M-down>") 'forward-block) ; Alt++↓
 
 ;;----------------------------------------------------------------------
 ;; CUA fix

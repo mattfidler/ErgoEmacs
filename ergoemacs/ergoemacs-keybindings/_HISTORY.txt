@@ -4,6 +4,25 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.5.1, 2012-05-25
+
+** Changed behavior of 【Alt+‹arrow keys›】
+
+Before, 【Alt+‹left/right›】 move cursor backward/forward to left bracket positions, and, 【Alt+‹up/down›】 does the same to right bracket positions.
+
+Now, 【Alt+←】 does “backward-open-bracket”, and 【Alt+→】 does “forward-closing-bracket”.
+Now, 【Alt+↑】 and 【Alt+↓】 does backward/forward block.
+
+A “block” is text between empty new lines. (similiar to emacs's “paragraph”)
+
+Rational: Several advantages with the new way.
+
+① reduces the number of keys needed for navigating to all possible left/right bracket points. Before, it needs 4 keys, now 2. 
+
+② the new way is more intuitive with emacs. The forward key moves to end of things, and backward to beginning of things.
+
+③ advantage of backward/forward block: GNU Emacs has {【Ctrl+↑】, 【Ctrl+↓】} for backward/forward paragraph. The problem is that “paragraph” is dependent on major mode's syntax table, so the behavior is unpredictable, and “paragraph” isn't well defined in computer language modes. e.g. in “html-mode”, it seems to move in funny way. The new behavior is predicable and useful. It's useful because vast majority of text uses empty lines to separate blocks of text.
+
 * version 5.5.0, 2012-05-24
 
 Major change.
