@@ -303,7 +303,7 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "<M-right>") 'forward-close-bracket) ; Alt+→
 
 (define-key ergoemacs-keymap (kbd "<M-up>") 'backward-block) ; Alt+↑
-(define-key ergoemacs-keymap (kbd "<M-down>") 'forward-block) ; Alt++↓
+(define-key ergoemacs-keymap (kbd "<M-down>") 'forward-block) ; Alt+↓
 
 ;;----------------------------------------------------------------------
 ;; CUA fix
