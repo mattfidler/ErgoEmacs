@@ -18,8 +18,8 @@
 (defconst ergoemacs-forward-word-key			(kbd "M-r"))
 
 ;; Move by paragraph
-(defconst ergoemacs-beginning-of-defun-key		(kbd "M-G"))
-(defconst ergoemacs-end-of-defun-key		(kbd "M-R"))
+(defconst ergoemacs-backward-block-key		(kbd "M-G"))
+(defconst ergoemacs-forward-block-key		(kbd "M-R"))
 
 ;; Move to beginning/ending of line
 (defconst ergoemacs-move-beginning-of-line-key		(kbd "M-d"))

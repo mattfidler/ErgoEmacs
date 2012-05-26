@@ -4,6 +4,15 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.5.2, 2012-05-25
+
+• 【Alt+Shift+u】 was “beginning-of-defun”, is now “backward-block”
+• 【Alt+Shift+o】 was “end-of-defun”, is now “forward-block”
+
+Rational: after tried the beginning/end of defun, i didn't find it as much as usable in comparison to backward/forward block. Because, in many modes such as python, html, plain text (email, irc, text document), the defun one is useless. However, the move by block is applicable to vast majority of modes.
+
+I think the navigation of defun and sexp has one nice key group. e.g. Ctrl+Alt+arrow move by sexp, and Ctrl+Alt+home/end does defun. So, that's a nice set there.
+
 * version 5.5.1, 2012-05-25
 
 ** Changed behavior of 【Alt+‹arrow keys›】

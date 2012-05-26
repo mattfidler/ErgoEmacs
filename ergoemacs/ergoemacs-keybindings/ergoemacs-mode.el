@@ -55,7 +55,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.5.1"
+(defconst ergoemacs-mode-version "5.5.2"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -125,8 +125,8 @@ Valid values are:
 (define-key ergoemacs-keymap ergoemacs-forward-word-key 'forward-word)
 
 ;; Move by paragraph
-(define-key ergoemacs-keymap ergoemacs-beginning-of-defun-key 'beginning-of-defun)
-(define-key ergoemacs-keymap ergoemacs-end-of-defun-key 'end-of-defun)
+(define-key ergoemacs-keymap ergoemacs-backward-block-key 'backward-block)
+(define-key ergoemacs-keymap ergoemacs-forward-block-key 'forward-block)
 
 ;; Move to beginning/ending of line
 (define-key ergoemacs-keymap ergoemacs-move-beginning-of-line-key 'move-beginning-of-line)
