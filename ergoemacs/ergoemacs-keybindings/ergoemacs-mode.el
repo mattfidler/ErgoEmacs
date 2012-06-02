@@ -3,7 +3,7 @@
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009, 2010 by David Capello
 
-;; Author: Xah Lee <xah@xahlee.or> ( http://xahlee.org/ )
+;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
 ;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
