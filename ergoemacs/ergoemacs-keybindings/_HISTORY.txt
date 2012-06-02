@@ -9,7 +9,7 @@ Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherw
 • 【Alt+Shift+u】 was “beginning-of-defun”, is now “backward-block”
 • 【Alt+Shift+o】 was “end-of-defun”, is now “forward-block”
 
-Rational: after tried the beginning/end of defun, i didn't find it as much as usable in comparison to backward/forward block. Because, in many modes such as python, html, plain text (email, irc, text document), the defun one is useless. However, the move by block is applicable to vast majority of modes.
+Rational: after tried the beginning/end of defun, i didn't find it as usable in comparison to backward/forward block. Because, in many modes such as python, html, plain text (email, irc, text document), the defun one is useless. However, the move by block is applicable to vast majority of modes.
 
 I think the navigation of defun and sexp has one nice key group. e.g. Ctrl+Alt+arrow move by sexp, and Ctrl+Alt+home/end does defun. So, that's a nice set there.
 

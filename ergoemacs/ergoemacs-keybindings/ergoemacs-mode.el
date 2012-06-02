@@ -1,35 +1,34 @@
-;-*- coding: utf-8 -*-
-;; ergoemacs-mode.el -- A emacs keybinding set based on ergonomics.
+;;; ergoemacs-mode.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009, 2010 by David Capello
 
-;; Author: Xah Lee ( http://xahlee.org/ ), David Capello ( http://www.davidcapello.com.ar/ )
-;; Version: See the variable ergoemacs-mode-version.
-;; Keywords: qwerty, dvorak, keybinding, ergonomic, colemak
+;; Author: Xah Lee <xah@xahlee.or> ( http://xahlee.org/ )
+;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
+;; Maintainer: Xah Lee
+;; Created: August 01 2007
+;; Version: 5.5.2
+;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
 ;; of the GNU General Public License as published by the Free Software
 ;; Foundation; either version 2, or (at your option) any later
 ;; version.
 
-;;; DESCRIPTION
-
+;;; Commentary:
 ;; This keybinding set puts the most frequently used emacs keyboard
 ;; shortcuts into the most easy-to-type spots.
 ;;
 ;; For complete detail, see:
 ;; http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
-
-;;; INSTALL
-
+;; 
+;; Install:
 ;; See the file “_INSTALL.txt”.
 
-;;; HISTORY
-
+;;; Change Log:
 ;; See the file “_HISTORY.txt”.
 
-;;; ACKNOWLEDGMENT
+;;; Acknowledgment:
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
@@ -50,6 +49,8 @@
 ;; ergoemacs-layout-pt-nativo.el Contributor: Xavier Pinho
 
 ;;; --------------------------------------------------
+
+;;; Code:
 
 ;; Add this same directory to load elisp files
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
@@ -687,3 +688,5 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
   )
 
 (provide 'ergoemacs-mode)
+
+;;; ergoemacs-mode.el ends here

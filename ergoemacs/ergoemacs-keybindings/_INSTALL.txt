@@ -7,25 +7,25 @@ HTML version at http://xahlee.org/emacs/ergonomic_emacs_keybinding_install.html
 * INSTALLATION INSTRUCTIONS
 
 ** ① Unzip the folder.
-If you downloaded a file named “ergoemacs-keybindings-5.3.9.zip”, unzip it.
+If you downloaded a file named “ergoemacs-keybindings-5.5.2.zip”, unzip it.
 
 On Windows, you can right click the file name and choose “Extract All...”.
 
 On Mac OS X, you can double click to unzip.
 
-On Linux (and Mac OS X), you can type “unzip ergoemacs-keybindings-5.3.9.zip” on a text terminal.
+On Linux (and Mac OS X), you can type “unzip ergoemacs-keybindings-5.5.2.zip” on a text terminal.
 
-Now you should have a folder named “ergoemacs-keybindings-5.3.9”.
+Now you should have a folder named “ergoemacs-keybindings-5.5.2”.
 
 ** ② Place the folder in your emacs load path.
 
 For examples:
 
 On Windows:
-%HOMEPATH%\.emacs.d\ergoemacs-keybindings-5.3.9
+%HOMEPATH%\.emacs.d\ergoemacs-keybindings-5.5.2
 
 On Mac OS X or Linux:
-~/.emacs.d/ergoemacs-keybindings-5.3.9
+~/.emacs.d/ergoemacs-keybindings-5.5.2
 
 If the folder “.emacs.d” doesn't exist, you can go ahead and create it.
 
@@ -58,7 +58,7 @@ Place ONE of the following line in your emacs init file (~/.emacs):
 Place the following lines in your emacs init file.
 
 ;; load ErgoEmacs keybinding
-(load "~/.emacs.d/ergoemacs-keybindings-5.3.9/ergoemacs-mode")
+(load "~/.emacs.d/ergoemacs-keybindings-5.5.2/ergoemacs-mode")
 
 ;; turn on minor mode ergoemacs-mode
 (ergoemacs-mode 1)
@@ -71,7 +71,9 @@ You do not need to have the file path end in 〔.el〕.
 
 ** ⑤ Restart emacs.
 
-After you restart emacs, you will be using the new keybinding. The keyboard shortcut for emacs's “M-x” (“execute-extended-command”) is now 【Alt+a】.
+After you restart emacs, you will be using the new keybinding.
+
+The keyboard shortcut for emacs's “M-x” (“execute-extended-command”) is now 【Alt+a】 or the Menu Key (the key with a Menu icon, usually on the right of the right Alt key.)
 
 To turn off the mode, type 【Alt+a】 then “ergoemacs-mode”. After that, your keybinding is the same as GNU Emacs's default keybinding.
 
@@ -79,12 +81,14 @@ The command “ergoemacs-mode” toggles the minor mode.
 
 * Byte Compile Elisp Files (Optional)
 
-If you like, you can byte-compile the elisp files. To byte compile them, call the command “byte-compile-file”, then the elisp file name. Once you do that, emacs will create a file with “.elc” ending, and will automatically load byte compiled file if there is one.
+If you like, you can byte-compile the elisp files. Byte compiled files makes loading and running programs about 5 or more times faster, but for small elisp files, the speed increase is probably not noticeable.
 
-You can byte compile the whole directory. To do so, run the following in command line console. Here's a bash example on OS X's Terminal:
+To byte compile them, call the command “byte-compile-file”, then the elisp file name. Once you do that, emacs will create a file with “.elc” ending, and will automatically load byte compiled file if there is one.
 
-emacs -batch -f batch-byte-compile ~/.emacs.d/ergoemacs-keybindings-5.3.9/*.el
+You can byte compile the whole directory. To do so, call “dired”, then press “m” to mark the files you want, then press “B” to byte compile them all.
 
-Byte compiled files makes loading and running programs about 5 or more times faster, but for small elisp files, the speed increase is probably not noticeable.
+Or, run the following in command line console. Here's a bash example:
+
+emacs -batch -f batch-byte-compile ~/.emacs.d/ergoemacs-keybindings-5.5.2/*.el
 
 You do not need to change any lines in the emacs initialization given above.
