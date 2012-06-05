@@ -237,6 +237,9 @@ Valid values are:
 ;; Ctrl+Break is a common IDE shortcut to stop compilation/find/grep
 (define-key ergoemacs-keymap (kbd "C-<pause>") 'kill-compilation)
 
+(define-key ergoemacs-keymap (kbd "M-6") 'select-current-block)
+(define-key ergoemacs-keymap (kbd "M-7") 'select-current-line)
+
 ;;; --------------------------------------------------
 ;;; OTHER SHORTCUTS
 

@@ -8,6 +8,11 @@
 ;;;;§----------------------------------------
 ;;;; language modes
 
+
+
+;;;;§----------------------------------------
+;;;; language modes
+
 ;;; php mode
 (autoload 'php-mode "php-mode" "php mode by Aaron S Hawley." t)
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
@@ -57,9 +62,7 @@
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
 ;;; tuareg mode for ML/Caml/OCaml lang
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-2.0.4/")
-             )
+(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-2.0.4/"))
 (add-to-list 'auto-mode-alist '("\\.ml[iylp]?" . tuareg-mode))
 (autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
 (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
@@ -71,6 +74,57 @@
 
 ;;;;§----------------------------------------
 ;;;; productivity, enhancement, or minor modes
+
+
+;;; yasnippet template system
+(add-to-list 'load-path
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/")
+ )
+(require 'yasnippet) ;; not yasnippet-bundle
+(yas/initialize)
+(yas/load-directory
+ (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
+ )
+(add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
+
+;; auto-complete v1.3.1 (a enhanced word completion)
+(add-to-list 'load-path
+ (concat (file-name-directory (or load-file-name buffer-file-name))
+                     "../packages/auto-complete-1.3.1/" ) )
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories
+ (concat (file-name-directory (or load-file-name buffer-file-name))
+                     "../packages/auto-complete-1.3.1/ac-dict/" ))
+(ac-config-default)
+(auto-complete-mode 1)
+
+;;; enhanced “directory viewer”/“file manager” (diredplus mode)
+(require 'dired+)
+
+;;; enhanced bookmark
+(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmark+/"))
+(require 'bookmark+)
+
+;;; enhanced execute-extended-command
+(require 'smex)
+(smex-initialize)
+(when (boundp 'smex) 
+  (global-set-key (kbd "<apps>") 'smex) ; On linux, use (global-set-key (kbd "<menu>") 'smex)
+  (global-set-key (kbd "<S-apps>") 'smex-major-mode-commands)
+  )
+
+;;; enhanced text selection, expand-region
+(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/expand-region/"))
+(require 'expand-region)
+(when
+ (member 'expand-region features)
+  (global-set-key (kbd "M-8") 'er/expand-region)
+  (global-set-key (kbd "M-9") 'er/contract-region)
+  )
+
+;;; color CSS color code
+(autoload 'rainbow-mode "rainbow-mode" "Colorize strings that represent colors, e.g. #aabbcc." t nil) 
+(add-hook 'css-mode-hook 'rainbow-mode)
 
 ;;; xub-mode for browsing Unicode characters
 (autoload 'xub-mode "xub-mode" "Load Unicode browsing mode." t)
@@ -126,31 +180,6 @@
 ;; (setq speck-hunspell-program (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/hunspell.exe"))
 ;; (setq speck-hunspell-library-directory (concat (file-name-directory (or load-file-name buffer-file-name)) "../hunspell/"))
 ;; (setq speck-hunspell-default-dictionary-name "en_US")
-
-;;; yasnippet template system
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/")
-             )
-(require 'yasnippet) ;; not yasnippet-bundle
-(yas/initialize)
-(yas/load-directory
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
- )
-(add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
-
-;; auto-complete v1.3.1 (a enhanced word completion)
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete-1.3.1/" ) )
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories
- (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete-1.3.1/ac-dict/" ))
-(ac-config-default)
-(auto-complete-mode 1)
-
-;;; enhanced “directory viewer”/“file manager” (diredplus mode)
-(require 'dired+)
 
 ;; record command call statistics
 (require 'keyfreq)
