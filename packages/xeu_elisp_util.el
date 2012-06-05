@@ -97,7 +97,7 @@ The main differences are:
     (save-excursion
         (cond
          ( (eq unit 'word)
-           (let ((wordcharset "-A-Za-zÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"))
+           (let ((wordcharset "-A-Za-z0-9ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"))
              (skip-chars-backward wordcharset)
              (setq p1 (point))
              (skip-chars-forward wordcharset)
@@ -355,45 +355,44 @@ list."
    (let ((bds (get-selection-or-unit 'line)))
      (list nil (vector (elt bds 1) (elt bds 2)) ) ) )
 
-  (let ( replacePairs
-         (workOnStringP (if ξregion-boundary nil t ) )
-         (p1 (elt ξregion-boundary 0))
-         (p2 (elt ξregion-boundary 1))
-         )
+  (let (
+        (strPairs '(
+                    [" A " " a "]
+                    [" And " " and "]
+                    [" At " " at "]
+                    [" As " " as "]
+                    [" By " " by "]
+                    [" Be " " be "]
+                    [" Into " " into "]
+                    [" In " " in "]
+                    [" Is " " is "]
+                    [" It " " it "]
+                    [" For " " for "]
+                    [" Of " " of "]
+                    [" Or " " or "]
+                    [" On " " on "]
+                    [" The " " the "]
+                    [" That " " that "]
+                    [" To " " to "]
+                    [" Vs " " vs "]
+                    [" With " " with "]
+                    [" From " " from "]
+                    ))
+        (workOnStringP (if ξregion-boundary nil t ) )
+        (p1 (elt ξregion-boundary 0))
+        (p2 (elt ξregion-boundary 1))
+        )
     
-    (setq replacePairs '(
-                         [" A " " a "]
-                         [" And " " and "]
-                         [" At " " at "]
-                         [" As " " as "]
-                         [" By " " by "]
-                         [" Be " " be "]
-                         [" Into " " into "]
-                         [" In " " in "]
-                         [" Is " " is "]
-                         [" It " " it "]
-                         [" For " " for "]
-                         [" Of " " of "]
-                         [" Or " " or "]
-                         [" On " " on "]
-                         [" The " " the "]
-                         [" That " " that "]
-                         [" To " " to "]
-                         [" Vs " " vs "]
-                         [" With " " with "]
-                         [" From " " from "]
-                         ))
-
     (let ((case-fold-search nil))
       (if workOnStringP
           (progn 
-            (replace-pairs-in-string-recursive (upcase-initials ξstring) replacePairs)
+            (replace-pairs-in-string-recursive (upcase-initials ξstring) strPairs)
             )
         (progn 
           (save-restriction 
             (narrow-to-region p1 p2)
             (upcase-initials-region (point-min) (point-max) )
-            (replace-regexp-pairs-region (point-min) (point-max) replacePairs t t)
+            (replace-regexp-pairs-region (point-min) (point-max) strPairs t t)
             ) ) ) ) ) )
 
 (provide 'xeu_elisp_util)

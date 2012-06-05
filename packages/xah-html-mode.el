@@ -15,14 +15,17 @@
 (setq xhm-font-lock-keywords
 (let (
 (htmlElementNamesRegex (regexp-opt '("a" "abbr" "acronym" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "bgsound" "big" "blockquote" "body" "br" "button" "canvas" "caption" "center" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "dir" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "font" "footer" "form" "frame" "frameset" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noframes" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strike" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "tt" "u" "ul" "var" "video" "wbr" "xmp" "doctype") 'words))
-(AttributeNamesRegexp (regexp-opt '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" ) 'words))
+(AttributeNamesRegexp (regexp-opt '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ) 'words))
  )
 `(
 ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
-("“\\([^ ]+?\\)”" . (1 font-lock-string-face))
-("「\\([^」]+\\)」" . (1 font-lock-string-face))
 ("<!--\\|-->" . font-lock-comment-delimiter-face)
 ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
+("“\\([^”]+?\\)”" . (1 font-lock-string-face))
+("「\\([^」]+\\)」" . (1 font-lock-string-face))
+
+("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
+("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
 (,htmlElementNamesRegex . font-lock-function-name-face)
 (,AttributeNamesRegexp . font-lock-keyword-face)
 ) ) )
@@ -35,11 +38,12 @@
 (progn
   (setq xhm-keymap (make-sparse-keymap))
   (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
+  (define-key xhm-keymap (kbd "C-c /") 'sgml-close-tag)
   (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
   (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
   (define-key xhm-keymap (kbd "C-c C-r") 'xhm-skip-tag-forward)
   (define-key xhm-keymap (kbd "C-c C-g") 'xhm-skip-tag-backward)
- )
+)
 
 
 ;; syntax table

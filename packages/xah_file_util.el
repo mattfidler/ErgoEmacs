@@ -101,7 +101,7 @@ Replacement
 
   (interactive
    (list
-    (read-string (format "Search string (default %s):" (current-word)) nil 'query-replace-history (current-word))
+    (read-string (format "Search regex (default %s):" (current-word)) nil 'query-replace-history (current-word))
     default-directory
     (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
     )
