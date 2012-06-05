@@ -108,7 +108,8 @@
 ;;; enhanced execute-extended-command
 (require 'smex)
 (smex-initialize)
-(when (boundp 'smex) 
+(when
+ (member 'smex features)
   (global-set-key (kbd "<apps>") 'smex) ; On linux, use (global-set-key (kbd "<menu>") 'smex)
   (global-set-key (kbd "<S-apps>") 'smex-major-mode-commands)
   )
