@@ -69,7 +69,7 @@
 
 (defconst ergoemacs-mark-paragraph-key			(kbd "M-S-SPC"))
 (defconst ergoemacs-shrink-whitespaces-key		(kbd "M-z"))
-(defconst ergoemacs-comment-dwim-key			(kbd "M-,")) 
+(defconst ergoemacs-comment-dwim-key			(kbd "M-ù")) 
 (defconst ergoemacs-toggle-letter-case-key		(kbd "M-:"))
 
 ; keyword completion, because Alt+Tab is used by OS
@@ -103,7 +103,7 @@
 (defconst ergoemacs-query-replace-regexp-key            (kbd "M-5"))
 
 (defconst ergoemacs-delete-other-windows-key            (kbd "M-\""))
-(defconst ergoemacs-delete-window-key                   (kbd "M-Ã "))
+(defconst ergoemacs-delete-window-key                   (kbd "M-à"))
 
 (defconst ergoemacs-split-window-vertically-key         (kbd "M-'"))
 (defconst ergoemacs-split-window-horizontally-key       (kbd "M-4"))
