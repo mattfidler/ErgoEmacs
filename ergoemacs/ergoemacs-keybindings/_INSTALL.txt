@@ -43,6 +43,8 @@ Place ONE of the following line in your emacs init file (~/.emacs):
 
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "sp") ; Spanish (Spain) (aka “Spanish (International sort)”)
 
+(setenv "ERGOEMACS_KEYBOARD_LAYOUT" "fr") ; French
+
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "it") ; Italian
 
 (setenv "ERGOEMACS_KEYBOARD_LAYOUT" "sv") ; Swedish

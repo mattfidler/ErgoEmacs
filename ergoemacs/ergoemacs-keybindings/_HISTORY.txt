@@ -4,6 +4,12 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.5.3, 2012-06-05
+
+• Added a French layout support.
+• Added 【Alt+6】 for “select-current-block”. Experimental.
+• Added 【Alt+7】 for “select-current-line”. Experimental.
+
 * version 5.5.2, 2012-05-25
 
 • 【Alt+Shift+u】 was “beginning-of-defun”, is now “backward-block”

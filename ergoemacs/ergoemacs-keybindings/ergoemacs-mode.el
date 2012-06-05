@@ -7,7 +7,7 @@
 ;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
-;; Version: 5.5.2
+;; Version: 5.5.3
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -41,6 +41,7 @@
 ;; ergoemacs-layout-dv.el Contributor: Xah Lee, David Capello
 ;; ergoemacs-layout-gb-dv.el Contributor: Phillip Wood
 ;; ergoemacs-layout-gb.el Contributor: Jorge Dias (aka theturingmachine)
+;; ergoemacs-layout-fr.el Contributor: Alexander Doe
 ;; ergoemacs-layout-it.el Contributor: David Capello, Francesco Biccari
 ;; ergoemacs-layout-sp.el Contributor: David Capello
 ;; ergoemacs-layout-sv.el Contributor: Kristian Hellquist
@@ -56,7 +57,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.5.2"
+(defconst ergoemacs-mode-version "5.5.3"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -75,6 +76,7 @@ Valid values are:
  “gb” (UK)
  “gb-dv” (UK Dvorak)
  “sp” (Spanish)
+ “fr” (French)
  “it” (Italian)
  “sv” (Swedish)
  “da” (Danish)
@@ -90,6 +92,8 @@ Valid values are:
   (load "ergoemacs-layout-dv"))
  ((string= ergoemacs-keyboard-layout "sp")
   (load "ergoemacs-layout-sp"))
+((string= ergoemacs-keyboard-layout "fr")
+  (load "ergoemacs-layout-fr"))
  ((or (string= ergoemacs-keyboard-layout "it")
       (string= ergoemacs-keyboard-layout "it142"))
   (load "ergoemacs-layout-it"))
