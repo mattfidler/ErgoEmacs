@@ -163,16 +163,10 @@ Example usage:
  (setq inputstr (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )"
   (interactive)
 
-  (let (myText p1 p2)
+  (let ((p1 (region-beginning)) (p2 (region-end)))
     (if (region-active-p)
-        (progn
-          (setq p1 (region-beginning))
-          (setq p2 (region-end))
-          (setq myText (buffer-substring p1 p2) )
-          (vector (buffer-substring-no-properties p1 p2) p1 p2 )
-          )
-      (unit-at-cursor unit)
- ) ) )
+        (vector (buffer-substring-no-properties p1 p2) p1 p2 )
+      (unit-at-cursor unit) ) ) )
 
 
 
