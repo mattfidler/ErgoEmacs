@@ -162,11 +162,11 @@ Example usage:
  (setq bds (get-selection-or-unit 'line))
  (setq inputstr (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )"
   (interactive)
-
-  (let ((p1 (region-beginning)) (p2 (region-end)))
-    (if (region-active-p)
+  (if (region-active-p)
+      (let ((p1 (region-beginning)) (p2 (region-end)))
         (vector (buffer-substring-no-properties p1 p2) p1 p2 )
-      (unit-at-cursor unit) ) ) )
+        )
+    (unit-at-cursor unit) ) )
 
 
 
