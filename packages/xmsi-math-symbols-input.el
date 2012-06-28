@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.3.7, 2012-06-28 • much improved parsing the input string. Now, if there's no text selection, then grab string from cursor point to the left up to a whitespace char (limit to 10 chars max), then try that, if not found, try with one char minus. e.g. If text is 「some abc▮」, try 「abc」, then 「bc」, then 「c」. This way, user doesn't have to add a whitespace as separator before the abbrev, or having to make a text selection. e.g. in coding elisp, if current text is 「(a▮」, user can call xmsi-change-to-symbol directly to get 「(α▮」.
 ;; v1.3.6, 2012-05-08 • fixed a bug when any abbrev involving tilde ~ won't work.
 ;; v1.3.5.4, 2012-04-04 • stopped printing a message when “xmsi-change-to-symbol” is called. Minor improvement to inline doc of “xmsi-change-to-symbol”.
 ;; v1.3.5.3, 2012-04-02 • changed “-” to from “‒” FIGURE DASH to “−” MINUS SIGN.
@@ -97,7 +98,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.6")
+(setq xmsi-version "v1.3.7")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1065,11 +1066,29 @@ See `xmsi-mode'."
   (define-key xmsi-keymap (kbd "S-SPC") 'xmsi-change-to-symbol)
   )
 
-(defun xmsi-change-to-symbol (&optional print-message-when-error)
+(defun xmsi-abbr-to-symbol (inputString)
+  "Returns a char corresponding to inputString."
+  (let (resultSymbol charByNameResult)
+    (setq resultSymbol (gethash inputString xmsi-abrvs))
+    (cond
+     (resultSymbol resultSymbol)
+     ;; decimal. 「945」 or 「#945」
+     ((string-match "\\`#?\\([0-9]+\\)\\'" inputString) (char-to-string (string-to-number (match-string 1 inputString))))
+     ;; e.g. decimal with html entity markup. 「&#945;」
+     ((string-match "\\`&#\\([0-9]+\\);\\'" inputString) (char-to-string (string-to-number (match-string 1 inputString))))
+     ;; hex number. e.g. 「x3b1」 or 「#x3b1」
+     ((string-match "\\`#?x\\([0-9a-fA-F]+\\)\\'" inputString) (char-to-string (string-to-number (match-string 1 inputString) 16)))
+     ;; html entity hex number. e.g. 「&#x3b1;」
+     ((string-match "\\`&#x\\([0-9a-fA-F]+\\);\\'" inputString) (char-to-string (string-to-number (match-string 1 inputString) 16)))
+     ;; unicode full name. e.g. 「GREEK SMALL LETTER ALPHA」
+     ((and (string-match "\\`\\([- a-zA-Z0-9]+\\)\\'" inputString) (setq charByNameResult (assoc-string inputString (ucs-names) t) )) (char-to-string (cdr charByNameResult)))
+     (t nil) )
+     ) )
+
+(defun xmsi-change-to-symbol (&optional print-message-when-no-match)
   "Change text selection or word to the left of cursor into a Unicode character.
 
-A valid input can be any abbreviation listed in `xmsi-list-math-symbols'.
-Or, any of the following form:
+A valid input can be any abbreviation listed by the command `xmsi-list-math-symbols', or, any of the following form:
 
  945     ← decimal
  #945    ← decimal with prefix #
@@ -1081,37 +1100,35 @@ Or, any of the following form:
 
 Full Unicode name can also be used, e.g. 「greek small letter alpha」.
 
-See `xmsi-mode'"
-  (interactive "p")
-  (let (p1 p2 myWord resultSymbol charByNameResult)
+If preceded by `universal-argument', print error message when no valid abbrev found.
+
+See also: `xmsi-mode'."
+  (interactive "P")
+  (let (p1 p2 inputStr resultSymbol)
     (if (region-active-p)
+        ;; if there's a text selection, then use that as input.
         (progn
           (setq p1 (region-beginning))
-          (setq p2 (region-end)) )
-      (save-excursion
-        (setq p2 (point) )
-        ;; (skip-chars-backward "[:graph:]")
-        (skip-chars-backward "-:)<>_^+.*\"'!?/|&~=A-Za-z0-9")
+          (setq p2 (region-end))
+          (setq inputStr (buffer-substring-no-properties p1 p2) )
+          (setq resultSymbol (xmsi-abbr-to-symbol inputStr))
+          (when resultSymbol (progn (delete-region p1 p2) (insert resultSymbol)) ) )
 
-        (when (looking-at "(") (forward-char))
-        (setq p1 (point) )
-        ))
+        ;; if there's no text selection, grab all chars to the left of cursor point up to whitespace, try each string until there a valid abbrev found or none char left.
+        (progn
+          (setq p2 (point) )
+          (skip-chars-backward "^ \t\n" -10)
+          (setq p1 (point) )
+          (while (and (not resultSymbol) (>= (- p2 p1) 1) )
+            (setq inputStr (buffer-substring-no-properties p1 p2) )
+            (setq resultSymbol (xmsi-abbr-to-symbol inputStr))
+            (when resultSymbol (progn (goto-char p2) (delete-region p1 p2) (insert resultSymbol)) )
+            (setq p1 (1+ p1)) ) ))
 
-    (setq myWord (buffer-substring-no-properties p1 p2) )
-
-    (setq resultSymbol (gethash myWord xmsi-abrvs))
-    (setq charByNameResult (assoc-string myWord (ucs-names) t) )
-
-    (cond
-     (resultSymbol (progn (delete-region p1 p2) (insert resultSymbol)))
-     ((string-match "^#?\\([0-9]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord)))))
-     ((string-match "^&#\\([0-9]+\\);*$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord)))))
-
-     ((string-match "^&#x\\([^;]+\\);$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
-     ((string-match "^#x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
-     ((string-match "^x\\([0-9a-f]+\\)$" myWord) (progn (delete-region p1 p2) (ucs-insert (string-to-number (match-string 1 myWord) 16))))
-     ((and (string-match "^\\([- a-zA-Z0-9]+\\)$" myWord) charByNameResult) (progn (delete-region p1 p2) (ucs-insert (cdr charByNameResult))))
-     (t (progn (when print-message-when-error (xmsi-list-math-symbols) (error "「%s」 is not a valid abbrevation or input. Call “xmsi-list-math-symbols” for a list. Or use a decimal e.g. 「945」 or hexadecimal e.g. 「x3b1」, or full Unicode name e.g. 「greek small letter alpha」."  myWord)) ) ) ) ) )
+    (when (not resultSymbol)
+      (when print-message-when-no-match (xmsi-list-math-symbols) (error "「%s」 is not a valid abbrevation or input. Call “xmsi-list-math-symbols” for a list. Or use a decimal e.g. 「945」 or hexadecimal e.g. 「x3b1」, or full Unicode name e.g. 「greek small letter alpha」."  inputStr))
+      )
+ ) )
 
 (define-minor-mode xmsi-mode
   "Toggle math symbol input (minor) mode.
