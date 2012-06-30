@@ -46,7 +46,7 @@
 ;; display character info of the char under cursor.
 ;; Mouse left click on a char also works.
 
-;; Get unicode files to browse at: http://xahlee.org/emacs/unicode-browser.html
+;; Get unicode files to browse at: http://ergoemacs.org/emacs/unicode-browser.html
 
 ;; To see the inline documentation in emacs, type “C-h m”
 ;; (describe-mode). (if you have not load the mode, first type
@@ -56,6 +56,7 @@
 
 ;;; HISTORY
 
+;; version 1.1.5, 2012-06-30 • minor implementation improvement on {“xub-show-down”, “xub-show-up”}. It no longer generates compilation warning about calling “next-line”, “previous-line”.
 ;; version 1.1.4, 2010-12-20 • The keys 【Alt+12】 for zoom-in and 【Alt+11】 for zoom-out are removed. New keys are: 【Ctrl++】 (zoom-in) and 【Ctrl+-】 zoom-out. Holding down Ctrl and scroll mouse wheel also works. These are more compatible with web browsers.
 ;; version 1.1.3, 2010-11-18 • Fixed a bug where describe-major-mode generates a error.
 ;; version 1.1.2, 2010-08-13 • renamed file frome “xub-unicode-browser-mode.el” to “xub-mode.el”. The feature name is also renamed from “xub-unicode-browser-mode” to “xub-mode”.
@@ -114,7 +115,7 @@
              "Author: Xah Lee\n\n"
              "Version: " xub-version "\n\n"
              "To see inline documentation, type “Alt+x describe-mode” while you are in xub-mode.\n\n"
-             "Home page: URL `http://xahlee.org/emacs/unicode-browser.html' \n\n")
+             "Home page: URL `http://ergoemacs.org/emacs/unicode-browser.html' \n\n")
      )
     )
   )
@@ -162,14 +163,14 @@
 (defun xub-show-up ()
   "Move cursor up then show info about the character under cursor."
   (interactive)
-  (previous-line)
+  (call-interactively 'previous-line)
   (xub-display-info)
   )
 
 (defun xub-show-down ()
   "Move cursor down then show info about the character under cursor."
   (interactive)
-  (next-line)
+  (call-interactively 'next-line)
   (xub-display-info)
   )
 
@@ -185,7 +186,7 @@ decimal, octal, hexadecimal, and its unicode name, unicode
 category, font used, case class (lower/upper), etc.
 
 You can get files unicode character files at:
-  URL `http://xahlee.org/emacs/unicode-browser.html'
+  URL `http://ergoemacs.org/emacs/unicode-browser.html'
 
 Tips:
 
