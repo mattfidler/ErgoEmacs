@@ -142,12 +142,13 @@ The main differences are:
               (setq p2 (point) ) ) ))
 
          ((eq unit 'filepath)
-          (let (p0 (ξdelimitors "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"))
+          (let (p0 (filePathChars "!#$%&'+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{}~"))
+            ;; note: for filePathChars, the goal is not to list all allowed chars. But avoid chars that are likely used as separators for paths. Paths can be url too.
             (setq p0 (point))
-             (skip-chars-backward ξdelimitors) ;"^ \t\n,()[]{}<>〔〕“”\""
+             (skip-chars-backward filePathChars) ;"^ \t\n,()[]{}<>〔〕“”\""
              (setq p1 (point))
              (goto-char p0)
-             (skip-chars-forward ξdelimitors)
+             (skip-chars-forward filePathChars)
              (setq p2 (point)))
           )
 
