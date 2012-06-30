@@ -22,7 +22,7 @@
 ;; these are convenient functions that lets you do multiple find/replace pairs.
 
 ;; For some explanation of the need for these functions, see:
-;;  http://xahlee.org/emacs/elisp_replace_string_region.html
+;;  http://ergoemacs.org/emacs/elisp_replace_string_region.html
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 

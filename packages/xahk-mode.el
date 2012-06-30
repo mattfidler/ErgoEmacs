@@ -12,7 +12,7 @@
 
 ;; A major mode for editing AutoHotkey (AHK) script. 
 ;; for download location and documentation, see:
-;; http://xahlee.org/mswin/emacs_autohotkey_mode.html
+;; http://xahlee.info/mswin/emacs_autohotkey_mode.html
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
@@ -45,6 +45,7 @@
 
 (require 'thingatpt )
 
+(defconst xahk-mode-version "")
 (setq xahk-mode-version "1.2.2")
 
 (defgroup xahk-mode nil
@@ -79,7 +80,7 @@
   (let ((menuMap (make-sparse-keymap "AHK")))
     (define-key xahk-mode-map [menu-bar xahk] (cons "AHK" menuMap))
 
-    (define-key menuMap [goto-home-page] '("Goto xahk-mode website" . (lambda () (interactive) (browse-url "http://xahlee.org/mswin/emacs_autohotkey_mode.html"))))
+    (define-key menuMap [goto-home-page] '("Goto xahk-mode website" . (lambda () (interactive) (browse-url "http://xahlee.info/mswin/emacs_autohotkey_mode.html"))))
     (define-key menuMap [about] '("About xahk-mode" . xahk-about))
     (define-key menuMap [separator] '("--"))
     (define-key menuMap [lookup-onlne-doc] '("Lookup ref on current word" . xahk-lookup-ahk-ref))
@@ -127,7 +128,7 @@
              "Author: Xah Lee\n\n"
              "Version: " xahk-mode-version "\n\n"
              "To see inline documentation, type “Alt+x `describe-mode'” while you are in xahk-mode.\n\n"
-             "Home page: URL `http://xahlee.org/mswin/emacs_autohotkey_mode.html' \n\n")
+             "Home page: URL `http://xahlee.info/mswin/emacs_autohotkey_mode.html' \n\n")
      )
     )
   )
@@ -186,6 +187,7 @@ Launches default browser and opens the doc's url."
 (defvar xahk-variables-regexp (regexp-opt xahk-variables 'words))
 (defvar xahk-keys-regexp (regexp-opt xahk-keys 'words))
 
+(defvar xahk-font-lock-keywords nil )
 (setq xahk-font-lock-keywords
   `(
     (,xahk-commands-regexp . xahk-mode-command-name-face)
@@ -249,7 +251,7 @@ Shortcuts             Command Name
 
 \\[xahk-lookup-ahk-ref]     `xahk-lookup-ahk-ref'
 
-Complete documentation at URL `http://xahlee.org/mswin/emacs_autohotkey_mode.html'."
+Complete documentation at URL `http://xahlee.info/mswin/emacs_autohotkey_mode.html'."
   (interactive)
   (kill-all-local-variables)
 

@@ -56,12 +56,13 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
     (when (not (string= "/" (substring inputDir -1) )) (setq inputDir (concat inputDir "/") ) )
 
     (with-output-to-temp-buffer outputBuffer
-      (princ (format "xah-find-text results.
+ (princ (format "xah-find-text results.
+%s
 Search string 「%s」
 Directory 「%s」
 Path Regex 「%s」
 
-" searchStr1 inputDir pathRegex))
+" (current-date-time-string) searchStr1 inputDir pathRegex))
       (mapc
        (lambda (fPath)
          (setq ξcount 0)
@@ -120,11 +121,12 @@ Replacement
 
     (with-output-to-temp-buffer outputBuffer
       (princ (format "xah-find-text-regex results.
+%s
 Search regex 「%s」
 Directory 「%s」
 Path Regex 「%s」
 
-" searchRegex inputDir pathRegex))
+" (current-date-time-string) searchRegex inputDir pathRegex))
       (mapc
        (lambda (fPath)
          (setq ξcount 0)

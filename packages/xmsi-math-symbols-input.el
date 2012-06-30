@@ -12,7 +12,7 @@
 
 ;; A minor mode for inputing hundreds of math symbols
 ;; for download location and documentation, see:
-;; http://xahlee.org/emacs/xmsi-math-symbols-input.html
+;; http://ergoemacs.org/emacs/xmsi-math-symbols-input.html
 
 ;;; INSTALL
 
@@ -48,7 +48,7 @@
 
 ;; The abbreviations are based on Mathematica's aliases 【Esc abbrv Esc】 and SGML/HTML/XML char entity abbreviations.
 
-;; Full documentation is at: http://xahlee.org/emacs/xmsi-math-symbols-input.html
+;; Full documentation is at: http://ergoemacs.org/emacs/xmsi-math-symbols-input.html
 
 ;; To see the inline documentation, call “describe-function”, then type “xmsi-mode”.
 ;; (if you have not load the mode yet, first load it by calling “xmsi-mode”.)
@@ -85,10 +85,10 @@
 ;; v1.0, 2010-12-08 First version.
 
 ;;; References
-;; 〈Math Symbols in Unicode〉 http://xahlee.org/comp/unicode_math_operators.html
-;; 〈HTML/XML Entities (Character/Unicode/Symbol) List〉 http://xahlee.org/comp/unicode_html_entities.html
-;; 〈Math Font, Unicode, Gothic Letters, Double Struck〉 http://xahlee.org/math/math_font_unicode.html
-;; 〈How Mathematica does Unicode?〉 http://xahlee.org/math/mathematica_unicode.html
+;; 〈Math Symbols in Unicode〉 http://xahlee.info/comp/unicode_math_operators.html
+;; 〈HTML/XML Entities (Character/Unicode/Symbol) List〉 http://xahlee.info/comp/unicode_html_entities.html
+;; 〈Math Font, Unicode, Gothic Letters, Double Struck〉 http://xahlee.info/math/math_font_unicode.html
+;; 〈How Mathematica does Unicode?〉 http://xahlee.info/math/mathematica_unicode.html
 ;; http://ia.wikipedia.org/wiki/Wikipedia:LaTeX_symbols
 ;; http://en.wikipedia.org/wiki/Help:Displaying_a_formula
 ;; http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf
@@ -1176,7 +1176,7 @@ Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
 
-Home page at: URL `http://xahlee.org/emacs/xmsi-math-symbols-input.html'"
+Home page at: URL `http://ergoemacs.org/emacs/xmsi-math-symbols-input.html'"
   nil
   :global t
   :lighter " ∑"

@@ -12,7 +12,7 @@
 
 ;; A major mode for editing bbcode.
 ;; for download location and documentation, see:
-;; http://xahlee.org/emacs/xbbcode-mode.html
+;; http://ergoemacs.org/emacs/xbbcode-mode.html
 
 ;;; INSTALL
 
@@ -46,7 +46,7 @@
 
 ;;; DOCUMENTATION
 
-;; Full documentation is at: http://xahlee.org/emacs/xbbcode-mode.html
+;; Full documentation is at: http://ergoemacs.org/emacs/xbbcode-mode.html
 
 ;; To see the inline documentation in emacs, type “C-h m”
 ;; (describe-mode). (if you have not load the mode, first type
@@ -108,7 +108,7 @@
              "Version: " xbbcode-mode-version "\n"
              "Author: Xah Lee\n"
              "To see inline documentation, call the command describe-mode while in the mode.\n\n"
-             "Home page: URL `http://xahlee.org/emacs/xbbcode-mode.html' \n")
+             "Home page: URL `http://ergoemacs.org/emacs/xbbcode-mode.html' \n")
      )
     )
   )
@@ -221,7 +221,7 @@ Shortcuts             Command Name
 \\[xbbcode-insert-tag]       `xbbcode-insert-tag'
 \\[xbbcode-show-bbcode-help]       `xbbcode-show-bbcode-help'
 
-Home page: URL `http://xahlee.org/emacs/xbbcode-mode.html'."
+Home page: URL `http://ergoemacs.org/emacs/xbbcode-mode.html'."
   (interactive)
   (kill-all-local-variables)
   

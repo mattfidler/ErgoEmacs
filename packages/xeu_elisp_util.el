@@ -28,9 +28,9 @@
 ;; title-case-string-region-or-line
 ;; current-date-time-string
 
-;; The most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://xahlee.org/emacs/elisp_get-selection-or-unit.html
+;; The most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://ergoemacs.org/emacs/elisp_get-selection-or-unit.html
 
-;; This package requires 〔xfrp_find_replace_pairs.el〕, available at 
+;; This package requires 〔xfrp_find_replace_pairs.el〕, available at
 ;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xfrp_find_replace_pairs.el
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
@@ -43,7 +43,7 @@
 
 ;;; HISTORY
 
-;; version 1.4.12, 2012-06-30 added “current-date-time-string”
+;; version 1.4.12, 2012-06-30 added “current-date-time-string”. Added 'url, 'filepath to “unit-at-cursor”.
 ;; version 1.4.11, 2012-05-05 added { “delete-subdirs-by-regex” “delete-files-by-regex”}
 ;; version 1.4.10, 2012-05-05 added “substract-path”.
 ;; version 1.4.9, 2012-03-15 more trivial improved implementation of “get-image-dimensions-imk”.
@@ -81,6 +81,10 @@ UNIT can be:
 
 • 'buffer — whole buffer. (respects `narrow-to-region')
 
+• 'filepath — delimited by chars that's USUALLY not part of filepath.
+
+• 'url — delimited by chars that's USUALLY not part of URL.
+
 • a vector [beginRegex endRegex] — The elements are regex strings used to determine the beginning/end of boundary chars. They are passed to `skip-chars-backward' and `skip-chars-forward'. For example, if you want paren as delimiter, use [\"^(\" \"^)\"]
 
 Example usage:
@@ -114,7 +118,7 @@ The main differences are:
              (setq p2 (point)))
            )
 
-         ( (eq unit 'buffer)
+         ((eq unit 'buffer)
            (progn
              (setq p1 (point-min))
              (setq p2 (point-max))
@@ -136,6 +140,29 @@ The main differences are:
                 (progn (re-search-backward "\n[ \t]*\n")
                        (setq p2 (point) ))
               (setq p2 (point) ) ) ))
+
+         ((eq unit 'filepath)
+          (let (p0 (ξdelimitors "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"))
+            (setq p0 (point))
+             (skip-chars-backward ξdelimitors) ;"^ \t\n,()[]{}<>〔〕“”\""
+             (setq p1 (point))
+             (goto-char p0)
+             (skip-chars-forward ξdelimitors)
+             (setq p2 (point)))
+          )
+
+         ((eq unit 'url)
+          (let (p0
+                ;; (ξdelimitors "^ \t\n,()[]{}<>〔〕“”\"`'!$^*|\;")
+                (ξdelimitors "!\"#$%&'*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"
+))
+            (setq p0 (point))
+            (skip-chars-backward ξdelimitors) ;"^ \t\n,([{<>〔“\""
+            (setq p1 (point))
+            (goto-char p0)
+            (skip-chars-forward ξdelimitors) ;"^ \t\n,)]}<>〕\"”"
+            (setq p2 (point)))
+          )
 
          ((vectorp unit)
           (let (p0)
@@ -180,7 +207,7 @@ Bug: for large size png, sometimes this returns a wrong dimension 30×30."
   (let (ξx ξy)
     (cond
      ((string-match "\.gif$" ξfile-path) (get-image-dimensions-imk ξfile-path))
-     ((string-match "\.svg$" ξfile-path) 
+     ((string-match "\.svg$" ξfile-path)
       (with-temp-buffer
         (insert-file-contents ξfile-path)
         (goto-char (point-min))
@@ -192,7 +219,7 @@ Bug: for large size png, sometimes this returns a wrong dimension 30×30."
         (vector (string-to-number ξx) (string-to-number ξy))
         ))
      (t (let (ξxy )
-          (progn 
+          (progn
             (clear-image-cache t)
             (setq ξxy (image-size
                        (create-image
@@ -235,10 +262,10 @@ See also: `get-image-dimensions'."
     (insert-file-contents filePath)
     (buffer-string)))
 
-(defun read-lines (filePath) 
-  "Return a list of lines of a file at FILEPATH." 
-  (with-temp-buffer 
-    (insert-file-contents filePath) 
+(defun read-lines (filePath)
+  "Return a list of lines of a file at FILEPATH."
+  (with-temp-buffer
+    (insert-file-contents filePath)
     (split-string (buffer-string) "\n" t)))
 
 
@@ -378,14 +405,14 @@ list."
         (p1 (elt ξregion-boundary 0))
         (p2 (elt ξregion-boundary 1))
         )
-    
+
     (let ((case-fold-search nil))
       (if workOnStringP
-          (progn 
+          (progn
             (replace-pairs-in-string-recursive (upcase-initials ξstring) strPairs)
             )
-        (progn 
-          (save-restriction 
+        (progn
+          (save-restriction
             (narrow-to-region p1 p2)
             (upcase-initials-region (point-min) (point-max) )
             (replace-regexp-pairs-region (point-min) (point-max) strPairs t t)

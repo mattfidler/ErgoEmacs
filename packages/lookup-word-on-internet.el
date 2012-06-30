@@ -55,7 +55,7 @@
 ;;; DOCUMENTATION
 
 ;; Just some simple useful commands
-;; For detail, see http://xahlee.org/emacs/emacs_lookup_ref.html
+;; For detail, see http://ergoemacs.org/emacs/emacs_lookup_ref.html
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
@@ -91,7 +91,7 @@ the 「�」 is a placeholder for the query string.
 If SITE-TO-USE is nil, Google Search is used.
 
 For a list of online reference sites, see:
- URL `http://xahlee.org/emacs/emacs_lookup_ref.html'"
+ URL `http://ergoemacs.org/emacs/emacs_lookup_ref.html'"
   (interactive)
   (let (ξword refUrl myUrl)
     (setq ξword

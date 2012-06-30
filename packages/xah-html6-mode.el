@@ -1,6 +1,6 @@
 ;;-*- coding: utf-8 -*-
 ;; xah-html6-mode.el -- Major mode for editing html6.
-;; http://xahlee.org/comp/html6.html
+;; http://xahlee.info/comp/html6.html
 
 ;;; HISTORY
 ;; version 0.2, 2011-05-27

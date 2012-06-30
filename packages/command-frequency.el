@@ -23,7 +23,7 @@
 ;; which commands you use the most often.
 ;;
 ;; It is used in designing a ergonomic keybinding set.
-;; See http://xahlee.org/emacs/command-frequency.html
+;; See http://ergoemacs.org/emacs/command-frequency.html
 ;;}}}
 
 ;;{{{ INSTALLATION
@@ -77,6 +77,7 @@
 ;;}}}
 
 ;; {{{VERSION HISTORY
+;; Version 1.3.1, 2012-06-30: trivial fix to prevent compiler warnings in emacs 24. (Xah Lee)
 ;; Version 1.3, 2009-09: Added command-frequency-summarize-all-modes (David Capello)
 ;; Version 1.2, 2009-09: Now each hash hash-key is a (major-mode . command) cons. Now only symbols are recorded. (David Capello)
 ;; Version 1.1, 2008-09: Replaced the use of this-command var by real-last-command, so that the commands backward-kill-word, kill-word, kill-line, kill-region, do not all get counted as kill-region. Changed post-command-hook to pre-command-hook
@@ -90,7 +91,7 @@
   "Customization group for Command Frequency mode.  Command
 Frequency mode stores number of times each command was called and
 provides it as a statistical data."
-  :package-version '(command-frequency . "1.3")
+  :package-version '(command-frequency . "1.3.1")
   :group 'local
   :prefix "command-frequency")
 
@@ -317,7 +318,7 @@ FILE-NAME is nil uses `command-frequency-table-file'."
   ; Does file-name exist?
   (if (not (file-exists-p file-name))
       (progn
-        (if (called-interactively-p)
+        (if (called-interactively-p 'interactive)
             (message "File %s does not exist" file-name))
         nil)
 
@@ -329,7 +330,7 @@ FILE-NAME is nil uses `command-frequency-table-file'."
       ; Was it valid sexp?
       (if (or (not (listp l)) (null l))
           (progn
-            (if (called-interactively-p)
+            (if (called-interactively-p 'interactive)
                 (message "File %s does not contain any valid data" file-name))
             nil)
 
@@ -350,13 +351,23 @@ FILE-NAME is nil uses `command-frequency-table-file'."
             (setq l (cdr l))))
 
         ; Loaded
-        (if (called-interactively-p)
+        (if (called-interactively-p 'interactive)
             (message "Table %s from %s"
                      (if merge "merged" "loaded") file-name))
         t))))
 
 ;;}}}
 ;;{{{ AUTO SAVE MODE
+
+(defvar command-frequency-autosave--timer nil)
+
+(defcustom command-frequency-autosave-timeout 600
+  "How often in seconds `command-frequency-table' should be saved
+when `command-frequency-autosave-mode' is enabled.  Setting this
+value will take effect only after (re)enabling
+`command-frequency-autosave-mode'."
+  :group 'command-frequency
+  :type 'number)
 
 (define-minor-mode command-frequency-autosave-mode
   "Command Frequency Autosave mode automatically saves
@@ -381,16 +392,6 @@ describes where and how the table should be saved."
                            'command-frequency-autosave--do))
         (add-hook 'kill-emacs-hook 'command-frequency-autosave--do))
     (remove-hook 'kill-emacs-hook 'command-frequency-autosave--do)))
-
-
-(defcustom command-frequency-autosave-timeout 600
-  "How often in seconds `command-frequency-table' should be saved
-when `command-frequency-autosave-mode' is enabled.  Setting this
-value will take effect only after (re)enabling
-`command-frequency-autosave-mode'."
-  :group 'command-frequency
-  :type 'number)
-
 
 (defcustom command-frequency-autosave-destinations (list nil)
   "Specifies where frequencie table should be saved when
@@ -423,11 +424,6 @@ This is a list where each element is:
                                         t)
                                  (const :tag "Raw plain text format" 'raw)
                                  function)))))
-
-
-
-(defvar command-frequency-autosave--timer nil)
-
 
 (defun command-frequency-autosave--do (&optional destinations)
   (dolist (e (or destinations command-frequency-autosave-destinations))
