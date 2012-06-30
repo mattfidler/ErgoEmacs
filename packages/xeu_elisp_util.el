@@ -26,6 +26,7 @@
 ;; substract-path
 ;; asciify-text
 ;; title-case-string-region-or-line
+;; current-date-time-string
 
 ;; The most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://xahlee.org/emacs/elisp_get-selection-or-unit.html
 
@@ -42,6 +43,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.12, 2012-06-30 added “current-date-time-string”
 ;; version 1.4.11, 2012-05-05 added { “delete-subdirs-by-regex” “delete-files-by-regex”}
 ;; version 1.4.10, 2012-05-05 added “substract-path”.
 ;; version 1.4.9, 2012-03-15 more trivial improved implementation of “get-image-dimensions-imk”.
@@ -388,5 +390,16 @@ list."
             (upcase-initials-region (point-min) (point-max) )
             (replace-regexp-pairs-region (point-min) (point-max) strPairs t t)
             ) ) ) ) ) )
+
+
+(defun current-date-time-string ()
+  "Returns current date-time string in full ISO 8601 format.
+Example: 「2012-04-05T21:08:24-07:00」.
+
+Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are valid ISO 8601. However, Atom Webfeed spec seems to require 「hh:mm」."
+  (concat
+   (format-time-string "%Y-%m-%dT%T")
+   ((lambda (ξx) (format "%s:%s" (substring ξx 0 3) (substring ξx 3 5))) (format-time-string "%z")) )
+  )
 
 (provide 'xeu_elisp_util)
