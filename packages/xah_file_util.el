@@ -1,4 +1,4 @@
-                                        ;-*- coding: utf-8 -*-
+;-*- coding: utf-8 -*-
 ;; xah_file_util.el -- xah's misc elisp utility similar for unix grep/sed
 
 ;; Copyright © 2012 by Xah Lee

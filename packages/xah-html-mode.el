@@ -26,6 +26,7 @@
 
 ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
 ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
+("<title>\\([^<]+?\\)</title>" . (1 "bold"))
 (,htmlElementNamesRegex . font-lock-function-name-face)
 (,AttributeNamesRegexp . font-lock-keyword-face)
 ) ) )
