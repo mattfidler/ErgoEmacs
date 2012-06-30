@@ -318,7 +318,7 @@ FILE-NAME is nil uses `command-frequency-table-file'."
   ; Does file-name exist?
   (if (not (file-exists-p file-name))
       (progn
-        (if (called-interactively-p 'interactive)
+        (if (called-interactively-p 'any)
             (message "File %s does not exist" file-name))
         nil)
 
@@ -330,7 +330,7 @@ FILE-NAME is nil uses `command-frequency-table-file'."
       ; Was it valid sexp?
       (if (or (not (listp l)) (null l))
           (progn
-            (if (called-interactively-p 'interactive)
+            (if (called-interactively-p 'any)
                 (message "File %s does not contain any valid data" file-name))
             nil)
 
@@ -351,7 +351,7 @@ FILE-NAME is nil uses `command-frequency-table-file'."
             (setq l (cdr l))))
 
         ; Loaded
-        (if (called-interactively-p 'interactive)
+        (if (called-interactively-p 'any)
             (message "Table %s from %s"
                      (if merge "merged" "loaded") file-name))
         t))))
