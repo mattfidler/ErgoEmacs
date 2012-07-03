@@ -43,6 +43,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.13, 2012-07-03 removed curly bracket for 'filepath in “unit-at-cursor”.
 ;; version 1.4.12, 2012-06-30 added “current-date-time-string”. Added 'url, 'filepath to “unit-at-cursor”.
 ;; version 1.4.11, 2012-05-05 added { “delete-subdirs-by-regex” “delete-files-by-regex”}
 ;; version 1.4.10, 2012-05-05 added “substract-path”.
@@ -142,7 +143,7 @@ The main differences are:
               (setq p2 (point) ) ) ))
 
          ((eq unit 'filepath)
-          (let (p0 (filePathChars "!#$%&'+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{}~"))
+          (let (p0 (filePathChars "!#$%&'+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz~"))
             ;; note: for filePathChars, the goal is not to list all allowed chars. But avoid chars that are likely used as separators for paths. Paths can be url too.
             (setq p0 (point))
              (skip-chars-backward filePathChars) ;"^ \t\n,()[]{}<>〔〕“”\""
