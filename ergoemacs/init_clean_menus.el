@@ -215,9 +215,9 @@
     :button (:toggle . global-linum-mode))  'line-number-mode )
 
 ;; add a menu for toggling the visibility of spaces and tabs
-(define-key-after menu-bar-options-menu [whitespace-mode]
-  '(menu-item "Show/Hide Space, Tab" whitespace-mode
-    :button (:toggle . whitespace-mode)) 'line-move-visual )
+(define-key-after menu-bar-options-menu [showhide global-whitespace-mode]
+  '(menu-item "Show/Hide whitespaces" whitespace-mode
+    :button (:toggle . global-whitespace-mode)) 'line-number-mode )
 
 ;; add a menu to toggle whether down arrow key move cursor by visual line.
 (define-key-after menu-bar-options-menu [line-move-visual]
