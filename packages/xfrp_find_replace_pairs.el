@@ -33,6 +33,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.6, 2012-07-05 • fixed several documentation error: mismatched paren in doc.
 ;; version 1.4.5, 2011-11-12 • added a optional argument to replace-regexp-pairs-region.
 ;; version 1.4.4, 2011-10-30 • fix a important error on documentation of replace-regexp-pairs-in-string, about the reversal of its 3rd argument fixedcase.
 ;; version 1.4.3, 2011-10-29 • major update on the implementation of “replace-pairs-region”, and minor update on others. No user visible change.
@@ -55,10 +56,7 @@ The search strings are not case sensitive.
 The replacement are literal and case sensitive.
 
 If you want search strings to be case sensitive, set
-`case-fold-search' to nil. Like this:
-
- (let ((case-fold-search nil))
-   (replace-regexp-in-string-pairs …)
+`case-fold-search' to nil. Like this: (let ((case-fold-search nil)) (replace-regexp-in-string-pairs …))
 
 Once a subsring in the input string is replaced, that part is not changed again.
 For example, if the input string is “abcd”, and the pairs are
@@ -110,8 +108,7 @@ If third arg FIXEDCASE is non-nil, do not alter case of replacement text.
  (same as in `replace-match')
 
 If you want the regex to be case sensitive, set the global
-variable `case-fold-search' to “nil”. Like this:
- (let ((case-fold-search nil)) (replace-regexp-pairs-in-string …)
+variable `case-fold-search' to “nil”. Like this: (let ((case-fold-search nil)) (replace-regexp-pairs-in-string …))
 
 See also `replace-pairs-in-string'."
   (let ((myStr str))
@@ -219,8 +216,7 @@ PAIRS is
 The optional arguments FIXEDCASE and LITERAL is the same as in `replace-match'.
 
 If you want the regex to be case sensitive, set the global
-variable `case-fold-search' to “nil”. Like this:
- (let ((case-fold-search nil)) (replace-regexp-pairs-region …)"
+variable `case-fold-search' to “nil”. Like this: (let ((case-fold-search nil)) (replace-regexp-pairs-region …))"
   (let ( ξi currentPair (pairLength (length pairs)))
     (save-restriction 
       (narrow-to-region p1 p2)
