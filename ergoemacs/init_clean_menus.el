@@ -216,7 +216,7 @@
 
 ;; add a menu for toggling the visibility of spaces and tabs
 (define-key-after menu-bar-options-menu [showhide global-whitespace-mode]
-  '(menu-item "Show/Hide whitespaces" whitespace-mode
+  '(menu-item "Show/Hide whitespaces" global-whitespace-mode
     :button (:toggle . global-whitespace-mode)) 'line-number-mode )
 
 ;; add a menu to toggle whether down arrow key move cursor by visual line.
