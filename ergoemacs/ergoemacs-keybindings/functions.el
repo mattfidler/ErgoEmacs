@@ -64,7 +64,7 @@ If narrow-to-region is in effect, then cut that region only."
   "Move cursor to the next occurrence of left bracket or quotation mark."
   (interactive)
   (forward-char 1)
-  (search-forward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")))
+  (search-forward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t)
 ;;  (search-forward-regexp "\\s(\\|\\s\"\\|<\\|“\\|‘\\|‹") ; using syntax table
   (backward-char 1)
   )
@@ -72,13 +72,13 @@ If narrow-to-region is in effect, then cut that region only."
 (defun backward-open-bracket ()
   "Move cursor to the previous occurrence of left bracket or quotation mark.."
   (interactive)
-  (search-backward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")))
+  (search-backward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t)
   )
 
 (defun forward-close-bracket ()
   "Move cursor to the next occurrence of right bracket or quotation mark."
   (interactive)
-   (search-forward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")))
+   (search-forward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
 ;;  (search-forward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›") ;using syntax table
  )
 
@@ -86,7 +86,7 @@ If narrow-to-region is in effect, then cut that region only."
   "Move cursor to the previous occurrence of right bracket or quotation mark."
   (interactive)
   (backward-char 1)
-  (search-backward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")))
+  (search-backward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
   (forward-char 1)
   )
 
@@ -139,12 +139,12 @@ See: `forward-block'"
   "Select text between the nearest left and right delimiters.
 Delimiters are paired characters:
  () [] {} «» ‹› “” 〖〗 【】 「」 『』 （） 〈〉 《》 〔〕 ⦗⦘ 〘〙 ⦅⦆ 〚〛 ⦃⦄
- For practical purposes, also: \" \" ' '"
+ For practical purposes, also: \"\", but not single quotes."
  (interactive)
  (let (p1)
-   (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃\"'")
+   (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃\"")
    (setq p1 (point))
-   (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄\"'")
+   (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄\"")
    (set-mark p1)
    )
  )

@@ -21,7 +21,7 @@
 ;;
 ;; For complete detail, see:
 ;; http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
-;; 
+;;
 ;; Install:
 ;; See the file “_INSTALL.txt”.
 
@@ -57,7 +57,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.5.3"
+(defconst ergoemacs-mode-version "5.5.4"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -478,10 +478,11 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   (define-key comint-mode-map (kbd "S-<f12>") 'comint-next-matching-input)
   )
 
+
 ;; Log edit mode
+(eval-when-compile (log-edit-mode))
 (defun ergoemacs-log-edit-hook ()
   "Hook for `log-edit-mode-hook'."
-
   (define-key log-edit-mode-map (kbd "<f11>") 'log-edit-previous-comment)
   (define-key log-edit-mode-map (kbd "<f12>") 'log-edit-next-comment)
   (define-key log-edit-mode-map (kbd "S-<f11>") 'log-edit-previous-comment)
