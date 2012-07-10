@@ -207,6 +207,22 @@ If there's no text, delete the previous line ending."
   (other-window -1)
   )
 
+(defun unfill-paragraph ()
+  "Replace newline char in current paragraph by space.
+This command does the reverse of `fill-paragraph'.
+See also: `compact-uncompact-block'"
+  (interactive)
+  (let ((fill-column 90002000))
+    (fill-paragraph nil)))
+
+(defun unfill-region (start end)
+  "Replace newline char in region by space.
+This command does the reverse of `fill-region'.
+See also: `compact-uncompact-block'"
+  (interactive "r")
+  (let ((fill-column 90002000))
+    (fill-region start end)))
+
 (defun compact-uncompact-block ()
   "Remove or add line ending chars on current paragraph.
 This command is similar to a toggle of `fill-paragraph'.
