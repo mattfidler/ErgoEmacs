@@ -1,9 +1,9 @@
-;-*- coding: utf-8 -*-
-;; xub-mode.el -- Major mode for browsing unicode characters.
+;;; xub-mode.el --- Major mode for browsing unicode characters. -*- coding: utf-8 -*-
 
 ;; Copyright © 2010 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
+;; Created: 2010-06-20
 ;; Keywords: unicode, character map
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.

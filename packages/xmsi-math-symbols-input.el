@@ -1,9 +1,9 @@
-;;-*- coding: utf-8 -*-
-;; xmsi-math-symbols-input.el -- a mode to input math chars
+;;; xmsi-math-symbols-input.el --- a mode to input math chars. -*- coding: utf-8 -*-
 
 ;; Copyright © 2010, 2011 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
+;; Created: 2010-12-08
 ;; Keywords: math symbols, unicode, input
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.

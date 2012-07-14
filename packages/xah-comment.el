@@ -1,4 +1,4 @@
-;; xah-comment.el --- comment . -*- coding: utf-8 -*-
+;;; xah-comment.el --- comment . -*- coding: utf-8 -*-
 
 ;; Copyright © 2012 by Xah Lee
 

@@ -1,9 +1,9 @@
-;-*- coding: utf-8 -*-
-;; xlsl-mode.el -- Major mode for editing LSL (Linden Scripting Language).
+;;; xlsl-mode.el --- Major mode for editing LSL (Linden Scripting Language). -*- coding: utf-8 -*-
 
 ;; Copyright © 2008, 2009, 2010, 2011 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
+;; Created: 2008-10-29
 ;; Keywords: LSL, Second Life, Linden Scripting Language
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.

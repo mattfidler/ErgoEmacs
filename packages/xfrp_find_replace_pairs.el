@@ -1,9 +1,9 @@
-;-*- coding: utf-8 -*-
-;; xfrp_find_replace_pairs.el -- elisp utility for string replacement
+;;; xfrp_find_replace_pairs.el --- elisp utility for string replacement. -*- coding: utf-8 -*-
 
-;; Copyright © 2010 by Xah Lee
+;; Copyright © 2010, 2011, 2012, by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
+;; Created: 2010-08-17
 ;; Keywords: emacs lisp, string, find replace
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
@@ -220,12 +220,10 @@ variable `case-fold-search' to “nil”. Like this: (let ((case-fold-search nil
   (let ( ξi currentPair (pairLength (length pairs)))
     (save-restriction 
       (narrow-to-region p1 p2)
-      
       (setq ξi 0)
       (while (< ξi pairLength)
         (setq currentPair (elt pairs ξi))
         (goto-char (point-min))
-
         (while (search-forward-regexp (elt currentPair 0) (point-max) t)
           (replace-match (elt currentPair 1) fixedcase literal) )
         (setq ξi (1+ ξi) ) ) ) ) )

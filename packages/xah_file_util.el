@@ -1,9 +1,9 @@
-                                        ;-*- coding: utf-8 -*-
-;; xah_file_util.el -- xah's misc elisp utility similar for unix grep/sed
+;;; xah_file_util.el --- xah's misc elisp utility similar to unix grep/sed. -*- coding: utf-8 -*-
 
 ;; Copyright © 2012 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
+;; Created: 2012-04-02
 ;; Keywords: emacs lisp, utility, file
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.

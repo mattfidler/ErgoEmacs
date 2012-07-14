@@ -1,9 +1,9 @@
-;-*- coding: utf-8 -*-
-;; xahk-mode.el -- Major mode for editing AHK (AutoHotkey) scripts.
+;;; xahk-mode.el --- Major mode for editing AHK (AutoHotkey) scripts. -*- coding: utf-8 -*-
 
-;; Copyright © 2008 by Xah Lee
+;; Copyright © 2008, 2009, 2010, 2011, 2012 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
+;; Created: 2010-01-09
 ;; Keywords: ahk, AutoHotkey, hotkey, keyboard shortcut, automation
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.

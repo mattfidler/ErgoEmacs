@@ -1,9 +1,9 @@
-;-*- coding: utf-8 -*-
-;; xeu_elisp_util.el -- xah's misc elisp utility
+;;; xeu_elisp_util.el --- xah's misc elisp utility. -*- coding: utf-8 -*-
 
-;; Copyright © 2011 by Xah Lee
+;; Copyright © 2011, 2012 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
+;; Created: 2011-03-02
 ;; Keywords: emacs lisp, utility, file
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
@@ -287,8 +287,7 @@ Example:
 This deletes all files ending in “~”."
   (require 'find-lisp)
   (mapc
-   (lambda (ξx) (if (and (file-regular-p ξx) (file-exists-p ξx))
-                    (delete-file ξx)) )
+   (lambda (ξx) (if (and (file-regular-p ξx) (file-exists-p ξx)) (delete-file ξx)) )
    (find-lisp-find-files ξdir regex-pattern)) )
 
 

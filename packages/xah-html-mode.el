@@ -1,5 +1,15 @@
-;;-*- coding: utf-8 -*-
-;; xah-html-mode.el -- Major mode for editing pure html5.
+;;; xah-html-mode.el --- Major mode for editing pure html5. -*- coding: utf-8 -*-
+
+;; Copyright © 2012 by Xah Lee
+
+;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
+;; Created: 2012-05-12
+;; Keywords: languages, convenience
+
+;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
+
+;;; Commentary:
+;; Major mode for editing pure HTML5 files. Alpha stage.
 
 ;;; HISTORY
 ;; version 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
