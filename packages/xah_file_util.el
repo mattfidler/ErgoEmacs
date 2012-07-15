@@ -10,7 +10,13 @@
 
 ;;; DESCRIPTION
 
-;; TODO this package is some misc emacs lisp utility.
+;; this package is some misc emacs commands for find or find/replace on multiple files. It's similar in purpose to unix's {grep, sed}. It's entirely in emacs lisp.
+
+;; The reason it's written because it avoids many problems when running emacs on Windows (e.g. no grep, lots problems interfacing with Windows ports of grep, unicode or encoding problems, emacs regex vs unix regex syntax mismatch for user, …, etc. )
+
+;; currently, this package is in alpha stage. I use it daily for months, but lots improvement in documentation and coding can be made.
+
+;; This package export 3 functions: xah-find-text, xah-find-text-regex, xah-find-replace-text.
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
