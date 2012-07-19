@@ -16,10 +16,11 @@
 
 ;; currently, this package is in alpha stage. I use it daily for months, but lots improvement in documentation and coding can be made.
 
-;; This package exports 3 functions:
+;; This package exports the follow functions:
 ;; xah-find-text
 ;; xah-find-text-regex
 ;; xah-find-replace-text
+;; xah-find-replace-text-regex
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
@@ -27,6 +28,7 @@
 
 ;;; HISTORY
 
+;; version 1.3, 2012-07-19 added “xah-find-replace-text-regex”
 ;; version 1.2, 2012-07-14 added “xah-find-replace-text”
 ;; version 1.1, 2012-05-11 modified xah-find-text so that same line are not printed.
 ;; version 1.0, 2012-04-02 First version.
@@ -58,7 +60,7 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
 
   (let (
         (ξcount 0)
-        (outputBuffer "*xah-find-text output*")
+        (ξoutputBuffer "*xah-find-text output*")
         (textBlock "008991033174968")
         (textBlock-prev "092695046507792-random")
         )
@@ -66,7 +68,7 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
     ;; add a ending slash if not there
     (when (not (string= "/" (substring inputDir -1) )) (setq inputDir (concat inputDir "/") ) )
 
-    (with-output-to-temp-buffer outputBuffer
+    (with-output-to-temp-buffer ξoutputBuffer
       (princ (format "xah-find-text results.
 %s
 Search string 「%s」
@@ -75,10 +77,10 @@ Path Regex 「%s」
 
 " (current-date-time-string) searchStr1 inputDir ξpathRegex))
       (mapc
-       (lambda (fPath)
+       (lambda (ξfp)
          (setq ξcount 0)
          (with-temp-buffer
-           (insert-file-contents fPath)
+           (insert-file-contents ξfp)
            (setq case-fold-search case-fold-search)
            (while (search-forward searchStr1 nil "NOERROR if not found")
              (setq ξcount (1+ ξcount))
@@ -88,13 +90,13 @@ Path Regex 「%s」
                (princ (format "「%s」\n" textBlock)))
              (setq textBlock-prev textBlock))
            (when (> ξcount 0)
-             (princ (format "• %d %s\n" ξcount fPath))
+             (princ (format "• %d %s\n" ξcount ξfp))
              )
            )
          )
        (find-lisp-find-files inputDir ξpathRegex))
 
-      (switch-to-buffer outputBuffer)
+      (switch-to-buffer ξoutputBuffer)
       (highlight-phrase (regexp-quote searchStr1) (quote hi-yellow))
       (highlight-lines-matching-regexp "• " (quote hi-pink))
       )
@@ -121,7 +123,7 @@ Replacement
 
   (let (
         (ξcount 0)
-        (outputBuffer "*xah-find-text-regex output*")
+        (ξoutputBuffer "*xah-find-text-regex output*")
         (ξpos1 1) ; beginning of line
         (ξpos2 1)
         (ξpos-prev-end 1)
@@ -130,7 +132,7 @@ Replacement
     ;; add a ending slash if not there
     (when (not (string= "/" (substring inputDir -1) )) (setq inputDir (concat inputDir "/") ) )
 
-    (with-output-to-temp-buffer outputBuffer
+    (with-output-to-temp-buffer ξoutputBuffer
       (princ (format "xah-find-text-regex results.
 %s
 Search regex 「%s」
@@ -139,10 +141,10 @@ Path Regex 「%s」
 
 " (current-date-time-string) searchRegex inputDir ξpathRegex))
       (mapc
-       (lambda (fPath)
+       (lambda (ξfp)
          (setq ξcount 0)
          (with-temp-buffer
-           (insert-file-contents fPath)
+           (insert-file-contents ξfp)
            (setq case-fold-search case-fold-search)
            (while (search-forward-regexp searchRegex nil t)
              (setq ξpos-prev-end ξpos2)
@@ -159,13 +161,13 @@ Path Regex 「%s」
              (setq ξcount (1+ ξcount))
              )
            (when (> ξcount 0)
-             (princ (format "• %d %s\n" ξcount fPath))
+             (princ (format "• %d %s\n" ξcount ξfp))
              )
            )
          )
        (find-lisp-find-files inputDir ξpathRegex))
 
-      (switch-to-buffer outputBuffer)
+      (switch-to-buffer ξoutputBuffer)
       (highlight-phrase searchRegex (quote hi-yellow))
       (highlight-lines-matching-regexp "• " (quote hi-pink))
       )
@@ -187,8 +189,8 @@ This is case-literal. No automatic case conversion anywhere. No regex."
     )
    )
 
-  (let ((outputBuffer "*xah-find-replace-text output*"))
-    (with-output-to-temp-buffer outputBuffer
+  (let ((ξoutputBuffer "*xah-find-replace-text output*"))
+    (with-output-to-temp-buffer ξoutputBuffer
       (princ (format "%s, find 「%s」 replace with 『%s』 in 〔%s〕 \n\n" (current-date-time-string) ξsearchStr ξreplaceStr ξinputDir))
       (mapc
        (lambda (ξf)
@@ -235,7 +237,7 @@ This is case-literal. No automatic case conversion anywhere. No regex."
        (find-lisp-find-files ξinputDir ξpathRegex))
       (princ "Done.")
       )
-    (switch-to-buffer outputBuffer)
+    (switch-to-buffer ξoutputBuffer)
 
     (progn
       (when (not (string= ξreplaceStr ""))
@@ -244,6 +246,78 @@ This is case-literal. No automatic case conversion anywhere. No regex."
       (highlight-lines-matching-regexp "^◆ " (quote hi-pink))
       )
     )
+  )
+
+(defun xah-find-replace-text-regex (ξregex ξreplaceStr ξinputDir ξpathRegex ξwriteToFile-p ξcaseFoldSearch-p ξfixedCaseReplace-p)
+  "Find/Replace by regex in all files of a directory.
+
+ξregex is a regex pattern.
+ξreplaceStr is replacement string.
+ξinputDir is input directory to search (includes all nested subdirectories).
+ξpathRegex is a regex to filter file paths. 
+ξwriteToFile-p, when true, write to file, else, print a report of changes only.
+ξcaseFoldSearch-p sets `case-fold-search' for this operation.
+ξfixedCaseReplace-p, if true, then the letter-case in replacement is literal. (this is relevant only if ξcaseFoldSearch-p is true.)
+"
+  (interactive
+   (list
+    (read-regexp "regex:" )
+    (read-string (format "Replace string:") nil 'query-replace-history)
+    default-directory
+    (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
+    (y-or-n-p "Write changes to file?")
+    (y-or-n-p "Case insensitive search (case-fold-search)?")
+    (y-or-n-p "Fixed case in replacement (as you have it)?")
+    )
+   )
+
+  (let ((ξoutputBuffer "*xah-find-replace-regex output*"))
+    (with-output-to-temp-buffer ξoutputBuffer
+      (princ (format "%s, find 「%s」 replace with 『%s』 in 〔%s〕 \n\n" (current-date-time-string) ξregex ξreplaceStr ξinputDir))
+      (mapc 
+       (lambda (ξfp)
+         (let ( 
+                (ξcount 0)
+                matchStrFound matchStrReplaced )
+
+           (when t
+             (with-temp-buffer
+               (insert-file-contents ξfp)
+               (setq case-fold-search ξcaseFoldSearch-p)
+               (while (re-search-forward ξregex nil t)
+                 (setq matchStrFound (match-string 0))
+                 (replace-match ξreplaceStr ξfixedCaseReplace-p)
+                 (setq matchStrReplaced (match-string 0))
+                 (setq ξcount (1+ ξcount) )
+                 (princ (format "「%s」\n" matchStrFound))
+                 (princ (format "『%s』\n" matchStrReplaced))
+                 )
+
+               (when (> ξcount 0)
+                 (when ξwriteToFile-p
+                   (copy-file ξfp (concat ξfp "~rr~") t)
+                   (write-region 1 (point-max) ξfp)
+                   )
+                 (princ (format "◆ %d %s\n" ξcount ξfp))
+                 ) )
+             )
+
+           ))
+
+       (find-lisp-find-files ξinputDir "\\.html$"))
+      (princ "Done ☺")
+      )
+
+    (switch-to-buffer ξoutputBuffer)
+
+    (progn
+      (when (not (string= ξreplaceStr ""))
+        (highlight-phrase (regexp-quote ξregex) (quote hi-yellow))
+        )
+      (highlight-lines-matching-regexp "^◆ " (quote hi-pink))
+      )
+    )
+
   )
 
 (provide 'xah_file_util)
