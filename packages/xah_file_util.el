@@ -28,6 +28,7 @@
 
 ;;; HISTORY
 
+;; version 1.4, 2012-07-21 added prompt for a dir on “xah-find-text” and all others.
 ;; version 1.3, 2012-07-19 added “xah-find-replace-text-regex”
 ;; version 1.2, 2012-07-14 added “xah-find-replace-text”
 ;; version 1.1, 2012-05-11 modified xah-find-text so that same line are not printed.
@@ -53,7 +54,7 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
   (interactive
    (list
     (read-string (format "Search string (default %s):" (current-word)) nil 'query-replace-history (current-word))
-    default-directory
+    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
     )
    )
@@ -116,7 +117,7 @@ Replacement
   (interactive
    (list
     (read-string (format "Search regex (default %s):" (current-word)) nil 'query-replace-history (current-word))
-    default-directory
+    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
     )
    )
@@ -184,7 +185,7 @@ This is case-literal. No automatic case conversion anywhere. No regex."
    (list
     (read-string (format "Search string (default %s):" (current-word)) nil 'query-replace-history (current-word))
     (read-string (format "Replace string:") nil 'query-replace-history)
-    default-directory
+    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
     )
    )
@@ -263,7 +264,7 @@ This is case-literal. No automatic case conversion anywhere. No regex."
    (list
     (read-regexp "regex:" )
     (read-string (format "Replace string:") nil 'query-replace-history)
-    default-directory
+    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
     (y-or-n-p "Write changes to file?")
     (y-or-n-p "Case insensitive search (case-fold-search)?")
