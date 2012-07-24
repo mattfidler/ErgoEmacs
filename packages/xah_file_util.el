@@ -28,6 +28,7 @@
 
 ;;; HISTORY
 
+;; version 1.5, 2012-07-24 minor modification to the output format, made more consistent, added a utf-8 header.
 ;; version 1.4, 2012-07-21 added prompt for a dir on “xah-find-text” and all others.
 ;; version 1.3, 2012-07-19 added “xah-find-replace-text-regex”
 ;; version 1.2, 2012-07-14 added “xah-find-replace-text”
@@ -70,8 +71,9 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
     (when (not (string= "/" (substring inputDir -1) )) (setq inputDir (concat inputDir "/") ) )
 
     (with-output-to-temp-buffer ξoutputBuffer
-      (princ (format "xah-find-text results.
+      (princ (format "-*- coding: utf-8 -*-
 %s
+xah-find-text result.
 Search string 「%s」
 Directory 「%s」
 Path Regex 「%s」
@@ -134,8 +136,9 @@ Replacement
     (when (not (string= "/" (substring inputDir -1) )) (setq inputDir (concat inputDir "/") ) )
 
     (with-output-to-temp-buffer ξoutputBuffer
-      (princ (format "xah-find-text-regex results.
+      (princ (format "-*- coding: utf-8 -*-
 %s
+xah-find-text-regex result.
 Search regex 「%s」
 Directory 「%s」
 Path Regex 「%s」
@@ -192,7 +195,14 @@ This is case-literal. No automatic case conversion anywhere. No regex."
 
   (let ((ξoutputBuffer "*xah-find-replace-text output*"))
     (with-output-to-temp-buffer ξoutputBuffer
-      (princ (format "%s, find 「%s」 replace with 『%s』 in 〔%s〕 \n\n" (current-date-time-string) ξsearchStr ξreplaceStr ξinputDir))
+      (princ (format "-*- coding: utf-8 -*-
+%s
+xah-find-replace-text result.
+Search string 「%s」
+Replace string 『%s』
+Directory 〔%s〕
+
+" (current-date-time-string) ξsearchStr ξreplaceStr ξinputDir))
       (mapc
        (lambda (ξf)
          (let ( (case-fold-search nil)
@@ -272,9 +282,16 @@ This is case-literal. No automatic case conversion anywhere. No regex."
     )
    )
 
-  (let ((ξoutputBuffer "*xah-find-replace-regex output*"))
+  (let ((ξoutputBuffer "*xah-find-replace-text-regex output*"))
     (with-output-to-temp-buffer ξoutputBuffer
-      (princ (format "%s, find 「%s」 replace with 『%s』 in 〔%s〕 \n\n" (current-date-time-string) ξregex ξreplaceStr ξinputDir))
+      (princ (format "-*- coding: utf-8 -*-
+%s
+xah-find-replace-text-regex result.
+Search string 「%s」
+Replace with 『%s』 
+Directory 〔%s〕
+
+" (current-date-time-string) ξregex ξreplaceStr ξinputDir))
       (mapc 
        (lambda (ξfp)
          (let ( 
