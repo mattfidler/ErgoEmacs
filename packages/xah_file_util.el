@@ -56,9 +56,9 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
 
   (interactive
    (list
-    (read-string (format "Search string (default %s):" (current-word)) nil 'query-replace-history (current-word))
-    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
-    (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
+    (read-string (format "Search string (default %s): " (current-word)) nil 'query-replace-history (current-word))
+    (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
+    (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     )
    )
 
@@ -120,9 +120,9 @@ Replacement
 
   (interactive
    (list
-    (read-string (format "Search regex (default %s):" (current-word)) nil 'query-replace-history (current-word))
-    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
-    (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
+    (read-string (format "Search regex (default %s): " (current-word)) nil 'query-replace-history (current-word))
+    (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
+    (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     )
    )
 
@@ -188,10 +188,10 @@ SearchStr can span multiple lines.
 This is case-literal. No automatic case conversion anywhere. No regex."
   (interactive
    (list
-    (read-string (format "Search string (default %s):" (current-word)) nil 'query-replace-history (current-word))
-    (read-string (format "Replace string:") nil 'query-replace-history)
-    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
-    (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
+    (read-string (format "Search string (default %s): " (current-word)) nil 'query-replace-history (current-word))
+    (read-string (format "Replace string: ") nil 'query-replace-history)
+    (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
+    (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     )
    )
 
@@ -274,10 +274,10 @@ Directory 〔%s〕
 "
   (interactive
    (list
-    (read-regexp "regex:" )
-    (read-string (format "Replace string:") nil 'query-replace-history)
-    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
-    (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
+    (read-regexp "regex: " )
+    (read-string (format "Replace string: ") nil 'query-replace-history)
+    (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
+    (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     (y-or-n-p "Write changes to file?")
     (y-or-n-p "Case insensitive search (case-fold-search)?")
     (y-or-n-p "Fixed case in replacement (as you have it)?")
@@ -341,28 +341,27 @@ Directory 〔%s〕
 
 (defun xah-find-count (ξsearchStr ξcountExpr ξcountNumber ξinputDir ξpathRegex)
   "Report how many occurances of a string, of a given dir.
-Also print context.
-TODO more/correct description here
 Similar to grep, written in elisp.
 
 case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-search' to change."
   (interactive
    (list
-    (read-string (format "Search string (default %s):" (current-word)) nil 'query-replace-history (current-word))
-    (read-string "greater less equal unqual, any of 「<」 「>」 「=」 「/=」:" nil nil "/=")
-    (read-string "count:" "1")
-    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
-    (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
+    (read-string (format "Search string (default %s): " (current-word)) nil 'query-replace-history (current-word))
+    (read-string "greater less equal unqual, any of 「<」 「>」 「=」 「/=」: " nil nil "/=")
+    (read-string "count: " "1")
+    (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
+    (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     )
    )
-  (require 'find-lisp)
 
   (let* (
          (outputBuffer "*xah-find-count output*")
          (countOperator 
           (cond
            ((string-equal "<" ξcountExpr ) '<)
+           ((string-equal "<=" ξcountExpr ) '<=)
            ((string-equal ">" ξcountExpr ) '>)
+           ((string-equal ">=" ξcountExpr ) '>=)
            ((string-equal "=" ξcountExpr ) '=)
            ((string-equal "/=" ξcountExpr ) '/=)
            (t (error "your count expression 「%s」 is wrong!" ξcountExpr ))
