@@ -17,10 +17,11 @@
 ;; currently, this package is in alpha stage. I use it daily for months, but lots improvement in documentation and coding can be made.
 
 ;; This package exports the follow functions:
-;; xah-find-text
-;; xah-find-text-regex
-;; xah-find-replace-text
-;; xah-find-replace-text-regex
+;; xah-find-text               → grep
+;; xah-find-text-regex         → regex grep
+;; xah-find-count              → grep count
+;; xah-find-replace-text       → sed
+;; xah-find-replace-text-regex → sed
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
@@ -28,6 +29,7 @@
 
 ;;; HISTORY
 
+;; version 1.6, 2012-08-12 added xah-find-count.
 ;; version 1.5, 2012-07-24 minor modification to the output format, made more consistent, added a utf-8 header.
 ;; version 1.4, 2012-07-21 added prompt for a dir on “xah-find-text” and all others.
 ;; version 1.3, 2012-07-19 added “xah-find-replace-text-regex”
@@ -335,7 +337,73 @@ Directory 〔%s〕
       (highlight-lines-matching-regexp "^◆ " (quote hi-pink))
       )
     )
-
   )
+
+(defun xah-find-count (ξsearchStr ξcountExpr ξcountNumber ξinputDir ξpathRegex)
+  "Report how many occurances of a string, of a given dir.
+Also print context.
+TODO more/correct description here
+Similar to grep, written in elisp.
+
+case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-search' to change."
+  (interactive
+   (list
+    (read-string (format "Search string (default %s):" (current-word)) nil 'query-replace-history (current-word))
+    (read-string "greater less equal unqual, any of 「<」 「>」 「=」 「/=」:" nil nil "/=")
+    (read-string "count:" "1")
+    (read-directory-name "Directory:" default-directory default-directory "MUSTMATCH")
+    (read-from-minibuffer "Path regex:" nil nil nil 'dired-regexp-history)
+    )
+   )
+  (require 'find-lisp)
+
+  (let* (
+         (outputBuffer "*xah-find-count output*")
+         (countOperator 
+          (cond
+           ((string-equal "<" ξcountExpr ) '<)
+           ((string-equal ">" ξcountExpr ) '>)
+           ((string-equal "=" ξcountExpr ) '=)
+           ((string-equal "/=" ξcountExpr ) '/=)
+           (t (error "your count expression 「%s」 is wrong!" ξcountExpr ))
+           )
+          )
+         (countNumber (string-to-number ξcountNumber))
+         )
+
+    (with-output-to-temp-buffer outputBuffer
+      (mapc
+       (lambda (ξf) 
+         (let ((ξcount 0)
+               )
+           (when t
+             (with-temp-buffer
+               (insert-file-contents ξf)
+               (goto-char 1)
+               (while (search-forward ξsearchStr nil "NOERROR if not found")
+                 ;; (princ (format "「%s」\n" (buffer-substring-no-properties (line-beginning-position) (line-end-position) )))
+                 (setq ξcount (1+ ξcount))
+                 )
+
+               ;; report if the occurance is not n times
+               (when 
+                   (funcall countOperator ξcount countNumber)
+                 (princ (format "◆ %d %s\n" ξcount ξf))
+                 )
+               )
+             )
+
+           )
+         )
+       (find-lisp-find-files ξinputDir "\\.html$"))
+      (princ "Done deal!")
+      )
+
+    (switch-to-buffer outputBuffer)
+    (highlight-phrase ξsearchStr (quote hi-yellow))
+    (highlight-lines-matching-regexp "◆ " (quote hi-pink))
+
+    ))
+
 
 (provide 'xah_file_util)
