@@ -115,8 +115,11 @@
 ;; Alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
 
+;; ;; make buffer switch command do suggestions
+;; (iswitchb-mode 1)
+
 ;; make buffer switch command do suggestions
-(iswitchb-mode 1)
+(ido-mode 1)
 
 ;; display line numbers at margin
 (global-linum-mode 1)
@@ -181,14 +184,16 @@
 
 
 ;; § ----------------------------------------
-;; auto compile elisp files after save, do so only if there's exists a byte-compiled file
-(defun auto-recompile-el-buffer ()
+;; compile elisp files after save, do so only if there's exists a byte-compiled file
+;; thanks to Adolfo Benedetti, 2011-07-15
+(defun byte-compile-current-buffer ()
+  "`byte-compile' current buffer if it's emacs-lisp-mode and compiled file exists."
   (interactive)
   (when (and (eq major-mode 'emacs-lisp-mode)
              (file-exists-p (byte-compile-dest-file buffer-file-name)))
     (byte-compile-file buffer-file-name)))
 
-(add-hook 'after-save-hook 'auto-recompile-el-buffer)
+(add-hook 'after-save-hook 'byte-compile-current-buffer)
 
 ;; auto compile elisp files after save.
 ;; (add-hook 'emacs-lisp-mode-hook (lambda () (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t)) )
