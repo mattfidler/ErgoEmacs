@@ -124,8 +124,11 @@
   )
 
 ;;; color CSS color code
-(autoload 'rainbow-mode "rainbow-mode" "Colorize strings that represent colors, e.g. #aabbcc." t nil) 
+(autoload 'rainbow-mode "rainbow-mode" "Colorize strings that represent colors, e.g. #aabbcc." t nil)
 (add-hook 'css-mode-hook 'rainbow-mode)
+
+;;; make the formfeed char display as a line
+(autoload 'pretty-control-l-mode "pp-c-l" "Make the formfeed char display as a line." t)
 
 ;;; xub-mode for browsing Unicode characters
 (autoload 'xub-mode "xub-mode" "Load Unicode browsing mode." t)
@@ -154,7 +157,7 @@
 ;;        (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/rw-hunspell/") )
 ;;       (require 'rw-hunspell)
 ;;       (rw-hunspell-setup)
-;;       ) ) ) 
+;;       ) ) )
 
 ;; ;; ;; Hunspell. TODO: See http://code.google.com/p/ergoemacs/issues/detail?id=51
 ;; ;; (when (or (executable-find "hunspell") (executable-find "aspell") (executable-find "ispell"))
@@ -174,7 +177,7 @@
 ;; (setq speck-hunspell-language-options
 ;;       (quote (("da" utf-8 nil t nil)
 ;;               ("de" iso-8859-1 nil t nil)
-;;               ("en" utf-8 nil nil nil) 
+;;               ("en" utf-8 nil nil nil)
 ;;               ("fr" iso-8859-1 nil nil nil)
 ;;               ("it" iso-8859-1 nil nil nil)
 ;;               ("ru" koi8-r nil nil nil))))
@@ -222,5 +225,5 @@
 (autoload 'dictionary-tooltip-mode "dictionary" "Display tooltips for the current word" t)
 (autoload 'global-dictionary-tooltip-mode "dictionary" "Enable/disable dictionary-tooltip-mode for all buffers" t)
 
-;; loads tramp. This is to fix a dired recursive load bug, see: http://xahlee.org/emacs/emacs_on_ubuntu_linux.html 
+;; loads tramp. This is to fix a dired recursive load bug, see: http://xahlee.org/emacs/emacs_on_ubuntu_linux.html
 (require 'tramp)
