@@ -27,6 +27,7 @@
 ;; asciify-text
 ;; title-case-string-region-or-line
 ;; current-date-time-string
+;; hash-to-list
 
 ;; The most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://ergoemacs.org/emacs/elisp_get-selection-or-unit.html
 
@@ -43,6 +44,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.14, 2012-08-14 added “hash-to-list”.
 ;; version 1.4.13, 2012-07-03 removed curly bracket for 'filepath in “unit-at-cursor”.
 ;; version 1.4.12, 2012-06-30 added “current-date-time-string”. Added 'url, 'filepath to “unit-at-cursor”.
 ;; version 1.4.11, 2012-05-05 added { “delete-subdirs-by-regex” “delete-files-by-regex”}
@@ -429,5 +431,12 @@ Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are 
    (format-time-string "%Y-%m-%dT%T")
    ((lambda (ξx) (format "%s:%s" (substring ξx 0 3) (substring ξx 3 5))) (format-time-string "%z")) )
   )
+
+(defun hash-to-list (hashtable)
+  "Return a list that represent the hashtable.
+Each element is a list: (list key value)."
+  (let (mylist)
+    (maphash (lambda (kk vv) (setq mylist (cons (list kk vv) mylist))) hashtable)
+    mylist))
 
 (provide 'xeu_elisp_util)
