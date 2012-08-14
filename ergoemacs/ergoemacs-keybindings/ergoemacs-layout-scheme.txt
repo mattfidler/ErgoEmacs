@@ -1,0 +1,51 @@
+#-*- coding: utf-8 -*-
+
+;; 2012-08-14 ignore this file. this is work in progress.
+
+# • any line STARTING with # is comment.
+# • space(s) is used as key separator
+# • empty line(s) is used as layout separator
+# • a unkown on blank key is ␢
+# • Space char is represented by ␣ (x2423)
+# • unicode │ is used as separator.
+# • each key are bracked by 「」 (#x300c #x300d)
+# • two ── “BOX DRAWINGS LIGHT HORIZONTAL” (x2500) is separator between layouts
+
+# key reference.
+#  1  2 [ 3  4  5  6  7] [ 8  9 10 11 12] 13 14 15
+# 16 17 [18 19 20 21 22] [23 24 25 26 27] 28 29 30
+# 31 32 [33 34 35 36 37] [38 39 40 41 42] 43 44 45
+# 46 47 [48 49 50 51 52] [53 54 55 56 57] 58 59 60
+# the ones inside square brackets are primary keys. 33 to 42 are the home row keys.
+
+layout:us
+modifier:none
+␢ ` 1 2 3 4 5 6 7 8 9 0 - = ␢
+␢ ␢ q w e r t y u i o p [ ] \
+␢ ␢ a s d f g h j k l ; ' ␢ ␢
+␢ ␢ z x c v b n m , . / ␢ ␢ ␢
+
+layout:us
+modifier:shift
+␢ ~ ! @ # $ % ^ & * ( ) _ + ␢
+␢ ␢ Q W E R T Y U I O P { } \
+␢ ␢ A S D F G H J K L : " ␢ ␢
+␢ ␢ Z X C V B N M < > + ␢ ␢ ␢
+
+layout:dv
+modifier:none
+␢ ` 1 2 3 4 5 6 7 8 9 0 [ ] ␢
+␢ ␢ ' , . p y f g c r l / = \
+␢ ␢ a o e u i d h t n s - ␢ ␢
+␢ ␢ ; q j k x b m w v z ␢ ␢ ␢
+
+layout:dv
+modifier:shift
+␢ ~ ! @ # $ % ^ & * ( ) { } ␢
+␢ ␢ " < > P Y F G C R L ? + |
+␢ ␢ A O E U I D H T N S _ ␢ ␢
+␢ ␢ : Q J K X B M W V Z ␢ ␢ ␢
+
+
+
+
