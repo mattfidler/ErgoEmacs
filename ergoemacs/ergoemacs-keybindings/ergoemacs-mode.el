@@ -7,7 +7,7 @@
 ;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
-;; Version: 5.5.3
+;; Version: 5.5.4
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -57,7 +57,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.5.5"
+(defconst ergoemacs-mode-version "5.5.6"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
