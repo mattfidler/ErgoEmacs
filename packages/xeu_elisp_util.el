@@ -28,6 +28,7 @@
 ;; title-case-string-region-or-line
 ;; current-date-time-string
 ;; hash-to-list
+;; file-relative-name-emacs24.1.1-fix
 
 ;; The most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://ergoemacs.org/emacs/elisp_get-selection-or-unit.html
 
@@ -44,6 +45,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.15, 2012-08-23 added “file-relative-name-emacs24.1.1-fix”
 ;; version 1.4.14, 2012-08-14 added “hash-to-list”.
 ;; version 1.4.13, 2012-07-03 removed curly bracket for 'filepath in “unit-at-cursor”.
 ;; version 1.4.12, 2012-06-30 added “current-date-time-string”. Added 'url, 'filepath to “unit-at-cursor”.
@@ -438,5 +440,15 @@ Each element is a list: (list key value)."
   (let (mylist)
     (maphash (lambda (kk vv) (setq mylist (cons (list kk vv) mylist))) hashtable)
     mylist))
+
+(defun file-relative-name-emacs24.1.1-fix (ξfilePath ξdirPath)
+  "file-relative-name has a bug. If path start with cap C: (Windows file path), it won't work.
+e.g.
+ (file-relative-name \"c:/Users/h3/.emacs.d/test.el\" \"c:/Users/h3/.emacs.d/\" )
+ (file-relative-name \"C:/Users/h3/.emacs.d/test.el\" \"C:/Users/h3/.emacs.d/\" ) ⇒ \"C:/Users/h3/.emacs.d/test.el\"
+GNU Emacs 24.1.1 (i386-mingw-nt6.1.7601) of 2012-06-10 on MARVIN
+"
+  (file-relative-name
+     (replace-regexp-in-string "\\`C:/" "c:/" ξfilePath  "FIXEDCASE" "LITERAL") ξdirPath ) )
 
 (provide 'xeu_elisp_util)
