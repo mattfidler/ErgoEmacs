@@ -3,7 +3,7 @@
 ;; the purpose of this file is to create a more clean menu.
 ;; Rationale:
 ;; • Emacs's Menu Usability Problem
-;;   http://xahlee.org/emacs/modernization_menu.html
+;;   http://ergoemacs.org/emacs/modernization_menu.html
 
 
 ;; § ----------------------------------------

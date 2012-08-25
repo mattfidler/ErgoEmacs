@@ -6,11 +6,12 @@
 ;; a abbrev set for emacs-list-mode.
 
 ;; Place this file in the dir 〔~/.emacs.d/〕.
+;; put this in your emacs init: (load "init_abbrevs-lisp-mode")
 ;; Then, restart emacs.
 ;; Then, you'll have these abbrevations when your are in emac-lisp-mode.
 ;; See also: 
-;; 〈Using Emacs's Abbrev Mode for Abbreviation〉 http://xahlee.org/emacs/emacs_abbrev_mode.html
-;; 〈Yasnippet Templates for Emacs Lisp Mode〉  http://xahlee.org/emacs/elisp_idiom_templates.html
+;; 〈Using Emacs's Abbrev Mode for Abbreviation〉 http://ergoemacs.org/emacs/emacs_abbrev_mode.html
+;; 〈Yasnippet Templates for Emacs Lisp Mode〉  http://ergoemacs.org/emacs/elisp_idiom_templates.html
 
 (define-abbrev-table 'lisp-mode-abbrev-table '(
 

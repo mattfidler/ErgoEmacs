@@ -225,5 +225,5 @@
 (autoload 'dictionary-tooltip-mode "dictionary" "Display tooltips for the current word" t)
 (autoload 'global-dictionary-tooltip-mode "dictionary" "Enable/disable dictionary-tooltip-mode for all buffers" t)
 
-;; loads tramp. This is to fix a dired recursive load bug, see: http://xahlee.org/emacs/emacs_on_ubuntu_linux.html
+;; loads tramp. This is to fix a dired recursive load bug, see: http://ergoemacs.org/emacs/emacs_on_ubuntu_linux.html
 (require 'tramp)
