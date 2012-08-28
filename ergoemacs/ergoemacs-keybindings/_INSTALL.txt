@@ -2,7 +2,7 @@
 
 # when viewing this file in emacs, press Shift+Tab 3 times to expand all headings.
 
-HTML version at http://xahlee.org/emacs/ergonomic_emacs_keybinding_install.html
+HTML version at http://ergoemacs.org/emacs/ergonomic_emacs_keybinding_install.html
 
 * INSTALLATION INSTRUCTIONS
 
