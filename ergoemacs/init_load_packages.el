@@ -1,14 +1,10 @@
 ; -*- coding: utf-8 -*-
 
 ;; ; redo mode
+(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/") )
 (require 'undo-tree)
 (defalias 'redo 'undo-tree-redo)
 (global-undo-tree-mode 1)
-
-;;;;§----------------------------------------
-;;;; language modes
-
-
 
 ;;;;§----------------------------------------
 ;;;; language modes
