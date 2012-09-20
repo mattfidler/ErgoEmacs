@@ -97,10 +97,6 @@
 ;;; enhanced “directory viewer”/“file manager” (diredplus mode)
 (require 'dired+)
 
-;;; enhanced bookmark
-(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/bookmark+/"))
-(require 'bookmark+)
-
 ;;; enhanced execute-extended-command
 (require 'smex)
 (smex-initialize)
