@@ -12,6 +12,7 @@
 ;; Major mode for editing pure HTML5 files. Alpha stage.
 
 ;;; HISTORY
+;; version 0.5.2, 2012-09-25 added a color for curly quoted text.
 ;; version 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
 ;; version 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
 ;; version 0.3, 2012-05-13 added comment handling. improved syntax coloring. Added keymap and syntax table."
@@ -22,16 +23,27 @@
 
 ;; syntax coloring related
 
+(defface xhm-curly-quoted-text-face
+  '((((class color) (min-colors 88) (background light)) (:foreground "chartreuse4"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "chartreuse2"))
+    (((class color) (min-colors 16) (background light)) (:foreground "chartreuse4"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "chartreuse2"))
+    (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
+    (t (:inverse-video t :weight bold)))
+  "Face used for curly quoted text."
+  :group 'languages)
+
 (setq xhm-font-lock-keywords
 (let (
 (htmlElementNamesRegex (regexp-opt '("a" "abbr" "acronym" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "bgsound" "big" "blockquote" "body" "br" "button" "canvas" "caption" "center" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "dir" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "font" "footer" "form" "frame" "frameset" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noframes" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strike" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "tt" "u" "ul" "var" "video" "wbr" "xmp" "doctype") 'words))
 (AttributeNamesRegexp (regexp-opt '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ) 'words))
  )
 `(
+
 ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
 ("<!--\\|-->" . font-lock-comment-delimiter-face)
 ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-("“\\([^”]+?\\)”" . (1 font-lock-string-face))
+("“\\([^”]+?\\)”" . (1 'xhm-curly-quoted-text-face))
 ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
 ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
@@ -39,6 +51,7 @@
 ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
 (,htmlElementNamesRegex . font-lock-function-name-face)
 (,AttributeNamesRegexp . font-lock-keyword-face)
+
 ) ) )
 
 
