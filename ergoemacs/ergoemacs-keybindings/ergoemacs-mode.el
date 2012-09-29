@@ -282,9 +282,9 @@ Valid values are:
 (define-key ergoemacs-keymap (kbd "<f1> ]") 'lookup-wiktionary)
 (define-key ergoemacs-keymap (kbd "<f1> `") 'elisp-index-search)
 
-(define-key ergoemacs-keymap (kbd "<f2>") 'kill-region) ;cut
+(define-key ergoemacs-keymap (kbd "<f2>") 'cut-line-or-region) ;cut
 (define-key ergoemacs-keymap (kbd "<C-f2>") 'cut-all)
-(define-key ergoemacs-keymap (kbd "<f3>") 'kill-ring-save) ;copy
+(define-key ergoemacs-keymap (kbd "<f3>") 'copy-line-or-region) ;copy
 (define-key ergoemacs-keymap (kbd "<C-f3>") 'copy-all)
 (define-key ergoemacs-keymap (kbd "<f4>") 'yank)
 (define-key ergoemacs-keymap (kbd "<C-f4>") 'yank-pop)

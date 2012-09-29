@@ -41,6 +41,20 @@ If narrow-to-region is in effect, then cut that region only."
   (message "Buffer content cut")
   )
 
+(defun copy-line-or-region ()
+  "Copy current line, or current text selection."
+  (interactive)
+  (if (region-active-p)
+      (kill-ring-save (region-beginning) (region-end))
+    (kill-ring-save (line-beginning-position) (line-beginning-position 2)) ) )
+
+(defun cut-line-or-region ()
+  "Cut the current line, or current text selection."
+  (interactive)
+  (if (region-active-p)
+      (kill-region (region-beginning) (region-end))
+    (kill-region (line-beginning-position) (line-beginning-position 2)) ) )
+
 (defadvice kill-ring-save (before slick-copy activate compile)
   "When called interactively with no active region, copy the current line."
   (interactive
