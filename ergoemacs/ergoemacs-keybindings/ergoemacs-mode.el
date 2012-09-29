@@ -7,7 +7,7 @@
 ;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
-;; Version: 5.5.4
+;; Version: 5.5.7
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -57,7 +57,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.5.6"
+(defconst ergoemacs-mode-version "5.5.7"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -162,8 +162,8 @@ Valid values are:
 (define-key ergoemacs-keymap ergoemacs-kill-word-key 'kill-word)
 
 ; Copy Cut Paste, Paste previous
-(define-key ergoemacs-keymap ergoemacs-kill-region-key 'kill-region)
-(define-key ergoemacs-keymap ergoemacs-kill-ring-save-key 'kill-ring-save)
+(define-key ergoemacs-keymap ergoemacs-kill-region-key 'cut-line-or-region)
+(define-key ergoemacs-keymap ergoemacs-kill-ring-save-key 'copy-line-or-region)
 (define-key ergoemacs-keymap ergoemacs-yank-key 'yank)
 (define-key ergoemacs-keymap ergoemacs-yank-pop-key 'yank-pop)
 (define-key ergoemacs-keymap ergoemacs-copy-all-key 'copy-all)

@@ -4,6 +4,20 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
 
+* version 5.5.7, 2012-09-28
+
+Added functions:
+“cut-line-or-region”
+“copy-line-or-region”
+
+Replacing previous adviced functions:
+“kill-region-key”
+“kill-ring-save-key”
+
+because these adviced functions causes emacs to spit this warning
+“ad-Orig-kill-region called with 3 arguments, but accepts only 2”, since about emacs 24.
+Haven't looked into why it's doing that.
+
 * version 5.5.6, 2012-08-14
 
 removed a bad code:
