@@ -1,11 +1,5 @@
 ;-*- coding: utf-8 -*-
 
-;; for Windows and Mac, set Middle-click to do nothing (it can be customizable by the user)
-(when (or (string-equal system-type "windows-nt")
-          (string-equal system-type "darwin"))
-  (global-set-key [mouse-2] nil)
-  )
-
 ;; Mouse wheel behavior 
 (global-set-key [C-wheel-up] 'text-scale-increase)
 (global-set-key [C-wheel-down] 'text-scale-decrease)
