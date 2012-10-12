@@ -14,12 +14,11 @@ The home page of ErgoEmacs is at http://ErgoEmacs.org/
 
 You need to have a working emacs already installed.
 
-Your emacs should be version 24.1 or later. (To find out what is the version of your emacs, type in emacs “M-x version”.)
+Your emacs should be version 24.1 or later. (To find out what is the version of your emacs, type in terminal 「emacs --version」 or in emacs “M-x version”.)
 
 ** Mac
 
-For Mac, you can download emacs 24.x at
-http://emacsformacosx.com/
+For Mac, you can download emacs 24.x at http://emacsformacosx.com/
 
 If you are using Aquamacs Emacs ( http://aquamacs.org/ ), the latest version on the website should work.
 
