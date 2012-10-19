@@ -279,8 +279,8 @@ Directory 〔%s〕
     (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     (y-or-n-p "Write changes to file?")
-    (y-or-n-p "Case insensitive search (case-fold-search)?")
-    (y-or-n-p "Fixed case in replacement (as you have it)?")
+    (not (y-or-n-p "Match case in search?"))
+    (y-or-n-p "Match case in replacement as you have it?")
     )
    )
 
