@@ -160,8 +160,8 @@ The main differences are:
          ((eq unit 'url)
           (let (p0
                 ;; (ξdelimitors "^ \t\n,()[]{}<>〔〕“”\"`'!$^*|\;")
-                (ξdelimitors "!\"#$%&'*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~"
-))
+                (ξdelimitors "!\"#$%&'*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~")
+                )
             (setq p0 (point))
             (skip-chars-backward ξdelimitors) ;"^ \t\n,([{<>〔“\""
             (setq p1 (point))
