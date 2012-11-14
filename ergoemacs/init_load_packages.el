@@ -120,7 +120,9 @@
 (add-hook 'css-mode-hook 'rainbow-mode)
 
 ;;; make the formfeed char display as a line
-(autoload 'pretty-control-l-mode "pp-c-l" "Make the formfeed char display as a line." t)
+(require 'page-break-lines)
+(global-page-break-lines-mode 1)
+;; (autoload 'pretty-control-l-mode "pp-c-l" "Make the formfeed char display as a line." t) ; pp-c-l has a bug with whitespace-mode: when pretty-control-l-mode is on, whitespace-mode has no effect. This happened around 2010 or 2011
 
 ;;; xub-mode for browsing Unicode characters
 (autoload 'xub-mode "xub-mode" "Load Unicode browsing mode." t)
