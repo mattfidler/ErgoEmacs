@@ -28,8 +28,7 @@
 (defvar zipDirName nil "the zip file/dir name")
 (setq zipDirName "ergoemacs_1.9.3.1")
 
-
-;;;;§----------------------------------------
+
 
 (defvar sourceDir nil "The ergoemacs source code dir in repository. By default, this is parent dir of the dir this file is in.")
 (setq sourceDir (expand-file-name  (concat (file-name-directory buffer-file-name) "../")) ) ; e.g. "~/ErgoEmacs_Source/ergoemacs/"
@@ -44,7 +43,7 @@
 (setq destDirRoot (expand-file-name destDirRoot ) )
 (setq destDirWithZipPath (expand-file-name destDirWithZipPath ) )
 
-;;;;§----------------------------------------
+
 ;; main
 
 ;; if previous build dir and zip file exist, remove them.

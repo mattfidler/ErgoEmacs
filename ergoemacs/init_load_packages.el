@@ -6,7 +6,7 @@
 (defalias 'redo 'undo-tree-redo)
 (global-undo-tree-mode 1)
 
-;;;;§----------------------------------------
+
 ;;;; language modes
 
 ;;; php mode
@@ -67,8 +67,7 @@
 (add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))
 (autoload 'xbbcode-mode "xbbcode-mode" "Load xbbcode-mode for editing BBCode." t)
 
-
-;;;;§----------------------------------------
+
 ;;;; productivity, enhancement, or minor modes
 
 

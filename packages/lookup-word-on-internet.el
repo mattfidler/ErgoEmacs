@@ -69,7 +69,6 @@
 ;;; Code:
 
 
-;; § ----------------------------------------
 (require 'xeu_elisp_util)
 
 (defvar all-dictionaries nil "a vector of dictionaries. Used by `lookup-all-dictionaries'.")

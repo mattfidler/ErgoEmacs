@@ -4,7 +4,6 @@
 (set-language-environment "UTF-8")
 
 
-;; § ----------------------------------------
 
 ;; don't create backup~ or #auto-save# files
 (setq backup-by-copying t)
@@ -26,7 +25,6 @@
 (setq-default save-place t)
 
 
-;; § ----------------------------------------
 ;; Make emacs open all files in last emacs session.
 
 ;; This functionality is provided by desktop-save-mode (“feature” name: “desktop”). The mode is not on by default in emacs 23.1, and has a lot options. The following is init settings for the mode for ErgoEmacs.
@@ -94,7 +92,6 @@
           t) ;; append this hook to the tail
 
 
-;; § ----------------------------------------
 
 ;; make cursor movement stop in between camelCase words.
 (when (fboundp 'global-subword-mode ) (global-subword-mode 1))
@@ -125,7 +122,6 @@
 (global-linum-mode 1)
 
 
-;; § ----------------------------------------
 
 ;; (setq tab-always-indent 'complete)
 
@@ -136,7 +132,6 @@
 (setq tab-width 4)   ; width for display tabs. emacs 23.1 default is 8
 
 
-;; § ----------------------------------------
 ;; org-mode
 
 ;; Make lines not dissapear into the right margin while in “org-mode”
@@ -146,13 +141,11 @@
 (setq org-src-fontify-natively t)
 
 
-;; § ----------------------------------------
 
 ;; when calling “list-colors-display”, make result sorted by hue.
 (when (>= emacs-major-version 24) (setq list-colors-sort 'hsv ) )
 
 
-;; § ----------------------------------------
 
 ;; seems pointless to warn. There's always undo.
 (put 'narrow-to-region 'disabled nil)
@@ -163,7 +156,6 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 
-;; § ----------------------------------------
 
 ;; load emacs 24's package system. Add MELPA repository.
 (when (>= emacs-major-version 24)
@@ -172,18 +164,15 @@
   )
 
 
-;; § ----------------------------------------
 ;; make buffer names unique when files of the same name of diff dir are opened
 (require 'uniquify) ; bundled with GNU emacs 23.2.1 or before
 (setq uniquify-buffer-name-style 'forward)
 
 
-;; § ----------------------------------------
 ;; 2011-07-29 yasnippet. Make the “yas/minor-mode”'s expansion behavior to take input word including hyphen.
 (setq yas/key-syntaxes '("w_" "w_." "^ ")) ; default is '("w" "w_" "w_." "^ ") as of 2011-07-29
 
 
-;; § ----------------------------------------
 ;; compile elisp files after save, do so only if there's exists a byte-compiled file
 ;; thanks to Adolfo Benedetti, 2011-07-15
 (defun byte-compile-current-buffer ()
@@ -199,7 +188,6 @@
 ;; (add-hook 'emacs-lisp-mode-hook (lambda () (add-hook 'after-save-hook 'emacs-lisp-byte-compile t t)) )
 
 
-;; § ----------------------------------------
 
 (progn
   ;; Make whitespace-mode with very basic background coloring for whitespaces.
@@ -216,7 +204,6 @@
           )) )
 
 
-;; § ----------------------------------------
 ;; make the formfeed char display as a line
 ;; 2011-07-14 commented out due to a display problem with whitespace-mode
 ;; http://groups.google.com/group/gnu.emacs.help/browse_frm/thread/12e5a1e6a8b22c14/c642875edeb7ea20
@@ -224,14 +211,12 @@
 ;; (pretty-control-l-mode 1) ;; it has conflicts with “whitespace-mode” settings
 
 
-;; § ----------------------------------------
 ;; For htmlize.el.
 ;; Rationale: use unicode whenever possible, since it's widely supported today.
 (setq htmlize-convert-nonascii-to-entities nil) ; make htmlize generate unicode directly instead of html entities
 (setq htmlize-html-charset "utf-8") ; make the output html use utf-8 charset
 
 
-;; § ----------------------------------------
 ;; use cperl-mode instead of perl-mode
 (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
 (add-to-list 'auto-mode-alist '("\\.\\(p\\([lm]\\)\\)\\'" . cperl-mode))
@@ -241,7 +226,6 @@
 (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
 
 
-;; § ----------------------------------------
 ;; some syntax color setup
 
 (custom-set-faces
