@@ -251,5 +251,5 @@
  '(diredp-compressed-file-suffix ((t (:foreground "#7b68ee"))))
  '(diredp-ignored-file-name ((t (:foreground "#aaaaaa"))))
  ;; '(isearch ((((class color) (min-colors 88) (background light)) (:background "black" :foreground "white"))))
- ;; '(show-paren-match ((((class color) (background light)) (:background "azure2"))))
+ '(show-paren-match ((((class color) (background light)) (:background "azure2"))))
 )

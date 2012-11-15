@@ -106,10 +106,7 @@ If narrow-to-region is in effect, then cut that region only."
 
 (defun forward-block ()
   "Move cursor forward to next occurrence of double newline character.
-In most major modes, this is the same as `forward-paragraph', however,
-this function behaves the same in any mode.
-“forward-paragraph” is mode dependent, because it depends on
-syntax table that has different meaning for “paragraph”."
+In most major modes, this is the same as `forward-paragraph', however, this command's behavior is the same regardless of syntax table."
   (interactive)
   (skip-chars-forward "\n")
   (when (not (search-forward-regexp "\n[[:blank:]]*\n" nil t))
