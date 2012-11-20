@@ -244,7 +244,7 @@ Directory 〔%s〕
                (copy-file ξf (concat ξf "~l~") t)
                (write-region 1 (point-max) ξf)
                (princ (format "◆ %d %s\n" ξcount ξf))
-               ) )           
+               ) )
            ))
 
        (find-lisp-find-files ξinputDir ξpathRegex))
@@ -254,7 +254,7 @@ Directory 〔%s〕
 
     (progn
       (when (not (string= ξreplaceStr ""))
-        (highlight-phrase (regexp-quote ξsearchStr) (quote hi-yellow))
+        (highlight-phrase (regexp-quote ξreplaceStr) (quote hi-yellow))
         )
       (highlight-lines-matching-regexp "^◆ " (quote hi-pink))
       )
@@ -267,7 +267,7 @@ Directory 〔%s〕
 ξregex is a regex pattern.
 ξreplaceStr is replacement string.
 ξinputDir is input directory to search (includes all nested subdirectories).
-ξpathRegex is a regex to filter file paths. 
+ξpathRegex is a regex to filter file paths.
 ξwriteToFile-p, when true, write to file, else, print a report of changes only.
 ξcaseFoldSearch-p sets `case-fold-search' for this operation.
 ξfixedCaseReplace-p, if true, then the letter-case in replacement is literal. (this is relevant only if ξcaseFoldSearch-p is true.)
@@ -290,13 +290,13 @@ Directory 〔%s〕
 %s
 xah-find-replace-text-regex result.
 Search string 「%s」
-Replace with 『%s』 
+Replace with 『%s』
 Directory 〔%s〕
 
 " (current-date-time-string) ξregex ξreplaceStr ξinputDir))
-      (mapc 
+      (mapc
        (lambda (ξfp)
-         (let ( 
+         (let (
                 (ξcount 0)
                 matchStrFound matchStrReplaced )
 
@@ -356,7 +356,7 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
 
   (let* (
          (outputBuffer "*xah-find-count output*")
-         (countOperator 
+         (countOperator
           (cond
            ((string-equal "<" ξcountExpr ) '<)
            ((string-equal "<=" ξcountExpr ) '<=)
@@ -372,7 +372,7 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
 
     (with-output-to-temp-buffer outputBuffer
       (mapc
-       (lambda (ξf) 
+       (lambda (ξf)
          (let ((ξcount 0)
                )
            (when t
@@ -385,7 +385,7 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
                  )
 
                ;; report if the occurance is not n times
-               (when 
+               (when
                    (funcall countOperator ξcount countNumber)
                  (princ (format "◆ %d %s\n" ξcount ξf))
                  )
