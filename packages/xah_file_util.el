@@ -29,6 +29,7 @@
 
 ;;; HISTORY
 
+;; version 1.6.1, 2012-11-20 improved the highlighting for xah-find-replace-text. It now highlighting the replaced text, instead of the find text.
 ;; version 1.6, 2012-08-12 added xah-find-count.
 ;; version 1.5, 2012-07-24 minor modification to the output format, made more consistent, added a utf-8 header.
 ;; version 1.4, 2012-07-21 added prompt for a dir on “xah-find-text” and all others.
