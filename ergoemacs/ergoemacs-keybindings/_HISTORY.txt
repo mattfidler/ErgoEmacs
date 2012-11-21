@@ -3,7 +3,9 @@
 # when viewing this file in emacs, press 【Shift+Tab】 3 times to expand all headings.
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter “r” on whatever layout.
-
+* version 5.6.1, 2012-11-22
+Removed all key-bindings except us dvorak and colemak.  Changed to
+different layouts
 * version 5.6.0, 2012-11-21
 
 The command for cancel “keyboard-quit” is changed from QWERTY 【Alt+n】 to 【Esc】. Reason: I think it's overall slightly better, because: ① it's more familiar. ② involves a single key. The disadvantage is that on terminal, Meta can no longer be pressed by 【Esc】 (but can still be done by 【Ctrl+[】). I think Esc for Meta is really bad, from the 1980s. I think it's rare to find a terminal app today that do not support Alt as Meta.
