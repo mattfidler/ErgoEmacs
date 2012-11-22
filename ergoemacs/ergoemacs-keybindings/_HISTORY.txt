@@ -2,7 +2,11 @@
 
 # when viewing this file in emacs, press 【Shift+Tab】 3 times to expand all headings.
 
-Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter r on whatever layout.
+Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter “r” on whatever layout.
+
+* version 5.6.0, 2012-11-21
+
+The command for cancel “keyboard-quit” is changed from QWERTY 【Alt+n】 to 【Esc】. Reason: I think it's overall slightly better, because: ① it's more familiar. ② involves a single key. The disadvantage is that on terminal, Meta can no longer be pressed by 【Esc】 (but can still be done by 【Ctrl+[】). I think Esc for Meta is really bad, from the 1980s. I think it's rare to find a terminal app today that do not support Alt as Meta.
 
 * version 5.5.7, 2012-09-28
 
@@ -10,11 +14,11 @@ Added functions:
 “cut-line-or-region”
 “copy-line-or-region”
 
-Replacing previous adviced functions:
+Replacing previous “defadvice” functions:
 “kill-region-key”
 “kill-ring-save-key”
 
-because these adviced functions causes emacs to spit this warning
+because these “defadvice” functions causes emacs to spit this warning
 “ad-Orig-kill-region called with 3 arguments, but accepts only 2”, since about emacs 24.
 Haven't looked into why it's doing that.
 
@@ -43,7 +47,7 @@ Modified forward/backward bracket functions (e.g. “backward-open-bracket”) s
 • 【Alt+Shift+u】 was “beginning-of-defun”, is now “backward-block”
 • 【Alt+Shift+o】 was “end-of-defun”, is now “forward-block”
 
-Rational: after tried the beginning/end of defun, i didn't find it as usable in comparison to backward/forward block. Because, in many modes such as python, html, plain text (email, irc, text document), the defun one is useless. However, the move by block is applicable to vast majority of modes.
+Rational: after tried the beginning/end of defun, i didn't find it as usable in comparison to backward/forward block. Because, in many modes such as python, HTML, plain text (email, irc, text document), the defun one is useless. However, the move by block is applicable to vast majority of modes.
 
 I think the navigation of defun and sexp has one nice key group. e.g. Ctrl+Alt+arrow move by sexp, and Ctrl+Alt+home/end does defun. So, that's a nice set there.
 
@@ -56,7 +60,7 @@ Before, 【Alt+‹left/right›】 move cursor backward/forward to left bracket 
 Now, 【Alt+←】 does “backward-open-bracket”, and 【Alt+→】 does “forward-closing-bracket”.
 Now, 【Alt+↑】 and 【Alt+↓】 does backward/forward block.
 
-A “block” is text between empty new lines. (similiar to emacs's “paragraph”)
+A “block” is text between empty new lines. (similar to emacs's “paragraph”)
 
 Rational: Several advantages with the new way.
 
@@ -88,7 +92,7 @@ Also, implementation of {forward-open-bracket, backward-open-bracket, forward-cl
 
 * version 5.4.9, 2012-05-22
 ** improved implementation of forward-open-bracket, backward-open-bracket, forward-close-bracket, backward-close-bracket
-They now include the straight double quote char (unicode U+22)
+They now include the straight double quote char (Unicode U+22)
 Part of the new implementation are now based on syntax table.
 Not sure this is a improvement, because depending on syntax table makes the command unpredictable.
 
@@ -126,7 +130,7 @@ to also work on single quotes. e.g. 'some thing'
 just like emacs on linux's default behavior. Rational: This is better than the 【Alt+a】. Because 【a】 is pinky, and it involves 2 keys. Now it's single key. Also, this makes it compatible with emacs on linux .
 ** interactive search (“isearch-forward”) is now QWERTY 【y】
 , instead of 【;】.
-Rational: this is a highly frequently used command. 【;】 is on homerow, but by pinky. 【y】 is far, but by strong finger. Reaching for y may be a fraction of second slower, but more comfortable and healthy than using pinky.
+Rational: this is a highly frequently used command. 【;】 is on home-row, but by pinky. 【y】 is far, but by strong finger. Reaching for y may be a fraction of second slower, but more comfortable and healthy than using pinky.
 ** 【Ctrl+f】 is now interactive search (“isearch-forward”).
 (was “search-forward”)
 Feature incomplete. Need to add repeated 【Ctrl+f】 to invoke next match.
@@ -153,7 +157,7 @@ Feature incomplete. Need to add repeated 【Ctrl+f】 to invoke next match.
 
 【F8】      ,ctl-x-map. Emacs's C-x prefix key.
 
-Rational: these are single key or single key sequence additonal keys. The copy, cut, paste, undo, ones are frequently used. Single key is good. The F8 is a additional key for emacs combo key C-x. The F1 key sequences adds many convenient or helpful commands.
+Rational: these are single key or single key sequence additional keys. The copy, cut, paste, undo, ones are frequently used. Single key is good. The F8 is a additional key for emacs combo key C-x. The F1 key sequences adds many convenient or helpful commands.
 
 * version 5.4.4, 2012-05-12
 ** added  【F1+m】 for “describe-major-mode” and 【F1+o】 for “where-is-old-binding”. Rationale: keep in sync with the 【F1】 = 【Ctrl+h】 equivalence.
@@ -166,7 +170,7 @@ On the Mac, current behavior is ok too.
 The reason for a 【Ctrl+Shift+w】 for closing window doesn't seem strong.
 ** If inside minibuffer, “close-current-buffer” now do do nothing.
 Fixed bug #92 http://code.google.com/p/ergoemacs/issues/detail?id=92
-Previouly, it prompt if user want to save, etc.
+Previously, it prompt if user want to save, etc.
 Thanks to dek1999@live.com
 * version 5.4.2, 2012-04-11
 Fixed “open-in-external-app”. Before, on linux, emacs freezes until external app is closed. Thanks to Thanks to Ozan Erdem.
@@ -180,13 +184,13 @@ trivial changes.
 ** 2012-03-03 Added a command “open-in-external-app”. The key 【Ctrl+Shift+o】 is now bound to it, instead of “open-in-desktop”.
 
 ** 2011-11-22 GNU emacs's 【C-x d】 for “dired” is no longer unbound (it's available now).
- Originally, it's unbound because the thought was that 【Ctrl+o】 for “find-file” with a dir input is a good clean substitue. But now, i think in some situations, calling dired directly is necessary. For example, calling dired then give “~/emacs/*.html” to list all html files. If using “find-file”, it'll try to open all files.
+ Originally, it's unbound because the thought was that 【Ctrl+o】 for “find-file” with a dir input is a good clean substitute. But now, i think in some situations, calling dired directly is necessary. For example, calling dired then give “~/emacs/*.html” to list all HTML files. If using “find-file”, it'll try to open all files.
 
 Now, since it's necessary to call “dired” directly sometimes, it's convenient to have a key. Since GNU Emacs already has 【C-x d】 for it, and this key doesn't conflict with ErgoEmacs, so we use it.
 
 Thanks to Joseph Buchignani
 〔 http://www.cyborganize.org/clarity/software/emacs-org-mode-installation-configuration-and-tutorial/installing-and-using-ergoemacs-for-intermediate-emacs-users/ 〕 and Jon Snader 〔 http://irreal.org/blog/?p=365 〕. 
-** 2011-11-18 minor improvemnt on “toggle-letter-case”. Now better guess at initial state.
+** 2011-11-18 minor improvement on “toggle-letter-case”. Now better guess at initial state.
 * version 5.3.9, 2011-04-17
 ** 2011-04-17 Fixed shift key selection with cua-mode
 r647
@@ -230,7 +234,7 @@ A bug fix. Thanks to Jorge Dias.
 Contributed by Kristian Hellquist.
 ** remapped split window keys for all layouts.
 
-OLD             command                       new
+OLD             COMMAND                       NEW
 【Alt+1】        delete-other-windows         【Alt+3】
 【Alt+!】        delete-window                【Alt+0】
 【Alt+2】        split-window-vertically      【Alt+4】
@@ -271,7 +275,7 @@ by David Capello. (and thanks to maddin)
 
 Added ergoemacs-hook-list variable, ergoemacs-add-hook function, and ergoemacs-global/local-set/unset-key functions
 
-and added advices for local/global-set/unset-key functions. http://code.google.com/p/ergoemacs/source/detail?r=369
+and added “defadvice” for local/global-set/unset-key functions. http://code.google.com/p/ergoemacs/source/detail?r=369
 http://code.google.com/p/ergoemacs/issues/detail?id=67#c3
 ** Copy and Cut to copy/cut current line
 
@@ -279,7 +283,7 @@ Added a feature so that copy/cut will get the current line if there's no text se
 * version 5.x.x
 Italian layout has been created, by By David Capello, with help by Francesco Biccari
 
-A colemak layout is added or sometimes before. The bulk of key mapping was helped by Ivan Haralamov (aka postivan), and vockets?
+A Colemak layout is added or sometimes before. The bulk of key mapping was helped by Ivan Haralamov (aka postivan), and vockets?
 * version 5, 2009-09-15
 ** Changed into a minor mode, with support for many keyboard layouts
 By David Capello.
@@ -312,7 +316,7 @@ This version is now a full featured minor mode. It supports 3 different keyboard
 * version 4.3.5, 2009-05-10
 ** experimental modification to shrink-whitespaces.
 * version 4.3.4, 2009-04-19
-** Added 【Alt+Shift+PageDown】 for forward-page (move cursor to the next ascii formfeed char (often displayed as ^L)). Same for PageDown key.
+** Added 【Alt+Shift+PageDown】 for forward-page (move cursor to the next ASCII formfeed char (often displayed as ^L)). Same for PageDown key.
 * version 4.3.3, 2009-03-16
 ** Added 【Ctrl+Shift+n】 for opening a new window (make-frame-command). Removed 「C-x 5 2」. Added 【Ctrl+Shift+w】 for closing window (delete-frame), removed 「C-x 5 0」.
 * version 4.3.2, 2009-03-11
@@ -331,7 +335,7 @@ This version is now a full featured minor mode. It supports 3 different keyboard
 ** The key 【Ctrl+x Ctrl+b】 is now ibuffer, instead of list-buffers.
 ** 【Ctrl+h m】 now calls describe-major-mode.
 * version 4.2.1, 2009-02-28
-Changed the keybinding for previous-user-buffer from 【Ctrl+←】 to 【Ctrl+PageUp】. And previous-emacs-buffer from 【Ctrl+Shift+←】 to 【Ctrl+Shift+PageUp】. Similar for the “next” versions. Rationale: The 【Ctrl+Arrow】 are standard editing shortcuts commond in Windows, Mac, Linux.
+Changed the keybinding for previous-user-buffer from 【Ctrl+←】 to 【Ctrl+PageUp】. And previous-emacs-buffer from 【Ctrl+Shift+←】 to 【Ctrl+Shift+PageUp】. Similar for the “next” versions. Rationale: The 【Ctrl+Arrow】 are standard editing shortcuts command in Windows, Mac, Linux.
 * version 4.2.0, 2009-02-27
 Added 【Alt+t】 for keyword completion. Rationale: The default 「M-TAB」 is used by Windows, Mac, Linux, to switch apps.
 * version 4.1.8, 2009-02-15
@@ -373,7 +377,7 @@ previous-user-buffer, next-user-buffer, next-frame-command, previous-frame-comma
 * version 3.3, 2008-09-05
 ** Fixed cua-mode-hook by setting symbol property 'CUA to nil, so that a bunch of no-select-* functions kludge is no longer needed. Thanks to Lennart Borgman.
 * version 3.2, 2008-09-02
-** Moved cua fix functions to modern_operations.el. The functinos are: no-select-cua-scroll-down, no-select-cua-scroll-up, no-select-backward-paragraph, no-select-forward-paragraph, no-select-beginning-of-buffer, no-select-end-of-buffer, no-select-move-end-of-line.
+** Moved cua fix functions to modern_operations.el. The functions are: no-select-cua-scroll-down, no-select-cua-scroll-up, no-select-backward-paragraph, no-select-forward-paragraph, no-select-beginning-of-buffer, no-select-end-of-buffer, no-select-move-end-of-line.
 * version 3.1, 2008-09-02
 ** Added just-one-space, delete-blank-lines.
 ** Added fill-paragraph, unfill-paragraph.
@@ -389,6 +393,6 @@ previous-user-buffer, next-user-buffer, next-frame-command, previous-frame-comma
 ** Removed the other-frame binding.
 * version 1.1, 2007-12-18
 ** changed keycode to consistently use kbd syntax.
-** Fixed a scroll-up and scroll-down mixup.
+** Fixed a scroll-up and scroll-down mix-up.
 * version 1.0, 2007-08-01
 ** first version, by Xah Lee

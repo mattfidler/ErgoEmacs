@@ -57,7 +57,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.5.7"
+(defconst ergoemacs-mode-version "5.6.0"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
