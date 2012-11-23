@@ -506,6 +506,18 @@ Valid values are:
         "" ""  "Z" "X" "M" "C" "V" "K" "L" "<" ">" "?" "" "" ""
         ))
 
+(setq ergoemacs-layout-bepo
+      '("" "#" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "°" ""
+        "" ""  "b" "é" "p" "o" "è" "!" "v" "d" "l" "j" "z" "w"
+        "" ""  "a" "u" "i" "e" ";" "c" "t" "s" "r" "n" "m" "ç"
+        "" "ê" "à" "y" "x" ":" "k" "?" "q" "g" "h" "f" "" ""
+        ;; Shifted
+        "" "$" "«""»" "(" ")" "@" "+" "-" "/" "*" "=" "%" ""
+        "" ""  "B" "É" "P" "O" "È" "!" "V" "D" "L" "J" "Z" "W"
+        "" ""  "A" "U" "I" "E" ";" "C" "T" "S" "R" "N" "M" "Ç"
+        "" "Ê" "À" "Y" "X" ":" "K" "?" "Q" "G" "H" "F" "" ""
+        ))
+
 (defun ergoemacs-setup-keys ()
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
   (let ((layout
