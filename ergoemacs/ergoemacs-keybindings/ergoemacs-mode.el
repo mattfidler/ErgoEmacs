@@ -480,6 +480,18 @@ Valid values are:
         "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?"
         ))
 
+(setq ergoemacs-layout-asset
+      '("`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "="
+        "q" "w" "j" "f" "g" "y" "p" "u" "l" ";" "[" "]" "\\"
+        "a" "s" "e" "t" "d" "h" "n" "i" "o" "r" "'"
+        "z" "x" "c" "v" "b" "k" "m" "," "." "/"
+        ;; Shifted
+        "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+"
+        "Q" "W" "J" "F" "G" "Y" "P" "U" "L" ":" "{" "}" "|"
+        "A" "S" "E" "T" "D" "H" "N" "I" "O" "R" "\""
+        "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?"
+        ))
+
 (defun ergoemacs-setup-keys ()
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
   (let ((layout
