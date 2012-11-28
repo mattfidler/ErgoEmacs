@@ -29,7 +29,8 @@
 ;; See the file “_HISTORY.txt”.
 
 ;;; Acknowledgment:
-;; Thanks to Matthew Fidler for his implementation of the new layout code.
+;; Thanks to Matthew Fidler for his implementation of the new layout
+;; code, and generation of svg images for the supported layouts.
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
@@ -58,7 +59,7 @@
 (add-to-list 'load-path (file-name-directory (or load-file-name buffer-file-name)))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.6.1"
+(defconst ergoemacs-mode-version "5.6.2"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
@@ -438,6 +439,76 @@ Valid values are:
   
   )
 
+;; Svg from http://en.wikipedia.org/wiki/File:KB_United_Kingdom.svg
+
+(defun ergoemacs-gen-svg-quote (char)
+  ;; Derived from `describe-char'
+  (let* ((case-fold-search nil)
+        code str)
+    (save-match-data
+      (cond
+       ((string= char "")
+        " ")
+       ((string= char ">")
+        "&lt;")
+       ((string= char "<")
+        "&gt;")
+       ((string= char "\"")
+        "&quot;")
+       ((string-match "[A-Z0-9]" char)
+        char)
+       (t
+        (format "&#x%04X;" (encode-char (with-temp-buffer
+                                          (insert char)
+                                          (char-before)) 'unicode)))))))
+
+
+(defun ergoemacs-gen-svg (layout)
+  "Generates a SVG picture of the layout"
+  (let ((dir (file-name-directory
+              (or
+               load-file-name
+               (buffer-file-name))))
+        file
+        (lay
+         (intern-soft
+          (concat "ergoemacs-layout-" layout)))
+        (i 0))
+    (if (not lay)
+        (message "Layout %s not found" layout)
+      (setq lay (symbol-value lay))
+      (setq file (expand-file-name
+                  (concat "ergoemacs-layout-" layout ".svg") dir))
+      (with-temp-file file
+        (insert-file-contents
+         (expand-file-name "kbd.svg" dir))
+        (while (< i (length lay))
+          (goto-char (point-min))
+          (when (search-forward (format ">%s</tspan>" i) nil t)
+            (replace-match (format ">%s</tspan>" (ergoemacs-gen-svg-quote (nth i lay))) t t))
+          (setq i (+ i 1))))
+      (message "Layout generated to %s" file))))
+
+(defun ergoemacs-get-layouts (&optional ob)
+  "Gets the list of all known layouts"
+  (let (ret)
+    (mapatoms (lambda(s)
+                (let ((sn (symbol-name s)))
+                  (and (string-match "^ergoemacs-layout-" sn)
+                       (setq ret (cons (replace-regexp-in-string "ergoemacs-layout-" "" sn) ret)))))
+              ob)
+    ret))
+
+(defun ergoemacs-svgs (&optional layouts)
+  "Generate SVGs for all the defined layouts."
+  (interactive)
+  (let ((lay (or layouts (ergoemacs-get-layouts))))
+    (mapc
+     (lambda(x)
+       (message "Generate SVG for %s" x)
+       (ergoemacs-gen-svg x))
+     lay)))
+
 (setq ergoemacs-layout-us
       '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
         "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" "\\"
@@ -458,7 +529,8 @@ Valid values are:
         "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "{" "}"  ""
         "" ""  "\"" "," "." "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
         "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
-        "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z")) "" "" ""
+        "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" ""))
+
 
 (setq ergoemacs-layout-programmer-dv
       '("" "$" "&" "[" "{" "}" "(" "=" "*" ")" "+" "]" "!" "#" ""
@@ -466,10 +538,21 @@ Valid values are:
         "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" "" ""
         "" ""  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" "" "" ""
         ;; Shifted
-        "" "~" "%" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "`"  ""
-        "" ""  "\"" "," "." "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
+        "" "" "%" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "`"  ""
+        "" ""  "\"" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
         "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
         "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" ""))
+
+(setq ergoemacs-layout-gb-dv
+      '("" "`" "[" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "]"  ""
+        "" ""  "/" "," "." "p" "y" "f" "g" "c" "r" "l" "'" "=" "\\"
+        "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" "#" ""
+        "" "\\"  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" "" "" ""
+        ;; Shifted
+        "" "¬" "{" "&" "%" "£" "!" "(" ")" "\"" "$" "^" "*" "}" ""
+        "" ""  "?" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "@" "+" "|"
+        "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "~" ""
+        "" "|"  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" ""))
 
 (setq ergoemacs-layout-colemak
       '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -507,17 +590,16 @@ Valid values are:
         "" ""  "Z" "X" "M" "C" "V" "K" "L" "<" ">" "?" "" "" ""
         ))
 
-(setq ergoemacs-layout-bepo
-      '("" "#" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "°" ""
-        "" ""  "b" "é" "p" "o" "è" "!" "v" "d" "l" "j" "z" "w"
-        "" ""  "a" "u" "i" "e" ";" "c" "t" "s" "r" "n" "m" "ç"
-        "" "ê" "à" "y" "x" ":" "k" "?" "q" "g" "h" "f" "" ""
+(setq ergoemacs-layout-gb
+      '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+        "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" ""
+        "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "#" ""
+        "" "\\"  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
         ;; Shifted
-        "" "$" "«""»" "(" ")" "@" "+" "-" "/" "*" "=" "%" ""
-        "" ""  "B" "É" "P" "O" "È" "!" "V" "D" "L" "J" "Z" "W"
-        "" ""  "A" "U" "I" "E" ";" "C" "T" "S" "R" "N" "M" "Ç"
-        "" "Ê" "À" "Y" "X" ":" "K" "?" "Q" "G" "H" "F" "" ""
-        ))
+        "" "¬" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
+        "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
+        "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
+        "" "|"  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" ""))
 
 (defun ergoemacs-setup-keys ()
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
@@ -666,8 +748,8 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   ;; The ergoemacs-mode keymap could already be in the minor-mode-overriding map
   ;; (e.g. iswitchb or ido hooks were executed)
   (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-minibuffer-keymap)
-	       nil (lambda (x y)
-		     (equal (car y) (car x))))
+               nil (lambda (x y)
+                     (equal (car y) (car x))))
   )
 
 (defun ergoemacs-isearch-hook ()
@@ -809,7 +891,7 @@ is being initialized, some global keybindings in current-global-map
 will change."
   
   (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook))
-	(modify-advice (if ergoemacs-mode 'ad-enable-advice 'ad-disable-advice)))
+        (modify-advice (if ergoemacs-mode 'ad-enable-advice 'ad-disable-advice)))
     
     ;; Fix CUA
     (if ergoemacs-mode
@@ -817,12 +899,12 @@ will change."
     
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
-	(progn
-	  (ergoemacs-unset-redundant-global-keys)
+        (progn
+          (ergoemacs-unset-redundant-global-keys)
           
-	  ;; alt+n is the new "Quit" in query-replace-map
-	  (ergoemacs-unset-global-key query-replace-map "\e")
-	  (define-key query-replace-map ergoemacs-keyboard-quit-key 'exit-prefix))
+          ;; alt+n is the new "Quit" in query-replace-map
+          (ergoemacs-unset-global-key query-replace-map "\e")
+          (define-key query-replace-map ergoemacs-keyboard-quit-key 'exit-prefix))
       ;; if ergoemacs was disabled: restore original keys
       (ergoemacs-restore-global-keys))
     
@@ -923,7 +1005,7 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
   :lighter " ErgoEmacs"	;; TODO this should be nil (it is for testing purposes)
   :global t
   :keymap ergoemacs-keymap
-
+  
   (ergoemacs-hook-modes)
   )
 
