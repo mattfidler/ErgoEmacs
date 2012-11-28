@@ -29,6 +29,7 @@
 ;; See the file “_HISTORY.txt”.
 
 ;;; Acknowledgment:
+;; Thanks to Matthew Fidler for his implementation of the new layout code.
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
