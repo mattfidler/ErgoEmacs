@@ -134,113 +134,122 @@ Valid values are:
     ;;(message "%s -> %s" key new-key)
     (read-kbd-macro new-key)))
 
+(setq ergoemacs-layout
+      '(
+        ("M-j" ergoemacs-backward-char-key "← char")
+        ("M-l" ergoemacs-forward-char-key "→ char")
+        ("M-i" ergoemacs-previous-line-key "↑ line")
+        ("M-k" ergoemacs-next-line-key "↓ line")
+        
+        ;; Move by word
+        ("M-u" ergoemacs-backward-word-key "← word")
+        ("M-o" ergoemacs-forward-word-key "→ word")
+        
+        ;; Move by paragraph
+        ("M-U" ergoemacs-backward-block-key "← ¶")
+        ("M-O" ergoemacs-forward-block-key "→ ¶")
+        
+        ;; Move to beginning/ending of line
+        ("M-h" ergoemacs-move-beginning-of-line-key "← line")
+        ("M-H" ergoemacs-move-end-of-line-key "→ line")
+        
+        ;; Move by screen (page up/down)
+        ("M-I" ergoemacs-scroll-down-key "↓ page")
+        ("M-K" ergoemacs-scroll-up-key "↑ page")
+        
+        ;; Move to beginning/ending of file
+        ("M-J" ergoemacs-backward-open-bracket-key "↑ buffer")
+        ("M-L" ergoemacs-forward-close-bracket-key "↓ buffer")
+        
+        ;; isearch
+        ("M-y" ergoemacs-isearch-forward-key "→ isearch")
+        ("M-Y" ergoemacs-isearch-backward-key "← isearch")
+        
+        ("M-p" ergoemacs-recenter-key "recenter")
+        
+        ;; MAJOR EDITING COMMANDS
+        
+        ;; Delete previous/next char.
+        ("M-d" ergoemacs-delete-backward-char-key "⌫ char")
+        ("M-f" ergoemacs-delete-char-key "⌦ char")
+        
+        ;; Delete previous/next word.
+        ("M-e" ergoemacs-backward-kill-word-key "⌫ word")
+        ("M-r" ergoemacs-kill-word-key "⌦ word")
+        
+        ;; Copy Cut Paste, Paste previous
+        ("M-x" ergoemacs-kill-region-key "✂ region")
+        ("M-c" ergoemacs-kill-ring-save-key "copy")
+        ("M-v" ergoemacs-yank-key "paste")
+        ("M-V" ergoemacs-yank-pop-key "paste ↑")
+        ("M-C" ergoemacs-copy-all-key "copy all")
+        ("M-X" ergoemacs-cut-all-key "✂ all")
+        
+        ;; undo and redo
+        ("M-Z" ergoemacs-redo-key "↷ redo")
+        ("M-z" ergoemacs-undo-key "↶ undo")
+        
+        ;; Kill line
+        ("M-g" ergoemacs-kill-line-key "⌦ line")
+        ("M-G" ergoemacs-kill-line-backward-key "⌫ line")
+        
+        ;; Textual Transformation
+        
+        ("M-S-SPC" ergoemacs-mark-paragraph-key )
+        ("M-w" ergoemacs-shrink-whitespaces-key "⌧ white")
+        ("M-'" ergoemacs-comment-dwim-key "cmt dwim")
+        ("M-/" ergoemacs-toggle-letter-case-key "tog. case")
+        
+        ;; keyword completion, because Alt+Tab is used by OS
+        ("M-t" ergoemacs-call-keyword-completion-key "↯ compl")
+        
+        ;; Hard-wrap/un-hard-wrap paragraph
+        ("M-q" ergoemacs-compact-uncompact-block-key "fill/unfill ¶")
+        
+        ;; EMACS'S SPECIAL COMMANDS
+        
+        ;; Cancel
+        ("<escape>" ergoemacs-keyboard-quit-key)
+        
+        ;; Mark point.
+        ("M-SPC" ergoemacs-set-mark-command-key)
+        
+        ("M-a" ergoemacs-execute-extended-command-key "M-x")
+        ("M-A" ergoemacs-shell-command-key "shell cmd")
+        
+        ;; WINDOW SPLITING
+        ("M-s" ergoemacs-move-cursor-next-pane-key "next pane")
+        ("M-S" ergoemacs-move-cursor-previous-pane-key "prev pane")
+        
+        ;; --------------------------------------------------
+        ;; OTHER SHORTCUTS
+        
+        ("M-~" ergoemacs-switch-to-previous-frame-key "prev frame")
+        ("M-`" ergoemacs-switch-to-next-frame-key "next frame")
+        
+        ("M-5" ergoemacs-query-replace-key "rep")
+        ("M-%" ergoemacs-query-replace-regexp-key "rep reg")
+        
+        ("M-3" ergoemacs-delete-other-windows-key "↯ expand")
+        ("M-0" ergoemacs-delete-window-key "close win")
+        
+        ("M-4" ergoemacs-split-window-vertically-key "split |")
+        ("M-$" ergoemacs-split-window-horizontally-key "split —")
+        
+        ("M-8" ergoemacs-extend-selection-key "⟺ region")
+        ("M-*" ergoemacs-select-text-in-quote-key "⟺ quote")
+        ))
+
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
   
+  (mapc
+   (lambda(x)
+     (set (nth 1 x) (ergoemacs-kbd (nth 0 x))))
+   ergoemacs-layout)
   ;; Single char cursor movement
-  (setq ergoemacs-backward-char-key (ergoemacs-kbd "M-j"))
-  (setq ergoemacs-forward-char-key (ergoemacs-kbd "M-l"))
-  (setq ergoemacs-previous-line-key (ergoemacs-kbd "M-i"))
-  (setq ergoemacs-next-line-key (ergoemacs-kbd "M-k"))
   
-  ;; Move by word
-  (setq ergoemacs-backward-word-key (ergoemacs-kbd "M-u"))
-  (setq ergoemacs-forward-word-key (ergoemacs-kbd "M-o"))
-  
-  ;; Move by paragraph
-  (setq ergoemacs-backward-block-key (ergoemacs-kbd "M-U"))
-  (setq ergoemacs-forward-block-key (ergoemacs-kbd "M-O"))
-  
-  ;; Move to beginning/ending of line
-  (setq ergoemacs-move-beginning-of-line-key (ergoemacs-kbd "M-h"))
-  (setq ergoemacs-move-end-of-line-key (ergoemacs-kbd "M-H"))
-  
-  ;; Move by screen (page up/down)
-  (setq ergoemacs-scroll-down-key (ergoemacs-kbd "M-I"))
-  (setq ergoemacs-scroll-up-key (ergoemacs-kbd "M-K"))
-  
-  ;; Move to beginning/ending of file
-  (setq ergoemacs-backward-open-bracket-key (ergoemacs-kbd "M-J"))
-  (setq ergoemacs-forward-close-bracket-key (ergoemacs-kbd "M-L"))
-  
-  ;; isearch
-  (setq ergoemacs-isearch-forward-key (ergoemacs-kbd "M-y"))
-  (setq ergoemacs-isearch-backward-key (ergoemacs-kbd "M-Y"))
-  
-  (setq ergoemacs-recenter-key (ergoemacs-kbd "M-p"))
-  
-  ;; MAJOR EDITING COMMANDS
-  
-  ;; Delete previous/next char.
-  (setq ergoemacs-delete-backward-char-key (ergoemacs-kbd "M-d"))
-  (setq ergoemacs-delete-char-key (ergoemacs-kbd "M-f"))
-  
-  ;; Delete previous/next word.
-  (setq ergoemacs-backward-kill-word-key (ergoemacs-kbd "M-e"))
-  (setq ergoemacs-kill-word-key (ergoemacs-kbd "M-r"))
-  
-  ;; Copy Cut Paste, Paste previous
-  (setq ergoemacs-kill-region-key (ergoemacs-kbd "M-x"))
-  (setq ergoemacs-kill-ring-save-key (ergoemacs-kbd "M-c"))
-  (setq ergoemacs-yank-key (ergoemacs-kbd "M-v"))
-  (setq ergoemacs-yank-pop-key (ergoemacs-kbd "M-V"))
-  (setq ergoemacs-copy-all-key (ergoemacs-kbd "M-C"))
-  (setq ergoemacs-cut-all-key (ergoemacs-kbd "M-X"))
-  
-  ;; undo and redo
-  (setq ergoemacs-redo-key (ergoemacs-kbd "M-Z"))
-  (setq ergoemacs-undo-key (ergoemacs-kbd "M-z"))
-  
-  ;; Kill line
-  (setq ergoemacs-kill-line-key (ergoemacs-kbd "M-g"))
-  (setq ergoemacs-kill-line-backward-key (ergoemacs-kbd "M-G"))
-  
-  ;; Textual Transformation
-  
-  (setq ergoemacs-mark-paragraph-key (ergoemacs-kbd "M-S-SPC"))
-  (setq ergoemacs-shrink-whitespaces-key (ergoemacs-kbd "M-w"))
-  (setq ergoemacs-comment-dwim-key (ergoemacs-kbd "M-'"))
-  (setq ergoemacs-toggle-letter-case-key (ergoemacs-kbd "M-/"))
-  
-  ;; keyword completion, because Alt+Tab is used by OS
-  (setq ergoemacs-call-keyword-completion-key (ergoemacs-kbd "M-t"))
-  
-  ;; Hard-wrap/un-hard-wrap paragraph
-  (setq ergoemacs-compact-uncompact-block-key (ergoemacs-kbd "M-q"))
-  
-  ;; EMACS'S SPECIAL COMMANDS
-  
-  ;; Cancel
-  (setq ergoemacs-keyboard-quit-key (ergoemacs-kbd "<escape>"))
-  
-  ;; Mark point.
-  (setq ergoemacs-set-mark-command-key (ergoemacs-kbd "M-SPC"))
-  
-  (setq ergoemacs-execute-extended-command-key (ergoemacs-kbd "M-a"))
-  (setq ergoemacs-shell-command-key (ergoemacs-kbd "M-A"))
-  
-  ;; WINDOW SPLITING
-  (setq ergoemacs-move-cursor-next-pane-key (ergoemacs-kbd "M-s"))
-  (setq ergoemacs-move-cursor-previous-pane-key (ergoemacs-kbd "M-S"))
-  
-  ;; --------------------------------------------------
-  ;; OTHER SHORTCUTS
-  
-  (setq ergoemacs-switch-to-previous-frame-key (ergoemacs-kbd "M-~"))
-  (setq ergoemacs-switch-to-next-frame-key (ergoemacs-kbd "M-`"))
-  
-  (setq ergoemacs-query-replace-key (ergoemacs-kbd "M-5"))
-  (setq ergoemacs-query-replace-regexp-key (ergoemacs-kbd "M-%"))
-  
-  (setq ergoemacs-delete-other-windows-key (ergoemacs-kbd "M-3"))
-  (setq ergoemacs-delete-window-key (ergoemacs-kbd "M-0"))
-  
-  (setq ergoemacs-split-window-vertically-key (ergoemacs-kbd "M-4"))
-  (setq ergoemacs-split-window-horizontally-key (ergoemacs-kbd "M-$"))
-  
-  (setq ergoemacs-extend-selection-key (ergoemacs-kbd "M-8"))
-  (setq ergoemacs-select-text-in-quote-key (ergoemacs-kbd "M-*"))
   
   (setq ergoemacs-keymap (make-sparse-keymap))
   ;; Single char cursor movement
@@ -444,7 +453,7 @@ Valid values are:
 (defun ergoemacs-gen-svg-quote (char)
   ;; Derived from `describe-char'
   (let* ((case-fold-search nil)
-        code str)
+         code str)
     (save-match-data
       (cond
        ((string= char "")
@@ -462,14 +471,18 @@ Valid values are:
                                           (insert char)
                                           (char-before)) 'unicode)))))))
 
-
-(defun ergoemacs-gen-svg (layout)
-  "Generates a SVG picture of the layout"
+(defun ergoemacs-gen-svg (layout &optional file-name extra)
+  "Generates a SVG picture of the layout
+FILE-NAME represents the SVG template
+EXTRA represents an extra file representation"
   (let ((dir (file-name-directory
               (or
                load-file-name
                (buffer-file-name))))
+        (fn (or file-name "kbd.svg"))
+        (xtra (or extra ""))
         file
+        txt
         (lay
          (intern-soft
           (concat "ergoemacs-layout-" layout)))
@@ -478,14 +491,23 @@ Valid values are:
         (message "Layout %s not found" layout)
       (setq lay (symbol-value lay))
       (setq file (expand-file-name
-                  (concat "ergoemacs-layout-" layout ".svg") dir))
+                  (concat "ergoemacs-layout-" layout xtra ".svg") dir))
       (with-temp-file file
         (insert-file-contents
-         (expand-file-name "kbd.svg" dir))
+         (expand-file-name fn dir))
         (while (< i (length lay))
           (goto-char (point-min))
-          (when (search-forward (format ">%s</tspan>" i) nil t)
-            (replace-match (format ">%s</tspan>" (ergoemacs-gen-svg-quote (nth i lay))) t t))
+          (when (search-forward (format ">%s<" i) nil t)
+            (replace-match (format ">%s<" (ergoemacs-gen-svg-quote (nth i lay))) t t))
+          (goto-char (point-min))
+          (setq txt (assoc (format "M-%s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-layout))
+          (if (not txt)
+              (setq txt "")
+            (if (>= (length txt) 3)
+                (setq txt (nth 2 txt))
+              (setq txt "")))
+          (when (search-forward (format ">M%s<" i) nil t)
+            (replace-match  (format ">%s<" txt) t t))
           (setq i (+ i 1))))
       (message "Layout generated to %s" file))))
 
@@ -500,13 +522,14 @@ Valid values are:
     ret))
 
 (defun ergoemacs-svgs (&optional layouts)
-  "Generate SVGs for all the defined layouts."
+  "Generate SVGs for all the defined layouts." 
   (interactive)
   (let ((lay (or layouts (ergoemacs-get-layouts))))
     (mapc
      (lambda(x)
        (message "Generate SVG for %s" x)
-       (ergoemacs-gen-svg x))
+       (ergoemacs-gen-svg x)
+       (ergoemacs-gen-svg x "kbd-ergo.svg" "-ergo"))
      lay)))
 
 (setq ergoemacs-layout-us
@@ -600,6 +623,32 @@ Valid values are:
         "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
         "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
         "" "|"  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" ""))
+
+
+(setq ergoemacs-layout-it
+      '("" "\\" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
+        "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "è" "+" ""
+        "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ò" "à" "ù" ""
+        "" "<"  "z" "x" "c" "v" "b" "n" "m" "," "." "-" "" "" ""
+        ;; Shifted
+        "" "|" "!" "\"" "£" "$" "%" "&" "/" "(" ")" "=" "?" "^" ""
+        "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "é" "+" ""
+        "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "ç" "°" "§" ""
+        "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" ""))
+
+(setq ergoemacs-layout-sp
+      '("" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
+        "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "`" "+" ""
+        "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ñ" "'" "ç" ""
+        "" "<"  "z" "x" "c" "v" "b" "n" "m" "," "." "-" "" "" ""
+        ;; Shifted
+        "" "ª" "!" "\"" "£" "$" "%" "&" "/" "(" ")" "=" "?" "¿" ""
+        "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "^" "*" ""
+        "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ñ" "\"" "Ç" ""
+        "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" ""))
+
+
+
 
 (defun ergoemacs-setup-keys ()
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
