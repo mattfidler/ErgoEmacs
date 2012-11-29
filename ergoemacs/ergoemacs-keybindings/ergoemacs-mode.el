@@ -66,25 +66,6 @@
 (load "functions")
 (load "ergoemacs-unbind")
 
-;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
-;; enviroment variable (this variable is set by ErgoEmacs runner)
-(defvar ergoemacs-keyboard-layout (getenv "ERGOEMACS_KEYBOARD_LAYOUT")
-  "Specifies which keyboard layout to use.
-This is a mirror of the environment variable ERGOEMACS_KEYBOARD_LAYOUT
-Valid values are:
-
- “us” (US English QWERTY)
- “dv” (US-Dvorak)
- “gb” (UK)
- “gb-dv” (UK Dvorak)
- “sp” (Spanish)
- “fr” (French)
- “it” (Italian)
- “sv” (Swedish)
- “da” (Danish)
- “colemak” (Ergonomic Colemak URL `http://colemak.com/')
- “pt-nativo” (Ergonomic PT-Nativo URL `http://xahlee.org/kbd/pt-nativo_keyboard_layout.html')"
-  )
 
 (setq ergoemacs-needs-translation nil)
 (setq ergoemacs-translation-from nil)
@@ -135,8 +116,7 @@ Valid values are:
     (read-kbd-macro new-key)))
 
 (setq ergoemacs-layout
-      '(
-        ("M-j" ergoemacs-backward-char-key "← char")
+      '(("M-j" ergoemacs-backward-char-key "← char")
         ("M-l" ergoemacs-forward-char-key "→ char")
         ("M-i" ergoemacs-previous-line-key "↑ line")
         ("M-k" ergoemacs-next-line-key "↓ line")
@@ -236,20 +216,18 @@ Valid values are:
         ("M-4" ergoemacs-split-window-vertically-key "split |")
         ("M-$" ergoemacs-split-window-horizontally-key "split —")
         
-        ("M-8" ergoemacs-extend-selection-key "⟺ region")
-        ("M-*" ergoemacs-select-text-in-quote-key "⟺ quote")
+        ("M-8" ergoemacs-extend-selection-key "←region→")
+        ("M-*" ergoemacs-select-text-in-quote-key "←quote→")
         ))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
-  
   (mapc
    (lambda(x)
      (set (nth 1 x) (ergoemacs-kbd (nth 0 x))))
    ergoemacs-layout)
   ;; Single char cursor movement
-  
   
   (setq ergoemacs-keymap (make-sparse-keymap))
   ;; Single char cursor movement
@@ -445,11 +423,9 @@ Valid values are:
   
   (define-key ergoemacs-keymap (kbd "<M-up>") 'backward-block) ; Alt+↑
   (define-key ergoemacs-keymap (kbd "<M-down>") 'forward-block) ; Alt+↓
-  
   )
 
 ;; Svg from http://en.wikipedia.org/wiki/File:KB_United_Kingdom.svg
-
 (defun ergoemacs-gen-svg-quote (char)
   ;; Derived from `describe-char'
   (let* ((case-fold-search nil)
@@ -474,13 +450,16 @@ Valid values are:
 (defun ergoemacs-gen-svg (layout &optional file-name extra)
   "Generates a SVG picture of the layout
 FILE-NAME represents the SVG template
-EXTRA represents an extra file representation"
+EXTRA represents an extra file representation.
+
+This layout file opens will in inkscape, but not all applications."
   (let ((dir (file-name-directory
               (or
                load-file-name
                (buffer-file-name))))
+        (extra-dir)
         (fn (or file-name "kbd.svg"))
-        (xtra (or extra ""))
+        (xtra (or extra "kbd-layouts"))
         file
         txt
         (lay
@@ -489,12 +468,24 @@ EXTRA represents an extra file representation"
         (i 0))
     (if (not lay)
         (message "Layout %s not found" layout)
+      (setq extra-dir (expand-file-name "extra" dir))
+      
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      (setq extra-dir (expand-file-name xtra extra-dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
       (setq lay (symbol-value lay))
       (setq file (expand-file-name
-                  (concat "ergoemacs-layout-" layout xtra ".svg") dir))
+                  (concat "ergoemacs-layout-" layout ".svg") extra-dir))
       (with-temp-file file
         (insert-file-contents
-         (expand-file-name fn dir))
+         (expand-file-name fn dir))        
+        (when (string-equal system-type "windows-nt")
+          ;; Use Arial Unicode MS when on windows
+          (goto-char (point-min))
+          (while (re-search-forward "\\(?:Helvetica\\|Sans\\)\\([\";]\\)" nil t)
+            (replace-match "Arial Unicode MS\\1")))
         (while (< i (length lay))
           (goto-char (point-min))
           (when (search-forward (format ">%s<" i) nil t)
@@ -511,6 +502,31 @@ EXTRA represents an extra file representation"
           (setq i (+ i 1))))
       (message "Layout generated to %s" file))))
 
+(defun ergoemacs-get-layouts-type ()
+  "Gets the customization types for `ergoemacs-keyboard-layout'"
+  `(choice ,@(mapcar
+              (lambda(elt)
+                `(const :tag ,elt :value ,elt))
+              (sort (ergoemacs-get-layouts) 'string<))))
+
+(defun ergoemacs-get-layouts-doc ()
+  "Gets the list of all known layouts and the documentation associated with the layouts."
+  (let ((lays (sort (ergoemacs-get-layouts) 'string<)))
+    (mapconcat
+     (lambda(lay)
+       (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
+              (alias (condition-case nil
+                         (indirect-variable variable)
+                       (error variable)))
+              (is-alias nil)
+              (doc nil))
+         (setq doc (or (documentation-property variable 'variable-documentation)
+                       (progn
+                         (setq is-alias t)
+                         (documentation-property alias 'variable-documentation))))
+         (concat "\""lay "\" (" doc ")" (if is-alias ", alias" ""))))
+     lays "\n")))
+
 (defun ergoemacs-get-layouts (&optional ob)
   "Gets the list of all known layouts"
   (let (ret)
@@ -522,151 +538,154 @@ EXTRA represents an extra file representation"
     ret))
 
 (defun ergoemacs-svgs (&optional layouts)
-  "Generate SVGs for all the defined layouts." 
+  "Generate SVGs for all the defined layouts."
   (interactive)
   (let ((lay (or layouts (ergoemacs-get-layouts))))
     (mapc
      (lambda(x)
        (message "Generate SVG for %s" x)
        (ergoemacs-gen-svg x)
-       (ergoemacs-gen-svg x "kbd-ergo.svg" "-ergo"))
+       (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts"))
      lay)))
 
-(setq ergoemacs-layout-us
-      '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
-        "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" "\\"
-        "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "" ""
-        "" ""  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
-        ;; Shifted
-        "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
-        "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" "|"
-        "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "\"" "" ""
-        "" ""  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" ""))
+(defvar ergoemacs-layout-us
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" "\\"
+    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "" ""
+    "" ""  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
+    ;; Shifted
+    "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
+    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" "|"
+    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "\"" "" ""
+    "" ""  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" "")
+  "US Engilsh QWERTY Keyboard")
 
-(setq ergoemacs-layout-dv
-      '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "[" "]" ""
-        "" ""  "'" "," "." "p" "y" "f" "g" "c" "r" "l" "/" "=" "\\"
-        "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" ""  ""
-        "" ""  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" ""  ""  ""
-        ;; Shifted
-        "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "{" "}"  ""
-        "" ""  "\"" "," "." "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
-        "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
-        "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" ""))
+(defvar ergoemacs-layout-dv
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "[" "]" ""
+    "" ""  "'" "," "." "p" "y" "f" "g" "c" "r" "l" "/" "=" "\\"
+    "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" ""  ""
+    "" ""  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" ""  ""  ""
+    ;; Shifted
+    "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "{" "}"  ""
+    "" ""  "\"" "," "." "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
+    "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
+    "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" "")
+  "US Dvorak Keyboard")
 
-
-(setq ergoemacs-layout-programmer-dv
-      '("" "$" "&" "[" "{" "}" "(" "=" "*" ")" "+" "]" "!" "#" ""
-        "" ""  "'" "," "." "p" "y" "f" "g" "c" "r" "l" "/" "=" "\\"
-        "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" "" ""
-        "" ""  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" "" "" ""
-        ;; Shifted
-        "" "" "%" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "`"  ""
-        "" ""  "\"" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
-        "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
-        "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" ""))
-
-(setq ergoemacs-layout-gb-dv
-      '("" "`" "[" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "]"  ""
-        "" ""  "/" "," "." "p" "y" "f" "g" "c" "r" "l" "'" "=" "\\"
-        "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" "#" ""
-        "" "\\"  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" "" "" ""
-        ;; Shifted
-        "" "¬" "{" "&" "%" "£" "!" "(" ")" "\"" "$" "^" "*" "}" ""
-        "" ""  "?" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "@" "+" "|"
-        "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "~" ""
-        "" "|"  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" ""))
-
-(setq ergoemacs-layout-colemak
-      '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
-        "" ""  "q" "w" "f" "p" "g" "j" "l" "u" "y" ";" "[" "]" "\\"
-        "" ""  "a" "r" "s" "t" "d" "h" "n" "e" "i" "o" "'" "" ""
-        "" ""  "z" "x" "c" "v" "b" "k" "m" "," "." "/" "" "" ""
-        ;; Shifted
-        "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
-        "" ""  "Q" "W" "F" "P" "G" "J" "L" "U" "Y" ":" "{" "}" "|"
-        "" ""  "A" "R" "S" "T" "D" "H" "N" "E" "I" "O" "\"" "" ""
-        "" ""  "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?" "" "" ""
-        ))
-
-(setq ergoemacs-layout-asset
-      '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
-        "" ""  "q" "w" "j" "f" "g" "y" "p" "u" "l" ";" "[" "]" "\\"
-        "" ""  "a" "s" "e" "t" "d" "h" "n" "i" "o" "r" "'" "" ""
-        "" ""  "z" "x" "c" "v" "b" "k" "m" "," "." "/" "" "" ""
-        ;; Shifted
-        "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
-        "" ""  "Q" "W" "J" "F" "G" "Y" "P" "U" "L" ":" "{" "}" "|"
-        "" ""  "A" "S" "E" "T" "D" "H" "N" "I" "O" "R" "\"" "" ""
-        "" ""  "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?" "" "" ""
-        ))
-
-(setq ergoemacs-layout-workman
-      '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
-        "" ""  "q" "d" "r" "w" "b" "j" "f" "u" "p" ";" "[" "]" "\\"
-        "" ""  "a" "s" "h" "t" "g" "y" "n" "e" "o" "i" "'" "" ""
-        "" ""  "z" "x" "m" "c" "v" "k" "l" "," "." "/" "" "" ""
-        ;; Shifted
-        "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
-        "" ""  "Q" "D" "R" "W" "B" "J" "F" "U" "P" ":" "{" "}" "|"
-        "" ""  "A" "S" "H" "T" "G" "Y" "N" "E" "O" "I" "\"" "" ""
-        "" ""  "Z" "X" "M" "C" "V" "K" "L" "<" ">" "?" "" "" ""
-        ))
-
-(setq ergoemacs-layout-gb
-      '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
-        "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" ""
-        "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "#" ""
-        "" "\\"  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
-        ;; Shifted
-        "" "¬" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
-        "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
-        "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
-        "" "|"  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" ""))
+(defvaralias 'ergoemacs-layout-us_dvorak 'ergoemacs-layout-dv)
 
 
-(setq ergoemacs-layout-it
-      '("" "\\" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
-        "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "è" "+" ""
-        "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ò" "à" "ù" ""
-        "" "<"  "z" "x" "c" "v" "b" "n" "m" "," "." "-" "" "" ""
-        ;; Shifted
-        "" "|" "!" "\"" "£" "$" "%" "&" "/" "(" ")" "=" "?" "^" ""
-        "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "é" "+" ""
-        "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "ç" "°" "§" ""
-        "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" ""))
+(defvar ergoemacs-layout-programmer-dv
+  '("" "$" "&" "[" "{" "}" "(" "=" "*" ")" "+" "]" "!" "#" ""
+    "" ""  "'" "," "." "p" "y" "f" "g" "c" "r" "l" "/" "=" "\\"
+    "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" "" ""
+    "" ""  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" "" "" ""
+    ;; Shifted
+    "" "" "%" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "`"  ""
+    "" ""  "\"" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
+    "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
+    "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" "")
+  "US Programmer Dvorak")
 
-(setq ergoemacs-layout-sp
-      '("" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
-        "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "`" "+" ""
-        "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ñ" "'" "ç" ""
-        "" "<"  "z" "x" "c" "v" "b" "n" "m" "," "." "-" "" "" ""
-        ;; Shifted
-        "" "ª" "!" "\"" "£" "$" "%" "&" "/" "(" ")" "=" "?" "¿" ""
-        "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "^" "*" ""
-        "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ñ" "\"" "Ç" ""
-        "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" ""))
+(defvar ergoemacs-layout-gb-dv
+  '("" "`" "[" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "]"  ""
+    "" ""  "/" "," "." "p" "y" "f" "g" "c" "r" "l" "'" "=" "\\"
+    "" ""  "a" "o" "e" "u" "i" "d" "h" "t" "n" "s" "-" "#" ""
+    "" "\\"  ";" "q" "j" "k" "x" "b" "m" "w" "v" "z" "" "" ""
+    ;; Shifted
+    "" "¬" "{" "&" "%" "£" "!" "(" ")" "\"" "$" "^" "*" "}" ""
+    "" ""  "?" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "@" "+" "|"
+    "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "~" ""
+    "" "|"  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" "")
+  "UK Dvorak Keyboard")
+
+(defvar ergoemacs-layout-colemak
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+    "" ""  "q" "w" "f" "p" "g" "j" "l" "u" "y" ";" "[" "]" "\\"
+    "" ""  "a" "r" "s" "t" "d" "h" "n" "e" "i" "o" "'" "" ""
+    "" ""  "z" "x" "c" "v" "b" "k" "m" "," "." "/" "" "" ""
+    ;; Shifted
+    "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
+    "" ""  "Q" "W" "F" "P" "G" "J" "L" "U" "Y" ":" "{" "}" "|"
+    "" ""  "A" "R" "S" "T" "D" "H" "N" "E" "I" "O" "\"" "" ""
+    "" ""  "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?" "" "" "")
+  "Ergonomic US Colemak Keyboard URL `http://colemak.com/'")
+
+(defvar ergoemacs-layout-asset
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+    "" ""  "q" "w" "j" "f" "g" "y" "p" "u" "l" ";" "[" "]" "\\"
+    "" ""  "a" "s" "e" "t" "d" "h" "n" "i" "o" "r" "'" "" ""
+    "" ""  "z" "x" "c" "v" "b" "k" "m" "," "." "/" "" "" ""
+    ;; Shifted
+    "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
+    "" ""  "Q" "W" "J" "F" "G" "Y" "P" "U" "L" ":" "{" "}" "|"
+    "" ""  "A" "S" "E" "T" "D" "H" "N" "I" "O" "R" "\"" "" ""
+    "" ""  "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?" "" "" "")
+  "US Asset Keyboard")
+
+(defvar ergoemacs-layout-workman
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+    "" ""  "q" "d" "r" "w" "b" "j" "f" "u" "p" ";" "[" "]" "\\"
+    "" ""  "a" "s" "h" "t" "g" "y" "n" "e" "o" "i" "'" "" ""
+    "" ""  "z" "x" "m" "c" "v" "k" "l" "," "." "/" "" "" ""
+    ;; Shifted
+    "" "~" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
+    "" ""  "Q" "D" "R" "W" "B" "J" "F" "U" "P" ":" "{" "}" "|"
+    "" ""  "A" "S" "H" "T" "G" "Y" "N" "E" "O" "I" "\"" "" ""
+    "" ""  "Z" "X" "M" "C" "V" "K" "L" "<" ">" "?" "" "" "")
+  "US Workman Layout")
+
+(defvar ergoemacs-layout-gb
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" ""
+    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "#" ""
+    "" "\\"  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
+    ;; Shifted
+    "" "¬" "!" "@" "#" "$" "%" "^" "&" "*" "(" ")" "_" "+" ""
+    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
+    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
+    "" "|"  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" "")
+  "UK QWERTY")
+
+
+(defvar ergoemacs-layout-it
+  '("" "\\" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
+    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "è" "+" ""
+    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ò" "à" "ù" ""
+    "" "<"  "z" "x" "c" "v" "b" "n" "m" "," "." "-" "" "" ""
+    ;; Shifted
+    "" "|" "!" "\"" "£" "$" "%" "&" "/" "(" ")" "=" "?" "^" ""
+    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "é" "+" ""
+    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "ç" "°" "§" ""
+    "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
+  "Italian QWERTY")
+
+(defvar ergoemacs-layout-sp
+  '("" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
+    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "`" "+" ""
+    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ñ" "'" "ç" ""
+    "" "<"  "z" "x" "c" "v" "b" "n" "m" "," "." "-" "" "" ""
+    ;; Shifted
+    "" "ª" "!" "\"" "£" "$" "%" "&" "/" "(" ")" "=" "?" "¿" ""
+    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "^" "*" ""
+    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ñ" "\"" "Ç" ""
+    "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
+  "Spanish Layout")
 
 
 
 
 (defun ergoemacs-setup-keys ()
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
+  (interactive)
   (let ((layout
          (intern-soft
           (concat "ergoemacs-layout-" ergoemacs-keyboard-layout))))
     (cond
-     ((string= ergoemacs-keyboard-layout "us_dvorak")
-      (ergoemacs-setup-keys-for-layout "dv"))
      (layout
       (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
      (t ; US qwerty by default
       (ergoemacs-setup-keys-for-layout "us")))))
-
-
-
-
-
 
 ;;; --------------------------------------------------
 ;;; ergoemacs-keymap
@@ -772,10 +791,11 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
       
       ;; Detect extension of rectangles by mouse or other movement
       (setq cua--buffer-and-point-before-command
-            (if cua--rectangle (cons (current-buffer) (point)))))
-    )
-  (if cuaModeState (cua-mode 1) (cua-mode 0))
-  )
+            (if cua--rectangle (cons (current-buffer) (point))))))
+  (if cuaModeState (progn
+                     (cua-mode -1)
+                     (cua-mode 1))
+    (cua-mode -1)))
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs hooks
@@ -913,8 +933,7 @@ is in process, Ctrl+s does `ac-isearch'.
 This fixes it."
   
   (define-key ac-completing-map ergoemacs-isearch-forward-key 'ac-isearch)
-  (define-key ac-completing-map (kbd "C-s") nil)
-  )
+  (define-key ac-completing-map (kbd "C-s") nil))
 
 (defvar ergoemacs-hook-list (list)
   "List of hook and hook-function pairs.")
@@ -971,9 +990,7 @@ will change."
     (ad-activate 'global-set-key)
     (ad-activate 'global-unset-key)
     (ad-activate 'local-set-key)
-    (ad-activate 'local-unset-key)
-    )
-  )
+    (ad-activate 'local-unset-key)))
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs replacements for local- and global-set-key
@@ -1055,8 +1072,29 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
   :global t
   :keymap ergoemacs-keymap
   
-  (ergoemacs-hook-modes)
-  )
+  (ergoemacs-hook-modes))
+
+;;; Customizable settings
+;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
+;; enviroment variable (this variable is set by ErgoEmacs runner)
+(defcustom ergoemacs-keyboard-layout (getenv "ERGOEMACS_KEYBOARD_LAYOUT")
+  (concat "Specifies which keyboard layout to use.
+This is a mirror of the environment variable ERGOEMACS_KEYBOARD_LAYOUT.
+
+After setting this value to apply these settings you will need to type in M-x ergoemacs-setup-keys
+
+Valid values are:
+
+" (ergoemacs-get-layouts-doc))
+  :type (ergoemacs-get-layouts-type)
+  :group 'ergoemacs-keybindings)
+
+" 
+ “fr” (French)
+ “sv” (Swedish)
+ “da” (Danish)
+ “pt-nativo” (Ergonomic PT-Nativo URL `http://xahlee.org/kbd/pt-nativo_keyboard_layout.html')"
+
 
 (provide 'ergoemacs-mode)
 
