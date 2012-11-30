@@ -29,6 +29,8 @@
 
 ;;; HISTORY
 
+;; version 1.6.3, 2012-11-30 fixed a bug: when one of the find or find/replace is called, and the temp output buffer already exits, the highlighting doesn't work. Now it does work.
+;; version 1.6.2, 2012-11-29 trival change. Changed output file names to consistently start with “•” instead of some “◆”
 ;; version 1.6.1, 2012-11-20 improved the highlighting for xah-find-replace-text. It now highlighting the replaced text, instead of the find text.
 ;; version 1.6, 2012-08-12 added xah-find-count.
 ;; version 1.5, 2012-07-24 minor modification to the output format, made more consistent, added a utf-8 header.
@@ -103,8 +105,10 @@ Path Regex 「%s」
        (find-lisp-find-files inputDir ξpathRegex))
 
       (switch-to-buffer ξoutputBuffer)
+      (hi-lock-mode 0)
+      (funcall 'fundamental-mode)
       (highlight-phrase (regexp-quote searchStr1) (quote hi-yellow))
-      (highlight-lines-matching-regexp "• " (quote hi-pink))
+      (highlight-lines-matching-regexp "^• " (quote hi-pink))
       )
     ))
 
@@ -175,8 +179,10 @@ Path Regex 「%s」
        (find-lisp-find-files inputDir ξpathRegex))
 
       (switch-to-buffer ξoutputBuffer)
+      (hi-lock-mode 0)
+      (funcall 'fundamental-mode)
       (highlight-phrase searchRegex (quote hi-yellow))
-      (highlight-lines-matching-regexp "• " (quote hi-pink))
+      (highlight-lines-matching-regexp "^• " (quote hi-pink))
       )
     ))
 
@@ -244,7 +250,7 @@ Directory 〔%s〕
              (when (> ξcount 0)
                (copy-file ξf (concat ξf "~l~") t)
                (write-region 1 (point-max) ξf)
-               (princ (format "◆ %d %s\n" ξcount ξf))
+               (princ (format "• %d %s\n" ξcount ξf))
                ) )
            ))
 
@@ -252,12 +258,13 @@ Directory 〔%s〕
       (princ "Done.")
       )
     (switch-to-buffer ξoutputBuffer)
-
+    (hi-lock-mode 0)
+    (funcall 'fundamental-mode)
     (progn
       (when (not (string= ξreplaceStr ""))
         (highlight-phrase (regexp-quote ξreplaceStr) (quote hi-yellow))
         )
-      (highlight-lines-matching-regexp "^◆ " (quote hi-pink))
+      (highlight-lines-matching-regexp "^• " (quote hi-pink))
       )
     )
   )
@@ -319,7 +326,7 @@ Directory 〔%s〕
                    (copy-file ξfp (concat ξfp "~rr~") t)
                    (write-region 1 (point-max) ξfp)
                    )
-                 (princ (format "◆ %d %s\n" ξcount ξfp))
+                 (princ (format "• %d %s\n" ξcount ξfp))
                  ) )
              )
 
@@ -330,12 +337,13 @@ Directory 〔%s〕
       )
 
     (switch-to-buffer ξoutputBuffer)
-
+    (hi-lock-mode 0)
+    (funcall 'fundamental-mode)
     (progn
       (when (not (string= ξreplaceStr ""))
         (highlight-phrase (regexp-quote ξregex) (quote hi-yellow))
         )
-      (highlight-lines-matching-regexp "^◆ " (quote hi-pink))
+      (highlight-lines-matching-regexp "^• " (quote hi-pink))
       )
     )
   )
@@ -388,7 +396,7 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
                ;; report if the occurance is not n times
                (when
                    (funcall countOperator ξcount countNumber)
-                 (princ (format "◆ %d %s\n" ξcount ξf))
+                 (princ (format "• %d %s\n" ξcount ξf))
                  )
                )
              )
@@ -400,8 +408,10 @@ case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
       )
 
     (switch-to-buffer outputBuffer)
+    (hi-lock-mode 0)
+    (funcall 'fundamental-mode)
     (highlight-phrase ξsearchStr (quote hi-yellow))
-    (highlight-lines-matching-regexp "◆ " (quote hi-pink))
+    (highlight-lines-matching-regexp "^• " (quote hi-pink))
 
     ))
 
