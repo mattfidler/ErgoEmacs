@@ -253,14 +253,18 @@ Valid values are:
                       (regexp-opt (mapcar (lambda(x) (nth 0 x))
                                           ergoemacs-translation-assoc) nil)))))))
 
-(defun ergoemacs-kbd (key)
-  "Translates kbd code for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'."
+(defun ergoemacs-kbd (key &optional just-translate)
+  "Translates kbd code KEY for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'.
+If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key sequence.
+"
   (let ((new-key key))
     (when (and ergoemacs-needs-translation
                (string-match ergoemacs-translation-regexp new-key))
       (setq new-key (replace-match (concat "-" (cdr (assoc (match-string 1 new-key) ergoemacs-translation-assoc))) t t new-key)))
     ;;(message "%s -> %s" key new-key)
-    (read-kbd-macro new-key)))
+    (if (not just-translate)
+        (read-kbd-macro new-key)
+      new-key)))
 
 ;; Ergoemacs keys
 
@@ -638,6 +642,95 @@ Valid values are:
                                           (insert char)
                                           (char-before)) 'unicode)))))))
 
+(defun ergoemacs-trans-ahk (key)
+  "Translates Emacs kbd code KEY to ahk kbd code. "
+  (let ((ret key)
+        (case-fold-search nil))
+    (while (string-match "-\\([A-Z]\\)\\($\\| \\)" ret)
+      (setq ret (replace-match (concat "-S-" (downcase (match-string 1 ret)) (match-string 2 ret)) t t ret )))
+    (while (string-match "M-" ret)
+      (setq ret (replace-match "!" t t ret)))
+    (while (string-match "S-" ret)
+      (setq ret (replace-match "+" t t ret)))
+    (while (string-match "C-" ret)
+      (setq ret (replace-match "^" t t ret)))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-gen-ahk (layout &optional file-name extra)
+  "Generates an Autohotkey Script for Ergoemacs Keybindings.
+Currently only supports two modifier plus key."
+  (let ((dir (file-name-directory
+              (or
+               load-file-name
+               (buffer-file-name))))
+        (extra-dir)
+        (fn (or file-name "ahk-us.ahk"))
+        (xtra (or extra "ahk"))
+        file
+        txt
+        (lay
+         (intern-soft
+          (concat "ergoemacs-layout-" layout)))
+        (i 0))
+    ;; ergoemacs-variable-layout
+    (if (not lay)
+        (message "Layout %s not found" layout)
+      (ergoemacs-setup-keys-for-layout layout)
+      (setq extra-dir (expand-file-name "extra" dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      (setq extra-dir (expand-file-name xtra extra-dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      ;; Translate keys
+      (setq file (expand-file-name
+                  (concat "ergoemacs-layout-" layout ".ahk") extra-dir))
+      (with-temp-file file
+        (insert-file-contents (expand-file-name fn dir))
+        (goto-char (point-min))
+        (when (re-search-forward "QWERTY")
+          (replace-match layout))
+        (mapc
+         (lambda(x)
+           (let ((from (nth 0 x))
+                 from-reg
+                 (to nil))
+             (setq to (ergoemacs-kbd from t))
+             (if (string= from to) nil
+               (setq from (ergoemacs-trans-ahk from))
+               (setq to (ergoemacs-trans-ahk to))
+               (when (string-match "\\([^a-z0-9]\\)$" to)
+                 (setq to (replace-match "`\\1" t nil to)))
+               (cond
+                ((string-match "^\\(\\+\\|!\\|\\^\\)\\{2\\}" from)
+                 (setq from-reg (regexp-opt `(,from
+                                              ,(concat (substring from 1 2) (substring from 0 1) (substring from 2)))
+                                            t)))
+                (t
+                 (setq from-reg (regexp-quote from))))
+               (goto-char (point-min))
+               (when (re-search-forward from-reg nil t)
+                 (replace-match to t t)))))
+         ergoemacs-variable-layout)
+        (goto-char (point-min))
+        (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
+
+(defun ergoemacs-ahks (&optional layouts)
+  "Generate SVGs for all the defined layouts."
+  (interactive)
+  (let ((lay (or layouts (ergoemacs-get-layouts))))
+    (mapc
+     (lambda(x)
+       (message "Generate ahk for %s" x)
+       (ergoemacs-gen-ahk x))
+     lay)))
+
+(defun ergoemacs-extras ( &optional layouts)
+  "Generate extra things (autohotkey scripts, svg diagrams etc.) from keyboard layouts."
+  (interactive)
+  (ergoemacs-svgs layouts)
+  (ergoemacs-ahks layouts))
+
 (defun ergoemacs-gen-svg (layout &optional file-name extra)
   "Generates a SVG picture of the layout
 FILE-NAME represents the SVG template
@@ -674,7 +767,7 @@ EXTRA represents an extra file representation."
       (setq extra-dir (expand-file-name xtra extra-dir))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
-      (setq lay (symbol-value lay))
+        (setq lay (symbol-value lay))
       (setq file (expand-file-name
                   (concat "ergoemacs-layout-" layout ".svg") extra-dir))
       (with-temp-file file
