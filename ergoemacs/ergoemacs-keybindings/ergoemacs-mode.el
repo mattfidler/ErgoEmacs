@@ -58,6 +58,11 @@
   :group 'emulations)
 
 ;; Include extra files
+(add-to-list 'load-path  (file-name-directory
+                          (or
+                           load-file-name
+                           (buffer-file-name))))
+
 (load "functions")
 (load "ergoemacs-unbind")
 
@@ -197,10 +202,40 @@
     "" ">"  "W" "X" "C" "V" "B" "N" "?" "." "/" "§" "" "" "")
   "French AZERTY keyboard")
 
-"
- “sv” (Swedish)
- “da” (Danish)
- “pt-nativo” (Ergonomic PT-Nativo URL `http://xahlee.org/kbd/pt-nativo_keyboard_layout.html')"
+(defun ergoemacs-get-layouts-type ()
+  "Gets the customization types for `ergoemacs-keyboard-layout'"
+  `(choice ,@(mapcar
+              (lambda(elt)
+                `(const :tag ,elt :value ,elt))
+              (sort (ergoemacs-get-layouts) 'string<))))
+
+(defun ergoemacs-get-layouts-doc ()
+  "Gets the list of all known layouts and the documentation associated with the layouts."
+  (let ((lays (sort (ergoemacs-get-layouts) 'string<)))
+    (mapconcat
+     (lambda(lay)
+       (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
+              (alias (condition-case nil
+                         (indirect-variable variable)
+                       (error variable)))
+              (is-alias nil)
+              (doc nil))
+         (setq doc (or (documentation-property variable 'variable-documentation)
+                       (progn
+                         (setq is-alias t)
+                         (documentation-property alias 'variable-documentation))))
+         (concat "\""lay "\" (" doc ")" (if is-alias ", alias" ""))))
+     lays "\n")))
+
+(defun ergoemacs-get-layouts (&optional ob)
+  "Gets the list of all known layouts"
+  (let (ret)
+    (mapatoms (lambda(s)
+                (let ((sn (symbol-name s)))
+                  (and (string-match "^ergoemacs-layout-" sn)
+                       (setq ret (cons (replace-regexp-in-string "ergoemacs-layout-" "" sn) ret)))))
+              ob)
+    ret))
 
 (defcustom ergoemacs-keyboard-layout (getenv "ERGOEMACS_KEYBOARD_LAYOUT")
   (concat "Specifies which keyboard layout to use.
@@ -213,6 +248,11 @@ Valid values are:
 " (ergoemacs-get-layouts-doc))
   :type (ergoemacs-get-layouts-type)
   :group 'ergoemacs-keybindings)
+
+"
+ “sv” (Swedish)
+ “da” (Danish)
+ “pt-nativo” (Ergonomic PT-Nativo URL `http://xahlee.org/kbd/pt-nativo_keyboard_layout.html')"
 
 (setq ergoemacs-needs-translation nil)
 (setq ergoemacs-translation-from nil)
@@ -620,7 +660,6 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 ;; http://en.wikipedia.org/wiki/File:KB_United_Kingdom.svg
 
 ;; Color scheme chose from color brewer.
-
 (defun ergoemacs-gen-svg-quote (char)
   ;; Derived from `describe-char'
   (let* ((case-fold-search nil)
@@ -641,6 +680,80 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
         (format "&#x%04X;" (encode-char (with-temp-buffer
                                           (insert char)
                                           (char-before)) 'unicode)))))))
+
+(defun ergoemacs-trans-bash (key)
+  "Translate Emacs kbd code KEY to bash kbd code"
+  (let ((ret key)
+        (case-fold-search nil))
+    (with-temp-buffer
+      (insert ret)
+      (goto-char (point-min))
+      (while (re-search-forward "\\([MSC]-\\)" nil t)
+        (replace-match "\\\\\\1"))
+      (setq ret (buffer-string)))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-gen-bash (layout &optional file-name extra)
+  "Generates an Autohotkey Script for Ergoemacs Keybindings.
+Currently only supports two modifier plus key."
+  (let ((dir (file-name-directory
+              (or
+               load-file-name
+               (buffer-file-name))))
+        (extra-dir)
+        (fn (or file-name "bash-us.txt"))
+        (xtra (or extra "bash"))
+        file
+        txt
+        (lay
+         (intern-soft
+          (concat "ergoemacs-layout-" layout)))
+        (i 0))
+    ;; ergoemacs-variable-layout
+    (if (not lay)
+        (message "Layout %s not found" layout)
+      (ergoemacs-setup-keys-for-layout layout)
+      (setq extra-dir (expand-file-name "extra" dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      (setq extra-dir (expand-file-name xtra extra-dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      ;; Translate keys
+      (setq file (expand-file-name
+                  (concat "ergoemacs-layout-" layout ".txt") extra-dir))
+      (with-temp-file file
+        (insert-file-contents (expand-file-name fn dir))
+        (goto-char (point-min))
+        (when (re-search-forward "QWERTY")
+          (replace-match layout))
+        (mapc
+         (lambda(x)
+           (let ((from (nth 0 x))
+                 from-reg
+                 (to nil))
+             (setq to (ergoemacs-kbd from t))
+             (if (string= from to) nil
+               
+               (setq from (ergoemacs-trans-bash from))
+               (setq to (ergoemacs-trans-bash to))
+               (setq from-reg (regexp-quote from))
+               (goto-char (point-min))
+               (when (re-search-forward from-reg nil t)
+                 (replace-match to t t)))))
+         ergoemacs-variable-layout)
+        (goto-char (point-min))
+        (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
+
+(defun ergoemacs-bashs (&optional layouts)
+  "Generate BASH scripts for all the defined layouts."
+  (interactive)
+  (let ((lay (or layouts (ergoemacs-get-layouts))))
+    (mapc
+     (lambda(x)
+       (message "Generate bash for %s" x)
+       (ergoemacs-gen-bash x))
+     lay)))
 
 (defun ergoemacs-trans-ahk (key)
   "Translates Emacs kbd code KEY to ahk kbd code. "
@@ -729,7 +842,8 @@ Currently only supports two modifier plus key."
   "Generate extra things (autohotkey scripts, svg diagrams etc.) from keyboard layouts."
   (interactive)
   (ergoemacs-svgs layouts)
-  (ergoemacs-ahks layouts))
+  (ergoemacs-ahks layouts)
+  (ergoemacs-bashs layouts))
 
 (defun ergoemacs-gen-svg (layout &optional file-name extra)
   "Generates a SVG picture of the layout
@@ -767,7 +881,7 @@ EXTRA represents an extra file representation."
       (setq extra-dir (expand-file-name xtra extra-dir))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
-        (setq lay (symbol-value lay))
+      (setq lay (symbol-value lay))
       (setq file (expand-file-name
                   (concat "ergoemacs-layout-" layout ".svg") extra-dir))
       (with-temp-file file
@@ -891,41 +1005,6 @@ EXTRA represents an extra file representation."
         (while (re-search-forward ">[CM][0-9]+<" nil t)
           (replace-match "><")))
       (message "Layout generated to %s" file))))
-
-(defun ergoemacs-get-layouts-type ()
-  "Gets the customization types for `ergoemacs-keyboard-layout'"
-  `(choice ,@(mapcar
-              (lambda(elt)
-                `(const :tag ,elt :value ,elt))
-              (sort (ergoemacs-get-layouts) 'string<))))
-
-(defun ergoemacs-get-layouts-doc ()
-  "Gets the list of all known layouts and the documentation associated with the layouts."
-  (let ((lays (sort (ergoemacs-get-layouts) 'string<)))
-    (mapconcat
-     (lambda(lay)
-       (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
-              (alias (condition-case nil
-                         (indirect-variable variable)
-                       (error variable)))
-              (is-alias nil)
-              (doc nil))
-         (setq doc (or (documentation-property variable 'variable-documentation)
-                       (progn
-                         (setq is-alias t)
-                         (documentation-property alias 'variable-documentation))))
-         (concat "\""lay "\" (" doc ")" (if is-alias ", alias" ""))))
-     lays "\n")))
-
-(defun ergoemacs-get-layouts (&optional ob)
-  "Gets the list of all known layouts"
-  (let (ret)
-    (mapatoms (lambda(s)
-                (let ((sn (symbol-name s)))
-                  (and (string-match "^ergoemacs-layout-" sn)
-                       (setq ret (cons (replace-regexp-in-string "ergoemacs-layout-" "" sn) ret)))))
-              ob)
-    ret))
 
 (defun ergoemacs-svgs (&optional layouts)
   "Generate SVGs for all the defined layouts."
