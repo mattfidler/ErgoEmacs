@@ -44,7 +44,7 @@ customize-group ergoemacs-keybindings
 
 * Extras
 To generate keyboard binding diagrams and scripts that allow you to
-use ergoemacs elsewhewe, please type M-x ergoemacs-extra.  These
+use ergoemacs elsewhere, please type M-x ergoemacs-extra.  These
 scripts will be stored under the extras directory.
 
 Note that if you use an alternative layout on a QWERTY keyboard (such
