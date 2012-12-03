@@ -251,7 +251,6 @@ Valid values are:
   :type (ergoemacs-get-layouts-type)
   :group 'ergoemacs-keybindings)
 
-"
 
 (setq ergoemacs-needs-translation nil)
 (setq ergoemacs-translation-from nil)
