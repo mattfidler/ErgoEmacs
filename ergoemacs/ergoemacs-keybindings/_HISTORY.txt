@@ -3,7 +3,47 @@
 # when viewing this file in emacs, press 【Shift+Tab】 3 times to expand all headings.
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter “r” on whatever layout.
-* version 5.6.1, 2012-11-22
+* version 5.6.2, 2012-12-3 -- Matthew Fidler
+Added most of the layouts back.  Also added generation of:
+1. SVGs for each layout.  These SVGs include:
+   1. Validation of the layout
+   2. Ergoemacs keybindings
+2. Autohotkey scripts generation for all defined layouts for ergoemacs
+   layouts everywhere.
+3. Bash dictionary generation for all defined layouts for ergoemacs
+4. OS X dictionaries for each of the layouts defined.
+
+The easiest way to generate all of these items is to type M-x
+ergoemacs-extras.
+
+Also changed the mechanism of minor and major hook keybinding
+definitions as follows:
+
+- Changed `ergoemacs-keyboard-layout' to be customizable.  You can
+  customize your layout and restart emacs to have your layout applied
+- Added the customizable variable `ergoemacs-variable-layout' which
+  defines keys based on the QWERTY layout.  You can customize this
+  variable to suit your needs.  Also you can save your customization
+  so that You do not have to learn new keys every time a new ergoemacs
+  mode is introduced.
+- Added the customizable variable `ergoemacs-fixed-layout' which
+  defines keys that are the same regardless of the layout.  This
+  includes standard keybindings such as [Ctrl-s] for saving. For this
+  layout I added [Ctrl-z] for undo, [Shift-Ctrl-z] for redo,
+  [Control-y] for redo
+- Added the customizable variable `ergoemacs-minor-mode-layout'.  From
+  this variable all of the minor mode and major mode hooks are created
+  and setup. When using `minor-mode-overriding-map-alist' as the
+  keybinding to modify, an additional keybinding variable is created
+  per mode.  
+
+If you wish to freeze your keybindings, but keep current with the
+ergoemacs trunk, you can save all of the customizable variables and
+your layout will be saved between upgrades.
+
+Also added a readme to describe the new layout.
+
+* version 5.6.1, 2012-11-22 -- Matthew Fidler
 Removed all key-bindings except us dvorak and colemak.  Changed to
 different layouts
 * version 5.6.0, 2012-11-21

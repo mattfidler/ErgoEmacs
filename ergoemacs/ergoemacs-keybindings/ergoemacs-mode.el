@@ -21,6 +21,7 @@
 ;;
 ;; For complete detail, see:
 ;; http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
+;; Also see the file "_README.txt"
 ;;
 ;; Install:
 ;; See the file “_INSTALL.txt”.
@@ -681,6 +682,85 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                                           (insert char)
                                           (char-before)) 'unicode)))))))
 
+(defun ergoemacs-trans-mac-osx (key &optional swap-option-and-control)
+  "Translates Emacs kbd code KEY to Mac OS X DefaultKeyBinding.dict"
+  (let ((ret key)
+        (case-fold-search t))
+    (with-temp-buffer
+      (insert ret)
+      (goto-char (point-min))
+      (while (re-search-forward "\\<M-" nil t)
+        (replace-match (if swap-option-and-control "^" "~") nil t))
+      (goto-char (point-min))
+      (while (re-search-forward "\\<C-" nil t)
+        (replace-match (if swap-option-and-control "~" "^") nil t))
+      (setq ret (buffer-string)))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-gen-mac-osx (layout &optional file-name extra swap-opiton-and-control)
+  "Generates an Autohotkey Script for Ergoemacs Keybindings.
+Currently only supports two modifier plus key."
+  (let ((dir (file-name-directory
+              (or
+               load-file-name
+               (buffer-file-name))))
+        (extra-dir)
+        (fn (or file-name "os_x_qwerty.dict.txt"))
+        (xtra (or extra "os_x_opt_meta"))
+        file
+        txt
+        (lay
+         (intern-soft
+          (concat "ergoemacs-layout-" layout)))
+        (i 0))
+    ;; ergoemacs-variable-layout
+    (if (not lay)
+        (message "Layout %s not found" layout)
+      (ergoemacs-setup-keys-for-layout layout)
+      (setq extra-dir (expand-file-name "extra" dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      (setq extra-dir (expand-file-name xtra extra-dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      ;; Translate keys
+      (setq file (expand-file-name
+                  (concat "ergoemacs-layout-" layout ".dict. txt") extra-dir))
+      (with-temp-file file
+        (insert-file-contents (expand-file-name fn dir))
+        (goto-char (point-min))
+        (when (re-search-forward "QWERTY")
+          (replace-match layout))
+        (mapc
+         (lambda(x)
+           (let ((from (nth 0 x))
+                 from-reg
+                 (to nil))
+             (setq to (ergoemacs-kbd from t))
+             (if (string= from to) nil
+               
+               (setq from (ergoemacs-trans-mac-osx from t))
+               (setq to (ergoemacs-trans-mac-osx to swap-opiton-and-control))
+               (setq from-reg (regexp-quote from))
+               (goto-char (point-min))
+               (when (re-search-forward from-reg nil t)
+                 (replace-match to t t)))))
+         ergoemacs-variable-layout)
+        (goto-char (point-min))
+        (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
+
+(defun ergoemacs-mac-osx-dicts (&optional layouts)
+  "Generate Mac OS X dictionaries for all the defined layouts."
+  (interactive)
+  (let ((lay (or layouts (ergoemacs-get-layouts))))
+    (mapc
+     (lambda(x)
+       (message "Generate Mac Dictionary for %s" x)
+       (ergoemacs-gen-mac-osx x)
+       (ergoemacs-gen-mac-osx x nil "os_x_opt-ctl" t))
+     lay)))
+
+
 (defun ergoemacs-trans-bash (key)
   "Translate Emacs kbd code KEY to bash kbd code"
   (let ((ret key)
@@ -829,7 +909,7 @@ Currently only supports two modifier plus key."
         (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
 
 (defun ergoemacs-ahks (&optional layouts)
-  "Generate SVGs for all the defined layouts."
+  "Generate Autohotkey scripts for all the defined layouts."
   (interactive)
   (let ((lay (or layouts (ergoemacs-get-layouts))))
     (mapc
@@ -843,7 +923,8 @@ Currently only supports two modifier plus key."
   (interactive)
   (ergoemacs-svgs layouts)
   (ergoemacs-ahks layouts)
-  (ergoemacs-bashs layouts))
+  (ergoemacs-bashs layouts)
+  (ergoemacs-mac-osx-dicts layouts))
 
 (defun ergoemacs-gen-svg (layout &optional file-name extra)
   "Generates a SVG picture of the layout
