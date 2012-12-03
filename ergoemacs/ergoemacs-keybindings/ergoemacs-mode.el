@@ -5,9 +5,10 @@
 
 ;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
 ;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
+;;     Matthew Fidler <matthew.fidler@gmail.com> (http://github.com/mlf176f2/)
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
-;; Version: 5.5.7
+;; Version: 5.7.0
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -49,7 +50,7 @@
 
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.6.2"
+(defconst ergoemacs-mode-version "5.7.0"
   "Ergoemacs-keybindings minor mode version number.")
 
 (defgroup ergoemacs-keybindings nil
@@ -251,9 +252,6 @@ Valid values are:
   :group 'ergoemacs-keybindings)
 
 "
- “sv” (Swedish)
- “da” (Danish)
- “pt-nativo” (Ergonomic PT-Nativo URL `http://xahlee.org/kbd/pt-nativo_keyboard_layout.html')"
 
 (setq ergoemacs-needs-translation nil)
 (setq ergoemacs-translation-from nil)
