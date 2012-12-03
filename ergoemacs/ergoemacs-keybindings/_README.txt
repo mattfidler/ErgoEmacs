@@ -47,3 +47,9 @@ To generate keyboard binding diagrams and scripts that allow you to
 use ergoemacs elsewhewe, please type M-x ergoemacs-extra.  These
 scripts will be stored under the extras directory.
 
+Note that if you use an alternative layout on a QWERTY keyboard (such
+as colemak), and use the portable colemak layout, to use ergoemacs
+keys use the us layout not the colemak layout.  However, if you
+installed the colemak keyboard layout to your system, use the colemak
+not the US layout variant.
+

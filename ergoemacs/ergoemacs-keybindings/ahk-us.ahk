@@ -159,7 +159,7 @@
 ;;Not quite ergo-emacs but still useful to have globally:
 
 ;; put parens around a word
-!n::
+!(::
   SendInput {Ctrl down}
   SendInput {Left}
   SendInput {Ctrl up}
@@ -171,7 +171,7 @@
   return
 
 ;; deletes first and last char of a word (removing parens)
-!+n::
+!+(::
   SendInput {Ctrl down}
   SendInput {Left}
   SendInput {Ctrl up}
