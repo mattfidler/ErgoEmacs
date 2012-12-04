@@ -244,7 +244,7 @@
               ob)
     ret))
 
-(defcustom ergoemacs-keyboard-layout (getenv "ERGOEMACS_KEYBOARD_LAYOUT")
+(defcustom ergoemacs-keyboard-layout (or (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us")
   (concat "Specifies which keyboard layout to use.
 This is a mirror of the environment variable ERGOEMACS_KEYBOARD_LAYOUT.
 
@@ -270,7 +270,6 @@ Valid values are:
     
     ;; Move by paragraph
     ("M-U" backward-block "← ¶")
-    ("M-O" forward-block "→ ¶")
     
     ;; Move to beginning/ending of line
     ("M-h" move-beginning-of-line "← line")
@@ -587,11 +586,11 @@ Valid values are:
                  (symbol :tag "Keymap to Modify"))))
   :group 'ergoemacs-mode)
 
-(setq ergoemacs-needs-translation nil)
-(setq ergoemacs-translation-from nil)
-(setq ergoemacs-translation-to nil)
-(setq ergoemacs-translation-assoc nil)
-(setq ergoemacs-translation-regexp nil)
+(defvar ergoemacs-needs-translation nil)
+(defvar ergoemacs-translation-from nil)
+(defvar ergoemacs-translation-to nil)
+(defvar ergoemacs-translation-assoc nil)
+(defvar ergoemacs-translation-regexp nil)
 
 (defun ergoemacs-setup-translation (layout &optional base-layout)
   "Setup translation from BASE-LAYOUT to LAYOUT."
@@ -851,10 +850,7 @@ Currently only supports two modifier plus key."
 (defun ergoemacs-gen-ahk (layout &optional file-name extra)
   "Generates an Autohotkey Script for Ergoemacs Keybindings.
 Currently only supports two modifier plus key."
-  (let ((dir (file-name-directory
-              (or
-               load-file-name
-               (buffer-file-name))))
+  (let ((dir ergoemacs-dir)
         (extra-dir)
         (fn (or file-name "ahk-us.ahk"))
         (xtra (or extra "ahk"))
@@ -1266,15 +1262,15 @@ depending the state of `ergoemacs-mode' variable.  If the mode
 is being initialized, some global keybindings in current-global-map
 will change."
   
-  (let ((modify-hook (if ergoemacs-mode 'add-hook 'remove-hook))
-        (modify-advice (if ergoemacs-mode 'ad-enable-advice 'ad-disable-advice)))
+  (let ((modify-hook (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'add-hook 'remove-hook))
+        (modify-advice (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'ad-enable-advice 'ad-disable-advice)))
     
     ;; Fix CUA
-    (if ergoemacs-mode
+    (if (and (boundp 'ergoemacs-mode) ergoemacs-mode)
         (ergoemacs-fix-cua--pre-command-handler-1))
     
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
-    (if (and ergoemacs-mode (not (equal ergoemacs-mode 0)))
+    (if (and (boundp 'ergoemacs-mode) ergoemacs-mode (not (equal ergoemacs-mode 0)))
         (progn
           (ergoemacs-unset-redundant-global-keys)
           
@@ -1314,6 +1310,56 @@ will change."
    ergoemacs-minor-mode-layout)
   (ergoemacs-hook-modes))
 
+
+(defun ergoemacs-setup-keys (&optional no-check)
+  "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
+  (interactive)
+  (let ((ergoemacs-state (if (boundp 'ergoemacs-mode) ergoemacs-mode nil))
+        (cua-state cua-mode)
+        (layout
+         (intern-soft
+          (concat "ergoemacs-layout-" ergoemacs-keyboard-layout))))
+    (unless no-check
+      (when ergoemacs-state
+        (when (fboundp 'ergoemacs-mode)
+          (ergoemacs-mode -1)
+          (when cua-state
+            (cua-mode -1)))))
+    (cond
+     (layout
+      (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
+     (t ; US qwerty by default
+      (ergoemacs-setup-keys-for-layout "us")))
+    (ergoemacs-create-hooks)
+    (unless ergoemacs-state
+      ;; On exit ergoemacs
+      ;; Redefine minor mode to update keymap.
+      ;; Seems a bit hackish, but I believe it works.
+      (define-minor-mode ergoemacs-mode
+        "Toggle ergoemacs keybinding mode.
+This minor mode changes your emacs keybindings.
+Without argument, toggles the minor mode.
+If optional argument is 1, turn it on.
+If optional argument is 0, turn it off.
+Argument of t or nil should not be used.
+For full documentation, see:
+URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
+
+If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
+        nil
+        :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
+        :global t
+        :keymap ergoemacs-keymap
+        (ergoemacs-setup-keys t)))
+    (unless no-check 
+      (when ergoemacs-state
+        (when (fboundp 'ergoemacs-mode)
+          (ergoemacs-mode 1)
+          (when cua-state
+            (cua-mode 1)))))))
+
+(ergoemacs-setup-keys)
+
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs minor mode
 ;;;###autoload
@@ -1332,34 +1378,9 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
   :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
   :global t
   :keymap ergoemacs-keymap
-  
-  (ergoemacs-hook-modes))
+  (ergoemacs-setup-keys t))
 
 
-(defun ergoemacs-setup-keys ()
-  "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
-  (interactive)
-  (let ((ergoemacs-state ergoemacs-mode)
-        (cua-state cua-mode)
-        (layout
-         (intern-soft
-          (concat "ergoemacs-layout-" ergoemacs-keyboard-layout))))
-    (when ergoemacs-state
-      (ergoemacs-mode -1)
-      (when cua-state
-        (cua-mode -1)))
-    (cond
-     (layout
-      (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
-     (t ; US qwerty by default
-      (ergoemacs-setup-keys-for-layout "us")))
-    (ergoemacs-create-hooks)
-    (when ergoemacs-state
-      (ergoemacs-mode 1)
-      (when cua-state
-        (cua-mode 1)))))
-
-(ergoemacs-setup-keys)
 
 
 
