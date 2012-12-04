@@ -563,6 +563,17 @@ Valid values are:
       ("<f12>" next-history-element minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
       ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
+    ;; Helm mode hooks
+    (helm-before-initialize-hook
+     ((next-line helm-next-line helm-map)
+      (previous-line helm-previous-line helm-map)
+      (forward-char helm-next-source helm-map)
+      (backward-char helm-previous-source helm-map)
+      (keyboard-quit helm-keyboard-quit helm-map)
+      (recenter-top-bottom helm-recenter-top-bottom helm-map)
+      (cut-line-or-region helm-yank-text-at-point helm-map)
+      (scroll-down helm-next-page helm-map)
+      (scroll-up helm-previous-page helm-map)))
     ;; Auto-complete-mode-hook
     ;; When the `auto-complete-mode' is on, and when a word completion
     ;; is in process, Ctrl+s does `ac-isearch'.
