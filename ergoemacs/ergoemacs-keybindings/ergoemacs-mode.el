@@ -60,11 +60,15 @@
   :group 'convenience
   :group 'emulations)
 
+(defvar ergoemacs-dir
+  (file-name-directory
+   (or
+    load-file-name
+    (buffer-file-name)))
+  "Ergoemacs Directory")
+
 ;; Include extra files
-(add-to-list 'load-path  (file-name-directory
-                          (or
-                           load-file-name
-                           (buffer-file-name))))
+(add-to-list 'load-path  ergoemacs-dir)
 
 (load "functions")
 (load "ergoemacs-unbind")
@@ -701,10 +705,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 (defun ergoemacs-gen-mac-osx (layout &optional file-name extra swap-opiton-and-control)
   "Generates an Autohotkey Script for Ergoemacs Keybindings.
 Currently only supports two modifier plus key."
-  (let ((dir (file-name-directory
-              (or
-               load-file-name
-               (buffer-file-name))))
+  (let ((dir ergoemacs-dir)
         (extra-dir)
         (fn (or file-name "os_x_qwerty.dict.txt"))
         (xtra (or extra "os_x_opt_meta"))
@@ -777,10 +778,7 @@ Currently only supports two modifier plus key."
 (defun ergoemacs-gen-bash (layout &optional file-name extra)
   "Generates an Autohotkey Script for Ergoemacs Keybindings.
 Currently only supports two modifier plus key."
-  (let ((dir (file-name-directory
-              (or
-               load-file-name
-               (buffer-file-name))))
+  (let ((dir ergoemacs-dir)
         (extra-dir)
         (fn (or file-name "bash-us.txt"))
         (xtra (or extra "bash"))
@@ -932,10 +930,7 @@ Currently only supports two modifier plus key."
   "Generates a SVG picture of the layout
 FILE-NAME represents the SVG template
 EXTRA represents an extra file representation."
-  (let ((dir (file-name-directory
-              (or
-               load-file-name
-               (buffer-file-name))))
+  (let ((dir ergoemacs-dir)
         (extra-dir)
         (fn (or file-name "kbd.svg"))
         (xtra (or extra "kbd-layouts"))
