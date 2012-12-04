@@ -9,7 +9,7 @@
 ;;     Matthew Fidler <matthew.fidler@gmail.com> (http://github.com/mlf176f2/)
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
-;; Version: 5.7.1
+;; Version: 5.7.2
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -51,7 +51,7 @@
 
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.7.1"
+(defconst ergoemacs-mode-version "5.7.2"
   "Ergoemacs-keybindings minor mode version number.")
 
 (defgroup ergoemacs-mode nil
@@ -255,115 +255,116 @@ Valid values are:
 ;; Ergoemacs keys
 
 (defcustom ergoemacs-variable-layout
-  '(("M-j" ergoemacs-backward-char-key "← char")
-    ("M-l" ergoemacs-forward-char-key "→ char")
-    ("M-i" ergoemacs-previous-line-key "↑ line")
-    ("M-k" ergoemacs-next-line-key "↓ line")
+  '(("M-j" backward-char  "← char")
+    ("M-l" forward-char "→ char")
+    ("M-i" previous-line "↑ line")
+    ("M-k" next-line "↓ line")
     
     ;; Move by word
-    ("M-u" ergoemacs-backward-word-key "← word")
-    ("M-o" ergoemacs-forward-word-key "→ word")
+    ("M-u" backward-word "← word")
+    ("M-o" forward-word "→ word")
     
     ;; Move by paragraph
-    ("M-U" ergoemacs-backward-block-key "← ¶")
-    ("M-O" ergoemacs-forward-block-key "→ ¶")
+    ("M-U" backward-block "← ¶")
+    ("M-O" forward-block "→ ¶")
     
     ;; Move to beginning/ending of line
-    ("M-h" ergoemacs-move-beginning-of-line-key "← line")
-    ("M-H" ergoemacs-move-end-of-line-key "→ line")
+    ("M-h" move-beginning-of-line "← line")
+    ("M-H" move-end-of-line "→ line")
     
     ;; Move by screen (page up/down)
-    ("M-I" ergoemacs-scroll-down-key "↓ page")
-    ("M-K" ergoemacs-scroll-up-key "↑ page")
+    ("M-I" scroll-down "↓ page")
+    ("M-K" scroll-up "↑ page")
     
     ;; Move to beginning/ending of file
-    ("M-J" ergoemacs-backward-open-bracket-key "↑ buffer")
-    ("M-L" ergoemacs-forward-close-bracket-key "↓ buffer")
+    ("M-J" backward-open-bracket "↑ buffer")
+    ("M-L" forward-close-bracket "↓ buffer")
     
     ;; isearch
-    ("M-y" ergoemacs-isearch-forward-key "→ isearch")
-    ("M-Y" ergoemacs-isearch-backward-key "← isearch")
+    ("M-y" isearch-forward "→ isearch")
+    ("M-Y" isearch-backward "← isearch")
     
-    ("M-p" ergoemacs-recenter-key "recenter")
+    ("M-p" recenter-top-bottom "recenter")
     
     ;; MAJOR EDITING COMMANDS
     
     ;; Delete previous/next char.
-    ("M-d" ergoemacs-delete-backward-char-key "⌫ char")
-    ("M-f" ergoemacs-delete-char-key "⌦ char")
+    ("M-d" delete-backward-char "⌫ char")
+    ("M-f" delete-cha "⌦ char")
     
     ;; Delete previous/next word.
-    ("M-e" ergoemacs-backward-kill-word-key "⌫ word")
-    ("M-r" ergoemacs-kill-word-key "⌦ word")
+    ("M-e" backward-kill-word "⌫ word")
+    ("M-r" kill-word "⌦ word")
     
     ;; Copy Cut Paste, Paste previous
-    ("M-x" ergoemacs-kill-region-key "✂ region")
-    ("M-c" ergoemacs-kill-ring-save-key "copy")
-    ("M-v" ergoemacs-yank-key "paste")
-    ("M-V" ergoemacs-yank-pop-key "paste ↑")
-    ("M-C" ergoemacs-copy-all-key "copy all")
-    ("M-X" ergoemacs-cut-all-key "✂ all")
+    ("M-x" cut-line-or-region "✂ region")
+    ("M-c" copy-line-or-region "copy")
+    ("M-v" yank "paste")
+    ("M-V" yank-pop "paste ↑")
+    ("M-C" copy-all "copy all")
+    ("M-X" cut-all "✂ all")
     
     ;; undo and redo
-    ("M-Z" ergoemacs-redo-key "↷ redo")
-    ("M-z" ergoemacs-undo-key "↶ undo")
+    ("M-Z" redo "↷ redo")
+    ("M-z" undo "↶ undo")
     
     ;; Kill line
-    ("M-g" ergoemacs-kill-line-key "⌦ line")
-    ("M-G" ergoemacs-kill-line-backward-key "⌫ line")
+    ("M-g" kill-line "⌦ line")
+    ("M-G" kill-line-backward "⌫ line")
     
     ;; Textual Transformation
     
-    ("M-S-SPC" ergoemacs-mark-paragraph-key "Mark Paragraph")
-    ("M-w" ergoemacs-shrink-whitespaces-key "⌧ white")
-    ("M-'" ergoemacs-comment-dwim-key "cmt dwim")
-    ("M-/" ergoemacs-toggle-letter-case-key "tog. case")
+    ("M-S-SPC" mark-paragraph "Mark Paragraph")
+    ("M-w" shrink-whitespaces "⌧ white")
+    ("M-'" comment-dwim "cmt dwim")
+    ("M-/" toggle-letter-case "tog. case")
     
     ;; keyword completion, because Alt+Tab is used by OS
-    ("M-t" ergoemacs-call-keyword-completion-key "↯ compl")
+    ("M-t" call-keyword-completion "↯ compl")
     
     ;; Hard-wrap/un-hard-wrap paragraph
-    ("M-q" ergoemacs-compact-uncompact-block-key "fill/unfill ¶")
+    ("M-q" compact-uncompact-block "fill/unfill ¶")
     
     ;; EMACS'S SPECIAL COMMANDS
     
     ;; Cancel
-    ("<escape>" ergoemacs-keyboard-quit-key)
+    ("<escape>" keyboard-quit)
     
     ;; Mark point.
-    ("M-SPC" ergoemacs-set-mark-command-key "Set Mark")
+    ("M-SPC" set-mark-command "Set Mark")
     
-    ("M-a" ergoemacs-execute-extended-command-key "M-x")
-    ("M-A" ergoemacs-shell-command-key "shell cmd")
+    ("M-a" execute-extended-command "M-x")
+    ("M-A" shell-command "shell cmd")
     
     ;; WINDOW SPLITING
-    ("M-s" ergoemacs-move-cursor-next-pane-key "next pane")
-    ("M-S" ergoemacs-move-cursor-previous-pane-key "prev pane")
+    ("M-s" move-cursor-next-pane "next pane")
+    ("M-S" move-cursor-previous-pane "prev pane")
     
     ;; --------------------------------------------------
     ;; OTHER SHORTCUTS
     
-    ("M-~" ergoemacs-switch-to-previous-frame-key "prev frame")
-    ("M-`" ergoemacs-switch-to-next-frame-key "next frame")
+    ("M-~" switch-to-previous-frame "prev frame")
+    ("M-`" switch-to-next-frame "next frame")
     
-    ("M-5" ergoemacs-query-replace-key "rep")
-    ("M-%" ergoemacs-query-replace-regexp-key "rep reg")
+    ("M-5" query-replace "rep")
+    ("M-%" query-replace-regexp "rep reg")
     
-    ("M-3" ergoemacs-delete-other-windows-key "↯ expand")
-    ("M-0" ergoemacs-delete-window-key "close win")
+    ("M-3" delete-other-windows "↯ expand")
+    ("M-0" delete-window "close win")
     
-    ("M-4" ergoemacs-split-window-vertically-key "split |")
-    ("M-$" ergoemacs-split-window-horizontally-key "split —")
+    ("M-4" split-window-vertically "split |")
+    ("M-$" split-window-horizontally "split —")
     
-    ("M-8" ergoemacs-extend-selection-key "←region→")
-    ("M-*" ergoemacs-select-text-in-quote-key "←quote→")
+    ("M-8" extend-selection "←region→")
+    ("M-*" select-text-in-quote "←quote→")
     ("M-6" select-current-block "Sel. Block")
     ("M-7" select-current-line "Sel. Line"))
+  
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
           (list :tag "Keys"
-                (string :tag "Kbd Code")
-                (symbol :tag "Ergoemacs Variable")
+                (string :tag "QWERTY Kbd Code")
+                (symbol :tag "Function")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
   :group 'ergoemacs-mode)
@@ -479,9 +480,9 @@ Valid values are:
   '(;; Key/variable command x-hook
     ;; Minibuffer hook
     (minibuffer-setup-hook
-     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
-      (ergoemacs-previous-line-key previous-history-element minor-mode-overriding-map-alist)
-      (ergoemacs-next-line-key next-history-element minor-mode-overriding-map-alist)
+     ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      (previous-line previous-history-element minor-mode-overriding-map-alist)
+      (next-line next-history-element minor-mode-overriding-map-alist)
       ("<f11>" previous-history-element  minor-mode-overriding-map-alist)
       ("<f12>" next-history-element  minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element  minor-mode-overriding-map-alist)
@@ -497,19 +498,19 @@ Valid values are:
       ("M-r" nil isearch-mode-map) ; was isearch-toggle-regexp
       ("M-e" nil isearch-mode-map) ; was isearch-edit-string
       
-      (ergoemacs-keyboard-quit-key isearch-abort isearch-mode-map)
-      (ergoemacs-isearch-forward-key isearch-repeat-forward isearch-mode-map)
-      (ergoemacs-isearch-backward-key isearch-repeat-backward isearch-mode-map)
-      (ergoemacs-recenter-key recenter isearch-mode-map)
-      (ergoemacs-yank-key isearch-yank-kill isearch-mode-map)
+      (keyboard-quit isearch-abort isearch-mode-map)
+      (isearch-forward isearch-repeat-forward isearch-mode-map)
+      (isearch-backward isearch-repeat-backward isearch-mode-map)
+      (recenter recenter isearch-mode-map)
+      (yank isearch-yank-kill isearch-mode-map)
       
       ;; CUA paste key is isearch-yank-kill in isearch mode
       ("C-v" isearch-yank-kill isearch-mode-map)
       
       ;; isearch-other-control-char sends the key to the original buffer and cancels isearch
-      (ergoemacs-kill-ring-save-key isearch-other-control-char isearch-mode-map)
-      (ergoemacs-kill-word-key isearch-other-control-char isearch-mode-map)
-      (ergoemacs-backward-kill-word-key isearch-other-control-char isearch-mode-map)
+      (kill-ring-save isearch-other-control-char isearch-mode-map)
+      (kill-word isearch-other-control-char isearch-mode-map)
+      (backward-kill-word isearch-other-control-char isearch-mode-map)
       
       ("<f11>" isearch-ring-retreat isearch-mode-map)
       ("<f12>" isearch-ring-advance isearch-mode-map)))
@@ -530,7 +531,7 @@ Valid values are:
     
     ;; Eshell
     (eshell-mode-hook
-     ((ergoemacs-move-beginning-of-line-key eshell-bol minor-mode-overriding-map-alist)
+     ((move-beginning-of-line eshell-bol minor-mode-overriding-map-alist)
       ("<home>" eshell-bol minor-mode-overriding-map-alist)
       ("<f11>" eshell-previous-matching-input-from-input minor-mode-overriding-map-alist)
       ("<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)
@@ -539,9 +540,9 @@ Valid values are:
     
     ;; Iswitchdb hook
     (iswitchb-minibuffer-setup-hook
-     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
-      (ergoemacs-isearch-backward-key iswitchb-prev-match minor-mode-overriding-map-alist)
-      (ergoemacs-isearch-forward-key iswitchb-next-match minor-mode-overriding-map-alist)
+     ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      (isearch-backward iswitchb-prev-match minor-mode-overriding-map-alist)
+      (isearch-forward iswitchb-next-match minor-mode-overriding-map-alist)
       
       ("<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("<f12>" iswitchb-next-match minor-mode-overriding-map-alist)
@@ -550,11 +551,11 @@ Valid values are:
     
     ;; Ido minibuffer setup hook
     (ido-minibuffer-setup-hook
-     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
-      (ergoemacs-forward-char-key ido-next-match minor-mode-overriding-map-alist)
-      (ergoemacs-backward-char-key ido-prev-match minor-mode-overriding-map-alist)
-      (ergoemacs-previous-line-key ido-next-match-dir minor-mode-overriding-map-alist)
-      (ergoemacs-next-line-key ido-prev-match-dir minor-mode-overriding-map-alist)
+     ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      (forward-char ido-next-match minor-mode-overriding-map-alist)
+      (backward-char ido-prev-match minor-mode-overriding-map-alist)
+      (previous-line ido-next-match-dir minor-mode-overriding-map-alist)
+      (next-line ido-prev-match-dir minor-mode-overriding-map-alist)
       ("<f11>" previous-history-element minor-mode-overriding-map-alist)
       ("<f12>" next-history-element minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
@@ -564,7 +565,7 @@ Valid values are:
     ;; is in process, Ctrl+s does `ac-isearch'.
     ;; This fixes it.
     (auto-complete-mode-hook
-     ((ergoemacs-isearch-forward-key ac-isearch ac-completing-map)
+     ((isearch-forward ac-isearch ac-completing-map)
       ("C-s" nil ac-completing-map))))
   "Key bindings that are applied as hooks to specific modes"
   :type '(repeat
@@ -573,7 +574,7 @@ Valid values are:
           (repeat
            (list :tag "Key"
                  (choice
-                  (symbol :tag "Defined Ergoemacs Variable")
+                  (symbol :tag "Defined Ergoemacs Function to Remap")
                   (string :tag "Kbd Code"))
                  (choice
                   (function :tag "Function to Run")
@@ -648,115 +649,9 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
    ergoemacs-fixed-layout)
   (mapc
    (lambda(x)
-     (set (nth 1 x) (ergoemacs-kbd (nth 0 x))))
+     (define-key ergoemacs-keymap (ergoemacs-kbd (nth 0 x)) (nth 1 x)))
    ergoemacs-variable-layout)
-  ;; Single char cursor movement
-  (define-key ergoemacs-keymap ergoemacs-backward-char-key 'backward-char)
-  (define-key ergoemacs-keymap ergoemacs-forward-char-key 'forward-char)
-  (define-key ergoemacs-keymap ergoemacs-previous-line-key 'previous-line)
-  (define-key ergoemacs-keymap ergoemacs-next-line-key 'next-line)
   
-  ;; Move by word
-  (define-key ergoemacs-keymap ergoemacs-backward-word-key 'backward-word)
-  (define-key ergoemacs-keymap ergoemacs-forward-word-key 'forward-word)
-  
-  ;; Move by paragraph
-  (define-key ergoemacs-keymap ergoemacs-backward-block-key 'backward-block)
-  (define-key ergoemacs-keymap ergoemacs-forward-block-key 'forward-block)
-  
-  ;; Move to beginning/ending of line
-  (define-key ergoemacs-keymap ergoemacs-move-beginning-of-line-key 'move-beginning-of-line)
-  (define-key ergoemacs-keymap ergoemacs-move-end-of-line-key 'move-end-of-line)
-  
-  ;; Move by screen (page up/down)
-  (define-key ergoemacs-keymap ergoemacs-scroll-down-key 'scroll-down)
-  (define-key ergoemacs-keymap ergoemacs-scroll-up-key 'scroll-up)
-  
-  ;; Move to beginning/ending of file
-  (define-key ergoemacs-keymap ergoemacs-backward-open-bracket-key 'backward-open-bracket)
-  (define-key ergoemacs-keymap ergoemacs-forward-close-bracket-key 'forward-close-bracket)
-  
-  ;; isearch
-  (define-key ergoemacs-keymap ergoemacs-isearch-forward-key 'isearch-forward)
-  (define-key ergoemacs-keymap ergoemacs-isearch-backward-key 'isearch-backward)
-  
-  (define-key ergoemacs-keymap ergoemacs-recenter-key 'recenter-top-bottom)
-  
-  ;; MAJOR EDITING COMMANDS
-  
-  ;; Delete previous/next char.
-  (define-key ergoemacs-keymap ergoemacs-delete-backward-char-key 'delete-backward-char)
-  (define-key ergoemacs-keymap ergoemacs-delete-char-key 'delete-char)
-  
-  ;; Delete previous/next word.
-  (define-key ergoemacs-keymap ergoemacs-backward-kill-word-key 'backward-kill-word)
-  (define-key ergoemacs-keymap ergoemacs-kill-word-key 'kill-word)
-  
-  ;; Copy Cut Paste, Paste previous
-  (define-key ergoemacs-keymap ergoemacs-kill-region-key 'cut-line-or-region)
-  (define-key ergoemacs-keymap ergoemacs-kill-ring-save-key 'copy-line-or-region)
-  (define-key ergoemacs-keymap ergoemacs-yank-key 'yank)
-  (define-key ergoemacs-keymap ergoemacs-yank-pop-key 'yank-pop)
-  (define-key ergoemacs-keymap ergoemacs-copy-all-key 'copy-all)
-  (define-key ergoemacs-keymap ergoemacs-cut-all-key 'cut-all)
-  
-  ;; undo and redo
-  (define-key ergoemacs-keymap ergoemacs-redo-key 'redo)
-  (define-key ergoemacs-keymap ergoemacs-undo-key 'undo)
-  
-  ;; Kill line
-  (define-key ergoemacs-keymap ergoemacs-kill-line-key 'kill-line)
-  (define-key ergoemacs-keymap ergoemacs-kill-line-backward-key 'kill-line-backward)
-  
-  ;; Textual Transformation
-  
-  (define-key ergoemacs-keymap ergoemacs-mark-paragraph-key 'mark-paragraph)
-  (define-key ergoemacs-keymap ergoemacs-shrink-whitespaces-key 'shrink-whitespaces)
-  (define-key ergoemacs-keymap ergoemacs-comment-dwim-key 'comment-dwim)
-  (define-key ergoemacs-keymap ergoemacs-toggle-letter-case-key 'toggle-letter-case)
-  
-  ;; keyword completion, because Alt+Tab is used by OS
-  (define-key ergoemacs-keymap ergoemacs-call-keyword-completion-key 'call-keyword-completion)
-  
-  ;; Hard-wrap/un-hard-wrap paragraph
-  (define-key ergoemacs-keymap ergoemacs-compact-uncompact-block-key 'compact-uncompact-block)
-  
-  ;; EMACS'S SPECIAL COMMANDS
-  
-  ;; Cancel
-  (define-key ergoemacs-keymap ergoemacs-keyboard-quit-key 'keyboard-quit)
-  
-  ;; Mark point.
-  (define-key ergoemacs-keymap ergoemacs-set-mark-command-key 'set-mark-command)
-  
-  (define-key ergoemacs-keymap ergoemacs-execute-extended-command-key 'execute-extended-command)
-  (define-key ergoemacs-keymap ergoemacs-shell-command-key 'shell-command)
-  
-  ;; WINDOW SPLITING
-  (define-key ergoemacs-keymap ergoemacs-move-cursor-next-pane-key 'move-cursor-next-pane)
-  (define-key ergoemacs-keymap ergoemacs-move-cursor-previous-pane-key 'move-cursor-previous-pane)
-  
-  
-  ;; --------------------------------------------------
-  ;; OTHER SHORTCUTS
-  
-  (define-key ergoemacs-keymap ergoemacs-switch-to-previous-frame-key 'switch-to-previous-frame)
-  (define-key ergoemacs-keymap ergoemacs-switch-to-next-frame-key 'switch-to-next-frame)
-  
-  (define-key ergoemacs-keymap ergoemacs-query-replace-key 'query-replace)
-  (define-key ergoemacs-keymap ergoemacs-query-replace-regexp-key 'query-replace-regexp)
-  
-  (define-key ergoemacs-keymap ergoemacs-delete-other-windows-key 'delete-other-windows)
-  (define-key ergoemacs-keymap ergoemacs-delete-window-key 'delete-window)
-  
-  (define-key ergoemacs-keymap ergoemacs-split-window-vertically-key 'split-window-vertically)
-  (define-key ergoemacs-keymap ergoemacs-split-window-horizontally-key 'split-window-horizontally)
-  
-  (define-key ergoemacs-keymap ergoemacs-extend-selection-key 'extend-selection)
-  (define-key ergoemacs-keymap ergoemacs-select-text-in-quote-key 'select-text-in-quote)
-  
-  ;; --------------------------------------------------
-  ;; extra keys not dependent on keyboard layout
   
   (require 'lookup-word-on-internet nil "NOERROR"))
 
@@ -1315,6 +1210,15 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs hooks
+(defun ergoemacs-key-fn-lookup (function)
+  "Looks up the key binding for FUNCTION based on `ergoemacs-variable-layout'."
+  (let ((ret nil))
+    (mapc
+     (lambda(x)
+       (when (equal (nth 1 x) function)
+         (setq ret (ergoemacs-kbd (nth 0 x)))))
+     ergoemacs-variable-layout)
+    (symbol-value 'ret)))
 
 (defmacro ergoemacs-create-hook-function (hook keys)
   "Creates a hook function based on the HOOK and the list of KEYS defined."
@@ -1332,13 +1236,16 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
 This is an automatically generated function derived from `ergoemacs-minor-mode-layout'.")
          ,@(mapcar
             (lambda(def)
-              `(define-key ,(if is-override
-                                (intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))
-                              (nth 2 def))
-                 ,(if (eq 'string (type-of (nth 0 def)))
-                      `(kbd ,(nth 0 def))
-                    (nth 0 def))
-                 ',(nth 1 def)))
+              (if (or (eq 'string (type-of (nth 0 def)))
+                      (ergoemacs-key-fn-lookup (nth 0 def)))
+                  `(define-key ,(if is-override
+                                    (intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))
+                                  (nth 2 def))
+                     ,(if (eq 'string (type-of (nth 0 def)))
+                          `(kbd ,(nth 0 def))
+                        `(ergoemacs-key-fn-lookup ',(nth 0 def)))
+                     ',(nth 1 def))
+                nil))
             keys)
          ,(if is-override
               `(add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
@@ -1378,7 +1285,7 @@ will change."
           
           ;; alt+n is the new "Quit" in query-replace-map
           (ergoemacs-unset-global-key query-replace-map "\e")
-          (define-key query-replace-map ergoemacs-keyboard-quit-key 'exit-prefix))
+          (define-key query-replace-map (ergoemacs-key-fn-lookup 'keyboard-quit) 'exit-prefix))
       ;; if ergoemacs was disabled: restore original keys
       (ergoemacs-restore-global-keys))
     
