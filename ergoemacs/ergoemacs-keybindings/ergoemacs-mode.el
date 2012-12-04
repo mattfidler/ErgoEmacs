@@ -565,7 +565,8 @@ Valid values are:
       ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
     ;; Helm mode hooks
     (helm-before-initialize-hook
-     ((next-line helm-next-line helm-map)
+     (("C-w" helm-keyboard-quit helm-map)
+      (next-line helm-next-line helm-map)
       (previous-line helm-previous-line helm-map)
       (forward-char helm-next-source helm-map)
       (backward-char helm-previous-source helm-map)
@@ -583,18 +584,17 @@ Valid values are:
       ("C-s" nil ac-completing-map))))
   "Key bindings that are applied as hooks to specific modes"
   :type '(repeat
-          (list :tag "Keys for a particular minor/major mode")
-          (symbol :tag "Hook for mode")
-          (repeat
-           (list :tag "Key"
-                 (choice
-                  (symbol :tag "Defined Ergoemacs Function to Remap")
-                  (string :tag "Kbd Code"))
-                 (choice
-                  (function :tag "Function to Run")
-                  (cost :tag "Unbind Key" nil))
-                 
-                 (symbol :tag "Keymap to Modify"))))
+          (list :tag "Keys for a particular minor/major mode"
+                (symbol :tag "Hook for mode")
+                (repeat
+                 (list :tag "Key"
+                       (choice
+                        (symbol :tag "Defined Ergoemacs Function to Remap")
+                        (string :tag "Kbd Code"))
+                       (choice
+                        (symbol :tag "Function to Run")
+                        (const :tag "Unbind Key" nil))
+                       (symbol :tag "Keymap to Modify")))))
   :group 'ergoemacs-mode)
 
 (defvar ergoemacs-needs-translation nil)
@@ -1450,6 +1450,22 @@ any key unbound or claimed by ergoemacs."
   (if (fboundp 'ergoemacs-mode)
       (ergoemacs-local-unset-key key)
     ad-do-it))
+
+;;;###autoload
+(defun ergoemacs-key (key function &optional desc)
+  "Defines key in ergoemacs keyboard based on QWERTY."
+  (let (found)
+    (setq ergoemacs-variable-layout
+          (mapcar
+           (lambda(x)
+             (if (not (string= key (nth 0 x)))
+                 x
+               (setq found t)
+               `(,key ,function ,desc)))
+           ergoemacs-variable-layout))
+    (unless found
+      (add-to-list 'ergoemacs-variable-layout
+                   `(,key ,function ,desc)))))
 
 (provide 'ergoemacs-mode)
 
