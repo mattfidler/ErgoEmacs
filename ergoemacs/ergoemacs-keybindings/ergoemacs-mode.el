@@ -2,13 +2,14 @@
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009, 2010 by David Capello
+;; Copyright © 2012 by Matthew Fidler
 
 ;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
 ;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
 ;;     Matthew Fidler <matthew.fidler@gmail.com> (http://github.com/mlf176f2/)
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
-;; Version: 5.7.0
+;; Version: 5.7.1
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -50,10 +51,10 @@
 
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.7.0"
+(defconst ergoemacs-mode-version "5.7.1"
   "Ergoemacs-keybindings minor mode version number.")
 
-(defgroup ergoemacs-keybindings nil
+(defgroup ergoemacs-mode nil
   "Emulate CUA key bindings including C-x and C-c."
   :group 'editing-basics
   :group 'convenience
@@ -249,60 +250,7 @@ Valid values are:
 
 " (ergoemacs-get-layouts-doc))
   :type (ergoemacs-get-layouts-type)
-  :group 'ergoemacs-keybindings)
-
-
-(setq ergoemacs-needs-translation nil)
-(setq ergoemacs-translation-from nil)
-(setq ergoemacs-translation-to nil)
-(setq ergoemacs-translation-assoc nil)
-(setq ergoemacs-translation-regexp nil)
-
-(defun ergoemacs-setup-translation (layout &optional base-layout)
-  "Setup translation from BASE-LAYOUT to LAYOUT."
-  (let ((base (or base-layout "us"))
-        lay
-        len i)
-    (unless (and (string= layout ergoemacs-translation-to)
-                 (string= base ergoemacs-translation-from))
-      (if (equal layout base)
-          (progn
-            (setq ergoemacs-translation-from base)
-            (setq ergoemacs-translation-to layout)
-            (setq ergoemacs-needs-translation nil)
-            (setq ergoemacs-translation-assoc nil)
-            (setq ergoemacs-translation-regexp nil))
-        (setq ergoemacs-translation-from base)
-        (setq ergoemacs-translation-to layout)
-        (setq lay (symbol-value (intern (concat "ergoemacs-layout-" layout))))
-        (setq base (symbol-value (intern (concat "ergoemacs-layout-" base))))
-        (setq ergoemacs-needs-translation t)
-        (setq ergoemacs-translation-assoc nil)
-        (setq len (length base))
-        (setq i 0)
-        (while (< i len)
-          (unless (or (string= "" (nth i base))
-                      (string= "" (nth i lay)))
-            (add-to-list 'ergoemacs-translation-assoc
-                         `(,(nth i base) . ,(nth i lay))))
-          (setq i (+ i 1)))
-        (setq ergoemacs-translation-regexp
-              (format "-\\(%s\\)$"
-                      (regexp-opt (mapcar (lambda(x) (nth 0 x))
-                                          ergoemacs-translation-assoc) nil)))))))
-
-(defun ergoemacs-kbd (key &optional just-translate)
-  "Translates kbd code KEY for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'.
-If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key sequence.
-"
-  (let ((new-key key))
-    (when (and ergoemacs-needs-translation
-               (string-match ergoemacs-translation-regexp new-key))
-      (setq new-key (replace-match (concat "-" (cdr (assoc (match-string 1 new-key) ergoemacs-translation-assoc))) t t new-key)))
-    ;;(message "%s -> %s" key new-key)
-    (if (not just-translate)
-        (read-kbd-macro new-key)
-      new-key)))
+  :group 'ergoemacs-mode)
 
 ;; Ergoemacs keys
 
@@ -418,7 +366,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (symbol :tag "Ergoemacs Variable")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
-  :group 'ergoemacs-keybindings)
+  :group 'ergoemacs-mode)
 
 (defcustom ergoemacs-fixed-layout
   `( ;; --------------------------------------------------
@@ -525,7 +473,168 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (symbol :tag "Function to Run")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
-  :group 'ergoemacs-keybindings)
+  :group 'ergoemacs-mode)
+
+(defcustom ergoemacs-minor-mode-layout
+  '(;; Key/variable command x-hook
+    ;; Minibuffer hook
+    (minibuffer-setup-hook
+     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      (ergoemacs-previous-line-key previous-history-element minor-mode-overriding-map-alist)
+      (ergoemacs-next-line-key next-history-element minor-mode-overriding-map-alist)
+      ("<f11>" previous-history-element  minor-mode-overriding-map-alist)
+      ("<f12>" next-history-element  minor-mode-overriding-map-alist)
+      ("S-<f11>" previous-matching-history-element  minor-mode-overriding-map-alist)
+      ("S-<f12>" next-matching-history-element  minor-mode-overriding-map-alist)
+      ))
+    
+    ;; Isearch Hook
+    (isearch-mode-hook
+     (("M-p" nil isearch-mode-map) ; was isearch-ring-retreat
+      ("M-n" nil isearch-mode-map) ; was isearch-ring-advance
+      ("M-y" nil isearch-mode-map) ; was isearch-yank-kill
+      ("M-c" nil isearch-mode-map) ; was isearch-toggle-case-fold
+      ("M-r" nil isearch-mode-map) ; was isearch-toggle-regexp
+      ("M-e" nil isearch-mode-map) ; was isearch-edit-string
+      
+      (ergoemacs-keyboard-quit-key isearch-abort isearch-mode-map)
+      (ergoemacs-isearch-forward-key isearch-repeat-forward isearch-mode-map)
+      (ergoemacs-isearch-backward-key isearch-repeat-backward isearch-mode-map)
+      (ergoemacs-recenter-key recenter isearch-mode-map)
+      (ergoemacs-yank-key isearch-yank-kill isearch-mode-map)
+      
+      ;; CUA paste key is isearch-yank-kill in isearch mode
+      ("C-v" isearch-yank-kill isearch-mode-map)
+      
+      ;; isearch-other-control-char sends the key to the original buffer and cancels isearch
+      (ergoemacs-kill-ring-save-key isearch-other-control-char isearch-mode-map)
+      (ergoemacs-kill-word-key isearch-other-control-char isearch-mode-map)
+      (ergoemacs-backward-kill-word-key isearch-other-control-char isearch-mode-map)
+      
+      ("<f11>" isearch-ring-retreat isearch-mode-map)
+      ("<f12>" isearch-ring-advance isearch-mode-map)))
+    
+    ;; Comint
+    (comint-mode-hook
+     (("<f11>" comint-previous-input comint-mode-map)
+      ("<f12>" comint-next-input comint-mode-map)
+      ("S-<f11>" comint-previous-matching-input comint-mode-map)
+      ("S-<f12>" comint-next-matching-input comint-mode-map)))
+    
+    ;; Log Edit
+    (log-edit-mode-hook
+     (("<f11>" log-edit-previous-comment log-edit-mode-map)
+      ("<f12>" log-edit-next-comment log-edit-mode-map)
+      ("S-<f11>" log-edit-previous-comment log-edit-mode-map)
+      ("S-<f12>" log-edit-next-comment log-edit-mode-map)))
+    
+    ;; Eshell
+    (eshell-mode-hook
+     ((ergoemacs-move-beginning-of-line-key eshell-bol minor-mode-overriding-map-alist)
+      ("<home>" eshell-bol minor-mode-overriding-map-alist)
+      ("<f11>" eshell-previous-matching-input-from-input minor-mode-overriding-map-alist)
+      ("<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)
+      ("S-<f11>" eshell-previous-matching-input-from-input minor-mode-overriding-map-alist)
+      ("S-<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)))
+    
+    ;; Iswitchdb hook
+    (iswitchb-minibuffer-setup-hook
+     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      (ergoemacs-isearch-backward-key iswitchb-prev-match minor-mode-overriding-map-alist)
+      (ergoemacs-isearch-forward-key iswitchb-next-match minor-mode-overriding-map-alist)
+      
+      ("<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
+      ("<f12>" iswitchb-next-match minor-mode-overriding-map-alist)
+      ("S-<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
+      ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
+    
+    ;; Ido minibuffer setup hook
+    (ido-minibuffer-setup-hook
+     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      (ergoemacs-forward-char-key ido-next-match minor-mode-overriding-map-alist)
+      (ergoemacs-backward-char-key ido-prev-match minor-mode-overriding-map-alist)
+      (ergoemacs-previous-line-key ido-next-match-dir minor-mode-overriding-map-alist)
+      (ergoemacs-next-line-key ido-prev-match-dir minor-mode-overriding-map-alist)
+      ("<f11>" previous-history-element minor-mode-overriding-map-alist)
+      ("<f12>" next-history-element minor-mode-overriding-map-alist)
+      ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
+      ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
+    ;; Auto-complete-mode-hook
+    ;; When the `auto-complete-mode' is on, and when a word completion
+    ;; is in process, Ctrl+s does `ac-isearch'.
+    ;; This fixes it.
+    (auto-complete-mode-hook
+     ((ergoemacs-isearch-forward-key ac-isearch ac-completing-map)
+      ("C-s" nil ac-completing-map))))
+  "Key bindings that are applied as hooks to specific modes"
+  :type '(repeat
+          (list :tag "Keys for a particular minor/major mode")
+          (symbol :tag "Hook for mode")
+          (repeat
+           (list :tag "Key"
+                 (choice
+                  (symbol :tag "Defined Ergoemacs Variable")
+                  (string :tag "Kbd Code"))
+                 (choice
+                  (function :tag "Function to Run")
+                  (cost :tag "Unbind Key" nil))
+                 
+                 (symbol :tag "Keymap to Modify"))))
+  :group 'ergoemacs-mode)
+
+(setq ergoemacs-needs-translation nil)
+(setq ergoemacs-translation-from nil)
+(setq ergoemacs-translation-to nil)
+(setq ergoemacs-translation-assoc nil)
+(setq ergoemacs-translation-regexp nil)
+
+(defun ergoemacs-setup-translation (layout &optional base-layout)
+  "Setup translation from BASE-LAYOUT to LAYOUT."
+  (let ((base (or base-layout "us"))
+        lay
+        len i)
+    (unless (and (string= layout ergoemacs-translation-to)
+                 (string= base ergoemacs-translation-from))
+      (if (equal layout base)
+          (progn
+            (setq ergoemacs-translation-from base)
+            (setq ergoemacs-translation-to layout)
+            (setq ergoemacs-needs-translation nil)
+            (setq ergoemacs-translation-assoc nil)
+            (setq ergoemacs-translation-regexp nil))
+        (setq ergoemacs-translation-from base)
+        (setq ergoemacs-translation-to layout)
+        (setq lay (symbol-value (intern (concat "ergoemacs-layout-" layout))))
+        (setq base (symbol-value (intern (concat "ergoemacs-layout-" base))))
+        (setq ergoemacs-needs-translation t)
+        (setq ergoemacs-translation-assoc nil)
+        (setq len (length base))
+        (setq i 0)
+        (while (< i len)
+          (unless (or (string= "" (nth i base))
+                      (string= "" (nth i lay)))
+            (add-to-list 'ergoemacs-translation-assoc
+                         `(,(nth i base) . ,(nth i lay))))
+          (setq i (+ i 1)))
+        (setq ergoemacs-translation-regexp
+              (format "-\\(%s\\)$"
+                      (regexp-opt (mapcar (lambda(x) (nth 0 x))
+                                          ergoemacs-translation-assoc) nil)))))))
+
+(defun ergoemacs-kbd (key &optional just-translate)
+  "Translates kbd code KEY for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'.
+If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key sequence.
+"
+  (let ((new-key key))
+    (when (and ergoemacs-needs-translation
+               (string-match ergoemacs-translation-regexp new-key))
+      (setq new-key (replace-match (concat "-" (cdr (assoc (match-string 1 new-key) ergoemacs-translation-assoc))) t t new-key)))
+    ;;(message "%s -> %s" key new-key)
+    (if (not just-translate)
+        (read-kbd-macro new-key)
+      new-key)))
+
+
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
@@ -915,6 +1024,7 @@ Currently only supports two modifier plus key."
        (ergoemacs-gen-ahk x))
      lay)))
 
+;;;###autoload 
 (defun ergoemacs-extras ( &optional layouts)
   "Generate extra things (autohotkey scripts, svg diagrams etc.) from keyboard layouts."
   (interactive)
@@ -1206,113 +1316,6 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs hooks
 
-(defcustom ergoemacs-minor-mode-layout
-  '(;; Key/variable command x-hook
-    ;; Minibuffer hook
-    (minibuffer-setup-hook
-     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
-      (ergoemacs-previous-line-key previous-history-element minor-mode-overriding-map-alist)
-      (ergoemacs-next-line-key next-history-element minor-mode-overriding-map-alist)
-      ("<f11>" previous-history-element  minor-mode-overriding-map-alist)
-      ("<f12>" next-history-element  minor-mode-overriding-map-alist)
-      ("S-<f11>" previous-matching-history-element  minor-mode-overriding-map-alist)
-      ("S-<f12>" next-matching-history-element  minor-mode-overriding-map-alist)
-      ))
-    
-    ;; Isearch Hook
-    (isearch-mode-hook
-     (("M-p" nil isearch-mode-map) ; was isearch-ring-retreat
-      ("M-n" nil isearch-mode-map) ; was isearch-ring-advance
-      ("M-y" nil isearch-mode-map) ; was isearch-yank-kill
-      ("M-c" nil isearch-mode-map) ; was isearch-toggle-case-fold
-      ("M-r" nil isearch-mode-map) ; was isearch-toggle-regexp
-      ("M-e" nil isearch-mode-map) ; was isearch-edit-string
-      
-      (ergoemacs-keyboard-quit-key isearch-abort isearch-mode-map)
-      (ergoemacs-isearch-forward-key isearch-repeat-forward isearch-mode-map)
-      (ergoemacs-isearch-backward-key isearch-repeat-backward isearch-mode-map)
-      (ergoemacs-recenter-key recenter isearch-mode-map)
-      (ergoemacs-yank-key isearch-yank-kill isearch-mode-map)
-      
-      ;; CUA paste key is isearch-yank-kill in isearch mode
-      ("C-v" isearch-yank-kill isearch-mode-map)
-      
-      ;; isearch-other-control-char sends the key to the original buffer and cancels isearch
-      (ergoemacs-kill-ring-save-key isearch-other-control-char isearch-mode-map)
-      (ergoemacs-kill-word-key isearch-other-control-char isearch-mode-map)
-      (ergoemacs-backward-kill-word-key isearch-other-control-char isearch-mode-map)
-      
-      ("<f11>" isearch-ring-retreat isearch-mode-map)
-      ("<f12>" isearch-ring-advance isearch-mode-map)))
-    
-    ;; Comint
-    (comint-mode-hook
-     (("<f11>" comint-previous-input comint-mode-map)
-      ("<f12>" comint-next-input comint-mode-map)
-      ("S-<f11>" comint-previous-matching-input comint-mode-map)
-      ("S-<f12>" comint-next-matching-input comint-mode-map)))
-    
-    ;; Log Edit
-    (log-edit-mode-hook
-     (("<f11>" log-edit-previous-comment log-edit-mode-map)
-      ("<f12>" log-edit-next-comment log-edit-mode-map)
-      ("S-<f11>" log-edit-previous-comment log-edit-mode-map)
-      ("S-<f12>" log-edit-next-comment log-edit-mode-map)))
-    
-    ;; Eshell
-    (eshell-mode-hook
-     ((ergoemacs-move-beginning-of-line-key eshell-bol minor-mode-overriding-map-alist)
-      ("<home>" eshell-bol minor-mode-overriding-map-alist)
-      ("<f11>" eshell-previous-matching-input-from-input minor-mode-overriding-map-alist)
-      ("<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)
-      ("S-<f11>" eshell-previous-matching-input-from-input minor-mode-overriding-map-alist)
-      ("S-<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)))
-    
-    ;; Iswitchdb hook
-    (iswitchb-minibuffer-setup-hook
-     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
-      (ergoemacs-isearch-backward-key iswitchb-prev-match minor-mode-overriding-map-alist)
-      (ergoemacs-isearch-forward-key iswitchb-next-match minor-mode-overriding-map-alist)
-      
-      ("<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
-      ("<f12>" iswitchb-next-match minor-mode-overriding-map-alist)
-      ("S-<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
-      ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
-    
-    ;; Ido minibuffer setup hook
-    (ido-minibuffer-setup-hook
-     ((ergoemacs-keyboard-quit-key minibuffer-keyboard-quit minor-mode-overriding-map-alist)
-      (ergoemacs-forward-char-key ido-next-match minor-mode-overriding-map-alist)
-      (ergoemacs-backward-char-key ido-prev-match minor-mode-overriding-map-alist)
-      (ergoemacs-previous-line-key ido-next-match-dir minor-mode-overriding-map-alist)
-      (ergoemacs-next-line-key ido-prev-match-dir minor-mode-overriding-map-alist)
-      ("<f11>" previous-history-element minor-mode-overriding-map-alist)
-      ("<f12>" next-history-element minor-mode-overriding-map-alist)
-      ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
-      ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
-    ;; Auto-complete-mode-hook
-    ;; When the `auto-complete-mode' is on, and when a word completion
-    ;; is in process, Ctrl+s does `ac-isearch'.
-    ;; This fixes it.
-    (auto-complete-mode-hook
-     ((ergoemacs-isearch-forward-key ac-isearch ac-completing-map)
-      ("C-s" nil ac-completing-map))))
-  "Key bindings that are applied as hooks to specific modes"
-  :type '(repeat
-          (list :tag "Keys for a particular minor/major mode")
-          (symbol :tag "Hook for mode")
-          (repeat
-           (list :tag "Key"
-                 (choice
-                  (symbol :tag "Defined Ergoemacs Variable")
-                  (string :tag "Kbd Code"))
-                 (choice
-                  (function :tag "Function to Run")
-                  (cost :tag "Unbind Key" nil))
-                 
-                 (symbol :tag "Keymap to Modify"))))
-  :group 'ergoemacs-keybindings)
-
 (defmacro ergoemacs-create-hook-function (hook keys)
   "Creates a hook function based on the HOOK and the list of KEYS defined."
   (let ((is-override (make-symbol "is-override")))
@@ -1355,43 +1358,6 @@ This is an automatically generated function derived from `ergoemacs-minor-mode-l
 ergoemacs hooks."
   (add-to-list 'ergoemacs-hook-list (cons hook hook-function)))
 
-(defun ergoemacs-create-hooks ()
-  "Creates Ergoemacs Hooks from `ergoemacs-minor-mode-layout'."
-  (let ((ergoemacs-mode))
-    (ergoemacs-hook-modes))
-  (setq ergoemacs-hook-list nil)
-  (mapc
-   (lambda(x)
-     (let ((f (macroexpand `(ergoemacs-create-hook-function ,(car x) ,(car (cdr x))))))
-       (eval f)))
-   ergoemacs-minor-mode-layout)
-  (ergoemacs-hook-modes))
-
-(defun ergoemacs-setup-keys ()
-  "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
-  (interactive)
-  (let ((ergoemacs-state ergoemacs-mode)
-        (cua-state cua-mode)
-        (layout
-         (intern-soft
-          (concat "ergoemacs-layout-" ergoemacs-keyboard-layout))))
-    (when ergoemacs-state
-      (ergoemacs-mode -1)
-      (when cua-state
-        (cua-mode -1)))
-    (cond
-     (layout
-      (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
-     (t ; US qwerty by default
-      (ergoemacs-setup-keys-for-layout "us")))
-    (ergoemacs-create-hooks)
-    (when ergoemacs-state
-      (ergoemacs-mode 1)
-      (when cua-state
-        (cua-mode 1)))))
-
-(ergoemacs-setup-keys)
-
 (defun ergoemacs-hook-modes ()
   "Installs/Removes ErgoEmacs minor mode hooks from major modes
 depending the state of `ergoemacs-mode' variable.  If the mode
@@ -1421,16 +1387,79 @@ will change."
       (funcall modify-hook (car hook) (cdr hook)))
     
     ;; enable advices
-    (funcall modify-advice 'global-set-key 'around 'ergoemacs-global-set-key-advice)
-    (funcall modify-advice 'global-unset-key 'around 'ergoemacs-global-unset-key-advice)
-    (funcall modify-advice 'local-set-key 'around 'ergoemacs-local-set-key-advice)
-    (funcall modify-advice 'local-unset-key 'around 'ergoemacs-local-unset-key-advice)
-    
-    ;; update advices
-    (ad-activate 'global-set-key)
-    (ad-activate 'global-unset-key)
-    (ad-activate 'local-set-key)
-    (ad-activate 'local-unset-key)))
+    (condition-case err
+        (progn
+          (funcall modify-advice 'global-set-key 'around 'ergoemacs-global-set-key-advice)
+          (funcall modify-advice 'global-unset-key 'around 'ergoemacs-global-unset-key-advice)
+          (funcall modify-advice 'local-set-key 'around 'ergoemacs-local-set-key-advice)
+          (funcall modify-advice 'local-unset-key 'around 'ergoemacs-local-unset-key-advice)
+          ;; update advices
+          (ad-activate 'global-set-key)
+          (ad-activate 'global-unset-key)
+          (ad-activate 'local-set-key)
+          (ad-activate 'local-unset-key))
+      (error "Error modifying advices. %s" err))))
+
+(defun ergoemacs-create-hooks ()
+  "Creates Ergoemacs Hooks from `ergoemacs-minor-mode-layout'."
+  (let ((ergoemacs-mode))
+    (ergoemacs-hook-modes))
+  (setq ergoemacs-hook-list nil)
+  (mapc
+   (lambda(x)
+     (let ((f (macroexpand `(ergoemacs-create-hook-function ,(car x) ,(car (cdr x))))))
+       (eval f)))
+   ergoemacs-minor-mode-layout)
+  (ergoemacs-hook-modes))
+
+;;----------------------------------------------------------------------
+;; ErgoEmacs minor mode
+;;;###autoload
+(define-minor-mode ergoemacs-mode
+  "Toggle ergoemacs keybinding mode.
+This minor mode changes your emacs keybindings.
+Without argument, toggles the minor mode.
+If optional argument is 1, turn it on.
+If optional argument is 0, turn it off.
+Argument of t or nil should not be used.
+For full documentation, see:
+URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
+
+If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
+  nil
+  :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
+  :global t
+  :keymap ergoemacs-keymap
+  
+  (ergoemacs-hook-modes))
+
+
+(defun ergoemacs-setup-keys ()
+  "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
+  (interactive)
+  (let ((ergoemacs-state ergoemacs-mode)
+        (cua-state cua-mode)
+        (layout
+         (intern-soft
+          (concat "ergoemacs-layout-" ergoemacs-keyboard-layout))))
+    (when ergoemacs-state
+      (ergoemacs-mode -1)
+      (when cua-state
+        (cua-mode -1)))
+    (cond
+     (layout
+      (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
+     (t ; US qwerty by default
+      (ergoemacs-setup-keys-for-layout "us")))
+    (ergoemacs-create-hooks)
+    (when ergoemacs-state
+      (ergoemacs-mode 1)
+      (when cua-state
+        (cua-mode 1)))))
+
+(ergoemacs-setup-keys)
+
+
 
 ;;----------------------------------------------------------------------
 ;; ErgoEmacs replacements for local- and global-set-key
@@ -1493,26 +1522,6 @@ any key unbound or claimed by ergoemacs."
       (ergoemacs-local-unset-key key)
     ad-do-it))
 
-;;----------------------------------------------------------------------
-;; ErgoEmacs minor mode
-;;;###autoload
-(define-minor-mode ergoemacs-mode
-  "Toggle ergoemacs keybinding mode.
-This minor mode changes your emacs keybindings.
-Without argument, toggles the minor mode.
-If optional argument is 1, turn it on.
-If optional argument is 0, turn it off.
-Argument of t or nil should not be used.
-For full documentation, see:
-URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
-
-If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
-  nil
-  :lighter " ErgoEmacs"	;; TODO this should be nil (it is for testing purposes)
-  :global t
-  :keymap ergoemacs-keymap
-  
-  (ergoemacs-hook-modes))
 
 ;;; Customizable settings
 ;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT

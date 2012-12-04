@@ -39,8 +39,8 @@ the customization variable `ergoemacs-keyboard-layout'.  By simply
 defining your layout before ergoemacs-mode is loaded, you add it to
 the ergoemacs-keyboard-layout variable with its description. 
 * Customizing/Saving the variables
-You can customiae the ergoemacs keybindings by typing M-x
-customize-group ergoemacs-keybindings
+You can customize the ergoemacs keybindings by typing M-x
+customize-group ergoemacs-mode
 
 * Extras
 To generate keyboard binding diagrams and scripts that allow you to
