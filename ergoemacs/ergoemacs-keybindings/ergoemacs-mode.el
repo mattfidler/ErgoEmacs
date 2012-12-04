@@ -1331,12 +1331,10 @@ will change."
      (t ; US qwerty by default
       (ergoemacs-setup-keys-for-layout "us")))
     (ergoemacs-create-hooks)
-    (unless ergoemacs-state
-      ;; On exit ergoemacs
-      ;; Redefine minor mode to update keymap.
-      ;; Seems a bit hackish, but I believe it works.
-      (define-minor-mode ergoemacs-mode
-        "Toggle ergoemacs keybinding mode.
+    ;; Redefine minor mode to update keymap.
+    ;; Seems a bit hackish, but I believe it works.
+    (define-minor-mode ergoemacs-mode
+      "Toggle ergoemacs keybinding mode.
 This minor mode changes your emacs keybindings.
 Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
@@ -1346,11 +1344,11 @@ For full documentation, see:
 URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
 
 If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
-        nil
-        :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
-        :global t
-        :keymap ergoemacs-keymap
-        (ergoemacs-setup-keys t)))
+      nil
+      :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
+      :global t
+      :keymap ergoemacs-keymap
+      (ergoemacs-setup-keys t))
     (unless no-check 
       (when ergoemacs-state
         (when (fboundp 'ergoemacs-mode)
@@ -1379,9 +1377,6 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
   :global t
   :keymap ergoemacs-keymap
   (ergoemacs-setup-keys t))
-
-
-
 
 
 ;;----------------------------------------------------------------------
@@ -1444,12 +1439,6 @@ any key unbound or claimed by ergoemacs."
   (if (fboundp 'ergoemacs-mode)
       (ergoemacs-local-unset-key key)
     ad-do-it))
-
-
-;;; Customizable settings
-;; Load the keyboard layout looking the ERGOEMACS_KEYBOARD_LAYOUT
-;; enviroment variable (this variable is set by ErgoEmacs runner)
-
 
 (provide 'ergoemacs-mode)
 
