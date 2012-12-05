@@ -1238,12 +1238,12 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
        ,(if is-override
             `(progn
                (defvar ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")) nil
-                 ,(concat "Ergoemacs overriding keymap for `" (symbol-name hook) "'"))
-               (ergoemacs-setup-keys-for-keymap ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))))
+                 ,(concat "Ergoemacs overriding keymap for `" (symbol-name hook) "'")))
           nil)
        (defun ,(intern (concat "ergoemacs-" (symbol-name hook))) ()
          ,(concat "Hook for `" (symbol-name hook) "' so ergoemacs keybindings are not lost.
 This is an automatically generated function derived from `ergoemacs-minor-mode-layout'.")
+         (ergoemacs-setup-keys-for-keymap ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
          ,@(mapcar
             (lambda(def)
               (if (or (eq 'string (type-of (nth 0 def)))
@@ -1258,13 +1258,15 @@ This is an automatically generated function derived from `ergoemacs-minor-mode-l
                 nil))
             keys)
          ,(if is-override
-              `(add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
-                            nil (lambda (x y)
-                                  (equal (car y) (car x))))
+              `(add-to-list 'minor-mode-overriding-map-alist
+                            (cons 'ergoemacs-mode ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
+                            nil ,(if (equal hook 'minibuffer-setup-hook)
+                                     '(lambda (x y)
+                                         (equal (car y) (car x)))
+                                   nil))
             nil)
          t)
        (ergoemacs-add-hook ',hook ',(intern (concat "ergoemacs-" (symbol-name hook)))))))
-
 
 
 (defvar ergoemacs-hook-list (list)
