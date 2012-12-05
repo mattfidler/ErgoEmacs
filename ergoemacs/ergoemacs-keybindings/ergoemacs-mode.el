@@ -1486,7 +1486,9 @@ any key unbound or claimed by ergoemacs."
 
 ;;;###autoload
 (defun ergoemacs-key (key function &optional desc)
-  "Defines key in ergoemacs keyboard based on QWERTY."
+  "Defines KEY in ergoemacs keyboard based on QWERTY and binds to FUNCTION.
+Optionally provides DESC for a description of the key.
+"
   (let (found)
     (setq ergoemacs-variable-layout
           (mapcar
@@ -1499,6 +1501,34 @@ any key unbound or claimed by ergoemacs."
     (unless found
       (add-to-list 'ergoemacs-variable-layout
                    `(,key ,function ,desc)))))
+
+;;;###autoload
+(defun ergoemacs-minor-key (hook list)
+  "Defines keys to add to an ergoemacs keyboard hook.
+
+Adds to the list `ergoemacs-minor-mode-layout' by modifying the
+ergoemacs hook applied to HOOK.  The LIST is of the following
+format:
+
+ (FUNCTION/KEY FUNCTION-TO-CALL KEYMAP)
+"
+  (setq ergoemacs-minor-mode-layout
+        (mapcar
+         (lambda(mode-list)
+           (if (not (equal hook (nth 0 mode-list)))
+               mode-list
+             (let (found lst)
+               (setq lst (mapcar
+                          (lambda(key-def)
+                            (if (equal (nth 0 list) (nth 0 key-def))
+                                (progn
+                                  (setq found t)
+                                  list)))
+                          (nth 1 mode-list)))
+               (unless found
+                 (add-to-list 'lst list))
+               `(,(nth 0 mode-list) ,lst))))
+         ergoemacs-minor-mode-layout)))
 
 (provide 'ergoemacs-mode)
 
