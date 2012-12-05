@@ -366,7 +366,8 @@ Valid values are:
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
           (list :tag "Keys"
-                (string :tag "QWERTY Kbd Code")
+                (choice (string :tag "QWERTY Kbd Code")
+                        (sexp :tag "Key"))
                 (symbol :tag "Function")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
@@ -473,7 +474,8 @@ Valid values are:
   "Key bindings that are constant regardless of they keyboard used."
   :type '(repeat
           (list :tag "Fixed Key"
-                (string :tag "Kbd code")
+                (choice (string :tag "Kbd code")
+                        (sexp :tag "Key"))
                 (symbol :tag "Function to Run")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
@@ -651,23 +653,29 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 
 
 
+(defmacro ergoemacs-setup-keys-for-keymap (keymap)
+  "Setups ergoemacs keys for a specific keymap"
+  `(progn
+     (setq ,keymap (make-sparse-keymap))
+     (mapc
+      (lambda(x)
+        (if (eq 'string (type-of (nth 0 x)))
+            (define-key ,keymap (read-kbd-macro (nth 0 x)) (nth 1 x))
+          (define-key ,keymap (nth 0 x) (nth 1 x))))
+      ergoemacs-fixed-layout)
+     (mapc
+      (lambda(x)
+        (if (eq 'string (type-of (nth 0 x)))
+            (define-key ,keymap (ergoemacs-kbd (nth 0 x)) (nth 1 x))
+          (define-key ,keymap (nth 0 x) (nth 1 x))))
+      ergoemacs-variable-layout)))
+
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
-  ;; Single char cursor movement
-  
-  (setq ergoemacs-keymap (make-sparse-keymap))
-  (mapc
-   (lambda(x)
-     (define-key ergoemacs-keymap (read-kbd-macro (nth 0 x)) (nth 1 x)))
-   ergoemacs-fixed-layout)
-  (mapc
-   (lambda(x)
-     (define-key ergoemacs-keymap (ergoemacs-kbd (nth 0 x)) (nth 1 x)))
-   ergoemacs-variable-layout)
-  
-  
-  (require 'lookup-word-on-internet nil "NOERROR"))
+  (ergoemacs-setup-keys-for-keymap ergoemacs-keymap))
+
+(require 'lookup-word-on-internet nil "NOERROR")
 
 ;; --------------------------------------------------------------------------------
 ;; Keyboard Settings
@@ -1231,7 +1239,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
             `(progn
                (defvar ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")) nil
                  ,(concat "Ergoemacs overriding keymap for `" (symbol-name hook) "'"))
-               (setq ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")) (copy-keymap ergoemacs-keymap)))
+               (ergoemacs-setup-keys-for-keymap ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))))
           nil)
        (defun ,(intern (concat "ergoemacs-" (symbol-name hook))) ()
          ,(concat "Hook for `" (symbol-name hook) "' so ergoemacs keybindings are not lost.
@@ -1398,7 +1406,28 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
 making it globally active. This allow to redefine
 any key unbound or claimed by ergoemacs."
   (interactive)
-  (define-key ergoemacs-keymap key command))
+  (define-key ergoemacs-keymap key command)
+  ;; Needs to modify the key lists
+  (let ((found))
+    (setq ergoemacs-fixed-layout
+          (mapcar
+           (lambda(x)
+             (if (not (equal key (read-kbd-macro (nth 0 x))))
+                 x
+               (setq found t)
+               `(,(nth 0 x) ,command "")))
+           ergoemacs-fixed-layout))
+    (unless found
+      (setq ergoemacs-variable-layout
+            (mapcar
+             (lambda(x)
+               (if (not (equal key (ergoemacs-kbd (nth 0 x))))
+                   x
+                 (setq found t)
+                 `(,(nth 0 x) ,command "")))
+             ergoemacs-variable-layout)))
+    (unless found
+      (add-to-list 'ergoemacs-fixed-layout `(,key ,command "")))))
 
 (defun ergoemacs-global-unset-key (key)
   "Removes a key from the ergoemacs-keymap."
@@ -1415,7 +1444,7 @@ any key unbound or claimed by ergoemacs."
   (interactive)
   (progn
     (unless ergoemacs-local-keymap
-      (setq ergoemacs-local-keymap (copy-keymap ergoemacs-keymap))
+      (ergoemacs-setup-keys-for-keymap ergoemacs-local-keymap)
       (add-to-list 'minor-mode-overriding-map-alist (cons 'ergoemacs-mode ergoemacs-local-keymap)))
     ;; add key
     (define-key ergoemacs-local-keymap key command)))
