@@ -5,7 +5,7 @@
 ;; Copyright © 2012 by Matthew Fidler
 
 ;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
-;;	David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
+;;      David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
 ;;     Matthew Fidler <matthew.fidler@gmail.com> (http://github.com/mlf176f2/)
 ;; Maintainer: Xah Lee
 ;; Created: August 01 2007
@@ -648,7 +648,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
       (setq new-key (replace-match (concat "-" (cdr (assoc (match-string 1 new-key) ergoemacs-translation-assoc))) t t new-key)))
     ;;(message "%s -> %s" key new-key)
     (if (not just-translate)
-        (read-kbd-macro new-key)
+        (read-kbd-macro (encode-coding-string new-key locale-coding-system))
       new-key)))
 
 
@@ -660,7 +660,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
      (mapc
       (lambda(x)
         (if (eq 'string (type-of (nth 0 x)))
-            (define-key ,keymap (read-kbd-macro (nth 0 x)) (nth 1 x))
+            (define-key ,keymap (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)) (nth 1 x))
           (define-key ,keymap (nth 0 x) (nth 1 x))))
       ergoemacs-fixed-layout)
      (mapc
@@ -1412,7 +1412,9 @@ any key unbound or claimed by ergoemacs."
     (setq ergoemacs-fixed-layout
           (mapcar
            (lambda(x)
-             (if (not (equal key (read-kbd-macro (nth 0 x))))
+             (if (not (condition-case err
+			  (eq key (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
+			(error nil)))
                  x
                (setq found t)
                `(,(nth 0 x) ,command "")))
@@ -1421,7 +1423,9 @@ any key unbound or claimed by ergoemacs."
       (setq ergoemacs-variable-layout
             (mapcar
              (lambda(x)
-               (if (not (equal key (ergoemacs-kbd (nth 0 x))))
+               (if (not (condition-case err
+			    (eq key (ergoemacs-kbd (nth 0 x)))
+			  (error nil)))
                    x
                  (setq found t)
                  `(,(nth 0 x) ,command "")))
