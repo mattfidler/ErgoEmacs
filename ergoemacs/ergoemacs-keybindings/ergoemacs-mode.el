@@ -1344,6 +1344,22 @@ will change."
     (ergoemacs-create-hooks)
     ;; Redefine minor mode to update keymap.
     ;; Seems a bit hackish, but I believe it works.
+    (define-minor-mode ergoemacs-mode
+      "Toggle ergoemacs keybinding mode.
+This minor mode changes your emacs keybindings.
+Without argument, toggles the minor mode.
+If optional argument is 1, turn it on.
+If optional argument is 0, turn it off.
+Argument of t or nil should not be used.
+For full documentation, see:
+URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
+
+If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
+      nil
+      :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
+      :global t
+      :keymap ergoemacs-keymap
+      (ergoemacs-setup-keys t))
     (unless no-check 
       (when ergoemacs-state
         (when (fboundp 'ergoemacs-mode)
