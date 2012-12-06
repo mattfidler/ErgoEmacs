@@ -556,15 +556,17 @@ Valid values are:
     
     ;; Ido minibuffer setup hook
     (ido-minibuffer-setup-hook
-     ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
-      (forward-char ido-next-match minor-mode-overriding-map-alist)
-      (backward-char ido-prev-match minor-mode-overriding-map-alist)
-      (previous-line ido-next-match-dir minor-mode-overriding-map-alist)
-      (next-line ido-prev-match-dir minor-mode-overriding-map-alist)
-      ("<f11>" previous-history-element minor-mode-overriding-map-alist)
-      ("<f12>" next-history-element minor-mode-overriding-map-alist)
-      ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
-      ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
+     ((keyboard-quit minibuffer-keyboard-quit ido-common-completion-map)
+      (forward-char ido-next-match ido-common-completion-map)
+      (backward-char ido-prev-match ido-common-completion-map)
+      (previous-line ido-prev-match-dir ido-file-dir-completion-map)
+      (previous-line ido-prev-match-dir ido-file-completion-map)
+      (next-line ido-next-match-dir ido-file-dir-completion-map)
+      (next-line ido-next-match-dir ido-file-completion-map)
+      ("<f11>" previous-history-element ido-common-completion-map)
+      ("<f12>" next-history-element ido-common-completion-map)
+      ("S-<f11>" previous-matching-history-element ido-common-completion-map)
+      ("S-<f12>" next-matching-history-element ido-common-completion-map)))
     ;; Helm mode hooks
     (helm-before-initialize-hook
      (("C-w" helm-keyboard-quit helm-map)
@@ -779,7 +781,6 @@ Currently only supports two modifier plus key."
        (ergoemacs-gen-mac-osx x)
        (ergoemacs-gen-mac-osx x nil "os_x_opt-ctl" t))
      lay)))
-
 
 (defun ergoemacs-trans-bash (key)
   "Translate Emacs kbd code KEY to bash kbd code"
@@ -1232,7 +1233,8 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
 
 (defmacro ergoemacs-create-hook-function (hook keys)
   "Creates a hook function based on the HOOK and the list of KEYS defined."
-  (let ((is-override (make-symbol "is-override")))
+  (let ((is-override (make-symbol "is-override"))
+        (local-list '()))
     (setq is-override (eq 'minor-mode-overriding-map-alist (nth 2 (nth 0 keys))))
     `(progn
        ,(if is-override
@@ -1243,18 +1245,25 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
        (defun ,(intern (concat "ergoemacs-" (symbol-name hook))) ()
          ,(concat "Hook for `" (symbol-name hook) "' so ergoemacs keybindings are not lost.
 This is an automatically generated function derived from `ergoemacs-minor-mode-layout'.")
-         (ergoemacs-setup-keys-for-keymap ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
+         ,(if is-override
+              `(ergoemacs-setup-keys-for-keymap ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
+            nil)
          ,@(mapcar
             (lambda(def)
               (if (or (eq 'string (type-of (nth 0 def)))
                       (ergoemacs-key-fn-lookup (nth 0 def)))
-                  `(define-key ,(if is-override
+                `(progn
+                   ,(if is-override nil
+                      (if (member (nth 2 def) local-list) nil
+                        (add-to-list 'local-list (nth 2 def))
+                        `(set (make-local-variable ',(nth 2 def)) ,(nth 2 def))))
+                   (define-key ,(if is-override
                                     (intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))
                                   (nth 2 def))
                      ,(if (eq 'string (type-of (nth 0 def)))
                           `(kbd ,(nth 0 def))
                         `(ergoemacs-key-fn-lookup ',(nth 0 def)))
-                     ',(nth 1 def))
+                     ',(nth 1 def)))
                 nil))
             keys)
          ,(if is-override
@@ -1267,7 +1276,6 @@ This is an automatically generated function derived from `ergoemacs-minor-mode-l
             nil)
          t)
        (ergoemacs-add-hook ',hook ',(intern (concat "ergoemacs-" (symbol-name hook)))))))
-
 
 (defvar ergoemacs-hook-list (list)
   "List of hook and hook-function pairs.")
@@ -1522,7 +1530,8 @@ format:
              (let (found lst)
                (setq lst (mapcar
                           (lambda(key-def)
-                            (if (equal (nth 0 list) (nth 0 key-def))
+                            (if (and (equal (nth 0 list) (nth 0 key-def))
+                                     (equal (nth 2 list) (nth 2 key-def)))
                                 (progn
                                   (setq found t)
                                   list)))
