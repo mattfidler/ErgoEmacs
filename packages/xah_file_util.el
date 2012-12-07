@@ -29,6 +29,7 @@
 
 ;;; HISTORY
 
+;; version 1.6.4, 2012-12-06 Backup file name now has this format: 「~‹x›~‹datetimestamp›~」 where ‹x› is 「t」 for plain text replace and 「r」 for regex replace. e.g. 「x.html~r~20121206_095642~」 Also, modified the prompt for 「xah-find-replace-text-regex」 so it is consistent with the function's argument.
 ;; version 1.6.3, 2012-11-30 fixed a bug: when one of the find or find/replace is called, and the temp output buffer already exits, the highlighting doesn't work. Now it does work.
 ;; version 1.6.2, 2012-11-29 trival change. Changed output file names to consistently start with “•” instead of some “◆”
 ;; version 1.6.1, 2012-11-20 improved the highlighting for xah-find-replace-text. It now highlighting the replaced text, instead of the find text.
@@ -48,6 +49,11 @@
 
 (defvar xah-printContext-p nil "Whether to print context, for `xah-find-text', `xah-find-text-regex'.")
 (setq xah-printContext-p t)
+
+
+(defun xah-backup-suffix (ξss)
+  "return a string of the form 「~‹ξss›~‹date-time-stamp›~」"
+  (concat "~" ξss "~" (format-time-string "%Y%m%d_%H%M%S") "~"))
 
 (defun xah-find-text (searchStr1 inputDir ξpathRegex )
   "Report how many occurances of a string, of a given dir.
@@ -248,7 +254,7 @@ Directory 〔%s〕
                )
 
              (when (> ξcount 0)
-               (copy-file ξf (concat ξf "~l~") t)
+               (copy-file ξf (concat ξf (xah-backup-suffix "t")) t)
                (write-region 1 (point-max) ξf)
                (princ (format "• %d %s\n" ξcount ξf))
                ) )
@@ -287,7 +293,7 @@ Directory 〔%s〕
     (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     (y-or-n-p "Write changes to file?")
-    (not (y-or-n-p "Match case in search?"))
+    (y-or-n-p "Ignore letter case in search?")
     (y-or-n-p "Match case in replacement as you have it?")
     )
    )
@@ -323,7 +329,7 @@ Directory 〔%s〕
 
                (when (> ξcount 0)
                  (when ξwriteToFile-p
-                   (copy-file ξfp (concat ξfp "~rr~") t)
+                   (copy-file ξfp (concat ξfp (xah-backup-suffix "r")) t)
                    (write-region 1 (point-max) ξfp)
                    )
                  (princ (format "• %d %s\n" ξcount ξfp))
