@@ -12,6 +12,7 @@
 ;; Major mode for editing pure HTML5 files. Alpha stage.
 
 ;;; HISTORY
+;; version 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work. 
 ;; version 0.5.2, 2012-09-25 added a color for curly quoted text.
 ;; version 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
 ;; version 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
@@ -62,9 +63,9 @@
 (progn
   (setq xhm-keymap (make-sparse-keymap))
   (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
-  (define-key xhm-keymap (kbd "C-c /") 'sgml-close-tag)
+  ;; (define-key xhm-keymap (kbd "C-c /") 'sgml-close-tag)
   (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
-  (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
+  ;; (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
   (define-key xhm-keymap (kbd "C-c C-r") 'xhm-skip-tag-forward)
   (define-key xhm-keymap (kbd "C-c C-g") 'xhm-skip-tag-backward)
 )
@@ -130,7 +131,7 @@
 
 
 
-(require 'sgml-mode)
+;; (require 'sgml-mode)
 
 (defun xhm-delete-tag ()
   "Delete the tag under cursor.
@@ -194,12 +195,14 @@ cursor<…▮…>-p
 (defun xhm-skip-tag-forward ()
   "Move cursor to the closing tag."
   (interactive)
-  (sgml-skip-tag-forward 1))
+  ;; (sgml-skip-tag-forward 1)
+  )
 
 (defun xhm-skip-tag-backward ()
   "Move cursor to the beginning tag."
   (interactive)
-  (sgml-skip-tag-backward 1))
+  ;; (sgml-skip-tag-backward 1)
+  )
 
 (defun xhm-comment-dwim (arg)
 "Comment or uncomment current line or region in a smart way.
