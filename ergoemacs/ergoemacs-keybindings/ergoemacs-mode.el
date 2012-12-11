@@ -957,7 +957,9 @@ EXTRA represents an extra file representation."
           (concat "ergoemacs-layout-" layout)))
         (fix (mapcar
               (lambda(x)
-                `(,(if (string-match "-S-\\([a-z]\\)\\>" (nth 0 x))
+                `(,(if (condition-case err
+                           (string-match "-S-\\([a-z]\\)\\>" (nth 0 x))
+                         (error nil))
                        (replace-match (format "-%s" (upcase (match-string 1 (nth 0 x)))) t t (nth 0 x))
                      (nth 0 x))  ,(nth 1 x) ,(nth 2 x)))
               `(,@ergoemacs-fixed-layout
