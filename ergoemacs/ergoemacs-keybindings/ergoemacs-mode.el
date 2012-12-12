@@ -1536,7 +1536,8 @@ format:
                                      (equal (nth 2 list) (nth 2 key-def)))
                                 (progn
                                   (setq found t)
-                                  list)))
+                                  list)
+                              key-def))
                           (nth 1 mode-list)))
                (unless found
                  (add-to-list 'lst list))
