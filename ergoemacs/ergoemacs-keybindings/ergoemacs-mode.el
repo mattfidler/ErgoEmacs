@@ -270,6 +270,7 @@ Valid values are:
     
     ;; Move by paragraph
     ("M-U" backward-block "← ¶")
+    ("M-O" forward-block  "→ ¶")
     
     ;; Move to beginning/ending of line
     ("M-h" move-beginning-of-line "← line")
