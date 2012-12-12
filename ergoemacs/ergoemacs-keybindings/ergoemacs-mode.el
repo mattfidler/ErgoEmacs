@@ -1,4 +1,4 @@
-;;; ergoemacs-mode.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
+;;; ergo emacs-mode.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009, 2010 by David Capello
@@ -293,7 +293,7 @@ Valid values are:
     
     ;; Delete previous/next char.
     ("M-d" delete-backward-char "⌫ char")
-    ("M-f" delete-cha "⌦ char")
+    ("M-f" delete-char "⌦ char")
     
     ;; Delete previous/next word.
     ("M-e" backward-kill-word "⌫ word")
@@ -1535,7 +1535,7 @@ format:
                             (if (and (equal (nth 0 list) (nth 0 key-def))
                                      (equal (nth 2 list) (nth 2 key-def)))
                                 (progn
-                                  (setq found t)
+                                  (setq fou t)
                                   list)
                               key-def))
                           (nth 1 mode-list)))
