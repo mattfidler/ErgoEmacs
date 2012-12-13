@@ -1,4 +1,4 @@
-;;; ergoemacs-mode.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
+;;; ergo emacs-mode.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009, 2010 by David Capello
@@ -270,6 +270,7 @@ Valid values are:
     
     ;; Move by paragraph
     ("M-U" backward-block "← ¶")
+    ("M-O" forward-block  "→ ¶")
     
     ;; Move to beginning/ending of line
     ("M-h" move-beginning-of-line "← line")
@@ -293,7 +294,7 @@ Valid values are:
     
     ;; Delete previous/next char.
     ("M-d" delete-backward-char "⌫ char")
-    ("M-f" delete-cha "⌦ char")
+    ("M-f" delete-char "⌦ char")
     
     ;; Delete previous/next word.
     ("M-e" backward-kill-word "⌫ word")
@@ -957,7 +958,9 @@ EXTRA represents an extra file representation."
           (concat "ergoemacs-layout-" layout)))
         (fix (mapcar
               (lambda(x)
-                `(,(if (string-match "-S-\\([a-z]\\)\\>" (nth 0 x))
+                `(,(if (condition-case err
+                           (string-match "-S-\\([a-z]\\)\\>" (nth 0 x))
+                         (error nil))
                        (replace-match (format "-%s" (upcase (match-string 1 (nth 0 x)))) t t (nth 0 x))
                      (nth 0 x))  ,(nth 1 x) ,(nth 2 x)))
               `(,@ergoemacs-fixed-layout
@@ -1533,8 +1536,9 @@ format:
                             (if (and (equal (nth 0 list) (nth 0 key-def))
                                      (equal (nth 2 list) (nth 2 key-def)))
                                 (progn
-                                  (setq found t)
-                                  list)))
+                                  (setq fou t)
+                                  list)
+                              key-def))
                           (nth 1 mode-list)))
                (unless found
                  (add-to-list 'lst list))
