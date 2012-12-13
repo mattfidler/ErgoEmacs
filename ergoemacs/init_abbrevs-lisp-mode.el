@@ -69,7 +69,7 @@
  ("ms" "match-string" nil 0)
  ("nts" "number-to-string" nil 0)
  ("ntr" "narrow-to-region" nil 0)
- ("pm" "point-min" nil 0)
+ ("pm" "point-max" nil 0)
  ("rap" "region-active-p" nil 0)
  ("rb" "region-beginning" nil 0)
  ("re" "region-end" nil 0)
