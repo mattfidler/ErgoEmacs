@@ -1,4 +1,4 @@
-;-*- coding: utf-8 -*-
+;;-*- coding: utf-8 -*-
 
 ;; this file define keys that we want to set/unset because they are already defined by ergoemacs minor mode
 

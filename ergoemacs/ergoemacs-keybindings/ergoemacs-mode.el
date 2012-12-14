@@ -32,7 +32,6 @@
 ;; See the file “_HISTORY.txt”.
 
 ;;; Acknowledgment:
-;; Thanks to Matthew Fidler for his implementation of the new layout code, and generation of svg images for the supported layouts.
 ;; Thanks to Andrey Kotlarski (aka m00naticus) for a patch on 2012-12-08
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
@@ -410,37 +409,26 @@ Valid values are:
     ("C-h o" where-is-old-binding)
     ("<f1> o" where-is-old-binding)
 
-    ;;tcut to stop compilation/find/grep
-    ("C-<pause>" kill-compilation)
-
+    ("C-<pause>" kill-compilation)      ; stop compilation/find/grep
 
     ("<f1> 1" describe-function)
     ("<f1> 2" describe-variable)
     ("<f1> 3" describe-key)
     ("<f1> 4" describe-char)
-    ("<f1> 5" woman)
-
-    ("<f1> 6" lookup-all-dictionaries)
+    ("<f1> 5" man)
     ("<f1> 7" lookup-google)
     ("<f1> 8" lookup-wikipedia)
     ("<f1> 9" lookup-word-definition)
-    ("<f1> 0" lookup-answers.com)
-    ("<f1> [" lookup-word-dict-org)
-    ("<f1> ]" lookup-wiktionary)
     ("<f1> `" elisp-index-search)
 
     ("C-h 1" describe-function)
     ("C-h 2" describe-variable)
     ("C-h 3" describe-key)
     ("C-h 4" describe-char)
-    ("C-h 5" woman)
-    ("C-h 6" lookup-all-dictionaries)
+    ("C-h 5" man)
     ("C-h 7" lookup-google)
     ("C-h 8" lookup-wikipedia)
     ("C-h 9" lookup-word-definition)
-    ("C-h 0" lookup-answers.com)
-    ("C-h [" lookup-word-dict-org)
-    ("C-h ]" lookup-wiktionary)
     ("C-h `" elisp-index-search)
 
     ("<f2>" cut-line-or-region) ;cut
@@ -1339,7 +1327,6 @@ will change."
        (eval f)))
    ergoemacs-minor-mode-layout)
   (ergoemacs-hook-modes))
-
 
 (defun ergoemacs-setup-keys (&optional no-check)
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
