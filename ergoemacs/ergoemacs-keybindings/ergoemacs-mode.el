@@ -82,7 +82,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "Å" "^" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ö" "Ä" "*" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
-  "Swedish Layout")
+  "Swedish layout")
 
 (defvar ergoemacs-layout-da
   '("" "½" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "+" "’" ""
@@ -94,7 +94,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "Á" "^" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Æ" "Ø" "*" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
-  "Danish Layout")
+  "Danish layout")
 
 (defvar ergoemacs-layout-pt-nativo
   '("" "+" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "º" "<" ""
@@ -106,7 +106,7 @@
     "" ""  "?" ";" ":" "H" "X" "W" "L" "T" "C" "P" "^" "_" "" 
     "" ""  "I" "E" "A" "O" "U" "M" "D" "S" "R" "N" "`" "\\" ""
     "" "»"  "Y" "Ç" "J" "B" "K" "Q" "V" "G" "F" "Z" "" "" "")
-  "PT Nativo layout `http://xahlee.info/kbd/pt-nativo_keyboard_layout.html'")
+  "PT Nativo layout URL `http://xahlee.info/kbd/pt-nativo_keyboard_layout.html'")
 
 (defvar ergoemacs-layout-us
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -134,7 +134,6 @@
 
 (defvaralias 'ergoemacs-layout-us_dvorak 'ergoemacs-layout-dv)
 
-
 (defvar ergoemacs-layout-programmer-dv
   '("" "$" "&" "[" "{" "}" "(" "=" "*" ")" "+" "]" "!" "#" ""
     "" ""  "'" "," "." "p" "y" "f" "g" "c" "r" "l" "/" "=" "\\"
@@ -157,7 +156,7 @@
     "" ""  "?" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "@" "+" "|"
     "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "~" ""
     "" "|"  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" "")
-  "UK Dvorak Keyboard")
+  "UK Dvorak layout")
 
 (defvar ergoemacs-layout-colemak
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -495,7 +494,7 @@ Valid values are:
     ("<M-up>" backward-block) ; Alt+↑
     ("<M-down>" forward-block) ; Alt+↓
     )
-  "Key bindings that are constant regardless of they keyboard used."
+  "Keybinding that are constant regardless of they keyboard used."
   :type '(repeat
           (list :tag "Fixed Key"
                 (choice (string :tag "Kbd code")
@@ -676,8 +675,6 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
     (if (not just-translate)
         (read-kbd-macro (encode-coding-string new-key locale-coding-system))
       new-key)))
-
-
 
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
@@ -1146,15 +1143,11 @@ EXTRA represents an extra file representation."
        (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts"))
      lay)))
 
-
-
 
 ;;; ergoemacs-keymap
 
-(defvar ergoemacs-keymap (make-sparse-keymap)
-  "ErgoEmacs minor mode keymap.")
+(defvar ergoemacs-keymap (make-sparse-keymap) "ErgoEmacs minor mode keymap.")
 
-;;----------------------------------------------------------------------
 ;; CUA fix
 
 (let (cuaModeState cua-mode)
@@ -1314,12 +1307,11 @@ This is an automatically generated function derived from `ergoemacs-minor-mode-l
   "List of hook and hook-function pairs.")
 
 (defun ergoemacs-add-hook (hook hook-function)
-  "Adds a pair of hook and hook-function to the list
-ergoemacs hooks."
+  "Adds a pair of HOOK and HOOK-FUNCTION to the list `ergoemacs-hook-list'."
   (add-to-list 'ergoemacs-hook-list (cons hook hook-function)))
 
 (defun ergoemacs-hook-modes ()
-  "Installs/Removes ErgoEmacs minor mode hooks from major modes
+  "Installs/Removes ergoemacs minor mode hooks from major modes
 depending the state of `ergoemacs-mode' variable.  If the mode
 is being initialized, some global keybindings in current-global-map
 will change."
@@ -1373,7 +1365,7 @@ will change."
   (ergoemacs-hook-modes))
 
 (defun ergoemacs-setup-keys (&optional no-check)
-  "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'"
+  "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'."
   (interactive)
   (let ((ergoemacs-state (if (boundp 'ergoemacs-mode) ergoemacs-mode nil))
         (cua-state cua-mode)
@@ -1443,7 +1435,7 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
 ;; ErgoEmacs replacements for local- and global-set-key
 
 (defun ergoemacs-global-set-key (key command)
-  "Set a key in the ergoemacs-keymap, thus
+  "Set a key in `ergoemacs-keymap', thus
 making it globally active. This allow to redefine
 any key unbound or claimed by ergoemacs."
   (interactive)
@@ -1528,8 +1520,7 @@ any key unbound or claimed by ergoemacs."
 ;;;###autoload
 (defun ergoemacs-key (key function &optional desc)
   "Defines KEY in ergoemacs keyboard based on QWERTY and binds to FUNCTION.
-Optionally provides DESC for a description of the key.
-"
+Optionally provides DESC for a description of the key."
   (let (found)
     (setq ergoemacs-variable-layout
           (mapcar
@@ -1551,8 +1542,7 @@ Adds to the list `ergoemacs-minor-mode-layout' by modifying the
 ergoemacs hook applied to HOOK.  The LIST is of the following
 format:
 
- (FUNCTION/KEY FUNCTION-TO-CALL KEYMAP)
-"
+ (FUNCTION/KEY FUNCTION-TO-CALL KEYMAP)"
   (setq ergoemacs-minor-mode-layout
         (mapcar
          (lambda(mode-list)

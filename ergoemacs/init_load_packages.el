@@ -100,10 +100,11 @@
 (require 'smex)
 (smex-initialize)
 (when
- (member 'smex features)
-  (global-set-key (kbd "<apps>") 'smex) ; On linux, use (global-set-key (kbd "<menu>") 'smex)
-  (global-set-key (kbd "<S-apps>") 'smex-major-mode-commands)
-  )
+    (member 'smex features)
+  (progn
+    (global-set-key (kbd "<apps>") 'smex) ; On linux, use (global-set-key (kbd "<menu>") 'smex)
+    (global-set-key (kbd "<S-apps>") 'smex-major-mode-commands) )
+  ))
 
 ;;; enhanced text selection, expand-region
 (add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/expand-region/"))
