@@ -130,7 +130,7 @@
     "" ""  "\"" "," "." "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
     "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
     "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" "")
-  "US Dvorak layout")
+  "US Dvorak layout. URL `http://en.wikipedia.org/wiki/Dvorak_Simplified_Keyboard'")
 
 (defvaralias 'ergoemacs-layout-us_dvorak 'ergoemacs-layout-dv)
 
@@ -180,7 +180,7 @@
     "" ""  "Q" "W" "J" "F" "G" "Y" "P" "U" "L" ":" "{" "}" "|"
     "" ""  "A" "S" "E" "T" "D" "H" "N" "I" "O" "R" "\"" "" ""
     "" ""  "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?" "" "" "")
-  "US Asset layout")
+  "US Asset layout. URL `http://millikeys.sourceforge.net/asset/'")
 
 (defvar ergoemacs-layout-workman
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -192,7 +192,7 @@
     "" ""  "Q" "D" "R" "W" "B" "J" "F" "U" "P" ":" "{" "}" "|"
     "" ""  "A" "S" "H" "T" "G" "Y" "N" "E" "O" "I" "\"" "" ""
     "" ""  "Z" "X" "M" "C" "V" "K" "L" "<" ">" "?" "" "" "")
-  "US Workman layout")
+  "US Workman layout. URL `http://www.workmanlayout.com/blog/'")
 
 (defvar ergoemacs-layout-gb
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -204,7 +204,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
     "" "|"  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" "")
-  "UK QWERTY layout")
+  "UK layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
 (defvar ergoemacs-layout-it
   '("" "\\" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
@@ -216,7 +216,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "é" "+" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "ç" "°" "§" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
-  "Italian QWERTY layout")
+  "Italian layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
 (defvar ergoemacs-layout-sp
   '("" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
@@ -228,7 +228,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "^" "*" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ñ" "\"" "Ç" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
-  "Spanish layout")
+  "Spanish layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
 (defvar ergoemacs-layout-fr
   '("" "²" "&" "é" "\"" "'" "(" "-" "è" "_" "ç" "à" ")" "=" ""
@@ -240,7 +240,7 @@
     "" ""  "A" "Z" "E" "R" "T" "Y" "U" "I" "O" "P" "" "£" ""
     "" ""  "Q" "S" "D" "F" "G" "H" "J" "K" "L" "M" "%" "μ" ""
     "" ">"  "W" "X" "C" "V" "B" "N" "?" "." "/" "§" "" "" "")
-  "French AZERTY layout")
+  "French AZERTY layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
 (defun ergoemacs-get-layouts-type ()
   "Gets the customization types for `ergoemacs-keyboard-layout'"
@@ -1424,7 +1424,7 @@ Argument of t or nil should not be used.
 For full documentation, see:
 URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
 
-If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
+If you turned on by mistake, the key to call `execute-extended-command' is 【Alt+a】 or the 【Menu】 key."
   nil
   :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
   :global t
