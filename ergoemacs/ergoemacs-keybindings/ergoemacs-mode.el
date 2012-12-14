@@ -924,7 +924,14 @@ Currently only supports two modifier plus key."
 
 ;;;###autoload
 (defun ergoemacs-extras ( &optional layouts)
-  "Generate extra things (autohotkey scripts, svg diagrams etc.) from keyboard layouts."
+  "Generate layout diagram, and other scripts for system-wide ErgoEmacs keybinding.
+
+The following are generated:
+• SVG Diagram for ErgoEmacs command layouts in SVG format.
+• Bash 〔.inputrc〕 code.
+• Mac OS X 〔DefaultKeyBinding.dict〕 code.
+• AutoHotkey script for Microsoft Windows.
+Files are currently generated in the ergoemacs-mode file dir. e.g. 〔ergoemacs-keybindings/extra/〕"
   (interactive)
   (ergoemacs-svgs layouts)
   (ergoemacs-ahks layouts)
