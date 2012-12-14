@@ -4,56 +4,56 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter “r” on whatever layout.
 
-* version 5.7.2, 2012-12-3
-Removed any reference to external variables.  All customization can be
-done and no variables need to be redefined.
-* version 5.7.1 2012-12-3
-Bug fixes
-* version 5.7.0, 2012-12-3
- Version bump and added authorship.
-* version 5.6.2, 2012-12-3 -- Matthew Fidler
-Added most of the layouts back.  Also added generation of:
-1. SVGs for each layout.  These SVGs include:
-   1. Validation of the layout
-   2. Ergoemacs keybindings
-2. Autohotkey scripts generation for all defined layouts for ergoemacs
-   layouts everywhere.
-3. Bash dictionary generation for all defined layouts for ergoemacs
-4. OS X dictionaries for each of the layouts defined.
+* version 5.7.3, 2012-12-14 major rewrite by Matthew Fidler
 
-The easiest way to generate all of these items is to type M-x
-ergoemacs-extras.
+A rewrite of the mode, with the following user-visible changes and features:
 
-Also changed the mechanism of minor and major hook keybinding
-definitions as follows:
+** Generate layout diagrams in SVG format
 
-- Changed `ergoemacs-keyboard-layout' to be customizable.  You can
-  customize your layout and restart emacs to have your layout applied
-- Added the customizable variable `ergoemacs-variable-layout' which
-  defines keys based on the QWERTY layout.  You can customize this
-  variable to suit your needs.  Also you can save your customization
-  so that You do not have to learn new keys every time a new ergoemacs
-  mode is introduced.
-- Added the customizable variable `ergoemacs-fixed-layout' which
-  defines keys that are the same regardless of the layout.  This
-  includes standard keybindings such as [Ctrl-s] for saving. For this
-  layout I added [Ctrl-z] for undo, [Shift-Ctrl-z] for redo,
-  [Control-y] for redo
-- Added the customizable variable `ergoemacs-minor-mode-layout'.  From
-  this variable all of the minor mode and major mode hooks are created
-  and setup. When using `minor-mode-overriding-map-alist' as the
-  keybinding to modify, an additional keybinding variable is created
-  per mode.  
+Call “ergoemacs-extras” to generate diagrams in SVG format for all supported layouts.
 
-If you wish to freeze your keybindings, but keep current with the
-ergoemacs trunk, you can save all of the customizable variables and
-your layout will be saved between upgrades.
+The files are generated at the ergoemacs-mode source code dir. e.g. 〔ergoemacs-keybindings/extra/ergo-layouts〕. Call “describe-function” on ergoemacs-mode then click source code link to go to the dir.
 
-Also added a readme to describe the new layout.
+SVG files can be viewed in InkScape or modern browser (Firefox, Google Chrome, IE9, …).
 
-* version 5.6.1, 2012-11-22 -- Matthew Fidler
-Removed all key-bindings except us dvorak and colemak.  Changed to
-different layouts
+** Generate AutoHotkey source code
+for System-wide ErgoEmacs keybinding on Microsoft Windows.
+
+Call “ergoemacs-extras” to generate AutoHotkey source code.
+
+** Generate Bash 〔.inputrc〕
+for ErgoEmacs keybinding for unix terminal.
+
+Call “ergoemacs-extras” to generate.
+
+To install, follow the instructions in the generated file.
+
+** Generate Mac OS X 〔DefaultKeyBinding.dict〕 
+for system-wide ErgoEmacs keybinding or Mac.
+Call “ergoemacs-extras” to generate.
+
+To install, follow the instructions in the generated file.
+
+** Customizable by “customize-group”
+You can customize keys by calling emacs's “customize-group” then give it “ergoemacs-mode”.
+
+Here's some technical description:
+
+- Added the customizable variable `ergoemacs-variable-layout' which defines keys based on the QWERTY layout.  You can customize this variable to suit your needs.  Also you can save your customization so that You do not have to learn new keys every time a new ergoemacs mode is introduced.
+
+- Added the customizable variable `ergoemacs-fixed-layout' which defines keys that are the same regardless of the layout.  This includes standard keys such as 【Ctrl+s】 for saving. For this layout I added 【Ctrl+z】 for undo, 【Ctrl+Shift+z】 for redo, 【Ctrl+y】 for redo
+
+- Added the customizable variable `ergoemacs-minor-mode-layout'.  From this variable all of the minor mode and major mode hooks are created and setup. When using `minor-mode-overriding-map-alist' as the keybinding to modify, an additional keybinding variable is created per mode.
+
+If you wish to freeze your keybindings, but keep current with the ergoemacs trunk, you can save all of the customizable variables and your layout will be saved between upgrades.
+
+** For developers: a better mechanism for key/command map
+The internal working of the mode for mapping commands to keys has completely changed.
+
+Now, each layout are defined using visual diagram similar to ASCII-art. This allows developers to easily add new layouts or change keys.
+
+See 〔_README.txt〕 file that describes the tech detail of how layout format to be read by ErgoEmacs emacs lisp code.
+
 * version 5.6.0, 2012-11-21
 
 The command for cancel “keyboard-quit” is changed from QWERTY 【Alt+n】 to 【Esc】. Reason: I think it's overall slightly better, because: ① it's more familiar. ② involves a single key. The disadvantage is that on terminal, Meta can no longer be pressed by 【Esc】 (but can still be done by 【Ctrl+[】). I think Esc for Meta is really bad, from the 1980s. I think it's rare to find a terminal app today that do not support Alt as Meta.
