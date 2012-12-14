@@ -12,7 +12,7 @@ A rewrite of the mode, with the following user-visible changes and features:
 
 Call “ergoemacs-extras” to generate diagrams in SVG format for all supported layouts.
 
-The files are generated at the ergoemacs-mode source code dir. e.g. 〔ergoemacs-keybindings/extra/ergo-layouts〕. Call “describe-function” on ergoemacs-mode then click source code link to go to the dir.
+The files are generated at the `user-emacs-directory' e.g. 〔~/.emacs.d/ergoemacs-extras/〕.
 
 SVG files can be viewed in InkScape or modern browser (Firefox, Google Chrome, IE9, …).
 

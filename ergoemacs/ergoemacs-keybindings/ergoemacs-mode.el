@@ -728,8 +728,7 @@ Currently only supports two modifier plus key."
     (if (not lay)
         (message "Layout %s not found" layout)
       (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "ergoemacs-extras"
-                                        user-emacs-directory))
+      (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
@@ -801,8 +800,7 @@ Currently only supports two modifier plus key."
     (if (not lay)
         (message "Layout %s not found" layout)
       (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "ergoemacs-extras"
-                                        user-emacs-directory))
+      (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
@@ -875,8 +873,7 @@ Currently only supports two modifier plus key."
     (if (not lay)
         (message "Layout %s not found" layout)
       (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "ergoemacs-extras"
-                                        user-emacs-directory))
+      (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
@@ -934,12 +931,14 @@ The following are generated:
 • Bash 〔.inputrc〕 code.
 • Mac OS X 〔DefaultKeyBinding.dict〕 code.
 • AutoHotkey script for Microsoft Windows.
-Files are currently generated in the ergoemacs-mode file dir. e.g. 〔ergoemacs-keybindings/extra/〕"
+
+Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'."
   (interactive)
   (ergoemacs-svgs layouts)
   (ergoemacs-ahks layouts)
   (ergoemacs-bashs layouts)
-  (ergoemacs-mac-osx-dicts layouts))
+  (ergoemacs-mac-osx-dicts layouts)
+  (find-file (expand-file-name "ergoemacs-extras" user-emacs-directory)) )
 
 (defun ergoemacs-gen-svg (layout &optional file-name extra)
   "Generates a SVG picture of the layout
@@ -970,8 +969,7 @@ EXTRA represents an extra file representation."
         (i 0))
     (if (not lay)
         (message "Layout %s not found" layout)
-      (setq extra-dir (expand-file-name "ergoemacs-extras"
-                                        user-emacs-directory))
+      (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
