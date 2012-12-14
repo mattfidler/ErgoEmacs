@@ -41,13 +41,13 @@
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
 ;; Thanks to many users who send in comments and appreciations on this.
 ;; Layout contributors:
-;; ergoemacs-layout-da.el Contributor: Michael Budde
-;; ergoemacs-layout-dv.el Contributor: Xah Lee, David Capello
-;; ergoemacs-layout-gb-dv.el Contributor: Phillip Wood
-;; ergoemacs-layout-gb.el Contributor: Jorge Dias (aka theturingmachine)
-;; ergoemacs-layout-fr.el Contributor: Alexander Doe
-;; ergoemacs-layout-it.el Contributor: David Capello, Francesco Biccari
+;; Danish layout “da”. Contributors: Michael Budde
+;; UK QWERTY layout “gb”. Contributor: Jorge Dias (aka theturingmachine)
+;; UK Dvorak layout “gb-dv”. Contributor: Phillip Wood
+;; French AZERTY layout “fr”. Contributor: Alexander Doe
+;; Italian QWERTY layout “it”. Contributor: David Capello, Francesco Biccari
 
+
 
 ;; Ergoemacs-keybindings version
 (defconst ergoemacs-mode-version "5.7.3"
@@ -106,7 +106,7 @@
     "" ""  "?" ";" ":" "H" "X" "W" "L" "T" "C" "P" "^" "_" "" 
     "" ""  "I" "E" "A" "O" "U" "M" "D" "S" "R" "N" "`" "\\" ""
     "" "»"  "Y" "Ç" "J" "B" "K" "Q" "V" "G" "F" "Z" "" "" "")
-  "PT Nativo `http://xahlee.info/kbd/pt-nativo_keyboard_layout.html'")
+  "PT Nativo layout `http://xahlee.info/kbd/pt-nativo_keyboard_layout.html'")
 
 (defvar ergoemacs-layout-us
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -118,7 +118,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" "|"
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "\"" "" ""
     "" ""  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" "")
-  "US Engilsh QWERTY Keyboard")
+  "US English QWERTY layout")
 
 (defvar ergoemacs-layout-dv
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "[" "]" ""
@@ -130,7 +130,7 @@
     "" ""  "\"" "," "." "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
     "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
     "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" "")
-  "US Dvorak Keyboard")
+  "US Dvorak layout")
 
 (defvaralias 'ergoemacs-layout-us_dvorak 'ergoemacs-layout-dv)
 
@@ -145,7 +145,7 @@
     "" ""  "\"" "<" ">" "P" "Y" "F" "G" "C" "R" "L" "?" "+" "|"
     "" ""  "A" "O" "E" "U" "I" "D" "H" "T" "N" "S" "_" "" ""
     "" ""  ":" "Q" "J" "K" "X" "B" "M" "W" "V" "Z" "" "" "")
-  "US Programmer Dvorak")
+  "US Programmer Dvorak layout")
 
 (defvar ergoemacs-layout-gb-dv
   '("" "`" "[" "7" "5" "3" "1" "9" "0" "2" "4" "6" "8" "]"  ""
@@ -169,7 +169,7 @@
     "" ""  "Q" "W" "F" "P" "G" "J" "L" "U" "Y" ":" "{" "}" "|"
     "" ""  "A" "R" "S" "T" "D" "H" "N" "E" "I" "O" "\"" "" ""
     "" ""  "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?" "" "" "")
-  "Ergonomic US Colemak Keyboard URL `http://colemak.com/'")
+  "US Colemak layout URL `http://colemak.com/'")
 
 (defvar ergoemacs-layout-asset
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -181,7 +181,7 @@
     "" ""  "Q" "W" "J" "F" "G" "Y" "P" "U" "L" ":" "{" "}" "|"
     "" ""  "A" "S" "E" "T" "D" "H" "N" "I" "O" "R" "\"" "" ""
     "" ""  "Z" "X" "C" "V" "B" "K" "M" "<" ">" "?" "" "" "")
-  "US Asset Keyboard")
+  "US Asset layout")
 
 (defvar ergoemacs-layout-workman
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -193,7 +193,7 @@
     "" ""  "Q" "D" "R" "W" "B" "J" "F" "U" "P" ":" "{" "}" "|"
     "" ""  "A" "S" "H" "T" "G" "Y" "N" "E" "O" "I" "\"" "" ""
     "" ""  "Z" "X" "M" "C" "V" "K" "L" "<" ">" "?" "" "" "")
-  "US Workman Layout")
+  "US Workman layout")
 
 (defvar ergoemacs-layout-gb
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
@@ -205,8 +205,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
     "" "|"  "Z" "X" "C" "V" "B" "N" "M" "<" ">" "?" "" "" "")
-  "UK QWERTY")
-
+  "UK QWERTY layout")
 
 (defvar ergoemacs-layout-it
   '("" "\\" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
@@ -218,7 +217,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "é" "+" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "ç" "°" "§" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
-  "Italian QWERTY")
+  "Italian QWERTY layout")
 
 (defvar ergoemacs-layout-sp
   '("" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
@@ -230,7 +229,7 @@
     "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "^" "*" ""
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ñ" "\"" "Ç" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
-  "Spanish Layout")
+  "Spanish layout")
 
 (defvar ergoemacs-layout-fr
   '("" "²" "&" "é" "\"" "'" "(" "-" "è" "_" "ç" "à" ")" "=" ""
@@ -242,7 +241,7 @@
     "" ""  "A" "Z" "E" "R" "T" "Y" "U" "I" "O" "P" "" "£" ""
     "" ""  "Q" "S" "D" "F" "G" "H" "J" "K" "L" "M" "%" "μ" ""
     "" ">"  "W" "X" "C" "V" "B" "N" "?" "." "/" "§" "" "" "")
-  "French AZERTY keyboard")
+  "French AZERTY layout")
 
 (defun ergoemacs-get-layouts-type ()
   "Gets the customization types for `ergoemacs-keyboard-layout'"
