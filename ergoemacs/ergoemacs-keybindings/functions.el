@@ -1,4 +1,4 @@
-;-*- coding: utf-8 -*-
+;;-*- coding: utf-8 -*-
 
 (require 'redo "redo.elc" t) ; for redo shortcut
 
@@ -41,29 +41,12 @@ If narrow-to-region is in effect, then cut that region only."
   (message "Buffer content cut")
   )
 
-;; (defadvice kill-ring-save (before slick-copy activate compile)
-;;   "When called interactively with no active region, copy the current line."
-;;   (interactive
-;;    (if mark-active
-;;        (list (region-beginning) (region-end))
-;;      (progn
-;;        (message "Current line is copied.")
-;;        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
-
 (defun copy-line-or-region ()
   "Copy current line, or current text selection."
   (interactive)
   (if (region-active-p)
       (kill-ring-save (region-beginning) (region-end))
     (kill-ring-save (line-beginning-position) (line-beginning-position 2)) ) )
-
-;; (defadvice kill-region (before slick-copy activate compile)
-;;   "When called interactively with no active region, cut the current line."
-;;   (interactive
-;;    (if mark-active
-;;        (list (region-beginning) (region-end))
-;;      (progn
-;;        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
 
 (defun cut-line-or-region ()
   "Cut the current line, or current text selection."
@@ -264,8 +247,8 @@ When there is a text selection, act on the region."
 
 (defun shrink-whitespaces ()
   "Remove white spaces around cursor to just one or none.
-If current line does not contain non-white space chars, then remove blank lines to just one.
-If current line contains non-white space chars, then shrink any whitespace char surrounding cursor to just one space.
+If current line does have visible chars, then shrink whitespace surrounding cursor to just one space.
+If current line does not have visible chars, then shrink al neighboring blank lines to just one.
 If current line is a single space, remove that space.
 
 Calling this command 3 times will always result in no whitespaces around cursor."

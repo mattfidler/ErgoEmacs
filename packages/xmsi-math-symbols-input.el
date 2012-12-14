@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.3.8, 2012-12-09 • added cycle for 「· ．。」. That is, one of these cycles to other. Also, 「,→，」.
 ;; v1.3.7, 2012-06-28 • much improved parsing the input string. Now, if there's no text selection, then grab string from cursor point to the left up to a whitespace char (limit to 10 chars max), then try that, if not found, try with one char minus. e.g. If text is 「some abc▮」, try 「abc」, then 「bc」, then 「c」. This way, user doesn't have to add a whitespace as separator before the abbrev, or having to make a text selection. e.g. in coding elisp, if current text is 「(a▮」, user can call xmsi-change-to-symbol directly to get 「(α▮」.
 ;; v1.3.6, 2012-05-08 • fixed a bug when any abbrev involving tilde ~ won't work.
 ;; v1.3.5.4, 2012-04-04 • stopped printing a message when “xmsi-change-to-symbol” is called. Minor improvement to inline doc of “xmsi-change-to-symbol”.
@@ -98,7 +99,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.7")
+(setq xmsi-version "v1.3.8")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1025,6 +1026,14 @@
 (puthash "fwx" "ｘ" xmsi-abrvs)
 (puthash "fwy" "ｙ" xmsi-abrvs)
 (puthash "fwz" "ｚ" xmsi-abrvs)
+
+
+(puthash "," "，" xmsi-abrvs)
+
+;; non-ascii abbrevs
+(puthash "．" "。" xmsi-abrvs)
+(puthash "。" "·" xmsi-abrvs)
+(puthash "·" "．" xmsi-abrvs)
 
   ;; 2010-12-10. char to add
   ;; soft hyphen ­
