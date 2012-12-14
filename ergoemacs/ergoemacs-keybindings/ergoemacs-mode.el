@@ -740,7 +740,8 @@ Currently only supports two modifier plus key."
     (if (not lay)
         (message "Layout %s not found" layout)
       (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "extra" dir))
+      (setq extra-dir (expand-file-name "ergoemacs-extras"
+                                        user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
@@ -812,7 +813,8 @@ Currently only supports two modifier plus key."
     (if (not lay)
         (message "Layout %s not found" layout)
       (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "extra" dir))
+      (setq extra-dir (expand-file-name "ergoemacs-extras"
+                                        user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
@@ -885,7 +887,8 @@ Currently only supports two modifier plus key."
     (if (not lay)
         (message "Layout %s not found" layout)
       (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "extra" dir))
+      (setq extra-dir (expand-file-name "ergoemacs-extras"
+                                        user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
@@ -972,7 +975,8 @@ EXTRA represents an extra file representation."
         (i 0))
     (if (not lay)
         (message "Layout %s not found" layout)
-      (setq extra-dir (expand-file-name "extra" dir))
+      (setq extra-dir (expand-file-name "ergoemacs-extras"
+                                        user-emacs-directory))
       (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
