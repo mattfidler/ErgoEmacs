@@ -1,13 +1,13 @@
-;;; ergo emacs-mode.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
+;;; ergoemacs-mode.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009, 2010 by David Capello
 ;; Copyright © 2012 by Matthew Fidler
 
 ;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
-;;      David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
-;;     Matthew Fidler <matthew.fidler@gmail.com> (http://github.com/mlf176f2/)
-;; Maintainer: Xah Lee
+;;     David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
+;;     Matthew Fidler <matthew.fidler@gmail.com> ( http://github.com/mlf176f2/ )
+;; Maintainer: Matthew Fidler, Xah Lee, David Capello
 ;; Created: August 01 2007
 ;; Version: 5.7.2
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
@@ -32,8 +32,8 @@
 ;; See the file “_HISTORY.txt”.
 
 ;;; Acknowledgment:
-;; Thanks to Matthew Fidler for his implementation of the new layout
-;; code, and generation of svg images for the supported layouts.
+;; Thanks to Matthew Fidler for his implementation of the new layout code, and generation of svg images for the supported layouts.
+;; Thanks to Andrey Kotlarski (aka m00naticus) for a patch on 2012-12-08
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
@@ -263,43 +263,43 @@ Valid values are:
     ("M-l" forward-char "→ char")
     ("M-i" previous-line "↑ line")
     ("M-k" next-line "↓ line")
-    
+
     ;; Move by word
     ("M-u" backward-word "← word")
     ("M-o" forward-word "→ word")
-    
+
     ;; Move by paragraph
     ("M-U" backward-block "← ¶")
     ("M-O" forward-block  "→ ¶")
-    
+
     ;; Move to beginning/ending of line
     ("M-h" move-beginning-of-line "← line")
     ("M-H" move-end-of-line "→ line")
-    
+
     ;; Move by screen (page up/down)
     ("M-I" scroll-down "↓ page")
     ("M-K" scroll-up "↑ page")
-    
+
     ;; Move to beginning/ending of file
     ("M-J" backward-open-bracket "↑ buffer")
     ("M-L" forward-close-bracket "↓ buffer")
-    
+
     ;; isearch
     ("M-y" isearch-forward "→ isearch")
     ("M-Y" isearch-backward "← isearch")
-    
+
     ("M-p" recenter-top-bottom "recenter")
-    
+
     ;; MAJOR EDITING COMMANDS
-    
+
     ;; Delete previous/next char.
     ("M-d" delete-backward-char "⌫ char")
     ("M-f" delete-char "⌦ char")
-    
+
     ;; Delete previous/next word.
     ("M-e" backward-kill-word "⌫ word")
     ("M-r" kill-word "⌦ word")
-    
+
     ;; Copy Cut Paste, Paste previous
     ("M-x" cut-line-or-region "✂ region")
     ("M-c" copy-line-or-region "copy")
@@ -307,63 +307,63 @@ Valid values are:
     ("M-V" yank-pop "paste ↑")
     ("M-C" copy-all "copy all")
     ("M-X" cut-all "✂ all")
-    
+
     ;; undo and redo
     ("M-Z" redo "↷ redo")
     ("M-z" undo "↶ undo")
-    
+
     ;; Kill line
     ("M-g" kill-line "⌦ line")
     ("M-G" kill-line-backward "⌫ line")
-    
+
     ;; Textual Transformation
-    
+
     ("M-S-SPC" mark-paragraph "Mark Paragraph")
     ("M-w" shrink-whitespaces "⌧ white")
     ("M-'" comment-dwim "cmt dwim")
     ("M-/" toggle-letter-case "tog. case")
-    
+
     ;; keyword completion, because Alt+Tab is used by OS
     ("M-t" call-keyword-completion "↯ compl")
-    
+
     ;; Hard-wrap/un-hard-wrap paragraph
     ("M-q" compact-uncompact-block "fill/unfill ¶")
-    
+
     ;; EMACS'S SPECIAL COMMANDS
-    
+
     ;; Cancel
     ("<escape>" keyboard-quit)
-    
+
     ;; Mark point.
     ("M-SPC" set-mark-command "Set Mark")
-    
+
     ("M-a" execute-extended-command "M-x")
     ("M-A" shell-command "shell cmd")
-    
+
     ;; WINDOW SPLITING
     ("M-s" move-cursor-next-pane "next pane")
     ("M-S" move-cursor-previous-pane "prev pane")
-    
+
     ;; --------------------------------------------------
     ;; OTHER SHORTCUTS
-    
+
     ("M-~" switch-to-previous-frame "prev frame")
     ("M-`" switch-to-next-frame "next frame")
-    
+
     ("M-5" query-replace "rep")
     ("M-%" query-replace-regexp "rep reg")
-    
+
     ("M-3" delete-other-windows "↯ expand")
     ("M-0" delete-window "close win")
-    
+
     ("M-4" split-window-vertically "split |")
     ("M-$" split-window-horizontally "split —")
-    
+
     ("M-8" extend-selection "←region→")
     ("M-*" select-text-in-quote "←quote→")
     ("M-6" select-current-block "Sel. Block")
     ("M-7" select-current-line "Sel. Line"))
-  
+
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
           (list :tag "Keys"
@@ -390,36 +390,36 @@ Valid values are:
     ("C-S-z" redo "↷ redo")
     ("C-y" redo "↷ redo")
     ("C-z" undo "↶ undo")
-    
+
     ("C-f" isearch-forward "Search")
-    
+
     ("<delete>" delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
-    
+
     ("C-<prior>" previous-user-buffer)
     ("C-<next>" next-user-buffer)
-    
+
     ("C-S-<prior>" previous-emacs-buffer)
     ("C-S-<next>" next-emacs-buffer)
-    
+
     ("M-S-<prior>" backward-page)
     ("M-S-<next>" forward-page)
-    
+
     ("C-x C-b" ibuffer)
     ("C-h m" describe-major-mode)
     ("<f1> m" describe-major-mode)
     ("C-h o" where-is-old-binding)
     ("<f1> o" where-is-old-binding)
-    
+
     ;;tcut to stop compilation/find/grep
     ("C-<pause>" kill-compilation)
-    
-    
+
+
     ("<f1> 1" describe-function)
     ("<f1> 2" describe-variable)
     ("<f1> 3" describe-key)
     ("<f1> 4" describe-char)
     ("<f1> 5" woman)
-    
+
     ("<f1> 6" lookup-all-dictionaries)
     ("<f1> 7" lookup-google)
     ("<f1> 8" lookup-wikipedia)
@@ -428,7 +428,7 @@ Valid values are:
     ("<f1> [" lookup-word-dict-org)
     ("<f1> ]" lookup-wiktionary)
     ("<f1> `" elisp-index-search)
-    
+
     ("C-h 1" describe-function)
     ("C-h 2" describe-variable)
     ("C-h 3" describe-key)
@@ -442,17 +442,17 @@ Valid values are:
     ("C-h [" lookup-word-dict-org)
     ("C-h ]" lookup-wiktionary)
     ("C-h `" elisp-index-search)
-    
+
     ("<f2>" cut-line-or-region) ;cut
     ("<C-f2>" cut-all)
     ("<f3>" copy-line-or-region) ;copy
     ("<C-f3>" copy-all)
     ("<f4>" yank)
     ("<C-f4>" yank-pop)
-    
+
     ("<f5>" undo)
     ("<C-f5>" redo)
-    
+
     ("<f8>" ctl-x-map)
     ;; Set the menu/apps key to do emacs's M-x if on Windows
     ,@(cond
@@ -462,13 +462,13 @@ Valid values are:
         nil)
        ((string-equal system-type "gnu/linux")
         nil))
-    
+
     ("<M-delete>" kill-word)
-    
+
     ;; arrow keys to traverse brackets
     ("<M-left>" backward-open-bracket) ; Alt+←
     ("<M-right>" forward-close-bracket) ; Alt+→
-    
+
     ("<M-up>" backward-block) ; Alt+↑
     ("<M-down>" forward-block) ; Alt+↓
     )
@@ -494,7 +494,7 @@ Valid values are:
       ("S-<f11>" previous-matching-history-element  minor-mode-overriding-map-alist)
       ("S-<f12>" next-matching-history-element  minor-mode-overriding-map-alist)
       ))
-    
+
     ;; Isearch Hook
     (isearch-mode-hook
      (("M-p" nil isearch-mode-map) ; was isearch-ring-retreat
@@ -503,38 +503,38 @@ Valid values are:
       ("M-c" nil isearch-mode-map) ; was isearch-toggle-case-fold
       ("M-r" nil isearch-mode-map) ; was isearch-toggle-regexp
       ("M-e" nil isearch-mode-map) ; was isearch-edit-string
-      
+
       (keyboard-quit isearch-abort isearch-mode-map)
       (isearch-forward isearch-repeat-forward isearch-mode-map)
       (isearch-backward isearch-repeat-backward isearch-mode-map)
       (recenter recenter isearch-mode-map)
       (yank isearch-yank-kill isearch-mode-map)
-      
+
       ;; CUA paste key is isearch-yank-kill in isearch mode
       ("C-v" isearch-yank-kill isearch-mode-map)
-      
+
       ;; isearch-other-control-char sends the key to the original buffer and cancels isearch
       (kill-ring-save isearch-other-control-char isearch-mode-map)
       (kill-word isearch-other-control-char isearch-mode-map)
       (backward-kill-word isearch-other-control-char isearch-mode-map)
-      
+
       ("<f11>" isearch-ring-retreat isearch-mode-map)
       ("<f12>" isearch-ring-advance isearch-mode-map)))
-    
+
     ;; Comint
     (comint-mode-hook
      (("<f11>" comint-previous-input comint-mode-map)
       ("<f12>" comint-next-input comint-mode-map)
       ("S-<f11>" comint-previous-matching-input comint-mode-map)
       ("S-<f12>" comint-next-matching-input comint-mode-map)))
-    
+
     ;; Log Edit
     (log-edit-mode-hook
      (("<f11>" log-edit-previous-comment log-edit-mode-map)
       ("<f12>" log-edit-next-comment log-edit-mode-map)
       ("S-<f11>" log-edit-previous-comment log-edit-mode-map)
       ("S-<f12>" log-edit-next-comment log-edit-mode-map)))
-    
+
     ;; Eshell
     (eshell-mode-hook
      ((move-beginning-of-line eshell-bol minor-mode-overriding-map-alist)
@@ -543,18 +543,18 @@ Valid values are:
       ("<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)
       ("S-<f11>" eshell-previous-matching-input-from-input minor-mode-overriding-map-alist)
       ("S-<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)))
-    
+
     ;; Iswitchdb hook
     (iswitchb-minibuffer-setup-hook
      ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
       (isearch-backward iswitchb-prev-match minor-mode-overriding-map-alist)
       (isearch-forward iswitchb-next-match minor-mode-overriding-map-alist)
-      
+
       ("<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("<f12>" iswitchb-next-match minor-mode-overriding-map-alist)
       ("S-<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
-    
+
     ;; Ido minibuffer setup hook
     (ido-minibuffer-setup-hook
      ((keyboard-quit minibuffer-keyboard-quit ido-common-completion-map)
@@ -680,10 +680,10 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 
 (require 'lookup-word-on-internet nil "NOERROR")
 
-;; --------------------------------------------------------------------------------
+
 ;; Keyboard Settings
 
-;; Svg heavily modified from
+;; SVG heavily modified from
 ;; http://en.wikipedia.org/wiki/File:KB_United_Kingdom.svg
 
 ;; Color scheme chose from color brewer.
@@ -761,7 +761,7 @@ Currently only supports two modifier plus key."
                  (to nil))
              (setq to (ergoemacs-kbd from t))
              (if (string= from to) nil
-               
+
                (setq from (ergoemacs-trans-mac-osx from t))
                (setq to (ergoemacs-trans-mac-osx to swap-opiton-and-control))
                (setq from-reg (regexp-quote from))
@@ -833,7 +833,7 @@ Currently only supports two modifier plus key."
                  (to nil))
              (setq to (ergoemacs-kbd from t))
              (if (string= from to) nil
-               
+
                (setq from (ergoemacs-trans-bash from))
                (setq to (ergoemacs-trans-bash to))
                (setq from-reg (regexp-quote from))
@@ -934,7 +934,7 @@ Currently only supports two modifier plus key."
        (ergoemacs-gen-ahk x))
      lay)))
 
-;;;###autoload 
+;;;###autoload
 (defun ergoemacs-extras ( &optional layouts)
   "Generate extra things (autohotkey scripts, svg diagrams etc.) from keyboard layouts."
   (interactive)
@@ -983,14 +983,14 @@ EXTRA represents an extra file representation."
                   (concat "ergoemacs-layout-" layout ".svg") extra-dir))
       (with-temp-file file
         (insert-file-contents
-         (expand-file-name fn dir))        
+         (expand-file-name fn dir))
         (when (string-equal system-type "windows-nt")
           ;; Use Arial Unicode MS when on windows
           (goto-char (point-min))
           (while (re-search-forward "\\(?:Helvetica\\|Sans\\)\\([\";]\\)" nil t)
             (replace-match "Arial Unicode MS\\1")))
         (while (< i (length lay))
-          
+
           (goto-char (point-min))
           (when (search-forward (format ">%s<" i) nil t)
             (replace-match (format ">%s<" (ergoemacs-gen-svg-quote (nth i lay))) t t))
@@ -1001,17 +1001,17 @@ EXTRA represents an extra file representation."
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-          
+
           (when (string= txt "")
             (setq txt (all-completions (format "M-%s " (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-variable-layout))
             (if (= 0 (length txt))
                 (setq txt "")
               (setq txt "prefix")))
-          
+
           (unless (string= "" txt)
             (when (search-forward (format ">M%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-          
+
           (goto-char (point-min))
           (setq txt (assoc (format "C-%s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-variable-layout))
           (if (not txt)
@@ -1019,19 +1019,19 @@ EXTRA represents an extra file representation."
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-          
+
           (when (string= txt "")
             (setq txt (all-completions (format "C-%s " (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-variable-layout))
             (if (= 0 (length txt))
                 (setq txt "")
               (setq txt "prefix")))
-          
+
           (unless (string= "" txt)
             (when (search-forward (format ">C%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-          
+
           ;; Now fill in the ergoemacs-fixed-layout.
-          
+
           (goto-char (point-min))
           (setq txt (assoc (format "M-%s" (nth i lay)) fix))
           (if (not txt)
@@ -1039,17 +1039,17 @@ EXTRA represents an extra file representation."
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-          
+
           (when (string= txt "")
             (setq txt (all-completions (format "M-%s " (nth i lay)) fix))
             (if (= 0 (length txt))
                 (setq txt "")
               (setq txt "prefix")))
-          
+
           (unless (string= "" txt)
             (when (search-forward (format ">M%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-          
+
           (goto-char (point-min))
           (setq txt (assoc (format "C-%s" (nth i lay)) fix))
           (if (not txt)
@@ -1057,7 +1057,7 @@ EXTRA represents an extra file representation."
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-          
+
           (when (string= txt "")
             (setq txt (all-completions (format "C-%s " (nth i lay)) fix))
             (if (= 0 (length txt))
@@ -1066,7 +1066,7 @@ EXTRA represents an extra file representation."
           (unless (string= "" txt)
             (when (search-forward (format ">C%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-          
+
           (mapc
            (lambda(x)
              (goto-char (point-min))
@@ -1088,7 +1088,7 @@ EXTRA represents an extra file representation."
                  (if (>= (length txt) 3)
                      (setq txt (nth 2 txt))
                    (setq txt "")))
-               
+
                (when (string= txt "")
                  (setq txt (all-completions (format "%s " x) ergoemacs-variable-layout))
                  (if (= 0 (length txt))
@@ -1097,7 +1097,7 @@ EXTRA represents an extra file representation."
              (when (search-forward (format ">%s<" x) nil t)
                (replace-match  (format ">%s<" txt) t t)))
            '("M-S-SPC" "M-SPC" "C-S-SPC" "C-SPC"))
-          
+
           (setq i (+ i 1)))
         (while (re-search-forward ">[CM][0-9]+<" nil t)
           (replace-match "><")))
@@ -1116,20 +1116,18 @@ EXTRA represents an extra file representation."
 
 
 
-
-;;; --------------------------------------------------
+
 ;;; ergoemacs-keymap
 
 (defvar ergoemacs-keymap (make-sparse-keymap)
   "ErgoEmacs minor mode keymap.")
-
 
 ;;----------------------------------------------------------------------
 ;; CUA fix
 
 (let (cuaModeState cua-mode)
   (cua-mode 1) ; turn on cua-mode first so the command ergoemacs-fix-cua--pre-command-handler-1 will be able to set some symbols from cua-mode
-  
+
   (defun ergoemacs-fix-cua--pre-command-handler-1 ()
     "Fixes CUA minor mode so selection is highlighted only when
 Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
@@ -1139,12 +1137,12 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
         (if (timerp cua--prefix-override-timer)
             (cancel-timer cua--prefix-override-timer))
         (setq cua--prefix-override-timer nil))
-      
+
       (cond
        ;; Only symbol commands can have necessary properties
        ((not (symbolp this-command))
         nil)
-       
+
        ;; Handle delete-selection property on non-movement commands
        ((not (eq (get this-command 'CUA) 'move))
         (when (and mark-active (not deactivate-mark))
@@ -1169,16 +1167,16 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
             (if nc
                 (setq this-original-command this-command
                       this-command nc)))))
-       
+
        ;; Handle shifted cursor keys and other movement commands.
        ;; If region is not active, region is activated if key is shifted.
-       ;; If region is active, region is cancelled if key is unshifted
+       ;; If region is active, region is canceled if key is unshifted
        ;;   (and region not started with C-SPC).
        ;; If rectangle is active, expand rectangle in specified direction and
        ;;   ignore the movement.
        ((if window-system
             ;; Shortcut for window-system, assuming that input-decode-map is empty.
-            
+
             ;; ErgoEmacs patch begin ------------------
         ;;;; (memq 'shift (event-modifiers
         ;;;;               (aref (this-single-command-raw-keys) 0)))
@@ -1188,7 +1186,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
                  ;; are symbols (like <left>, <next>, etc.)
                  (symbolp (event-basic-type (aref (this-single-command-raw-keys) 0))))
           ;; ErgoEmacs patch end --------------------
-          
+
           (or
            ;; Check if the final key-sequence was shifted.
            (memq 'shift (event-modifiers
@@ -1205,24 +1203,24 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
           (push-mark-command nil t))
         (setq cua--last-region-shifted t)
         (setq cua--explicit-region-start nil))
-       
+
        ;; Set mark if user explicitly said to do so
        ((or cua--explicit-region-start cua--rectangle)
         (unless mark-active
           (push-mark-command nil nil)))
-       
+
        ;; Else clear mark after this command.
        (t
         ;; If we set mark-active to nil here, the region highlight will not be
         ;; removed by the direct_output_ commands.
         (setq deactivate-mark t)))
-      
+
       ;; Detect extension of rectangles by mouse or other movement
       (setq cua--buffer-and-point-before-command
             (if cua--rectangle (cons (current-buffer) (point))))))
   (if cuaModeState (progn (cua-mode 1)) (cua-mode -1)))
 
-;;----------------------------------------------------------------------
+
 ;; ErgoEmacs hooks
 (defun ergoemacs-key-fn-lookup (function)
   "Looks up the key binding for FUNCTION based on `ergoemacs-variable-layout'."
@@ -1293,29 +1291,29 @@ ergoemacs hooks."
 depending the state of `ergoemacs-mode' variable.  If the mode
 is being initialized, some global keybindings in current-global-map
 will change."
-  
+
   (let ((modify-hook (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'add-hook 'remove-hook))
         (modify-advice (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'ad-enable-advice 'ad-disable-advice)))
-    
+
     ;; Fix CUA
     (if (and (boundp 'ergoemacs-mode) ergoemacs-mode)
         (ergoemacs-fix-cua--pre-command-handler-1))
-    
+
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and (boundp 'ergoemacs-mode) ergoemacs-mode (not (equal ergoemacs-mode 0)))
         (progn
           (ergoemacs-unset-redundant-global-keys)
-          
+
           ;; alt+n is the new "Quit" in query-replace-map
           (ergoemacs-unset-global-key query-replace-map "\e")
           (define-key query-replace-map (ergoemacs-key-fn-lookup 'keyboard-quit) 'exit-prefix))
       ;; if ergoemacs was disabled: restore original keys
       (ergoemacs-restore-global-keys))
-    
+
     ;; install the mode-hooks
     (dolist (hook ergoemacs-hook-list)
       (funcall modify-hook (car hook) (cdr hook)))
-    
+
     ;; enable advices
     (condition-case err
         (progn
@@ -1375,13 +1373,13 @@ Argument of t or nil should not be used.
 For full documentation, see:
 URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
 
-If you turned on by mistake, the shortcut to call execute-extended-command is M-a."
+If you turned on by mistake, the key to call execute-extended-command is M-a."
       nil
       :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
       :global t
       :keymap ergoemacs-keymap
       (ergoemacs-setup-keys t))
-    (unless no-check 
+    (unless no-check
       (when ergoemacs-state
         (when (fboundp 'ergoemacs-mode)
           (ergoemacs-mode 1)
@@ -1390,7 +1388,7 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
 
 (ergoemacs-setup-keys)
 
-;;----------------------------------------------------------------------
+
 ;; ErgoEmacs minor mode
 ;;;###autoload
 (define-minor-mode ergoemacs-mode
@@ -1410,8 +1408,7 @@ If you turned on by mistake, the shortcut to call execute-extended-command is M-
   :keymap ergoemacs-keymap
   (ergoemacs-setup-keys t))
 
-
-;;----------------------------------------------------------------------
+
 ;; ErgoEmacs replacements for local- and global-set-key
 
 (defun ergoemacs-global-set-key (key command)
@@ -1426,8 +1423,8 @@ any key unbound or claimed by ergoemacs."
           (mapcar
            (lambda(x)
              (if (not (condition-case err
-			  (eq key (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
-			(error nil)))
+                          (eq key (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
+                        (error nil)))
                  x
                (setq found t)
                `(,(nth 0 x) ,command "")))
@@ -1437,8 +1434,8 @@ any key unbound or claimed by ergoemacs."
             (mapcar
              (lambda(x)
                (if (not (condition-case err
-			    (eq key (ergoemacs-kbd (nth 0 x)))
-			  (error nil)))
+                            (eq key (ergoemacs-kbd (nth 0 x)))
+                          (error nil)))
                    x
                  (setq found t)
                  `(,(nth 0 x) ,command "")))
@@ -1470,7 +1467,7 @@ any key unbound or claimed by ergoemacs."
   "Unset a key in the ergoemacs local map."
   (ergoemacs-local-set-key key nil))
 
-;;----------------------------------------------------------------------
+
 ;; ErgoEmacs advices for local- and global-set-key
 
 (defadvice global-set-key (around ergoemacs-global-set-key-advice (key command))
@@ -1536,7 +1533,7 @@ format:
                             (if (and (equal (nth 0 list) (nth 0 key-def))
                                      (equal (nth 2 list) (nth 2 key-def)))
                                 (progn
-                                  (setq fou t)
+                                  (setq found t)
                                   list)
                               key-def))
                           (nth 1 mode-list)))
