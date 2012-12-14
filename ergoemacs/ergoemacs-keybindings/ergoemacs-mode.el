@@ -72,6 +72,18 @@
 (load "functions")
 (load "ergoemacs-unbind")
 
+(defvar ergoemacs-layout-pt-nativo
+  '("" "+" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "º" "<" ""
+    "" ""  "'" "," "." "h" "x" "w" "l" "t" "c" "p" "~" "-" "" 
+    "" ""  "i" "e" "a" "o" "u" "m" "d" "s" "r" "n" "'" "|" ""
+    "" "«"  "y" "ç" "j" "b" "k" "q" "v" "g" "f" "z" "" "" ""
+    ;; Shifted
+    "" "*" "!" "\"" "#" "$" "%" "&" "/" "(" ")" "=" "ª" ">" ""
+    "" ""  "?" ";" ":" "H" "X" "W" "L" "T" "C" "P" "^" "_" "" 
+    "" ""  "I" "E" "A" "O" "U" "M" "D" "S" "R" "N" "`" "\\" ""
+    "" "»"  "Y" "Ç" "J" "B" "K" "Q" "V" "G" "F" "Z" "" "" "")
+  "PT Nativo `http://xahlee.info/kbd/pt-nativo_keyboard_layout.html'")
+
 (defvar ergoemacs-layout-us
   '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
     "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" "\\"
