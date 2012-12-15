@@ -10,6 +10,9 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 
+;; typing opening brackets auto insert closing one
+(electric-pair-mode 1)
+
 ;; make dired suggest target dir (for copy, move, …) that's in the other dired pane
 (setq dired-dwim-target t)
 
