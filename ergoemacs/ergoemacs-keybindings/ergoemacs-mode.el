@@ -98,12 +98,12 @@
 
 (defvar ergoemacs-layout-pt-nativo
   '("" "+" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "º" "<" ""
-    "" ""  "'" "," "." "h" "x" "w" "l" "t" "c" "p" "~" "-" "" 
+    "" ""  "'" "," "." "h" "x" "w" "l" "t" "c" "p" "~" "-" ""
     "" ""  "i" "e" "a" "o" "u" "m" "d" "s" "r" "n" "'" "|" ""
     "" "«"  "y" "ç" "j" "b" "k" "q" "v" "g" "f" "z" "" "" ""
     ;; Shifted
     "" "*" "!" "\"" "#" "$" "%" "&" "/" "(" ")" "=" "ª" ">" ""
-    "" ""  "?" ";" ":" "H" "X" "W" "L" "T" "C" "P" "^" "_" "" 
+    "" ""  "?" ";" ":" "H" "X" "W" "L" "T" "C" "P" "^" "_" ""
     "" ""  "I" "E" "A" "O" "U" "M" "D" "S" "R" "N" "`" "\\" ""
     "" "»"  "Y" "Ç" "J" "B" "K" "Q" "V" "G" "F" "Z" "" "" "")
   "PT Nativo layout URL `http://xahlee.info/kbd/pt-nativo_keyboard_layout.html'")
@@ -465,9 +465,9 @@ Valid values are:
     ("C-h 9" lookup-word-definition)
     ("C-h `" elisp-index-search)
 
-    ("<f2>" cut-line-or-region) ;cut
+    ("<f2>" cut-line-or-region)
     ("<C-f2>" cut-all)
-    ("<f3>" copy-line-or-region) ;copy
+    ("<f3>" copy-line-or-region)
     ("<C-f3>" copy-all)
     ("<f4>" yank)
     ("<C-f4>" yank-pop)
@@ -476,6 +476,7 @@ Valid values are:
     ("<C-f5>" redo)
 
     ("<f8>" ctl-x-map)
+
     ;; Set the menu/apps key to do emacs's M-x if on Windows
     ,@(cond
        ((string-equal system-type "windows-nt")
