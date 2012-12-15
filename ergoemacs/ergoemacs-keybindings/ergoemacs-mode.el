@@ -1395,7 +1395,7 @@ Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
 
-Home page URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
+Home page URL `http://ergoemacs.org/emacs/ergonomic_emacs_keybinding.html'
 
 The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard's 【Menu】 key."
   nil
@@ -1423,7 +1423,7 @@ Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
 
-Home page URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
+Home page URL `http://ergoemacs.org/emacs/ergonomic_emacs_keybinding.html'
 
 The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard's 【Menu】 key."
   nil
