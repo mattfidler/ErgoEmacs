@@ -25,8 +25,7 @@
 (load "init_clean_menus")
 
 ;; Turn on Open Recent menu under File menu before "Close" item
-;; (Why this code here? because the File menu is initialized
-;;  in init_clean_menus.el)
+;; (Why this code here? because the File menu is initialized in init_clean_menus.el)
 (require 'recentf)
 (setq recentf-menu-before "Close")
 (setq recentf-save-file (concat user-emacs-directory ".recentf"))
