@@ -151,10 +151,10 @@ Delimiters are paired characters:
         (progn
           (skip-syntax-forward "^\"")
           (goto-char (1+ (point)))
-          (decf arg))
+          (setq arg (1- arg) ))
       (skip-syntax-backward "^\"")
       (goto-char (1- (point)))
-      (incf arg)))
+      (setq arg (1+ arg) )))
   (up-list arg))
 
 ;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
