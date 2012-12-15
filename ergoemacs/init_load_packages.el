@@ -103,16 +103,12 @@
 (when (member 'smex features)
   (cond
    ((string-equal system-type "windows-nt")
-    (if ergoemacs-mode
-        (progn
+    (progn
           (define-key ergoemacs-keymap (kbd "<apps>") 'smex)
           (define-key ergoemacs-keymap (kbd "<S-apps>") 'smex-major-mode-commands)
+          (global-set-key (kbd "<apps>") 'smex)
+          (global-set-key (kbd "<S-apps>") 'smex-major-mode-commands)
           )
-      (progn
-        (global-set-key (kbd "<apps>") 'smex)
-        (global-set-key (kbd "<S-apps>") 'smex-major-mode-commands)
-        )
-      )
     )
    ((string-equal system-type "darwin")
     nil)

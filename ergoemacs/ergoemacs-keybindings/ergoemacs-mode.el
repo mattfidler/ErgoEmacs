@@ -475,17 +475,6 @@ Valid values are:
     ("<f5>" undo)
     ("<C-f5>" redo)
 
-    ("<f8>" ctl-x-map)
-
-    ;; Set the menu/apps key to do emacs's M-x if on Windows
-    ,@(cond
-       ((string-equal system-type "windows-nt")
-        '(("<apps>" execute-extended-command)))
-       ((string-equal system-type "darwin")
-        nil)
-       ((string-equal system-type "gnu/linux")
-        nil))
-
     ("<M-delete>" kill-word)
 
     ;; arrow keys to traverse brackets
@@ -1149,6 +1138,10 @@ EXTRA represents an extra file representation."
 
 (defvar ergoemacs-keymap (make-sparse-keymap) "ErgoEmacs minor mode keymap.")
 
+(define-key ergoemacs-keymap (kbd "<f8>") ctl-x-map)
+(define-key ergoemacs-keymap (kbd "<apps>") 'execute-extended-command) ;; Set the menu/apps key to do emacs's M-x if on Windows. (on Linux, <menu> key by default is execute-extended-command. On Microsoft Windows, that key is <apps> for some reason.)
+
+
 ;; CUA fix
 
 (let (cuaModeState cua-mode)
@@ -1385,9 +1378,9 @@ will change."
      (t ; US qwerty by default
       (ergoemacs-setup-keys-for-layout "us")))
     (ergoemacs-create-hooks)
-    ;; Redefine minor mode to update keymap.
-    ;; Seems a bit hackish, but I believe it works.
-    (define-minor-mode ergoemacs-mode
+
+    ;; ;; Redefine minor mode to update keymap. Seems a bit hackish, but I believe it works.
+(define-minor-mode ergoemacs-mode
   "Toggle ergoemacs keybinding minor mode.
 This minor mode changes your emacs keybinding.
 
@@ -1403,6 +1396,9 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   :global t
   :keymap ergoemacs-keymap
   (ergoemacs-setup-keys t))
+    ;; (define-minor-mode ergoemacs-mode … )
+    ;; 2012-12-15 Xah: problem: when calling describe-function on ergoemacs-mode, it will say “ergoemacs-mode is an interactive Lisp function in `.emacs.desktop'”. So commented out this for now. What's the consequence of not updating keymap?
+
     (unless no-check
       (when ergoemacs-state
         (when (fboundp 'ergoemacs-mode)
