@@ -4,14 +4,12 @@
 (set-language-environment "UTF-8")
 
 
+;;; dired, file, related
 
 ;; don't create backup~ or #auto-save# files
 (setq backup-by-copying t)
 (setq make-backup-files nil)
 (setq auto-save-default nil)
-
-;; typing opening brackets auto insert closing one
-(electric-pair-mode 1)
 
 ;; make dired suggest target dir (for copy, move, …) that's in the other dired pane
 (setq dired-dwim-target t)
@@ -95,6 +93,7 @@
           t) ;; append this hook to the tail
 
 
+;;; editing related
 
 ;; make cursor movement stop in between camelCase words.
 (when (fboundp 'global-subword-mode ) (global-subword-mode 1))
@@ -106,6 +105,14 @@
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
 
+(progn 
+;; typing opening brackets auto insert closing one
+(electric-pair-mode 1)
+
+;; setting for auto-close brackets for electric-pair-mode regardless of current major mode syntax table
+(setq electric-pair-pairs '( (?\" . ?\") (?\{ . ?\}) ) )
+)
+
 ;; automatically copy text when mouse drag. Similar to Linux X11 behavior
 (setq mouse-drag-copy-region t)
 
@@ -114,9 +121,6 @@
 
 ;; Alt+y is not cua-repeat-replace-region
 (define-key cua--cua-keys-keymap [(meta v)] 'nil)
-
-;; ;; make buffer switch command do suggestions
-;; (iswitchb-mode 1)
 
 ;; make buffer switch command do suggestions
 (ido-mode 1)
@@ -135,7 +139,7 @@
 (setq tab-width 4)   ; width for display tabs. emacs 23.1 default is 8
 
 
-;; org-mode
+;;; org-mode
 
 ;; Make lines not dissapear into the right margin while in “org-mode”
 (add-hook 'org-mode-hook 'soft-wrap-lines)
