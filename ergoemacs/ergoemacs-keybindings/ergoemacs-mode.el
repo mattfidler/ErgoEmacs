@@ -1388,21 +1388,21 @@ will change."
     ;; Redefine minor mode to update keymap.
     ;; Seems a bit hackish, but I believe it works.
     (define-minor-mode ergoemacs-mode
-      "Toggle ergoemacs keybinding mode.
-This minor mode changes your emacs keybindings.
+  "Toggle ergoemacs keybinding minor mode.
+This minor mode changes your emacs keybinding.
+
 Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
-Argument of t or nil should not be used.
-For full documentation, see:
-URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
 
-If you turned on by mistake, the key to call execute-extended-command is M-a."
-      nil
-      :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
-      :global t
-      :keymap ergoemacs-keymap
-      (ergoemacs-setup-keys t))
+Home page URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
+
+The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard's 【Menu】 key."
+  nil
+  :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
+  :global t
+  :keymap ergoemacs-keymap
+  (ergoemacs-setup-keys t))
     (unless no-check
       (when ergoemacs-state
         (when (fboundp 'ergoemacs-mode)
@@ -1416,16 +1416,16 @@ If you turned on by mistake, the key to call execute-extended-command is M-a."
 ;; ErgoEmacs minor mode
 ;;;###autoload
 (define-minor-mode ergoemacs-mode
-  "Toggle ergoemacs keybinding mode.
-This minor mode changes your emacs keybindings.
+  "Toggle ergoemacs keybinding minor mode.
+This minor mode changes your emacs keybinding.
+
 Without argument, toggles the minor mode.
 If optional argument is 1, turn it on.
 If optional argument is 0, turn it off.
-Argument of t or nil should not be used.
-For full documentation, see:
-URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
 
-If you turned on by mistake, the key to call `execute-extended-command' is 【Alt+a】 or the 【Menu】 key."
+Home page URL `http://xahlee.org/emacs/ergonomic_emacs_keybinding.html'
+
+The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard's 【Menu】 key."
   nil
   :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
   :global t
