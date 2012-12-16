@@ -382,10 +382,10 @@ Valid values are:
 
     ("M-~" switch-to-previous-frame "prev frame")
     ("M-`" switch-to-next-frame "next frame")
-
+    
     ("M-5" query-replace "rep")
     ("M-%" query-replace-regexp "rep reg")
-
+    
     ("M-3" delete-other-windows "↯ expand")
     ("M-0" delete-window "close win")
 
@@ -427,7 +427,7 @@ Valid values are:
     ("C-f" isearch-forward "Search")
 
     ("<delete>" delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
-
+    
     ("C-<prior>" previous-user-buffer)
     ("C-<next>" next-user-buffer)
 
@@ -524,7 +524,7 @@ Valid values are:
 
       ;; CUA paste key is isearch-yank-kill in isearch mode
       ("C-v" isearch-yank-kill isearch-mode-map)
-
+      
       ;; isearch-other-control-char sends the key to the original buffer and cancels isearch
       (kill-ring-save isearch-other-control-char isearch-mode-map)
       (kill-word isearch-other-control-char isearch-mode-map)
@@ -1531,6 +1531,20 @@ Optionally provides DESC for a description of the key."
       (add-to-list 'ergoemacs-variable-layout
                    `(,key ,function ,desc)))))
 
+(defun ergoemacs-replace-key (function key &optional desc)
+  "Replaces already defined FUNCTION in ergoemacs key binding with KEY.  The KEY definition is based on QWERTY description of a key"
+  (let (found)
+    (setq ergoemacs-variable-layout
+          (mapcar
+           (lambda(x)
+             (if (not (equal function (nth 1 x)))
+                 x
+               (setq found t)
+               (,key ,function ,desc)))
+           ergoemacs-variable-layout))
+    (unless found
+      (add-to-list 'ergoemacs-variable-layout
+                   `(,key ,function ,desc)))))
 ;;;###autoload
 (defun ergoemacs-minor-key (hook list)
   "Defines keys to add to an ergoemacs keyboard hook.
