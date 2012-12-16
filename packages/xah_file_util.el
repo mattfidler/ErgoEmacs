@@ -29,6 +29,7 @@
 
 ;;; HISTORY
 
+;; version 1.6.6, 2012-12-16 The backup file's suffix is same for all backup files created during one command call. Before, each backup has timestamp that's when the backup file is created.
 ;; version 1.6.5, 2012-12-08 improved the prompt for “xah-find-count” and also its output.
 ;; version 1.6.4, 2012-12-06 Backup file name now has this format: 「~‹x›~‹datetimestamp›~」 where ‹x› is 「t」 for plain text replace and 「r」 for regex replace. e.g. 「x.html~r~20121206_095642~」 Also, modified the prompt for 「xah-find-replace-text-regex」 so it is consistent with the function's argument.
 ;; version 1.6.3, 2012-11-30 fixed a bug: when one of the find or find/replace is called, and the temp output buffer already exits, the highlighting doesn't work. Now it does work.
@@ -195,10 +196,8 @@ Path Regex 「%s」
 
 
 (defun xah-find-replace-text (ξsearchStr ξreplaceStr ξinputDir ξpathRegex )
-  "find/replace literal string in all files of a directory.
-
+  "Find/Replace string in all files of a directory.
 SearchStr can span multiple lines.
-
 This is case-literal. No automatic case conversion anywhere. No regex."
   (interactive
    (list
@@ -209,7 +208,10 @@ This is case-literal. No automatic case conversion anywhere. No regex."
     )
    )
 
-  (let ((ξoutputBuffer "*xah-find-replace-text output*"))
+  (let (
+        (ξoutputBuffer "*xah-find-replace-text output*")
+        (backupSuffix (xah-backup-suffix "t"))
+        )
     (with-output-to-temp-buffer ξoutputBuffer
       (princ (format "-*- coding: utf-8 -*-
 %s
@@ -255,7 +257,7 @@ Directory 〔%s〕
                )
 
              (when (> ξcount 0)
-               (copy-file ξf (concat ξf (xah-backup-suffix "t")) t)
+               (copy-file ξf (concat ξf backupSuffix) t)
                (write-region 1 (point-max) ξf)
                (princ (format "• %d %s\n" ξcount ξf))
                ) )
@@ -299,7 +301,10 @@ Directory 〔%s〕
     )
    )
 
-  (let ((ξoutputBuffer "*xah-find-replace-text-regex output*"))
+  (let (
+        (ξoutputBuffer "*xah-find-replace-text-regex output*")
+        (backupSuffix (xah-backup-suffix "r"))
+        )
     (with-output-to-temp-buffer ξoutputBuffer
       (princ (format "-*- coding: utf-8 -*-
 %s
@@ -330,7 +335,7 @@ Directory 〔%s〕
 
                (when (> ξcount 0)
                  (when ξwriteToFile-p
-                   (copy-file ξfp (concat ξfp (xah-backup-suffix "r")) t)
+                   (copy-file ξfp (concat ξfp backupSuffix) t)
                    (write-region 1 (point-max) ξfp)
                    )
                  (princ (format "• %d %s\n" ξcount ξfp))
