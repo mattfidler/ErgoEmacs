@@ -70,7 +70,6 @@
 (add-to-list 'load-path  ergoemacs-dir)
 
 (load "functions")
-(load "ergoemacs-unbind")
 
 (defvar ergoemacs-layout-sw
   '("" "½" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "+" "’" ""
@@ -627,6 +626,8 @@ Valid values are:
                        (symbol :tag "Keymap to Modify")))))
   :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
+
+(load "ergoemacs-unbind")
 
 (defvar ergoemacs-backward-compatability-variables 
   '((ergoemacs-backward-paragraph-key            backward-block)
@@ -1689,44 +1690,45 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   (ergoemacs-setup-keys t))
 
 
-;; ErgoEmacs replacements for local- and global-set-key
+;; ErgoEmacs replacements for local-set-key
 
-(defun ergoemacs-global-set-key (key command)
-  "Set a key in `ergoemacs-keymap', thus
-making it globally active. This allow to redefine
-any key unbound or claimed by ergoemacs."
-  (interactive)
-  (define-key ergoemacs-keymap key command)
-  ;; Needs to modify the key lists
-  (let ((found))
-    (set (ergoemacs-get-fixed-layout)
-          (mapcar
-           (lambda(x)
-             (if (not (condition-case err
-                          (eq key (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
-                        (error nil)))
-                 x
-               (setq found t)
-               `(,(nth 0 x) ,command "")))
-           (symbol-value (ergoemacs-get-fixed-layout))))
-    (unless found
-      (set (ergoemacs-get-variable-layout)
-            (mapcar
-             (lambda(x)
-               (if (not (condition-case err
-                            (eq key (ergoemacs-kbd (nth 0 x)))
-                          (error nil)))
-                   x
-                 (setq found t)
-                 `(,(nth 0 x) ,command "")))
-             (symbol-value (ergoemacs-get-variable-layout)))))
-    (unless found
-      (add-to-list (ergoemacs-get-fixed-layout) `(,key ,command "")))))
+(defadvice define-key (around ergoemacs-define-key-advice (keymap key def))
+  "This does the right thing when modifying `ergoemacs-keymap'"
+  (if (and (equal keymap 'ergoemacs-keymap)
+           (or (not (boundp 'no-ergoemacs-advice))
+               (and (boundp 'no-ergoemacs-advice) (not no-ergoemacs-advice))))
+      (progn
+        (let ((found))
+          (set (ergoemacs-get-fixed-layout)
+               (mapcar
+                (lambda(x)
+                  (if (not (condition-case err
+                               (string= (lookup-key ergoemacs-key key) (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
+                             (error nil)))
+                      x
+                    (setq found t)
+                    `(,(nth 0 x) ,command "")))
+                (symbol-value (ergoemacs-get-fixed-layout))))
+          (unless found
+            (set (ergoemacs-get-variable-layout)
+                 (mapcar
+                  (lambda(x)
+                    (if (not (condition-case err
+                                 (eq key (ergoemacs-kbd (nth 0 x)))
+                               (error nil)))
+                        x
+                      (setq found t)
+                      `(,(nth 0 x) ,command "")))
+                  (symbol-value (ergoemacs-get-variable-layout)))))
+          (unless found
+            (add-to-list (ergoemacs-get-fixed-layout) `(,key ,command ""))))
+        (message "Only changed ergoemacs-keybinding for current variant, %s" (or ergoemacs-variant "which happens to be the default key-binding"))
+        (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
+          (ergoemacs-mode -1)
+          (ergoemacs-mode 1)))
+    ad-do-it))
 
-(defun ergoemacs-global-unset-key (key)
-  "Removes a key from the ergoemacs-keymap."
-  (interactive)
-  (ergoemacs-global-set-key key nil))
+(ad-activate 'define-key)
 
 (defvar ergoemacs-local-keymap nil
   "Local ergoemacs keymap")
@@ -1748,19 +1750,7 @@ any key unbound or claimed by ergoemacs."
   (ergoemacs-local-set-key key nil))
 
 
-;; ErgoEmacs advices for local- and global-set-key
-
-(defadvice global-set-key (around ergoemacs-global-set-key-advice (key command))
-  "This let you use global-set-key as usual when ergoemacs-mode is enabled."
-  (if (fboundp 'ergoemacs-mode)
-      (ergoemacs-global-set-key key command)
-    ad-do-it))
-
-(defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
-  "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
-  (if (fboundp 'ergoemacs-mode)
-      (ergoemacs-global-unset-key key)
-    ad-do-it))
+;; ErgoEmacs advices for local-set-key
 
 (defadvice local-set-key (around ergoemacs-local-set-key-advice (key command))
   "This let you use local-set-key as usual when ergoemacs-mode is enabled."
@@ -1774,20 +1764,7 @@ any key unbound or claimed by ergoemacs."
       (ergoemacs-local-unset-key key)
     ad-do-it))
 
-(defadvice define-key (around ergoemacs-define-key-advice (keymap key def))
-  "This does the right thing when modifying `ergoemacs-keymap'"
-  (if (and (equal keymap 'ergoemacs-keymap)
-           (or (not (boundp 'no-ergoemacs-advice))
-               (and (boundp 'no-ergoemacs-advice) (not no-ergoemacs-advice))))
-      (progn
-        (ergoemacs-fixed-key key def "")
-        (message "Only changed ergoemacs-keybinding for current variant, %s" (or ergoemacs-variant "which happens to be the default key-binding"))
-        (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
-          (ergoemacs-mode -1)
-          (ergoemacs-mode 1)))
-    ad-do-it))
 
-(ad-activate 'define-key)
 
 
 (provide 'ergoemacs-mode)
