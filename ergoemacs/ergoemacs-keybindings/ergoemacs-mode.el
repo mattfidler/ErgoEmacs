@@ -415,8 +415,11 @@ Valid values are:
   :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
+
 (defcustom ergoemacs-fixed-layout
-  `( ;; --------------------------------------------------
+  `(
+    
+    ;; --------------------------------------------------
     ;; STANDARD SHORTCUTS
     ("C-n" new-empty-buffer "New Buffer")
     ("C-S-n" make-frame-command "New Frame")
@@ -576,15 +579,15 @@ Valid values are:
       ("S-<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
     
-
-
+    
+    
     ;; Ido minibuffer setup hook
     (ido-minibuffer-setup-hook       
      ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
       (forward-char ido-next-match minor-mode-overriding-map-alist)
       (backward-char ido-prev-match minor-mode-overriding-map-alist)
-      (previous-line ido-next-match-dir minor-mode-overriding-map-alist)
-      (next-line ido-prev-match-dir minor-mode-overriding-map-alist)
+      (previous-line ido-next-match-dir ido-file-dir-completion-map)
+      (next-line ido-prev-match-dir ido-file-dir-completion-map)
       ("<f11>" previous-history-element minor-mode-overriding-map-alist)
       ("<f12>" next-history-element minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
@@ -625,6 +628,26 @@ Valid values are:
   :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
+(defvar ergoemacs-backward-compatability-variables 
+  '((ergoemacs-backward-paragraph-key            backward-block)
+    (ergoemacs-forward-paragraph-key             forward-block)
+    (ergoemacs-recenter-key                      recenter-top-bottom)
+    (ergoemacs-kill-region-key                   cut-line-or-region)
+    (ergoemacs-kill-ring-save-key                copy-line-or-region))
+  "Backward compatible variables that do not follow the convention ergoemacs-FUNCTION-key")
+
+(defun ergoemacs-setup-backward-compatability ()
+  "Set up backward-compatible variables"
+  (mapc
+   (lambda(var)
+     (eval `(setq ,(intern (concat "ergoemacs-" (symbol-name (nth 1 var)) "-key")) (ergoemacs-kbd (nth 0 var)))))
+   (symbol-value (ergoemacs-get-variable-layout)))
+  (mapc
+   (lambda(var)
+     (let ((saved-var (intern-soft (concat "ergoemacs-" (symbol-name (nth 1 var)) "-key"))))
+       (when saved-var
+         (set (nth 0 var) (symbol-value saved-var)))))
+   ergoemacs-backward-compatability-variables))
 
 
 ;;;###autoload
@@ -636,7 +659,8 @@ Optionally provides DESC for a description of the key."
            (ergoemacs-get-variable-layout))
          (mapcar
           (lambda(x)
-            (if (not (string= key (nth 0 x)))
+            (if (not (or (and (eq (type-of key) 'string) (string= key (nth 0 x)))
+                         (equal key (nth 0 x))))
                 x
               (setq found t)
               `(,key ,function ,desc)))
@@ -727,9 +751,6 @@ format:
               (lambda(elt)
                 `(const :tag ,elt :value ,elt))
               (sort (ergoemacs-get-layouts) 'string<))))
-
-(progn nil
-       )
 
 (defun ergoemacs-get-variants-doc ()
   "Gets the list of all known variants and the documentation associated with the variants."
@@ -908,7 +929,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
-  `(progn
+  `(let ((no-ergoemacs-advice t))
      (setq ,keymap (make-sparse-keymap))
      (mapc
       (lambda(x)
@@ -926,7 +947,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
-  (ergoemacs-setup-keys-for-keymap ergoemacs-keymap))
+  (ergoemacs-setup-keys-for-keymap ergoemacs-keymap)
+  (ergoemacs-setup-backward-compatability))
 
 (require 'lookup-word-on-internet nil "NOERROR")
 
@@ -1378,15 +1400,13 @@ EXTRA represents an extra file representation."
 
 (defvar ergoemacs-keymap (make-sparse-keymap) "ErgoEmacs minor mode keymap.")
 
-(define-key ergoemacs-keymap (kbd "<f8>") ctl-x-map)
-(define-key ergoemacs-keymap (kbd "<apps>") 'execute-extended-command) ;; Set the menu/apps key to do emacs's M-x if on Windows. (on Linux, <menu> key by default is execute-extended-command. On Microsoft Windows, that key is <apps> for some reason.)
 
 
 ;; CUA fix
 
 (let (cuaModeState cua-mode)
   (cua-mode 1) ; turn on cua-mode first so the command ergoemacs-fix-cua--pre-command-handler-1 will be able to set some symbols from cua-mode
-
+  
   (defun ergoemacs-fix-cua--pre-command-handler-1 ()
     "Fixes CUA minor mode so selection is highlighted only when
 Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
@@ -1513,11 +1533,11 @@ This is an automatically generated function derived from `ergoemacs-get-minor-mo
               (if (or (eq 'string (type-of (nth 0 def)))
                       (ergoemacs-key-fn-lookup (nth 0 def)))
                 `(progn
-                   ,(if is-override nil
+                   ,(if (and is-override (equal (nth 2 def) 'minor-mode-overriding-map-alist)) nil
                       (if (member (nth 2 def) local-list) nil
                         (add-to-list 'local-list (nth 2 def))
                         `(set (make-local-variable ',(nth 2 def)) ,(nth 2 def))))
-                   (define-key ,(if is-override
+                   (define-key ,(if (and is-override (equal (nth 2 def) 'minor-mode-overriding-map-alist))
                                     (intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))
                                   (nth 2 def))
                      ,(if (eq 'string (type-of (nth 0 def)))
@@ -1753,6 +1773,21 @@ any key unbound or claimed by ergoemacs."
   (if (fboundp 'ergoemacs-mode)
       (ergoemacs-local-unset-key key)
     ad-do-it))
+
+(defadvice define-key (around ergoemacs-define-key-advice (keymap key def))
+  "This does the right thing when modifying `ergoemacs-keymap'"
+  (if (and (equal keymap 'ergoemacs-keymap)
+           (or (not (boundp 'no-ergoemacs-advice))
+               (and (boundp 'no-ergoemacs-advice) (not no-ergoemacs-advice))))
+      (progn
+        (ergoemacs-fixed-key key def "")
+        (message "Only changed ergoemacs-keybinding for current variant, %s" (or ergoemacs-variant "which happens to be the default key-binding"))
+        (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
+          (ergoemacs-mode -1)
+          (ergoemacs-mode 1)))
+    ad-do-it))
+
+(ad-activate 'define-key)
 
 
 (provide 'ergoemacs-mode)
