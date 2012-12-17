@@ -576,19 +576,20 @@ Valid values are:
       ("S-<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
     
+
+
     ;; Ido minibuffer setup hook
-    (ido-minibuffer-setup-hook
-     ((keyboard-quit minibuffer-keyboard-quit ido-common-completion-map)
-      (forward-char ido-next-match ido-common-completion-map)
-      (backward-char ido-prev-match ido-common-completion-map)
-      (previous-line ido-prev-match-dir ido-file-dir-completion-map)
-      (previous-line ido-prev-match-dir ido-file-completion-map)
-      (next-line ido-next-match-dir ido-file-dir-completion-map)
-      (next-line ido-next-match-dir ido-file-completion-map)
-      ("<f11>" previous-history-element ido-common-completion-map)
-      ("<f12>" next-history-element ido-common-completion-map)
-      ("S-<f11>" previous-matching-history-element ido-common-completion-map)
-      ("S-<f12>" next-matching-history-element ido-common-completion-map)))
+    (ido-minibuffer-setup-hook       
+     ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      (forward-char ido-next-match minor-mode-overriding-map-alist)
+      (backward-char ido-prev-match minor-mode-overriding-map-alist)
+      (previous-line ido-next-match-dir minor-mode-overriding-map-alist)
+      (next-line ido-prev-match-dir minor-mode-overriding-map-alist)
+      ("<f11>" previous-history-element minor-mode-overriding-map-alist)
+      ("<f12>" next-history-element minor-mode-overriding-map-alist)
+      ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
+      ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
+  
     ;; Helm mode hooks
     (helm-before-initialize-hook
      (("C-w" helm-keyboard-quit helm-map)
