@@ -406,8 +406,7 @@ Valid values are:
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
           (list :tag "Keys"
-                (choice (string :tag "QWERTY Kbd Code")
-                        (sexp :tag "Key"))
+                (string :tag "QWERTY Kbd Code")
                 (symbol :tag "Function")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
@@ -678,7 +677,7 @@ Optionally provides DESC for a description of the key."
 (defun ergoemacs-fixed-key (key function &optional desc)
   "Defines KEY that calls FUNCTION in ergoemacs keyboard that is the same regardless of the keyboard layout.
 This optionally provides the description, DESC, too."
-  (ergoemacs-key key functon desc t))
+  (ergoemacs-key key function desc t))
 
 (defun ergoemacs-replace-key (function key &optional desc)
   "Replaces already defined FUNCTION in ergoemacs key binding with KEY.  The KEY definition is based on QWERTY description of a key"
@@ -745,13 +744,6 @@ format:
 (defun ergoemacs-get-minor-mode-layout ()
   "Get ergoemacs-minor-mode-layout based on current variant."
   (ergoemacs-get-variable-layout 'ergoemacs-minor-mode-layout))
-
-(defun ergoemacs-get-layouts-type ()
-  "Gets the customization types for `ergoemacs-keyboard-layout'"
-  `(choice ,@(mapcar
-              (lambda(elt)
-                `(const :tag ,elt :value ,elt))
-              (sort (ergoemacs-get-layouts) 'string<))))
 
 (defun ergoemacs-get-variants-doc ()
   "Gets the list of all known variants and the documentation associated with the variants."
@@ -927,6 +919,16 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
     (if (not just-translate)
         (read-kbd-macro (encode-coding-string new-key locale-coding-system))
       new-key)))
+(defvar ergoemacs-globally-defined-keys
+  '()
+  "Globally defined keys.")
+(defcustom ergoemacs-bind-unknown-keys t
+  "When true, global keys that are not known in the variable
+`ergoemacs-redundant-keys' are bound over any global key
+definitions that are previously bound."
+  :type 'boolean
+  :set 'ergoemacs-set-default
+  :group 'ergoemacs-mode)
 
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
@@ -935,14 +937,54 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
      (mapc
       (lambda(x)
         (if (eq 'string (type-of (nth 0 x)))
-            (define-key ,keymap (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)) (nth 1 x))
-          (define-key ,keymap (nth 0 x) (nth 1 x))))
+            (let ((y (assoc (nth 0 x) ergoemacs-redundant-keys))
+                  (current-key (lookup-key 
+                                (current-global-map) 
+                                (read-kbd-macro 
+                                 (encode-coding-string 
+                                  (nth 0 x) 
+                                  locale-coding-system))))
+                  (kbd-code nil))
+              (if (keymapp current-key)
+                  (setq current-key 'prefix)
+                (setq kbd-code (member (key-description (read-kbd-macro 
+                                                         (encode-coding-string 
+                                                          (nth 0 x) 
+                                                          locale-coding-system)))
+                                       ergoemacs-globally-defined-keys)))
+              ;; Ignore key if global-key-set has been called and
+              ;; overwrites ergoemacs definition
+              (if (or (not current-key) ;; Undefined key or emacs
+                      ;; default defined key.
+                      (and ergoemacs-bind-unknown-keys (not y))
+                      (and y (memq current-key (nth 1 y))))
+                  (define-key ,keymap (read-kbd-macro 
+                                       (encode-coding-string 
+                                        (nth 0 x) 
+                                        locale-coding-system)) 
+                    (nth 1 x))))
+          ;; Assume kbd codes should be directly defined.
+          (message "Ignore kbd code %s" (nth 0 x))))
       (symbol-value (ergoemacs-get-fixed-layout)))
      (mapc
       (lambda(x)
         (if (eq 'string (type-of (nth 0 x)))
-            (define-key ,keymap (ergoemacs-kbd (nth 0 x)) (nth 1 x))
-          (define-key ,keymap (nth 0 x) (nth 1 x))))
+            (let ((y (assoc (ergoemacs-kbd (nth 0 x) t) ergoemacs-redundant-keys))
+                  (kbd-code nil)
+                  (current-key (lookup-key (current-global-map) (ergoemacs-kbd (nth 0 x)))))
+              ;; Get stored unbound key.
+              (if (keymapp current-key)
+                  (setq current-key 'prefix)
+                (setq kbd-code (member (key-description (ergoemacs-kbd (nth 0 x)))
+                                       ergoemacs-globally-defined-keys)))
+              ;; Ignore key if global-key-set has been called and
+              ;; overwrites ergoemacs definition
+              (when (or (not current-key)
+                      (and ergoemacs-bind-unknown-keys (not y))
+                      (and y (memq current-key (nth 1 y))))
+                (define-key ,keymap (ergoemacs-kbd (nth 0 x)) (nth 1 x))))
+          ;; Assume kbd codes should be directly defined.
+          (message "Ignore kbd code %s" (nth 0 x))))
       (symbol-value (ergoemacs-get-variable-layout)))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
@@ -1466,12 +1508,13 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
                  ;; are symbols (like <left>, <next>, etc.)
                  (symbolp (event-basic-type (aref (this-single-command-raw-keys) 0))))
           ;; ErgoEmacs patch end --------------------
-
+          
           (or
            ;; Check if the final key-sequence was shifted.
            (memq 'shift (event-modifiers
                          (aref (this-single-command-keys) 0)))
            ;; If not, maybe the raw key-sequence was mapped by input-decode-map
+           
            ;; to a shifted key (and then mapped down to its unshifted form).
            (let* ((keys (this-single-command-raw-keys))
                   (ev (lookup-key input-decode-map keys)))
@@ -1483,7 +1526,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
           (push-mark-command nil t))
         (setq cua--last-region-shifted t)
         (setq cua--explicit-region-start nil))
-
+       
        ;; Set mark if user explicitly said to do so
        ((or cua--explicit-region-start cua--rectangle)
         (unless mark-active
@@ -1501,6 +1544,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
   (if cuaModeState (progn (cua-mode 1)) (cua-mode -1)))
 
 
+
 ;; ErgoEmacs hooks
 (defun ergoemacs-key-fn-lookup (function)
   "Looks up the key binding for FUNCTION based on `ergoemacs-get-variable-layout'."
@@ -1573,10 +1617,7 @@ will change."
   
   (let ((modify-hook (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'add-hook 'remove-hook))
         (modify-advice (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'ad-enable-advice 'ad-disable-advice)))
-
-    ;; Fix CUA
-    (if (and (boundp 'ergoemacs-mode) ergoemacs-mode)
-        (ergoemacs-fix-cua--pre-command-handler-1))
+    
     
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and (boundp 'ergoemacs-mode) ergoemacs-mode (not (equal ergoemacs-mode 0)))
@@ -1639,7 +1680,7 @@ will change."
      (t ; US qwerty by default
       (ergoemacs-setup-keys-for-layout "us")))
     (ergoemacs-create-hooks)
-
+    
     ;; ;; Redefine minor mode to update keymap. Seems a bit hackish, but I believe it works.
 (define-minor-mode ergoemacs-mode
   "Toggle ergoemacs keybinding minor mode.
@@ -1687,7 +1728,9 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
   :global t
   :keymap ergoemacs-keymap
-  (ergoemacs-setup-keys t))
+  (ergoemacs-setup-keys t)
+  (if (and (boundp 'ergoemacs-mode) ergoemacs-mode)
+      (ergoemacs-fix-cua--pre-command-handler-1)))
 
 
 ;; ErgoEmacs replacements for local-set-key
@@ -1702,9 +1745,11 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
           (set (ergoemacs-get-fixed-layout)
                (mapcar
                 (lambda(x)
-                  (if (not (condition-case err
-                               (string= (lookup-key ergoemacs-key key) (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
-                             (error nil)))
+                  (if (not (or (and (type-of (nth 0 x) 'string)
+                                    (string= (key-description (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
+                                             (key-description key)))
+                               (and (not (type-of (nth 0 x) 'string))
+                                    (string= (key-description (nth 0 x)) (key-description key)))))
                       x
                     (setq found t)
                     `(,(nth 0 x) ,command "")))
@@ -1713,19 +1758,18 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
             (set (ergoemacs-get-variable-layout)
                  (mapcar
                   (lambda(x)
-                    (if (not (condition-case err
-                                 (eq key (ergoemacs-kbd (nth 0 x)))
-                               (error nil)))
+                    (if (not (and (type-of (nth 0 x) 'string)
+                                  (string= (key-description (ergoemacs-kbd (nth 0 x))) (key-description key))))
                         x
                       (setq found t)
                       `(,(nth 0 x) ,command "")))
                   (symbol-value (ergoemacs-get-variable-layout)))))
           (unless found
-            (add-to-list (ergoemacs-get-fixed-layout) `(,key ,command ""))))
+            (add-to-list (ergoemacs-get-fixed-layout) `(,(key-description key) ,command ""))))
         (message "Only changed ergoemacs-keybinding for current variant, %s" (or ergoemacs-variant "which happens to be the default key-binding"))
         (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
-          (ergoemacs-mode -1)
-          (ergoemacs-mode 1)))
+          (let ((no-ergoemacs-advice t))
+            (define-key ergoemacs-keymap key def))))
     ad-do-it))
 
 (ad-activate 'define-key)
@@ -1764,7 +1808,20 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
       (ergoemacs-local-unset-key key)
     ad-do-it))
 
+(defadvice global-set-key (around ergoemacs-global-set-key-advice (key command))
+  "This let you use global-set-key as usual when ergoemacs-mode is enabled."
+  ad-do-it
+  (add-to-list 'ergoemacs-globally-defined-keys (key-description key))
+  (let ((no-ergoemacs-advice t))
+    (define-key ergoemacs-keymap key nil)))
 
+(defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
+  "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
+  ;; the global-unset-key will remove the key from ergoemacs as well.
+  ad-do-it
+  (add-to-list 'ergoemacs-globally-defined-keys (key-description key))
+  (let ((no-ergoemacs-advice t))
+    (define-key ergoemacs-keymap key nil)))
 
 
 (provide 'ergoemacs-mode)
