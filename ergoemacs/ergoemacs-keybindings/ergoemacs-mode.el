@@ -277,6 +277,13 @@
               ob)
     ret))
 
+(defun ergoemacs-set-default (symbol new-value)
+  "Ergoemacs equivalent to set-default.  Will reload `ergoemacs-mode' after setting the values."
+  (set-default symbol new-value)
+  (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
+    (ergoemacs-mode -1)
+    (ergoemacs-mode 1)))
+
 (defcustom ergoemacs-keyboard-layout (or (getenv "ERGOEMACS_KEYBOARD_LAYOUT") "us")
   (concat "Specifies which keyboard layout to use.
 This is a mirror of the environment variable ERGOEMACS_KEYBOARD_LAYOUT.
@@ -287,52 +294,52 @@ Valid values are:
 
 " (ergoemacs-get-layouts-doc))
   :type (ergoemacs-get-layouts-type)
+  :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
 ;; Ergoemacs keys
-
 (defcustom ergoemacs-variable-layout
   '(("M-j" backward-char  "← char")
     ("M-l" forward-char "→ char")
     ("M-i" previous-line "↑ line")
     ("M-k" next-line "↓ line")
-
+    
     ;; Move by word
     ("M-u" backward-word "← word")
     ("M-o" forward-word "→ word")
-
+    
     ;; Move by paragraph
     ("M-U" backward-block "← ¶")
     ("M-O" forward-block  "→ ¶")
-
+    
     ;; Move to beginning/ending of line
     ("M-h" move-beginning-of-line "← line")
     ("M-H" move-end-of-line "→ line")
-
+    
     ;; Move by screen (page up/down)
     ("M-I" scroll-down "↓ page")
     ("M-K" scroll-up "↑ page")
-
+    
     ;; Move to beginning/ending of file
     ("M-J" backward-open-bracket "↑ buffer")
     ("M-L" forward-close-bracket "↓ buffer")
-
+    
     ;; isearch
     ("M-y" isearch-forward "→ isearch")
     ("M-Y" isearch-backward "← isearch")
-
+    
     ("M-p" recenter-top-bottom "recenter")
-
+    
     ;; MAJOR EDITING COMMANDS
-
+    
     ;; Delete previous/next char.
     ("M-d" delete-backward-char "⌫ char")
     ("M-f" delete-char "⌦ char")
-
+    
     ;; Delete previous/next word.
     ("M-e" backward-kill-word "⌫ word")
     ("M-r" kill-word "⌦ word")
-
+    
     ;; Copy Cut Paste, Paste previous
     ("M-x" cut-line-or-region "✂ region")
     ("M-c" copy-line-or-region "copy")
@@ -340,46 +347,46 @@ Valid values are:
     ("M-V" yank-pop "paste ↑")
     ("M-C" copy-all "copy all")
     ("M-X" cut-all "✂ all")
-
+    
     ;; undo and redo
     ("M-Z" redo "↷ redo")
     ("M-z" undo "↶ undo")
-
+    
     ;; Kill line
     ("M-g" kill-line "⌦ line")
     ("M-G" kill-line-backward "⌫ line")
-
+    
     ;; Textual Transformation
-
+    
     ("M-S-SPC" mark-paragraph "Mark Paragraph")
     ("M-w" shrink-whitespaces "⌧ white")
     ("M-'" comment-dwim "cmt dwim")
     ("M-/" toggle-letter-case "tog. case")
-
+    
     ;; keyword completion, because Alt+Tab is used by OS
     ("M-t" call-keyword-completion "↯ compl")
-
+    
     ;; Hard-wrap/un-hard-wrap paragraph
     ("M-q" compact-uncompact-block "fill/unfill ¶")
-
+    
     ;; EMACS'S SPECIAL COMMANDS
-
+    
     ;; Cancel
     ("<escape>" keyboard-quit)
-
+    
     ;; Mark point.
     ("M-SPC" set-mark-command "Set Mark")
-
+    
     ("M-a" execute-extended-command "M-x")
     ("M-A" shell-command "shell cmd")
-
+    
     ;; WINDOW SPLITING
     ("M-s" move-cursor-next-pane "next pane")
     ("M-S" move-cursor-previous-pane "prev pane")
-
+    
     ;; --------------------------------------------------
     ;; OTHER SHORTCUTS
-
+    
     ("M-~" switch-to-previous-frame "prev frame")
     ("M-`" switch-to-next-frame "next frame")
     
@@ -388,15 +395,15 @@ Valid values are:
     
     ("M-3" delete-other-windows "↯ expand")
     ("M-0" delete-window "close win")
-
+    
     ("M-4" split-window-vertically "split |")
     ("M-$" split-window-horizontally "split —")
-
+    
     ("M-8" extend-selection "←region→")
     ("M-*" select-text-in-quote "←quote→")
     ("M-6" select-current-block "Sel. Block")
     ("M-7" select-current-line "Sel. Line"))
-
+  
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
           (list :tag "Keys"
@@ -405,6 +412,7 @@ Valid values are:
                 (symbol :tag "Function")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
+  :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
 (defcustom ergoemacs-fixed-layout
@@ -423,28 +431,28 @@ Valid values are:
     ("C-S-z" redo "↷ redo")
     ("C-y" redo "↷ redo")
     ("C-z" undo "↶ undo")
-
+    
     ("C-f" isearch-forward "Search")
-
+    
     ("<delete>" delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
     
     ("C-<prior>" previous-user-buffer)
     ("C-<next>" next-user-buffer)
-
+    
     ("C-S-<prior>" previous-emacs-buffer)
     ("C-S-<next>" next-emacs-buffer)
-
+    
     ("M-S-<prior>" backward-page)
     ("M-S-<next>" forward-page)
-
+    
     ("C-x C-b" ibuffer)
     ("C-h m" describe-major-mode)
     ("<f1> m" describe-major-mode)
     ("C-h o" where-is-old-binding)
     ("<f1> o" where-is-old-binding)
-
+    
     ("C-<pause>" kill-compilation)      ; stop compilation/find/grep
-
+    
     ("<f1> 1" describe-function)
     ("<f1> 2" describe-variable)
     ("<f1> 3" describe-key)
@@ -454,7 +462,7 @@ Valid values are:
     ("<f1> 8" lookup-wikipedia)
     ("<f1> 9" lookup-word-definition)
     ("<f1> `" elisp-index-search)
-
+    
     ("C-h 1" describe-function)
     ("C-h 2" describe-variable)
     ("C-h 3" describe-key)
@@ -464,23 +472,23 @@ Valid values are:
     ("C-h 8" lookup-wikipedia)
     ("C-h 9" lookup-word-definition)
     ("C-h `" elisp-index-search)
-
+    
     ("<f2>" cut-line-or-region)
     ("<C-f2>" cut-all)
     ("<f3>" copy-line-or-region)
     ("<C-f3>" copy-all)
     ("<f4>" yank)
     ("<C-f4>" yank-pop)
-
+    
     ("<f5>" undo)
     ("<C-f5>" redo)
-
+    
     ("<M-delete>" kill-word)
-
+    
     ;; arrow keys to traverse brackets
     ("<M-left>" backward-open-bracket) ; Alt+←
     ("<M-right>" forward-close-bracket) ; Alt+→
-
+    
     ("<M-up>" backward-block) ; Alt+↑
     ("<M-down>" forward-block) ; Alt+↓
     )
@@ -492,6 +500,7 @@ Valid values are:
                 (symbol :tag "Function to Run")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
+  :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
 (defcustom ergoemacs-minor-mode-layout
@@ -506,7 +515,7 @@ Valid values are:
       ("S-<f11>" previous-matching-history-element  minor-mode-overriding-map-alist)
       ("S-<f12>" next-matching-history-element  minor-mode-overriding-map-alist)
       ))
-
+    
     ;; Isearch Hook
     (isearch-mode-hook
      (("M-p" nil isearch-mode-map) ; was isearch-ring-retreat
@@ -515,13 +524,13 @@ Valid values are:
       ("M-c" nil isearch-mode-map) ; was isearch-toggle-case-fold
       ("M-r" nil isearch-mode-map) ; was isearch-toggle-regexp
       ("M-e" nil isearch-mode-map) ; was isearch-edit-string
-
+      
       (keyboard-quit isearch-abort isearch-mode-map)
       (isearch-forward isearch-repeat-forward isearch-mode-map)
       (isearch-backward isearch-repeat-backward isearch-mode-map)
       (recenter recenter isearch-mode-map)
       (yank isearch-yank-kill isearch-mode-map)
-
+      
       ;; CUA paste key is isearch-yank-kill in isearch mode
       ("C-v" isearch-yank-kill isearch-mode-map)
       
@@ -529,24 +538,24 @@ Valid values are:
       (kill-ring-save isearch-other-control-char isearch-mode-map)
       (kill-word isearch-other-control-char isearch-mode-map)
       (backward-kill-word isearch-other-control-char isearch-mode-map)
-
+      
       ("<f11>" isearch-ring-retreat isearch-mode-map)
       ("<f12>" isearch-ring-advance isearch-mode-map)))
-
+    
     ;; Comint
     (comint-mode-hook
      (("<f11>" comint-previous-input comint-mode-map)
       ("<f12>" comint-next-input comint-mode-map)
       ("S-<f11>" comint-previous-matching-input comint-mode-map)
       ("S-<f12>" comint-next-matching-input comint-mode-map)))
-
+    
     ;; Log Edit
     (log-edit-mode-hook
      (("<f11>" log-edit-previous-comment log-edit-mode-map)
       ("<f12>" log-edit-next-comment log-edit-mode-map)
       ("S-<f11>" log-edit-previous-comment log-edit-mode-map)
       ("S-<f12>" log-edit-next-comment log-edit-mode-map)))
-
+    
     ;; Eshell
     (eshell-mode-hook
      ((move-beginning-of-line eshell-bol minor-mode-overriding-map-alist)
@@ -555,18 +564,18 @@ Valid values are:
       ("<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)
       ("S-<f11>" eshell-previous-matching-input-from-input minor-mode-overriding-map-alist)
       ("S-<f12>" eshell-next-matching-input-from-input minor-mode-overriding-map-alist)))
-
+    
     ;; Iswitchdb hook
     (iswitchb-minibuffer-setup-hook
      ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
       (isearch-backward iswitchb-prev-match minor-mode-overriding-map-alist)
       (isearch-forward iswitchb-next-match minor-mode-overriding-map-alist)
-
+      
       ("<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("<f12>" iswitchb-next-match minor-mode-overriding-map-alist)
       ("S-<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
-
+    
     ;; Ido minibuffer setup hook
     (ido-minibuffer-setup-hook
      ((keyboard-quit minibuffer-keyboard-quit ido-common-completion-map)
@@ -612,7 +621,237 @@ Valid values are:
                         (symbol :tag "Function to Run")
                         (const :tag "Unbind Key" nil))
                        (symbol :tag "Keymap to Modify")))))
+  :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
+
+
+
+;;;###autoload
+(defun ergoemacs-key (key function &optional desc fixed-key)
+  "Defines KEY in ergoemacs keyboard based on QWERTY and binds to FUNCTION.
+Optionally provides DESC for a description of the key."
+  (let (found)
+    (set (if fixed-key (ergoemacs-get-fixed-layout)
+           (ergoemacs-get-variable-layout))
+         (mapcar
+          (lambda(x)
+            (if (not (string= key (nth 0 x)))
+                x
+              (setq found t)
+              `(,key ,function ,desc)))
+          (symbol-value (if fixed-key
+                            (ergoemacs-get-fixed-layout)
+                          (ergoemacs-get-variable-layout)))))
+    (unless found
+      (add-to-list (if fixed-key
+                       (ergoemacs-get-fixed-layout)
+                     (ergoemacs-get-variable-layout))
+                   `(,key ,function ,desc)))))
+
+;;;###autoload
+(defun ergoemacs-fixed-key (key function &optional desc)
+  "Defines KEY that calls FUNCTION in ergoemacs keyboard that is the same regardless of the keyboard layout.
+This optionally provides the description, DESC, too."
+  (ergoemacs-key key functon desc t))
+
+(defun ergoemacs-replace-key (function key &optional desc)
+  "Replaces already defined FUNCTION in ergoemacs key binding with KEY.  The KEY definition is based on QWERTY description of a key"
+  (let (found)
+    (set (ergoemacs-get-variable-layout)
+         (mapcar
+          (lambda(x)
+            (if (not (equal function (nth 1 x)))
+                x
+              (setq found t)
+              `(,key ,function ,desc)))
+          (symbol-value (ergoemacs-get-variable-layout))))
+    (unless found
+      (add-to-list (ergoemacs-get-variable-layout)
+                   `(,key ,function ,desc)))))
+
+;;;###autoload
+(defun ergoemacs-minor-key (hook list)
+  "Defines keys to add to an ergoemacs keyboard hook.
+
+Adds to the list `ergoemacs-get-minor-mode-layout' by modifying the
+ergoemacs hook applied to HOOK.  The LIST is of the following
+format:
+
+ (FUNCTION/KEY FUNCTION-TO-CALL KEYMAP)"
+  (set (ergoemacs-get-minor-mode-layout)
+       (mapcar
+        (lambda(mode-list)
+          (if (not (equal hook (nth 0 mode-list)))
+              mode-list
+            (let (found lst)
+              (setq lst (mapcar
+                         (lambda(key-def)
+                           (if (and (equal (nth 0 list) (nth 0 key-def))
+                                    (equal (nth 2 list) (nth 2 key-def)))
+                               (progn
+                                 (setq found t)
+                                 list)
+                             key-def))
+                         (nth 1 mode-list)))
+              (unless found
+                (add-to-list 'lst list))
+              `(,(nth 0 mode-list) ,lst))))
+        (symbol-value (ergoemacs-get-minor-mode-layout)))))
+
+;;; Add the different keyboard variants
+
+
+(defvar ergoemacs-variant nil)
+
+(defun ergoemacs-get-variable-layout (&optional var)
+  "Get Variable Layout for current variant."
+  (let ((cvar (or var 'ergoemacs-variable-layout)))
+    (if (and ergoemacs-variant
+             (intern-soft (concat (symbol-name cvar) "-" ergoemacs-variant)))
+        (intern (concat (symbol-name cvar) "-" ergoemacs-variant))
+      cvar)))
+
+
+(defun ergoemacs-get-fixed-layout ()
+  "Gets Fixed Layout for current variant."
+  (ergoemacs-get-variable-layout 'ergoemacs-fixed-layout))
+
+(defun ergoemacs-get-minor-mode-layout ()
+  "Get ergoemacs-minor-mode-layout based on current variant."
+  (ergoemacs-get-variable-layout 'ergoemacs-minor-mode-layout))
+
+(defun ergoemacs-get-layouts-type ()
+  "Gets the customization types for `ergoemacs-keyboard-layout'"
+  `(choice ,@(mapcar
+              (lambda(elt)
+                `(const :tag ,elt :value ,elt))
+              (sort (ergoemacs-get-layouts) 'string<))))
+
+(progn nil
+       )
+
+(defun ergoemacs-get-variants-doc ()
+  "Gets the list of all known variants and the documentation associated with the variants."
+  (let ((lays (sort (ergoemacs-get-variants) 'string<)))
+    (mapconcat
+     (lambda(lay)
+       (let* ((variable (intern (concat "ergoemacs-" lay "-variant")))
+              (alias (condition-case nil
+                         (indirect-variable variable)
+                       (error variable)))
+              (is-alias nil)
+              (doc nil))
+         (setq doc (or (documentation-property variable 'group-documentation)
+                       (progn
+                         (setq is-alias t)
+                         (documentation-property alias 'group-documentation))))
+         (concat "\""lay "\" (" doc ")" (if is-alias ", alias" ""))))
+     lays "\n")))
+
+(defun ergoemacs-get-variants (&optional ob)
+  "Gets the list of all known variants."
+  (let (ret)
+    (mapatoms (lambda(s)
+                (let ((sn (symbol-name s)))
+                  (and (string-match "^ergoemacs-\\(.*?\\)-variant$" sn)
+                       (setq ret (cons (match-string 1 sn) ret)))))
+              ob)
+    ret))
+(defun ergoemacs-get-variants-type ()
+  "Gets the customization types for `ergoemacs-keyboard-layout'"
+  `(choice
+    (const :tag "Standard Variant" :value nil)
+    ,@(mapcar
+       (lambda(elt)
+         `(const :tag ,elt :value ,elt))
+       (sort (ergoemacs-get-variants) 'string<))))
+
+(defmacro ergoemacs-defvariant (name desc based-on &rest differences)
+  "Creates a variant layout for Ergoemacs keybindings
+
+NAME is the variant name.
+DESC is the variant description
+BASED-ON is the base name variant that the new variant is based on.
+
+DIFFERENCES are the differences from the layout based on the functions.  These are based on the following functions:
+
+`ergoemacs-key' = defines/replaces variable key with function by (ergoemacs-key QWERTY-KEY FUNCTION DESCRIPTION)
+`ergoemacs-fixed-key' = defines/replace fixed key with function by (ergoemacs-fixed-key KEY FUNCTION DESCRIPTION)
+`ergoemacs-minor-key' = defines/replaces minor mode hooks.
+"
+  `(progn
+     (let ((last-variant ergoemacs-variant)
+           (ergoemacs-fixed-layout-tmp ,(if based-on
+                                            (format "ergoemacs-fixed-layout-%s" based-on)
+                                          'ergoemacs-fixed-layout))
+           (ergoemacs-variable-layout-tmp ,(if based-on
+                                               (format "ergoemacs-variable-layout-%s" based-on)
+                                             'ergoemacs-variable-layout))
+           (ergoemacs-minor-mode-layout-tmp ,(if based-on
+                                                 (format "ergoemacs-minor-mode-layout-%s" name)
+                                               'ergoemacs-minor-mode-layout)))
+       (setq ergoemacs-variant "tmp")
+       ,@differences
+       (setq ergoemacs-variant last-variant)
+       (defgroup ,(intern (format "ergoemacs-%s-variant" name)) nil
+         ,desc
+         :group 'ergoemacs-mode)
+       
+       (defcustom ,(intern (format "ergoemacs-variable-layout-%s" name))
+         ergoemacs-variable-layout-tmp
+         "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
+         :type '(repeat
+                 (list :tag "Keys"
+                       (choice (string :tag "QWERTY Kbd Code")
+                               (sexp :tag "Key"))
+                       (symbol :tag "Function")
+                       (choice (const :tag "No Label" nil)
+                               (string :tag "Label"))))
+         :set 'ergoemacs-set-default
+         :group ',(intern (format "ergoemacs-%s-variant" name)))
+       
+       (defcustom ,(intern (format "ergoemacs-fixed-layout-%s" name))
+         ergoemacs-fixed-layout-tmp
+         "Ergoemacs that are fixed regardless of keyboard types.  By default these keybindings are based on QWERTY."
+         :type '(repeat
+                 (list :tag "Keys"
+                       (choice (string :tag "QWERTY Kbd Code")
+                               (sexp :tag "Key"))
+                       (symbol :tag "Function")
+                       (choice (const :tag "No Label" nil)
+                               (string :tag "Label"))))
+         :set 'ergoemacs-set-default
+         :group ',(intern (format "ergoemacs-%s-variant" name)))
+       
+       (defcustom ,(intern (format "ergoemacs-minor-mode-layout-%s" name))
+         ergoemacs-minor-mode-layout-tmp
+         "Key bindings that are applied as hooks to specific modes"
+         :type '(repeat
+                 (list :tag "Keys for a particular minor/major mode"
+                       (symbol :tag "Hook for mode")
+                       (repeat
+                        (list :tag "Key"
+                              (choice
+                               (symbol :tag "Defined Ergoemacs Function to Remap")
+                               (string :tag "Kbd Code"))
+                              (choice
+                               (symbol :tag "Function to Run")
+                               (const :tag "Unbind Key" nil))
+                              (symbol :tag "Keymap to Modify")))))
+         :set 'ergoemacs-set-default
+         :group ',(intern (format "ergoemacs-%s-variant" name))))
+     (defcustom ergoemacs-variant nil
+       (concat "Ergoemacs Keyboard Layout variants.\nThere are different layout variants for ergoemacs.  These include:\n" (ergoemacs-get-variants-doc))
+       :type (ergoemacs-get-variants-type)
+       :set 'ergoemacs-set-default
+       :group 'ergoemacs-mode)))
+
+(ergoemacs-defvariant 5.3.7
+                      "Old Ergoemacs layout.  Uses M-; and M-: for isearch.  Uses M-n for cancel."
+                      nil
+                      (ergoemacs-replace-key 'isearch-forward "M-;" "→ isearch")
+                      (ergoemacs-replace-key 'isearch-backward "M-:" "← isearch")
+                      (ergoemacs-replace-key 'keyboard-quit "M-n" "Cancel"))
 
 (defvar ergoemacs-needs-translation nil)
 (defvar ergoemacs-translation-from nil)
@@ -675,13 +914,13 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
         (if (eq 'string (type-of (nth 0 x)))
             (define-key ,keymap (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)) (nth 1 x))
           (define-key ,keymap (nth 0 x) (nth 1 x))))
-      ergoemacs-fixed-layout)
+      (symbol-value (ergoemacs-get-fixed-layout)))
      (mapc
       (lambda(x)
         (if (eq 'string (type-of (nth 0 x)))
             (define-key ,keymap (ergoemacs-kbd (nth 0 x)) (nth 1 x))
           (define-key ,keymap (nth 0 x) (nth 1 x))))
-      ergoemacs-variable-layout)))
+      (symbol-value (ergoemacs-get-variable-layout)))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
@@ -771,14 +1010,14 @@ Currently only supports two modifier plus key."
                  (to nil))
              (setq to (ergoemacs-kbd from t))
              (if (string= from to) nil
-
+               
                (setq from (ergoemacs-trans-mac-osx from t))
                (setq to (ergoemacs-trans-mac-osx to swap-opiton-and-control))
                (setq from-reg (regexp-quote from))
                (goto-char (point-min))
                (when (re-search-forward from-reg nil t)
                  (replace-match to t t)))))
-         ergoemacs-variable-layout)
+         (symbol-value (ergoemacs-get-variable-layout)))
         (goto-char (point-min))
         (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
 
@@ -843,14 +1082,14 @@ Currently only supports two modifier plus key."
                  (to nil))
              (setq to (ergoemacs-kbd from t))
              (if (string= from to) nil
-
+               
                (setq from (ergoemacs-trans-bash from))
                (setq to (ergoemacs-trans-bash to))
                (setq from-reg (regexp-quote from))
                (goto-char (point-min))
                (when (re-search-forward from-reg nil t)
                  (replace-match to t t)))))
-         ergoemacs-variable-layout)
+         (symbol-value (ergoemacs-get-variable-layout)))
         (goto-char (point-min))
         (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
 
@@ -930,7 +1169,7 @@ Currently only supports two modifier plus key."
                (goto-char (point-min))
                (when (re-search-forward from-reg nil t)
                  (replace-match to t t)))))
-         ergoemacs-variable-layout)
+         (symbol-value (ergoemacs-get-variable-layout)))
         (goto-char (point-min))
         (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
 
@@ -982,7 +1221,7 @@ EXTRA represents an extra file representation."
                          (error nil))
                        (replace-match (format "-%s" (upcase (match-string 1 (nth 0 x)))) t t (nth 0 x))
                      (nth 0 x))  ,(nth 1 x) ,(nth 2 x)))
-              `(,@ergoemacs-fixed-layout
+              `(,@(symbol-value (ergoemacs-get-fixed-layout))
                 ,@(if cua-mode
                       `(("C-c" nil "Copy")
                         ("C-v" nil "Paste")
@@ -1009,48 +1248,48 @@ EXTRA represents an extra file representation."
           (while (re-search-forward "\\(?:Helvetica\\|Sans\\)\\([\";]\\)" nil t)
             (replace-match "Arial Unicode MS\\1")))
         (while (< i (length lay))
-
+          
           (goto-char (point-min))
           (when (search-forward (format ">%s<" i) nil t)
             (replace-match (format ">%s<" (ergoemacs-gen-svg-quote (nth i lay))) t t))
           (goto-char (point-min))
-          (setq txt (assoc (format "M-%s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-variable-layout))
+          (setq txt (assoc (format "M-%s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) (symbol-value (ergoemacs-get-variable-layout))))
           (if (not txt)
               (setq txt "")
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-
+          
           (when (string= txt "")
-            (setq txt (all-completions (format "M-%s " (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-variable-layout))
+            (setq txt (all-completions (format "M-%s " (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) (symbol-value (ergoemacs-get-variable-layout))))
             (if (= 0 (length txt))
                 (setq txt "")
               (setq txt "prefix")))
-
+          
           (unless (string= "" txt)
             (when (search-forward (format ">M%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-
+          
           (goto-char (point-min))
-          (setq txt (assoc (format "C-%s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-variable-layout))
+          (setq txt (assoc (format "C-%s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) (symbol-value (ergoemacs-get-variable-layout))))
           (if (not txt)
               (setq txt "")
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-
+          
           (when (string= txt "")
-            (setq txt (all-completions (format "C-%s " (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) ergoemacs-variable-layout))
+            (setq txt (all-completions (format "C-%s " (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) (symbol-value (ergoemacs-get-variable-layout))))
             (if (= 0 (length txt))
                 (setq txt "")
               (setq txt "prefix")))
-
+          
           (unless (string= "" txt)
             (when (search-forward (format ">C%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-
+          
           ;; Now fill in the ergoemacs-fixed-layout.
-
+          
           (goto-char (point-min))
           (setq txt (assoc (format "M-%s" (nth i lay)) fix))
           (if (not txt)
@@ -1058,17 +1297,17 @@ EXTRA represents an extra file representation."
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-
+          
           (when (string= txt "")
             (setq txt (all-completions (format "M-%s " (nth i lay)) fix))
             (if (= 0 (length txt))
                 (setq txt "")
               (setq txt "prefix")))
-
+          
           (unless (string= "" txt)
             (when (search-forward (format ">M%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-
+          
           (goto-char (point-min))
           (setq txt (assoc (format "C-%s" (nth i lay)) fix))
           (if (not txt)
@@ -1076,7 +1315,7 @@ EXTRA represents an extra file representation."
             (if (>= (length txt) 3)
                 (setq txt (nth 2 txt))
               (setq txt "")))
-
+          
           (when (string= txt "")
             (setq txt (all-completions (format "C-%s " (nth i lay)) fix))
             (if (= 0 (length txt))
@@ -1085,7 +1324,7 @@ EXTRA represents an extra file representation."
           (unless (string= "" txt)
             (when (search-forward (format ">C%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
-
+          
           (mapc
            (lambda(x)
              (goto-char (point-min))
@@ -1101,22 +1340,22 @@ EXTRA represents an extra file representation."
                    (setq txt "")
                  (setq txt "prefix")))
              (when (string= txt "")
-               (setq txt (assoc x ergoemacs-variable-layout))
+               (setq txt (assoc x (symbol-value (ergoemacs-get-variable-layout))))
                (if (not txt)
                    (setq txt "")
                  (if (>= (length txt) 3)
                      (setq txt (nth 2 txt))
                    (setq txt "")))
-
+               
                (when (string= txt "")
-                 (setq txt (all-completions (format "%s " x) ergoemacs-variable-layout))
+                 (setq txt (all-completions (format "%s " x) (symbol-value (ergoemacs-get-variable-layout))))
                  (if (= 0 (length txt))
                      (setq txt "")
                    (setq txt "prefix"))))
              (when (search-forward (format ">%s<" x) nil t)
                (replace-match  (format ">%s<" txt) t t)))
            '("M-S-SPC" "M-SPC" "C-S-SPC" "C-SPC"))
-
+          
           (setq i (+ i 1)))
         (while (re-search-forward ">[CM][0-9]+<" nil t)
           (replace-match "><")))
@@ -1161,7 +1400,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
        ;; Only symbol commands can have necessary properties
        ((not (symbolp this-command))
         nil)
-
+       
        ;; Handle delete-selection property on non-movement commands
        ((not (eq (get this-command 'CUA) 'move))
         (when (and mark-active (not deactivate-mark))
@@ -1233,7 +1472,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
         ;; If we set mark-active to nil here, the region highlight will not be
         ;; removed by the direct_output_ commands.
         (setq deactivate-mark t)))
-
+      
       ;; Detect extension of rectangles by mouse or other movement
       (setq cua--buffer-and-point-before-command
             (if cua--rectangle (cons (current-buffer) (point))))))
@@ -1242,13 +1481,13 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
 
 ;; ErgoEmacs hooks
 (defun ergoemacs-key-fn-lookup (function)
-  "Looks up the key binding for FUNCTION based on `ergoemacs-variable-layout'."
+  "Looks up the key binding for FUNCTION based on `ergoemacs-get-variable-layout'."
   (let ((ret nil))
     (mapc
      (lambda(x)
        (when (equal (nth 1 x) function)
          (setq ret (ergoemacs-kbd (nth 0 x)))))
-     ergoemacs-variable-layout)
+     (symbol-value (ergoemacs-get-variable-layout)))
     (symbol-value 'ret)))
 
 (defmacro ergoemacs-create-hook-function (hook keys)
@@ -1264,7 +1503,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
           nil)
        (defun ,(intern (concat "ergoemacs-" (symbol-name hook))) ()
          ,(concat "Hook for `" (symbol-name hook) "' so ergoemacs keybindings are not lost.
-This is an automatically generated function derived from `ergoemacs-minor-mode-layout'.")
+This is an automatically generated function derived from `ergoemacs-get-minor-mode-layout'.")
          ,(if is-override
               `(ergoemacs-setup-keys-for-keymap ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
             nil)
@@ -1309,14 +1548,14 @@ This is an automatically generated function derived from `ergoemacs-minor-mode-l
 depending the state of `ergoemacs-mode' variable.  If the mode
 is being initialized, some global keybindings in current-global-map
 will change."
-
+  
   (let ((modify-hook (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'add-hook 'remove-hook))
         (modify-advice (if (and (boundp 'ergoemacs-mode) ergoemacs-mode) 'ad-enable-advice 'ad-disable-advice)))
 
     ;; Fix CUA
     (if (and (boundp 'ergoemacs-mode) ergoemacs-mode)
         (ergoemacs-fix-cua--pre-command-handler-1))
-
+    
     ;; when ergoemacs-mode is on, activate hooks and unset global keys, else do inverse
     (if (and (boundp 'ergoemacs-mode) ergoemacs-mode (not (equal ergoemacs-mode 0)))
         (progn
@@ -1327,7 +1566,7 @@ will change."
           (define-key query-replace-map (ergoemacs-key-fn-lookup 'keyboard-quit) 'exit-prefix))
       ;; if ergoemacs was disabled: restore original keys
       (ergoemacs-restore-global-keys))
-
+    
     ;; install the mode-hooks
     (dolist (hook ergoemacs-hook-list)
       (funcall modify-hook (car hook) (cdr hook)))
@@ -1347,7 +1586,7 @@ will change."
       (error "Error modifying advices. %s" err))))
 
 (defun ergoemacs-create-hooks ()
-  "Creates Ergoemacs Hooks from `ergoemacs-minor-mode-layout'."
+  "Creates Ergoemacs Hooks from `ergoemacs-get-minor-mode-layout'."
   (let ((ergoemacs-mode))
     (ergoemacs-hook-modes))
   (setq ergoemacs-hook-list nil)
@@ -1355,7 +1594,7 @@ will change."
    (lambda(x)
      (let ((f (macroexpand `(ergoemacs-create-hook-function ,(car x) ,(car (cdr x))))))
        (eval f)))
-   ergoemacs-minor-mode-layout)
+   (symbol-value (ergoemacs-get-minor-mode-layout)))
   (ergoemacs-hook-modes))
 
 (defun ergoemacs-setup-keys (&optional no-check)
@@ -1439,7 +1678,7 @@ any key unbound or claimed by ergoemacs."
   (define-key ergoemacs-keymap key command)
   ;; Needs to modify the key lists
   (let ((found))
-    (setq ergoemacs-fixed-layout
+    (set (ergoemacs-get-fixed-layout)
           (mapcar
            (lambda(x)
              (if (not (condition-case err
@@ -1448,9 +1687,9 @@ any key unbound or claimed by ergoemacs."
                  x
                (setq found t)
                `(,(nth 0 x) ,command "")))
-           ergoemacs-fixed-layout))
+           (symbol-value (ergoemacs-get-fixed-layout))))
     (unless found
-      (setq ergoemacs-variable-layout
+      (set (ergoemacs-get-variable-layout)
             (mapcar
              (lambda(x)
                (if (not (condition-case err
@@ -1459,9 +1698,9 @@ any key unbound or claimed by ergoemacs."
                    x
                  (setq found t)
                  `(,(nth 0 x) ,command "")))
-             ergoemacs-variable-layout)))
+             (symbol-value (ergoemacs-get-variable-layout)))))
     (unless found
-      (add-to-list 'ergoemacs-fixed-layout `(,key ,command "")))))
+      (add-to-list (ergoemacs-get-fixed-layout) `(,key ,command "")))))
 
 (defun ergoemacs-global-unset-key (key)
   "Removes a key from the ergoemacs-keymap."
@@ -1514,65 +1753,6 @@ any key unbound or claimed by ergoemacs."
       (ergoemacs-local-unset-key key)
     ad-do-it))
 
-;;;###autoload
-(defun ergoemacs-key (key function &optional desc)
-  "Defines KEY in ergoemacs keyboard based on QWERTY and binds to FUNCTION.
-Optionally provides DESC for a description of the key."
-  (let (found)
-    (setq ergoemacs-variable-layout
-          (mapcar
-           (lambda(x)
-             (if (not (string= key (nth 0 x)))
-                 x
-               (setq found t)
-               `(,key ,function ,desc)))
-           ergoemacs-variable-layout))
-    (unless found
-      (add-to-list 'ergoemacs-variable-layout
-                   `(,key ,function ,desc)))))
-
-(defun ergoemacs-replace-key (function key &optional desc)
-  "Replaces already defined FUNCTION in ergoemacs key binding with KEY.  The KEY definition is based on QWERTY description of a key"
-  (let (found)
-    (setq ergoemacs-variable-layout
-          (mapcar
-           (lambda(x)
-             (if (not (equal function (nth 1 x)))
-                 x
-               (setq found t)
-               (,key ,function ,desc)))
-           ergoemacs-variable-layout))
-    (unless found
-      (add-to-list 'ergoemacs-variable-layout
-                   `(,key ,function ,desc)))))
-;;;###autoload
-(defun ergoemacs-minor-key (hook list)
-  "Defines keys to add to an ergoemacs keyboard hook.
-
-Adds to the list `ergoemacs-minor-mode-layout' by modifying the
-ergoemacs hook applied to HOOK.  The LIST is of the following
-format:
-
- (FUNCTION/KEY FUNCTION-TO-CALL KEYMAP)"
-  (setq ergoemacs-minor-mode-layout
-        (mapcar
-         (lambda(mode-list)
-           (if (not (equal hook (nth 0 mode-list)))
-               mode-list
-             (let (found lst)
-               (setq lst (mapcar
-                          (lambda(key-def)
-                            (if (and (equal (nth 0 list) (nth 0 key-def))
-                                     (equal (nth 2 list) (nth 2 key-def)))
-                                (progn
-                                  (setq found t)
-                                  list)
-                              key-def))
-                          (nth 1 mode-list)))
-               (unless found
-                 (add-to-list 'lst list))
-               `(,(nth 0 mode-list) ,lst))))
-         ergoemacs-minor-mode-layout)))
 
 (provide 'ergoemacs-mode)
 
