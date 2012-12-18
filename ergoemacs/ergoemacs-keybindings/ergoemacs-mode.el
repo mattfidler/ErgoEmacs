@@ -449,8 +449,8 @@ Valid values are:
     ("C-x C-b" ibuffer)
     ("C-h m" describe-major-mode)
     ("<f1> m" describe-major-mode)
-    ("C-h o" where-is-old-binding)
-    ("<f1> o" where-is-old-binding)
+    ("C-h o" ergoemacs-where-is-old-binding)
+    ("<f1> o" ergoemacs-where-is-old-binding)
     
     ("C-<pause>" kill-compilation)      ; stop compilation/find/grep
     
@@ -1696,6 +1696,7 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   nil
   :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
   :global t
+  :group 'ergoemacs-mode
   :keymap ergoemacs-keymap
   (ergoemacs-setup-keys t))
     ;; (define-minor-mode ergoemacs-mode … )

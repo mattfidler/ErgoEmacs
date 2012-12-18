@@ -173,8 +173,45 @@ disabled at `ergoemacs-restore-global-keys'."
   (setq ergoemacs-overridden-global-keys '()) ; clear the list
   )
 
+(defun ergoemacs-pretty-key (code)
+  "Creates Pretty keyboard binding from kbd CODE to like M-x to 【Alt+x】"
+  (let ((ret code)
+        (case-fold-search nil))
+    (save-match-data
+      (with-temp-buffer
+        (insert "【")
+        (insert code)
+        (insert "】")
+        (goto-char (point-min))
+        (while (re-search-forward "\\> +\\<" nil t)
+          (replace-match "】,【"))
+        (goto-char (point-min))
+        (while (search-forward "M-" nil t)
+          (replace-match "Alt+" t))
+        (goto-char (point-min))
+        (while (search-forward "C-" nil t)
+          (replace-match "Ctrl+" t))
+        (goto-char (point-min))
+        (while (search-forward "S-" nil t)
+          (replace-match "Shift+" t))
+        (setq ret (buffer-string))))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-pretty-key-rep (code)
+  "Finds keyboard binding codes such as C-x and replaces them with `ergoemacs-pretty-key' encoding."
+  (let ((ret code)
+        (case-fold-search nil))
+    (save-match-data
+      (with-temp-buffer
+        (insert code)
+        (goto-char (point-min))
+        (while (re-search-forward "\\<\\([CMS]-\\)+.\\>" nil t)
+          (replace-match (ergoemacs-pretty-key (match-string 0)) t t))
+        (setq ret (buffer-string))))
+    (symbol-value 'ret)))
+
 ;; Based on describe-key-briefly
-(defun where-is-old-binding (&optional key)
+(defun ergoemacs-where-is-old-binding (&optional key)
   "Print the name of the function KEY invoked before to start ErgoEmacs minor mode."
   (interactive
    (let ((enable-disabled-menus-and-buttons t)
@@ -211,11 +248,12 @@ disabled at `ergoemacs-restore-global-keys'."
       (setq item-cmd (car (cdr (cdr (car item)))))
       (if (string= item-key key-desc)
 	  (setq old-cmd item-cmd))
-      (setq item (cdr item))
-      )
+      (setq item (cdr item)))
     (if old-cmd
 	(with-temp-buffer
 	  (where-is old-cmd t)
 	  (message "Key %s was bound to %s which is now invoked by %s"
-		   key-desc old-cmd (buffer-string)))
-      (message "Key %s was not bound to any command" key-desc))))
+		   (ergoemacs-pretty-key key-desc)
+                   old-cmd
+                   (ergoemacs-pretty-key-rep (buffer-string))))
+      (message "Key %s was not bound to any command" (ergoemacs-pretty-key key-desc)))))
