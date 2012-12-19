@@ -726,7 +726,7 @@
   get in the habit of using ergoemacs keybindings."
   :type 'boolean
   :set 'ergoemacs-set-default
-  :group 'ergoemacs-keys)
+  :group 'ergoemacs-mode)
 
 (defcustom ergoemacs-guru-keys
   '("<left>"
