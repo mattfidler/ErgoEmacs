@@ -1659,7 +1659,7 @@ will change."
 ;; ErgoEmacs minor mode
 ;;;###autoload
 (define-minor-mode ergoemacs-mode
-  (concat "Toggle ergoemacs keybinding minor mode.
+  "Toggle ergoemacs keybinding minor mode.
 This minor mode changes your emacs keybinding.
 
 Without argument, toggles the minor mode.
@@ -1668,7 +1668,7 @@ If optional argument is 0, turn it off.
 
 Home page URL `http://ergoemacs.org/emacs/ergonomic_emacs_keybinding.html'
 
-The `execute-extended-command' 【Alt+x】 is now  or the PC keyboard's 【Menu】 key.")
+The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard's 【Menu】 key."
   nil
   :lighter (if ergoemacs-guru " ErgoGuru" " ErgoEmacs") ;; TODO this should be nil (it is for testing purposes)
   :global t
