@@ -1634,7 +1634,7 @@ will change."
       (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
      (t ; US qwerty by default
       (ergoemacs-setup-keys-for-layout "us")))
-    (ergoemacs-create-hooks))
+    (ergoemacs-create-hooks)
     ;; (define-minor-mode ergoemacs-mode … )
     ;; 2012-12-15 Xah: problem: when calling describe-function on ergoemacs-mode, it will say “ergoemacs-mode is an interactive Lisp function in `.emacs.desktop'”. So commented out this for now. What's the consequence of not updating keymap?
     (unless no-check
@@ -1642,7 +1642,7 @@ will change."
         (when (fboundp 'ergoemacs-mode)
           (ergoemacs-mode 1)
           (when cua-state
-            (cua-mode 1))))))
+            (cua-mode 1)))))))
 
 
 
@@ -1668,9 +1668,7 @@ If optional argument is 0, turn it off.
 
 Home page URL `http://ergoemacs.org/emacs/ergonomic_emacs_keybinding.html'
 
-The `execute-extended-command' 【Alt+x】 is now "
-          (ergoemacs-pretty-key
-           (ergoemacs-lookup-execute-extended-command)) " or the PC keyboard's 【Menu】 key.")
+The `execute-extended-command' 【Alt+x】 is now  or the PC keyboard's 【Menu】 key.")
   nil
   :lighter (if ergoemacs-guru " ErgoGuru" " ErgoEmacs") ;; TODO this should be nil (it is for testing purposes)
   :global t
