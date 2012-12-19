@@ -866,6 +866,9 @@ Some exceptions we don't want to unset.
 
 (defun ergoemacs-format-where-is-buffer ()
   "Format a buffer created from a `where-is' command."
+  (goto-char (point-min))
+  (when (re-search-forward "\\<M-x\\>" nil t)
+    (replace-match (ergoemacs-lookup-execute-extended-command)))
   (when (eq (nth 0 (nth 1 fn)) 'digit-argument)
     (goto-char (point-min))
     (while (re-search-forward "\\<\\([CMS]-\\)+" nil t)
