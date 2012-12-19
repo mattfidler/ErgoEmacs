@@ -340,7 +340,7 @@
     ("M-7" (digit-argument))
     ("M-8" (digit-argument))
     ("M-9" (digit-argument))
-
+    
     ("C-M-@" (mark-sexp))
     ("C-M-a" (beginning-of-defun))
     ("C-M-b" (backward-sexp))
@@ -457,7 +457,7 @@
     ("M-o l" (facemenu-set-bold-italic))
     ("M-o o" (facemenu-set-face))
     ("M-o u" (facemenu-set-underline))
-
+    
     ("M-g ESC" (prefix))
     ("M-g g" (goto-line))
     ("M-g n" (next-error))
@@ -557,12 +557,12 @@
     ("<help> w" (where-is))
     ("<help> <f1>" (help-for-help))
     ("<help> <help>" (help-for-help))
-
+    
     ("<f2> 2" (2C-two-columns))
     ("<f2> b" (2C-associate-buffer))
     ("<f2> s" (2C-split))
     ("<f2> <f2>" (2C-two-columns))
-
+    
     ("C-h 4 i" (info-other-window))
 
     ("C-x C-k C-a" (kmacro-add-counter))
@@ -652,7 +652,7 @@
     ("C-x n p" (narrow-to-page))
     ("C-x n s" (org-narrow-to-subtree))
     ("C-x n w" (widen))
-
+    
     ("C-x r C-@" (point-to-register))
     ("C-x r SPC" (point-to-register))
     ("C-x r +" (increment-register))
@@ -708,104 +708,145 @@
     ("M-o M-S" (center-paragraph))
     ("M-o M-o" (font-lock-fontify-block))
     ("M-o M-s" (center-line))
-
+    
     ("M-g M-g" (goto-line))
     ("M-g M-n" (next-error))
     ("M-g M-p" (previous-error))
-
+    
     ("<f1> 4 i" (info-other-window))
-
+    
     ("<help> 4 i" (info-other-window))
     
     ("C-x a i g" (inverse-add-global-abbrev))
     ("C-x a i l" (inverse-add-mode-abbrev)))
   "Default Emacs Key Bindings")
 
+(defcustom ergoemacs-guru nil
+  "Unbind some commonly used keys such as <left> and <right> to
+  get in the habit of using ergoemacs keybindings."
+  :type 'boolean
+  :set 'ergoemacs-set-default
+  :group 'ergoemacs-keys)
+
+(defcustom ergoemacs-guru-keys
+  '("<left>"
+     "<right>"
+     "<up>"
+     "<down>"
+     "<C-left>"
+     "<C-right>"
+     "<C-up>"
+     "<C-down>"
+     "<M-left>"
+     "<M-right>"
+     "<M-up>"
+     "<M-down>"
+     "<delete>"
+     "<C-delete>"
+     "<M-delete>"
+     "<next>"
+     "<C-next>" 
+     "<prior>"
+     "<C-prior>" 
+     "<home>"
+     "<C-home>"
+     "<end>"
+     "<C-end>")
+  "Keys to unbind if ergoemacs-guru is enabled."
+  :type '(repeat
+          (string :tag "Kbd code"))
+  :set 'ergoemacs-set-default
+  :group 'ergoemacs-mode)
+
+
+
 (defvar ergoemacs-redundant-keys
-  '("C-/" 
-    "C-0" 
-    "C-1" 
-    "C-2" 
-    "C-3" 
-    "C-4" 
-    "C-5" 
-    "C-6" 
-    "C-7" 
-    "C-8" 
-    "C-9" 
-    "M-0" 
-    "M-1" 
-    "M-2" 
-    "M-3" 
-    "M-4" 
-    "M-5" 
-    "M-6" 
-    "M-7" 
-    "M-8" 
-    "M-9" 
-    "C-<prior>" 
-    "C-<next>" 
-    "C-@" 
-    "C-M-%" 
-    "C-_" 
-    "C-a" 
-    "C-b" 
-    "C-d" 
-    "C-e" 
-    "C-f" 
-    "C-k" 
-    "C-l" 
-    "C-n" 
-    "C-o" 
-    "C-p" 
-    "C-r" 
-    "C-s" 
-    "C-t" 
-    "C-v" 
-    "C-w" 
-    "C-x 0" 
-    "C-x 1" 
-    "C-x 2" 
-    "C-x 3" 
-    "C-x 5 0" 
-    "C-x 5 2" 
-    "C-x C-d" 
-    "C-x C-f" 
-    "C-x C-s" 
-    "C-x C-w" 
-    "C-x h" 
-    "C-x o" 
-    "C-y" 
-    "C-z" 
-    "M--" 
-    "M-<" 
-    "M->" 
-    "M-@" 
-    "M-\\" 
-    "M-a" 
-    "M-b" 
-    "M-c" 
-    "M-d" 
-    "M-e" 
-    "M-f" 
-    "M-g" 
-    "M-h" 
-    "M-i" 
-    "M-j" 
-    "M-k" 
-    "M-l" 
-    "M-m" 
-    "M-o" 
-    "M-q" 
-    "M-r" 
-    "M-s" 
-    "M-t" 
-    "M-u" 
-    "M-v" 
-    "M-w" 
-    "M-x" 
-    "M-y" 
-    "M-z" 
+  '("C-/"
+    "C-0"
+    "C-1"
+    "C-2"
+    "C-3"
+    "C-4"
+    "C-5"
+    "C-6"
+    "C-7"
+    "C-8"
+    "C-9"
+    "C-<next>"
+    "C-<prior>"
+    "C-@"
+    "C-M-%"
+    "C-_"
+    "C-a"
+    "C-b"
+    "C-d"
+    "C-e"
+    "C-f"
+    "C-j"
+    "C-k"
+    "C-l"
+    "C-n"
+    "C-o"
+    "C-p"
+    "C-r"
+    "C-s"
+    "C-t"
+    "C-v"
+    "C-w"
+    "C-x 0"
+    "C-x 1"
+    "C-x 2"
+    "C-x 3"
+    "C-x 5 0"
+    "C-x 5 2"
+    "C-x C-d"
+    "C-x C-f"
+    "C-x C-s"
+    "C-x C-w"
+    "C-x h"
+    "C-x o"
+    "C-y"
+    "C-z"
+    "M--"
+    "M-0"
+    "M-1"
+    "M-2"
+    "M-3"
+    "M-4"
+    "M-5"
+    "M-6"
+    "M-7"
+    "M-8"
+    "M-9"
+    "M-<"
+    "M->"
+    "M-@"
+    "M-\\"
+    "M-a"
+    "M-b"
+    "M-c"
+    "M-d"
+    "M-e"
+    "M-f"
+    "M-h"
+    "M-i"
+    "M-j"
+    "M-k"
+    "M-l"
+    "M-m"
+    "M-n"
+    "M-o"
+    "M-p"
+    "M-q"
+    "M-r"
+    "M-s"
+    "M-t"
+    "M-u"
+    "M-v"
+    "M-w"
+    "M-x"
+    "M-y"
+    "M-z"
     "M-{"
     "M-}")
   "These are the redundant key bindings in emacs that ErgoEmacs unbinds.  Some exceptions we do not want to unset are:
@@ -822,6 +863,26 @@ Some exceptions we don't want to unset.
 \"M-g\" ; (prefix)
 
 ")
+
+(defmacro ergoemacs-create-old-key-description-fn (key)
+  `(defun ,(intern (concat "ergoemacs-old-key-" (md5 (format "%s" key)))) ()
+     (interactive)
+     (beep)
+     (let ((fn (assoc ,key ergoemacs-emacs-default-bindings)))
+       (message "%s keybinding is disabled! Use %s"
+                (ergoemacs-pretty-key ,key)
+                (ergoemacs-pretty-key-rep
+                 (with-temp-buffer
+                   (when fn
+                     (where-is
+                      (nth 0 (nth 1 fn))
+                      t))
+                   (buffer-string)))))))
+
+(mapc
+ (lambda(x)
+   (eval `(ergoemacs-create-old-key-description-fn ,x)))
+ `(,@ergoemacs-redundant-keys ,@ergoemacs-guru-keys))
 
 (defun ergoemacs-global-changed-p (key &optional is-variable)
   "Returns if a global key has been changed.  If IS-VARIABLE is
@@ -847,8 +908,6 @@ based on current layout."
                         (not (memq trans-function (nth 1 old-bindings))))))
     (symbol-value 'has-changed)))
 
-
-
 (defvar ergoemacs-overridden-global-keys '()
   "Alist to store overridden keyboard shortcuts in
   `current-global-map' and other maps. Each item looks like '(MAP KEY OLD-COMMAND).")
@@ -870,14 +929,17 @@ disabled at `ergoemacs-restore-global-keys'."
     (if oldcmd
 	(add-to-list 'ergoemacs-overridden-global-keys (cons map (cons key-s (cons oldcmd nil)))))
     ;; redefine the key in the ergoemacs-keymap
-    (define-key map key nil)))
+    (define-key map key (intern-soft (concat "ergoemacs-old-key-" (md5 (format "%s" (key-description key))))))))
 
 (defun ergoemacs-unset-redundant-global-keys ()
   "Unsets redundant keyboard shortcuts that should not be used in ErgoEmacs."
   (mapc (lambda (x)
           (unless (ergoemacs-global-changed-p x)
             (ergoemacs-unset-global-key (current-global-map) x)))
-	ergoemacs-redundant-keys))
+	`(,@ergoemacs-redundant-keys ,@(if ergoemacs-guru
+                                           ergoemacs-guru-keys
+                                         nil))))
+
 (defvar ergoemacs-do-not-restore-list '()
   "List of keys to not restore.")
 (defun ergoemacs-restore-global-keys ()
@@ -905,7 +967,7 @@ disabled at `ergoemacs-restore-global-keys'."
         (insert "】")
         (goto-char (point-min))
         (while (re-search-forward "\\> +\\<" nil t)
-          (replace-match "】,【"))
+          (replace-match "】【"))
         (goto-char (point-min))
         (while (search-forward "M-" nil t)
           (replace-match "Alt+" t))

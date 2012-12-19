@@ -287,8 +287,6 @@
   (concat "Specifies which keyboard layout to use.
 This is a mirror of the environment variable ERGOEMACS_KEYBOARD_LAYOUT.
 
-After setting this value to apply these settings you will need to type in M-x ergoemacs-setup-keys
-
 Valid values are:
 
 " (ergoemacs-get-layouts-doc))
