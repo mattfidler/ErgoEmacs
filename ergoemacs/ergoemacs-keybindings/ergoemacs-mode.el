@@ -1646,7 +1646,7 @@ Home page URL `http://ergoemacs.org/emacs/ergonomic_emacs_keybinding.html'
 
 The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard's 【Menu】 key."
   nil
-  :lighter " ErgoEmacs" ;; TODO this should be nil (it is for testing purposes)
+  :lighter (if ergoemacs-guru " ErgoGuru" " ErgoEmacs") ;; TODO this should be nil (it is for testing purposes)
   :global t
   :group 'ergoemacs-mode
   :keymap ergoemacs-keymap
