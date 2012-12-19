@@ -564,7 +564,7 @@
     ("<f2> <f2>" (2C-two-columns))
     
     ("C-h 4 i" (info-other-window))
-
+    
     ("C-x C-k C-a" (kmacro-add-counter))
     ("C-x C-k C-c" (kmacro-set-counter))
     ("C-x C-k C-d" (kmacro-delete-ring-head))
@@ -864,11 +864,31 @@ Some exceptions we don't want to unset.
 
 ")
 
+(defun ergoemacs-format-where-is-buffer ()
+  "Format a buffer created from a `where-is' command."
+  (when (eq (nth 0 (nth 1 fn)) 'digit-argument)
+    (goto-char (point-min))
+    (while (re-search-forward "\\<\\([CMS]-\\)+" nil t)
+      (when (not (save-match-data (looking-at last)))
+        (replace-match "")
+        (delete-char 1)
+        (when (looking-at " *, *")
+          (replace-match "")))))
+  ;; Delete menu entires
+  (goto-char (point-min))
+  (when (re-search-forward "\\(?:, *\\)?<menu-bar>.*\\([(,]\\)" nil t)
+    (replace-match "\\1"))
+  ;; Reformat alaises
+  (goto-char (point-min))
+  (when (re-search-forward " *([^)]*);\n.*alias *" nil t)
+    (replace-match "")))
+
 (defmacro ergoemacs-create-old-key-description-fn (key)
   `(defun ,(intern (concat "ergoemacs-old-key-" (md5 (format "%s" key)))) ()
      (interactive)
      (beep)
-     (let ((fn (assoc ,key ergoemacs-emacs-default-bindings)))
+     (let ((fn (assoc ,key ergoemacs-emacs-default-bindings))
+           (last (substring ,key -1)))
        (message "%s keybinding is disabled! Use %s"
                 (ergoemacs-pretty-key ,key)
                 (ergoemacs-pretty-key-rep
@@ -877,6 +897,7 @@ Some exceptions we don't want to unset.
                      (where-is
                       (nth 0 (nth 1 fn))
                       t))
+                   (ergoemacs-format-where-is-buffer)
                    (buffer-string)))))))
 
 (mapc
@@ -977,6 +998,10 @@ disabled at `ergoemacs-restore-global-keys'."
         (goto-char (point-min))
         (while (search-forward "S-" nil t)
           (replace-match "Shift+" t))
+        (goto-char (point-min))
+        (while (re-search-forward "[<>]" nil t)
+          (replace-match ""))
+        (goto-char (point-min))
         (setq ret (buffer-string))))
     (symbol-value 'ret)))
 
@@ -1035,6 +1060,7 @@ disabled at `ergoemacs-restore-global-keys'."
     (if old-cmd
 	(with-temp-buffer
 	  (where-is old-cmd t)
+          (ergoemacs-format-where-is-buffer)
 	  (message "Key %s was bound to %s which is now invoked by %s"
 		   (ergoemacs-pretty-key key-desc)
                    old-cmd
