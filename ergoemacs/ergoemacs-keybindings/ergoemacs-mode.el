@@ -523,7 +523,10 @@ Valid values are:
       ("M-c" nil isearch-mode-map) ; was isearch-toggle-case-fold
       ("M-r" nil isearch-mode-map) ; was isearch-toggle-regexp
       ("M-e" nil isearch-mode-map) ; was isearch-edit-string
-      
+      ("C-r" isearch-toggle-regexp isearch-mode-map)
+      ("C-e" isearch-edit-string isearch-mode-map)
+      ("C-c" isearch-toggle-case-fold isearch-mode-map)
+      (next-line ergoemacs-isearch-next-line isearch-mode-map)
       (keyboard-quit isearch-abort isearch-mode-map)
       (isearch-forward isearch-repeat-forward isearch-mode-map)
       (isearch-backward isearch-repeat-backward isearch-mode-map)
@@ -575,20 +578,19 @@ Valid values are:
       ("S-<f11>" iswitchb-prev-match minor-mode-overriding-map-alist)
       ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
     
-    
-    
     ;; Ido minibuffer setup hook
     (ido-minibuffer-setup-hook       
      ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
+      ("C-o" ergoemacs-ido-c-o minor-mode-overriding-map-alist)
       (forward-char ido-next-match minor-mode-overriding-map-alist)
       (backward-char ido-prev-match minor-mode-overriding-map-alist)
-      (previous-line ido-next-match-dir ido-file-dir-completion-map)
-      (next-line ido-prev-match-dir ido-file-dir-completion-map)
+      (previous-line ergoemacs-ido-next-match-dir minor-mode-overriding-map-alist)
+      (next-line ergoemacs-ido-prev-match-dir minor-mode-overriding-map-alist)
       ("<f11>" previous-history-element minor-mode-overriding-map-alist)
       ("<f12>" next-history-element minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
       ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
-  
+    
     ;; Helm mode hooks
     (helm-before-initialize-hook
      (("C-w" helm-keyboard-quit helm-map)
@@ -859,6 +861,7 @@ DIFFERENCES are the differences from the layout based on the functions.  These a
        :set 'ergoemacs-set-default
        :group 'ergoemacs-mode)))
 
+
 (ergoemacs-defvariant 5.3.7
                       "Old Ergoemacs layout.  Uses M-; and M-: for isearch.  Uses M-n for cancel."
                       nil
@@ -929,7 +932,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 	    (define-key ,keymap (read-kbd-macro 
 				 (encode-coding-string 
 				  (nth 0 x) 
-				  locale-coding-system)) 
+				  locale-coding-system))
 	      (nth 1 x))))
       (symbol-value (ergoemacs-get-fixed-layout)))
      (mapc
@@ -1411,7 +1414,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
         (if (timerp cua--prefix-override-timer)
             (cancel-timer cua--prefix-override-timer))
         (setq cua--prefix-override-timer nil))
-
+      
       (cond
        ;; Only symbol commands can have necessary properties
        ((not (symbolp this-command))
@@ -1441,7 +1444,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
             (if nc
                 (setq this-original-command this-command
                       this-command nc)))))
-
+       
        ;; Handle shifted cursor keys and other movement commands.
        ;; If region is not active, region is activated if key is shifted.
        ;; If region is active, region is canceled if key is unshifted
@@ -1450,7 +1453,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
        ;;   ignore the movement.
        ((if window-system
             ;; Shortcut for window-system, assuming that input-decode-map is empty.
-
+            
             ;; ErgoEmacs patch begin ------------------
         ;;;; (memq 'shift (event-modifiers
         ;;;;               (aref (this-single-command-raw-keys) 0)))
@@ -1483,7 +1486,7 @@ Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
        ((or cua--explicit-region-start cua--rectangle)
         (unless mark-active
           (push-mark-command nil nil)))
-
+       
        ;; Else clear mark after this command.
        (t
         ;; If we set mark-active to nil here, the region highlight will not be
@@ -1575,7 +1578,7 @@ will change."
     (if (and (boundp 'ergoemacs-mode) ergoemacs-mode (not (equal ergoemacs-mode 0)))
         (progn
           (ergoemacs-unset-redundant-global-keys)
-
+          
           ;; alt+n is the new "Quit" in query-replace-map
           (ergoemacs-unset-global-key query-replace-map "\e")
           (define-key query-replace-map (ergoemacs-key-fn-lookup 'keyboard-quit) 'exit-prefix))
@@ -1585,7 +1588,7 @@ will change."
     ;; install the mode-hooks
     (dolist (hook ergoemacs-hook-list)
       (funcall modify-hook (car hook) (cdr hook)))
-
+    
     ;; enable advices
     (condition-case err
         (progn
@@ -1765,6 +1768,8 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   "This let you use global-set-key as usual when ergoemacs-mode is enabled."
   ad-do-it
   (add-to-list 'ergoemacs-do-not-restore-list (key-description key))
+  (add-to-list 'ergoemacs-global-changed-cache (key-description key))
+  (setq ergoemacs-global-not-changed-cache (remove (key-description key) 'ergoemacs-not-changed-cache))
   (let ((no-ergoemacs-advice t))
     (define-key ergoemacs-keymap key nil)))
 
@@ -1773,6 +1778,8 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   ;; the global-unset-key will remove the key from ergoemacs as well.
   ad-do-it
   (add-to-list 'ergoemacs-do-not-restore-list (key-description key))
+  (add-to-list 'ergoemacs-global-changed-cache (key-description key))
+  (setq ergoemacs-global-not-changed-cache (remove (key-description key) 'ergoemacs-not-changed-cache))
   (let ((no-ergoemacs-advice t))
     (define-key ergoemacs-keymap key nil)))
 

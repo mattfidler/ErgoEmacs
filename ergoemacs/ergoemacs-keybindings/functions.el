@@ -4,20 +4,52 @@
 
 (delete-selection-mode 1) ; turn on text selection highlighting and make typing override selected text (Note: when delete-selection-mode is on, then transient-mark-mode is automatically on too.)
 
+
+;;; Isearch function fixes
+
+(defun ergoemacs-isearch-next-line ()
+  "Iserach next line replacement.  Without this the colemak layout will not go to the next line"
+  (interactive)
+  (isearch-exit)
+  (next-line))
+
+
+
+;;; Ido-ergoemacs functional fixes
+(defun ergoemacs-ido-c-o (arg)
+  "Ergoemacs ido C-o command"
+  (interactive "P")
+  (cond
+   ((memq ido-cur-item '(file dir))
+    (ido-fallback-command))
+   (t
+    (minibuffer-keyboard-quit)
+    (ido-find-file))))
+(defun ergoemacs-ido-prev-match-dir ()
+  "Call the correct function based on if we are completing directories or not"
+  (interactive)
+  (if (and (boundp 'item) item (eq item 'file))
+      (ido-prev-match-dir)
+    (previous-history-element)))
+
+(defun ergoemacs-ido-next-match-dir ()
+  "Call the correct function based on if we are completing directories or not."
+  (interactive)
+  (if (and (boundp 'item) item (eq item 'file))
+      (ido-next-match-dir)
+    (next-history-element)))
+
 (defun print-buffer-confirm ()
   "Print current buffer, but ask for confirmation first."
   (interactive)
   (when
       (y-or-n-p "Print current buffer?")
-    (print-buffer)
-    )
-  )
+    (print-buffer)))
 
 (defun call-keyword-completion ()
   "Call the command that has keyboard shortcut M-TAB."
   (interactive)
-  (call-interactively (key-binding (kbd "M-TAB")))
-)
+  (call-interactively (key-binding (kbd "M-TAB"))))
 
 (defun describe-major-mode ()
   "Show inline doc for current major-mode."
@@ -30,16 +62,14 @@
 If narrow-to-region is in effect, then copy that region only."
   (interactive)
   (kill-new (buffer-string))
-  (message "Buffer content copied copy-region-as-kill")
-  )
+  (message "Buffer content copied copy-region-as-kill"))
 
 (defun cut-all ()
   "Cut the whole buffer content into the kill-ring.
 If narrow-to-region is in effect, then cut that region only."
   (interactive)
   (kill-region (point-min) (point-max))
-  (message "Buffer content cut")
-  )
+  (message "Buffer content cut"))
 
 (defun copy-line-or-region ()
   "Copy current line, or current text selection."
@@ -69,8 +99,7 @@ If narrow-to-region is in effect, then cut that region only."
 (defun backward-open-bracket ()
   "Move cursor to the previous occurrence of left bracket or quotation mark.."
   (interactive)
-  (search-backward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t)
-  )
+  (search-backward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t))
 
 (defun forward-close-bracket ()
   "Move cursor to the next occurrence of right bracket or quotation mark."
@@ -222,17 +251,17 @@ See also: `compact-uncompact-block'"
 This command is similar to a toggle of `fill-paragraph'.
 When there is a text selection, act on the region."
   (interactive)
-
+  
   ;; This command symbol has a property “'stateIsCompact-p”.
   (let (currentStateIsCompact (bigFillColumnVal 4333999) (deactivate-mark nil))
-
+    
     (save-excursion
       ;; Determine whether the text is currently compact.
       (setq currentStateIsCompact
             (if (eq last-command this-command)
                 (get this-command 'stateIsCompact-p)
               (if (> (- (line-end-position) (line-beginning-position)) fill-column) t nil) ) )
-
+      
       (if (region-active-p)
           (if currentStateIsCompact
               (fill-region (region-beginning) (region-end))
@@ -242,7 +271,7 @@ When there is a text selection, act on the region."
             (fill-paragraph nil)
           (let ((fill-column bigFillColumnVal))
             (fill-paragraph nil)) ) )
-
+      
       (put this-command 'stateIsCompact-p (if currentStateIsCompact nil t)) ) ) )
 
 (defun shrink-whitespaces ()
@@ -264,7 +293,7 @@ Calling this command 3 times will always result in no whitespaces around cursor.
     (save-excursion
       ;; todo: might consider whitespace as defined by syntax table, and also consider whitespace chars in unicode if syntax table doesn't already considered it.
       (setq cursor-point (point))
-
+      
       (setq spaceTabNeighbor-p (if (or (looking-at " \\|\t") (looking-back " \\|\t")) t nil) )
       (move-beginning-of-line 1) (setq line-begin-pos (point) )
       (move-end-of-line 1) (setq line-end-pos (point) )
@@ -272,19 +301,19 @@ Calling this command 3 times will always result in no whitespaces around cursor.
       ;;       (re-search-forward "\n$") (setq line-end-pos (point) )
       (setq line-has-meat-p (if (< 0 (count-matches "[[:graph:]]" line-begin-pos line-end-pos)) t nil) )
       (goto-char cursor-point)
-
+      
       (skip-chars-backward "\t ")
       (setq space-or-tab-begin (point))
-
+      
       (skip-chars-backward "\t \n")
       (setq whitespace-begin (point))
-
+      
       (goto-char cursor-point)      (skip-chars-forward "\t ")
       (setq space-or-tab-end (point))
       (skip-chars-forward "\t \n")
       (setq whitespace-end (point))
       )
-
+    
     (if line-has-meat-p
         (let (deleted-text)
           (when spaceTabNeighbor-p
@@ -294,7 +323,7 @@ Calling this command 3 times will always result in no whitespaces around cursor.
             ;; different that a simple whitespace
             (if (not (string= deleted-text " "))
                 (insert " ") ) ) )
-
+      
       (progn
         ;; (delete-region whitespace-begin whitespace-end)
         ;; (insert "\n")
@@ -314,7 +343,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
         (setq p1 (region-beginning) p2 (region-end))
       (let ((bds (bounds-of-thing-at-point 'word) ) )
         (setq p1 (car bds) p2 (cdr bds)) ) )
-
+    
     (when (not (eq last-command this-command))
       (save-excursion
         (goto-char p1)
@@ -325,7 +354,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
          ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
          ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
          (t (put this-command 'state "all lower") ) ) ) )
-
+    
     (cond
      ((string= "all lower" (get this-command 'state))
       (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
@@ -411,7 +440,7 @@ Works in Microsoft Windows, Mac OS X, Linux."
           (cond
            ((string-equal major-mode "dired-mode") (dired-get-marked-files))
            (t (list (buffer-file-name))) ) ) )
-
+    
     (setq doIt (if (<= (length myFileList) 5)
                    t
                  (y-or-n-p "Open more than 5 files?") ) )
@@ -480,7 +509,7 @@ Else it is a user buffer."
             (setq recently-closed-buffers (butlast recently-closed-buffers 1))
             )
           )
-
+        
         ;; close
         (kill-buffer (current-buffer))
 

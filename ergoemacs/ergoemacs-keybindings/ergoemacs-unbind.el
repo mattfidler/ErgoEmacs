@@ -676,7 +676,7 @@
     ("C-x r x" (copy-to-register))
     ("C-x r y" (yank-rectangle))
     ("C-x r C-SPC" (point-to-register))
-
+    
     ("C-x v +" (vc-update))
     ("C-x v =" (vc-diff))
     ("C-x v D" (vc-root-diff))
@@ -884,7 +884,7 @@ Some exceptions we don't want to unset.
     (replace-match "")))
 
 (defmacro ergoemacs-create-old-key-description-fn (key)
-  `(defun ,(intern (concat "ergoemacs-old-key-" (md5 (format "%s" key)))) ()
+  `(defun ,(intern (concat "/ergoemacs-old-key-" (md5 (format "%s" key)))) ()
      (interactive)
      (beep)
      (let ((fn (assoc ,key ergoemacs-emacs-default-bindings))
@@ -893,7 +893,7 @@ Some exceptions we don't want to unset.
                 (ergoemacs-pretty-key ,key)
                 (ergoemacs-pretty-key-rep
                  (with-temp-buffer
-                   (when fn
+                   (when (and fn (not (eq 'prefix (nth 0 (nth 1 fn)))))
                      (where-is
                       (nth 0 (nth 1 fn))
                       t))
@@ -904,6 +904,12 @@ Some exceptions we don't want to unset.
  (lambda(x)
    (eval `(ergoemacs-create-old-key-description-fn ,x)))
  `(,@ergoemacs-redundant-keys ,@ergoemacs-guru-keys))
+
+(defvar ergoemacs-global-not-changed-cache '()
+  "Cache of global variables that have not changed")
+
+(defvar ergoemacs-global-changed-cache '()
+  "Cache of global variables that have changed.")
 
 (defun ergoemacs-global-changed-p (key &optional is-variable)
   "Returns if a global key has been changed.  If IS-VARIABLE is
@@ -918,16 +924,29 @@ based on current layout."
                (encode-coding-string
                 key locale-coding-system))))
            (t key)))
-         (key-kbd (key-description key-code))
-         (key-function (lookup-key (current-global-map) key-code t))
-         (old-bindings (assoc key-kbd ergoemacs-emacs-default-bindings))
-         (trans-function (if (keymapp key-function)
-                             'prefix
-                           key-function))
-         (has-changed (if (not old-bindings)
-                          nil ; Assume that if not known, it hasn't changed.
-                        (not (memq trans-function (nth 1 old-bindings))))))
-    (symbol-value 'has-changed)))
+         (key-kbd (key-description key-code)))
+    (if (member key-kbd ergoemacs-global-changed-cache)
+        t
+      (if (member key-kbd ergoemacs-global-not-changed-cache)
+          nil
+        (let* ((key-function (lookup-key (current-global-map) key-code t))
+               (old-bindings (assoc key-kbd ergoemacs-emacs-default-bindings))
+               (trans-function (if (keymapp key-function)
+                                   'prefix
+                                 key-function))
+               (has-changed (if (not old-bindings)
+                                nil ; Assume that if not known, it hasn't changed.
+                              (not (memq trans-function (nth 1 old-bindings))))))
+          (when (and has-changed
+                     (string-match "/ergoemacs-old-key-" (symbol-name key-function)))
+            ;; Already unset, assume that the old key hasn't changed.
+            (setq has-changed nil))
+          (if has-changed
+              (progn
+                (add-to-list 'ergoemacs-global-changed-cache key-kbd))
+            (add-to-list 'ergoemacs-global-not-changed-cache key-kbd))
+          ;;(message "%s %s %s" key-kbd key-function has-changed)
+          (symbol-value 'has-changed))))))
 
 (defvar ergoemacs-overridden-global-keys '()
   "Alist to store overridden keyboard shortcuts in
@@ -950,7 +969,7 @@ disabled at `ergoemacs-restore-global-keys'."
     (if oldcmd
 	(add-to-list 'ergoemacs-overridden-global-keys (cons map (cons key-s (cons oldcmd nil)))))
     ;; redefine the key in the ergoemacs-keymap
-    (define-key map key (intern-soft (concat "ergoemacs-old-key-" (md5 (format "%s" (key-description key))))))))
+    (define-key map key (intern-soft (concat "/ergoemacs-old-key-" (md5 (format "%s" (key-description key))))))))
 
 (defun ergoemacs-unset-redundant-global-keys ()
   "Unsets redundant keyboard shortcuts that should not be used in ErgoEmacs."
@@ -974,6 +993,8 @@ disabled at `ergoemacs-restore-global-keys'."
                 (car (cdr (cdr x)))))))
 	ergoemacs-overridden-global-keys)
   ;; clear the lists
+  (setq ergoemacs-global-not-changed-cache '())
+  (setq ergoemacs-global-changed-cache '())
   (setq ergoemacs-overridden-global-keys '())
   (setq ergoemacs-do-not-restore-list '()))
 
