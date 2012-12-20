@@ -1758,7 +1758,8 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   ad-do-it
   (add-to-list 'ergoemacs-do-not-restore-list (key-description key))
   (add-to-list 'ergoemacs-global-changed-cache (key-description key))
-  (setq ergoemacs-global-not-changed-cache (remove (key-description key) 'ergoemacs-not-changed-cache))
+  (when ergoemacs-global-not-changed-cache
+    (delete (key-description key) ergoemacs-global-not-changed-cache))
   (let ((no-ergoemacs-advice t))
     (define-key ergoemacs-keymap key nil)))
 
@@ -1768,7 +1769,8 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
   ad-do-it
   (add-to-list 'ergoemacs-do-not-restore-list (key-description key))
   (add-to-list 'ergoemacs-global-changed-cache (key-description key))
-  (setq ergoemacs-global-not-changed-cache (remove (key-description key) 'ergoemacs-not-changed-cache))
+  (when ergoemacs-global-not-changed-cache
+    (delete (key-description key) ergoemacs-global-not-changed-cache))
   (let ((no-ergoemacs-advice t))
     (define-key ergoemacs-keymap key nil)))
 
