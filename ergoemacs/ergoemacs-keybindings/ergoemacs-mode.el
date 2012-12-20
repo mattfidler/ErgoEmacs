@@ -294,6 +294,23 @@ Valid values are:
   :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
+;; Shifted movement command fixes (without advising cua-mode)
+(defmacro ergoemacs-create-shifted-movement-command (command)
+  "Creates a shifted command."
+  `(defun ,(intern (concat "ergoemacs-" (symbol-name command))) (&optional arg)
+     ,(format "Ergoemacs shifted movement command for `%s'." (symbol-name command))
+     (interactive)
+     (let ((active (mark)))
+       (call-interactively ',command t)
+       (setq this-command ',command)
+       (unless active
+         (deactivate-mark)))))
+(mapc
+ (lambda(x)
+   (eval `(ergoemacs-create-shifted-movement-command ,x)))
+ '(scroll-down move-beginning-of-line move-end-of-line scroll-up scroll-down forward-block backward-block forward-word backward-word next-line previous-line forward-char backward-char))
+
+
 ;; Ergoemacs keys
 (defcustom ergoemacs-variable-layout
   '(("M-j" backward-char  "← char")
@@ -525,8 +542,14 @@ Valid values are:
       ("M-e" nil isearch-mode-map) ; was isearch-edit-string
       ("C-r" isearch-toggle-regexp isearch-mode-map)
       ("C-e" isearch-edit-string isearch-mode-map)
-      ("C-c" isearch-toggle-case-fold isearch-mode-map)
-      (next-line ergoemacs-isearch-next-line isearch-mode-map)
+      ;;("C-c" isearch-toggle-case-fold isearch-mode-map)
+      
+      (next-line ergoemacs-isearch-next-line isearch-mode-map) ;; Fixes Colemak M-e issue
+      
+      ;; Should fix issue #3?
+      (isearch-forward isearch-forward-exit-minibuffer minibuffer-local-isearch-map)
+      (isearch-backward isearch-backward-exit-minibuffer minibuffer-local-isearch-map)
+      
       (keyboard-quit isearch-abort isearch-mode-map)
       (isearch-forward isearch-repeat-forward isearch-mode-map)
       (isearch-backward isearch-repeat-backward isearch-mode-map)
@@ -654,7 +677,8 @@ Valid values are:
 (defun ergoemacs-key (key function &optional desc fixed-key)
   "Defines KEY in ergoemacs keyboard based on QWERTY and binds to FUNCTION.
 Optionally provides DESC for a description of the key."
-  (let (found)
+  (let (found
+        (no-ergoemacs-advice t))
     (set (if fixed-key (ergoemacs-get-fixed-layout)
            (ergoemacs-get-variable-layout))
          (mapcar
@@ -671,7 +695,10 @@ Optionally provides DESC for a description of the key."
       (add-to-list (if fixed-key
                        (ergoemacs-get-fixed-layout)
                      (ergoemacs-get-variable-layout))
-                   `(,key ,function ,desc)))))
+                   `(,key ,function ,desc)))
+    (if fixed
+        (define-key ergoemacs-keymap (read-kbd-macro (encode-coding-string key)))
+      (define-key ergoemacs-keymap (ergoemacs-kbd key) function))))
 
 ;;;###autoload
 (defun ergoemacs-fixed-key (key function &optional desc)
@@ -916,30 +943,51 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
     (when (and ergoemacs-needs-translation
                (string-match ergoemacs-translation-regexp new-key))
       (setq new-key (replace-match (concat "-" (cdr (assoc (match-string 1 new-key) ergoemacs-translation-assoc))) t t new-key)))
-    ;;(message "%s -> %s" key new-key)
     (if (not just-translate)
         (read-kbd-macro (encode-coding-string new-key locale-coding-system))
       new-key)))
 
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
-  `(let ((no-ergoemacs-advice t))
+  `(let ((no-ergoemacs-advice t)
+         (case-fold-search t)
+         cmd)
      (setq ,keymap (make-sparse-keymap))
      (mapc
       (lambda(x)
-        (if (and (eq 'string (type-of (nth 0 x)))
-                 (not (ergoemacs-global-changed-p (nth 0 x))))
-	    (define-key ,keymap (read-kbd-macro 
+        (when (and (eq 'string (type-of (nth 0 x)))
+                   (not (ergoemacs-global-changed-p (nth 0 x))))
+          (setq cmd (or
+                     (and (or
+                           (string=
+                            (upcase (substring (nth 0 x) -1))
+                            (substring (nth 0 x) -1))
+                           (save-match-data
+                             (string-match "\\<S-" (nth 0 x))))
+                          (intern-soft
+                           (concat "ergoemacs-" (symbol-name (nth 1 x)))))
+                     (nth 1 x)))
+          (define-key ,keymap (read-kbd-macro 
 				 (encode-coding-string 
 				  (nth 0 x) 
 				  locale-coding-system))
-	      (nth 1 x))))
+	      cmd)))
       (symbol-value (ergoemacs-get-fixed-layout)))
      (mapc
       (lambda(x)
-        (if (and (eq 'string (type-of (nth 0 x)))
-                 (not (ergoemacs-global-changed-p (nth 0 x) t)))
-	    (define-key ,keymap (ergoemacs-kbd (nth 0 x)) (nth 1 x))))
+        (when (and (eq 'string (type-of (nth 0 x)))
+                   (not (ergoemacs-global-changed-p (nth 0 x) t)))
+          (setq cmd (or
+                     (and (or
+                           (string=
+                            (upcase (substring (nth 0 x) -1))
+                            (substring (nth 0 x) -1))
+                           (save-match-data
+                             (string-match "\\<S-" (nth 0 x))))
+                          (intern-soft
+                           (concat "ergoemacs-" (symbol-name (nth 1 x)))))
+                     (nth 1 x)))
+          (define-key ,keymap (ergoemacs-kbd (nth 0 x)) cmd)))
       (symbol-value (ergoemacs-get-variable-layout)))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
@@ -1396,107 +1444,8 @@ EXTRA represents an extra file representation."
 
 ;;; ergoemacs-keymap
 
-(defvar ergoemacs-keymap (make-sparse-keymap) "ErgoEmacs minor mode keymap.")
-
-
-
-;; CUA fix
-
-(let (cuaModeState cua-mode)
-  (cua-mode 1) ; turn on cua-mode first so the command ergoemacs-fix-cua--pre-command-handler-1 will be able to set some symbols from cua-mode
-  
-  (defun ergoemacs-fix-cua--pre-command-handler-1 ()
-    "Fixes CUA minor mode so selection is highlighted only when
-Shift+<special key> is used (arrows keys, home, end, pgdn, pgup, etc.)."
-    (defun cua--pre-command-handler-1 ()
-      ;; Cancel prefix key timeout if user enters another key.
-      (when cua--prefix-override-timer
-        (if (timerp cua--prefix-override-timer)
-            (cancel-timer cua--prefix-override-timer))
-        (setq cua--prefix-override-timer nil))
-      
-      (cond
-       ;; Only symbol commands can have necessary properties
-       ((not (symbolp this-command))
-        nil)
-       
-       ;; Handle delete-selection property on non-movement commands
-       ((not (eq (get this-command 'CUA) 'move))
-        (when (and mark-active (not deactivate-mark))
-          (let* ((ds (or (get this-command 'delete-selection)
-                         (get this-command 'pending-delete)))
-                 (nc (cond
-                      ((not ds) nil)
-                      ((eq ds 'yank)
-                       'cua-paste)
-                      ((eq ds 'kill)
-                       (if cua--rectangle
-                           'cua-copy-rectangle
-                         'cua-copy-region))
-                      ((eq ds 'supersede)
-                       (if cua--rectangle
-                           'cua-delete-rectangle
-                         'cua-delete-region))
-                      (t
-                       (if cua--rectangle
-                           'cua-delete-rectangle ;; replace?
-                         'cua-replace-region)))))
-            (if nc
-                (setq this-original-command this-command
-                      this-command nc)))))
-       
-       ;; Handle shifted cursor keys and other movement commands.
-       ;; If region is not active, region is activated if key is shifted.
-       ;; If region is active, region is canceled if key is unshifted
-       ;;   (and region not started with C-SPC).
-       ;; If rectangle is active, expand rectangle in specified direction and
-       ;;   ignore the movement.
-       ((if window-system
-            ;; Shortcut for window-system, assuming that input-decode-map is empty.
-            
-            ;; ErgoEmacs patch begin ------------------
-        ;;;; (memq 'shift (event-modifiers
-        ;;;;               (aref (this-single-command-raw-keys) 0)))
-            (and (memq 'shift (event-modifiers
-                               (aref (this-single-command-raw-keys) 0)))
-                 ;; In this way, we expect to use CUA only with keys that
-                 ;; are symbols (like <left>, <next>, etc.)
-                 (symbolp (event-basic-type (aref (this-single-command-raw-keys) 0))))
-          ;; ErgoEmacs patch end --------------------
-          
-          (or
-           ;; Check if the final key-sequence was shifted.
-           (memq 'shift (event-modifiers
-                         (aref (this-single-command-keys) 0)))
-           ;; If not, maybe the raw key-sequence was mapped by input-decode-map
-           
-           ;; to a shifted key (and then mapped down to its unshifted form).
-           (let* ((keys (this-single-command-raw-keys))
-                  (ev (lookup-key input-decode-map keys)))
-             (or (and (vector ev) (memq 'shift (event-modifiers (aref ev 0))))
-                 ;; Or maybe, the raw key-sequence was not an escape sequence
-                 ;; and was shifted (and then mapped down to its unshifted form).
-                 (memq 'shift (event-modifiers (aref keys 0)))))))
-        (unless mark-active
-          (push-mark-command nil t))
-        (setq cua--last-region-shifted t)
-        (setq cua--explicit-region-start nil))
-       
-       ;; Set mark if user explicitly said to do so
-       ((or cua--explicit-region-start cua--rectangle)
-        (unless mark-active
-          (push-mark-command nil nil)))
-       
-       ;; Else clear mark after this command.
-       (t
-        ;; If we set mark-active to nil here, the region highlight will not be
-        ;; removed by the direct_output_ commands.
-        (setq deactivate-mark t)))
-      
-      ;; Detect extension of rectangles by mouse or other movement
-      (setq cua--buffer-and-point-before-command
-            (if cua--rectangle (cons (current-buffer) (point))))))
-  (if cuaModeState (progn (cua-mode 1)) (cua-mode -1)))
+(defvar ergoemacs-keymap (make-sparse-keymap)
+  "ErgoEmacs minor mode keymap.")
 
 
 
