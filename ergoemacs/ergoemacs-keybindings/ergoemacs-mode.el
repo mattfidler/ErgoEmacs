@@ -263,7 +263,7 @@
                        (progn
                          (setq is-alias t)
                          (documentation-property alias 'variable-documentation))))
-         (concat "\""lay "\" (" doc ")" (if is-alias ", alias" ""))))
+         (concat "\"" lay "\" (" doc ")" (if is-alias ", alias" ""))))
      lays "\n")))
 
 (defun ergoemacs-get-layouts (&optional ob)
