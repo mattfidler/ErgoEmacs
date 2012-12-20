@@ -774,24 +774,28 @@ Some exceptions we don't want to unset.
 
 ")
 
-(defun ergoemacs-format-where-is-buffer ()
+(defun ergoemacs-format-where-is-buffer (&optional include-menu-bar include-alias)
   "Format a buffer created from a `where-is' command."
-  (when (eq (nth 0 (nth 1 fn)) 'digit-argument)
+  (when (and (boundp 'fn)
+             (eq (nth 0 (nth 1 fn)) 'digit-argument))
     (goto-char (point-min))
     (while (re-search-forward "\\<\\([CMS]-\\)+" nil t)
-      (when (not (save-match-data (looking-at last)))
+      (when (and (boundp 'last)
+                 (not (save-match-data (looking-at last))))
         (replace-match "")
         (delete-char 1)
         (when (looking-at " *, *")
           (replace-match "")))))
   ;; Delete menu entires
-  (goto-char (point-min))
-  (when (re-search-forward "\\(?:, *\\)?<menu-bar>.*\\([(,]\\)" nil t)
-    (replace-match "\\1"))
-  ;; Reformat alaises
-  (goto-char (point-min))
-  (when (re-search-forward " *([^)]*);\n.*alias *" nil t)
-    (replace-match "")))
+  (unless include-menu-bar
+    (goto-char (point-min))
+    (when (re-search-forward "\\(?:, *\\)?<menu-bar>.*\\([(,]\\)" nil t)
+      (replace-match "\\1")))
+  ;; Reformat aliases
+  (unless include-alias
+    (goto-char (point-min))
+    (when (re-search-forward " *([^)]*);\n.*alias *" nil t)
+      (replace-match ""))))
 
 (defmacro ergoemacs-create-old-key-description-fn (key)
   `(defun ,(intern (concat "/ergoemacs-old-key-" (md5 (format "%s" key)))) ()
@@ -799,6 +803,7 @@ Some exceptions we don't want to unset.
      (beep)
      (let ((fn (assoc ,key ergoemacs-emacs-default-bindings))
            (last (substring ,key -1))
+           (ergoemacs-where-is-skip t)
            (curr-fn nil))
        (message "%s keybinding is disabled! Use %s"
                 (ergoemacs-pretty-key ,key)
@@ -1046,7 +1051,8 @@ disabled at `ergoemacs-restore-global-keys'."
 	 (setq yank-menu (copy-sequence saved-yank-menu))
 	 (fset 'yank-menu (cons 'keymap yank-menu))))))
   
-  (let (key-desc item item-key item-cmd old-cmd)
+  (let (key-desc item item-key item-cmd old-cmd
+                 (ergoemacs-where-is-skip t))
     (setq key-desc (key-description key))
     (setq item ergoemacs-overridden-global-keys)
     (while (and item (not old-cmd))

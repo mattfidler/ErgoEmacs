@@ -431,7 +431,9 @@ Valid values are:
 
 (defcustom ergoemacs-fixed-layout
   `(
-    
+    ("C-+" text-scale-increase)
+    ("C--" text-scale-decrease)
+    ("C-0" text-scale-normal-size)
     ;; --------------------------------------------------
     ;; STANDARD SHORTCUTS
     ("C-n" new-empty-buffer "New Buffer")
@@ -613,6 +615,12 @@ Valid values are:
       ("<f12>" next-history-element minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
       ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
+
+    ;; Info Mode hooks
+
+    (Info-mode-hook
+     ("<backspace>" Info-history-back Info-mode-map)
+     ("<S-backspace>" Info-history-forward Info-mode-map))
     
     ;; Helm mode hooks
     (helm-before-initialize-hook
@@ -696,8 +704,9 @@ Optionally provides DESC for a description of the key."
                        (ergoemacs-get-fixed-layout)
                      (ergoemacs-get-variable-layout))
                    `(,key ,function ,desc)))
-    (if fixed
-        (define-key ergoemacs-keymap (read-kbd-macro (encode-coding-string key)))
+    (if fixed-key
+        (define-key ergoemacs-keymap (read-kbd-macro (encode-coding-string key locale-coding-system))
+          function)
       (define-key ergoemacs-keymap (ergoemacs-kbd key) function))))
 
 ;;;###autoload
