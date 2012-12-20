@@ -6,18 +6,6 @@
 
 (defvar ergoemacs-emacs-default-bindings
   '(("C-x" (prefix))
-    ("C-x 8" (prefix))
-    ("C-x 8 \"" (prefix))
-    ("C-x 8 '" (prefix))
-    ("C-x 8 *" (prefix))
-    ("C-x 8 ," (prefix))
-    ("C-x 8 /" (prefix))
-    ("C-x 8 1" (prefix))
-    ("C-x 8 3" (prefix))
-    ("C-x 8 ^" (prefix))
-    ("C-x 8 _" (prefix))
-    ("C-x 8 `" (prefix))
-    ("C-x 8 ~" (prefix))
     ("C-@" (set-mark-command))
     ("C-a" (move-beginning-of-line))
     ("C-b" (backward-char))
@@ -26,7 +14,7 @@
     ("C-e" (move-end-of-line))
     ("C-f" (forward-char))
     ("C-g" (keyboard-quit))
-    ("C-h" (help-command))
+    ("C-h" (prefix))
     ("C-j" (newline-and-indent))
     ("C-k" (kill-line))
     ("C-l" (recenter-top-bottom))
@@ -48,47 +36,6 @@
     ("C-\\" (toggle-input-method))
     ("C-]" (abort-recursive-edit))
     ("C-_" (undo))
-    ("s-&" (kill-this-buffer))
-    ("s-'" (next-multiframe-window))
-    ("s-," (customize))
-    ("s--" (center-line))
-    ("s-:" (ispell))
-    ("s-;" (ispell-next))
-    ("s-?" (info))
-    ("s-C" (ns-popup-color-panel))
-    ("s-D" (dired))
-    ("s-E" (edit-abbrevs))
-    ("s-H" (ns-do-hide-others))
-    ("s-L" (shell-command))
-    ("s-M" (manual-entry))
-    ("s-S" (ns-write-file-using-panel))
-    ("s-^" (kill-some-buffers))
-    ("s-`" (other-frame))
-    ("s-a" (mark-whole-buffer))
-    ("s-c" (ns-copy-including-secondary))
-    ("s-d" (isearch-repeat-backward))
-    ("s-e" (isearch-yank-kill))
-    ("s-f" (isearch-forward))
-    ("s-g" (isearch-repeat-forward))
-    ("s-h" (ns-do-hide-emacs))
-    ("s-j" (exchange-point-and-mark))
-    ("s-k" (kill-this-buffer))
-    ("s-l" (goto-line))
-    ("s-m" (iconify-frame))
-    ("s-n" (make-frame))
-    ("s-o" (ns-open-file-using-panel))
-    ("s-p" (ns-print-buffer))
-    ("s-q" (save-buffers-kill-emacs))
-    ("s-s" (save-buffer))
-    ("s-t" (ns-popup-font-panel))
-    ("s-u" (revert-buffer))
-    ("s-v" (yank))
-    ("s-w" (delete-frame))
-    ("s-x" (kill-region))
-    ("s-y" (ns-paste-secondary))
-    ("s-z" (undo))
-    ("s-|" (shell-command-on-region))
-    ("s-~" (ns-prev-frame))
     ("C-SPC" (set-mark-command))
     ("C--" (negative-argument))
     ("C-/" (undo))
@@ -124,87 +71,50 @@
     ("<C-wheel-down>" (mwheel-scroll))
     ("<C-wheel-up>" (mwheel-scroll))
     ("<M-begin>" (beginning-of-buffer-other-window))
-    ("<M-down-mouse-1>" (mouse-drag-secondary))
-    ("<M-drag-mouse-1>" (mouse-set-secondary))
     ("<M-end>" (end-of-buffer-other-window))
     ("<M-home>" (beginning-of-buffer-other-window))
     ("<M-left>" (left-word))
-    ("<M-mouse-1>" (mouse-start-secondary))
-    ("<M-mouse-2>" (mouse-yank-secondary))
-    ("<M-mouse-3>" (mouse-secondary-save-then-kill))
     ("<M-next>" (scroll-other-window))
     ("<M-prior>" (scroll-other-window-down))
     ("<M-right>" (right-word))
     ("<S-delete>" (kill-region))
     ("<S-insert>" (yank))
     ("<S-insertchar>" (yank))
-    ("<S-mouse-1>" (mouse-save-then-kill))
-    ("<S-ns-drag-color>" (ns-set-background-at-mouse))
-    ("<S-wheel-down>" (mwheel-scroll))
-    ("<S-wheel-up>" (mwheel-scroll))
     ("<again>" (repeat-complex-command))
     ("<begin>" (beginning-of-buffer))
     ("<compose-last-chars>" (compose-last-chars))
     ("<delete-frame>" (handle-delete-frame))
     ("<deletechar>" (delete-forward-char))
     ("<deleteline>" (kill-line))
-    ("<double-mouse-1>" (mouse-set-point))
     ("<down>" (next-line))
-    ("<down-mouse-1>" (mouse-drag-region))
-    ("<drag-mouse-1>" (mouse-set-region))
-    ("<end>" (end-of-buffer))
+    ("<end>" (end-of-buffer move-end-of-line))
     ("<execute>" (execute-extended-command))
-    ("<f1>" (help-command))
+    ("<f1>" (prefix))
     ("<f10>" (menu-bar-open))
-    ("<f2>" (2C-command))
+    ("<f2>" (prefix))
     ("<f3>" (kmacro-start-macro-or-insert-counter))
     ("<f4>" (kmacro-end-or-call-macro))
     ("<find>" (search-forward))
     ("<header-line>" (prefix))
-    ("<help>" (help-command))
-    ("<home>" (beginning-of-buffer))
+    ("<help>" (prefix))
+    ("<home>" (beginning-of-buffer move-beginning-of-line))
     ("<iconify-frame>" (ignore-event))
     ("<insert>" (overwrite-mode))
     ("<insertchar>" (overwrite-mode))
     ("<insertline>" (open-line))
-    ("<kp-end>" (end-of-buffer))
-    ("<kp-home>" (beginning-of-buffer))
-    ("<kp-next>" (scroll-up-command))
-    ("<kp-prior>" (scroll-down-command))
     ("<left>" (left-char))
     ("<make-frame-visible>" (ignore-event))
     ("<menu>" (execute-extended-command))
     ("<mode-line>" (prefix))
-    ("<mouse-1>" (mouse-set-point))
-    ("<mouse-2>" (mouse-yank-primary))
-    ("<mouse-3>" (mouse-save-then-kill))
-    ("<mouse-movement>" (ignore))
     ("<next>" (scroll-up-command))
-    ("<ns-change-font>" (ns-respond-to-change-font))
-    ("<ns-drag-color>" (ns-set-foreground-at-mouse))
-    ("<ns-drag-file>" (ns-find-file))
-    ("<ns-drag-text>" (ns-insert-text))
-    ("<ns-new-frame>" (make-frame))
-    ("<ns-open-file>" (ns-find-file))
-    ("<ns-open-file-line>" (ns-open-file-select-line))
-    ("<ns-open-temp-file>" (Keyboard Macro))
-    ("<ns-power-off>" (save-buffers-kill-emacs))
-    ("<ns-show-prefs>" (customize))
-    ("<ns-spi-service-call>" (ns-spi-service-call))
-    ("<ns-toggle-toolbar>" (ns-toggle-toolbar))
     ("<open>" (find-file))
     ("<prior>" (scroll-down-command))
     ("<redo>" (repeat-complex-command))
     ("<right>" (right-char))
-    ("<s-kp-bar>" (shell-command-on-region))
-    ("<s-left>" (ns-prev-frame))
-    ("<s-right>" (ns-next-frame))
     ("<select-window>" (handle-select-window))
     ("<switch-frame>" (handle-switch-frame))
     ("<undo>" (undo))
     ("<up>" (previous-line))
-    ("<vertical-line>" (prefix))
-    ("<vertical-scroll-bar>" (prefix))
     
     ("C-h C-a" (about-emacs))
     ("C-h C-c" (describe-copying))
@@ -282,14 +192,14 @@
     ("C-x *" (calc-dispatch))
     ("C-x +" (balance-windows))
     ("C-x -" (shrink-window-if-larger-than-buffer))
-    ("C-x ." (prefix))
+    ("C-x ." (set-fill-prefix))
     ("C-x 0" (delete-window))
     ("C-x 1" (delete-other-windows))
     ("C-x 2" (split-window-below))
     ("C-x 3" (split-window-right))
     ("C-x 4" (prefix))
     ("C-x 5" (prefix))
-    ("C-x 6" (2C-command))
+    ("C-x 6" (prefix))
     ("C-x 8" (prefix))
     ("C-x ;" (comment-set-column))
     ("C-x <" (scroll-left))
@@ -329,7 +239,7 @@
     ("C-x <C-right>" (next-buffer))
     ("C-x <left>" (previous-buffer))
     ("C-x <right>" (next-buffer))
-
+    
     ("M-0" (digit-argument))
     ("M-1" (digit-argument))
     ("M-2" (digit-argument))
@@ -368,7 +278,7 @@
     ("M-$" (ispell-word))
     ("M-%" (query-replace))
     ("M-&" (async-shell-command))
-    ("M-'" (prefix))
+    ("M-'" (abbrev-prefix-mark))
     ("M-(" (insert-parentheses))
     ("M-)" (move-past-close-and-reindent))
     ("M-*" (pop-tag-mark))
@@ -445,18 +355,18 @@
     ("ESC <next>" (scroll-other-window))
     ("ESC <prior>" (scroll-other-window-down))
     ("ESC <right>" (forward-word))
-
-    ("M-s h" (prefix))
-    ("M-s o" (occur))
-    ("M-s w" (isearch-forward-word))
-
-    ("M-o ESC" (prefix))
-    ("M-o b" (facemenu-set-bold))
-    ("M-o d" (facemenu-set-default))
-    ("M-o i" (facemenu-set-italic))
-    ("M-o l" (facemenu-set-bold-italic))
-    ("M-o o" (facemenu-set-face))
-    ("M-o u" (facemenu-set-underline))
+    
+    ("M-s h" (prefix 1))
+    ("M-s o" (occur 1))
+    ("M-s w" (isearch-forward-word 1))
+    
+    ("M-o ESC" (prefix 1))
+    ("M-o b" (facemenu-set-bold 1))
+    ("M-o d" (facemenu-set-default 1))
+    ("M-o i" (facemenu-set-italic 1))
+    ("M-o l" (facemenu-set-bold-italic 1))
+    ("M-o o" (facemenu-set-face 1))
+    ("M-o u" (facemenu-set-underline 1))
     
     ("M-g ESC" (prefix))
     ("M-g g" (goto-line))
@@ -465,7 +375,7 @@
     
     ("M-ESC ESC" (keyboard-escape-quit))
     ("M-ESC :" (eval-expression))
-
+    
     ("<f1> C-a" (about-emacs))
     ("<f1> C-c" (describe-copying))
     ("<f1> C-d" (view-emacs-debugging))
@@ -511,7 +421,7 @@
     ("<f1> w" (where-is))
     ("<f1> <f1>" (help-for-help))
     ("<f1> <help>" (help-for-help))
-
+    
     ("<help> C-a" (about-emacs))
     ("<help> C-c" (describe-copying))
     ("<help> C-d" (view-emacs-debugging))
@@ -587,7 +497,7 @@
     ("C-x C-k q" (kbd-macro-query))
     ("C-x C-k r" (apply-macro-to-region-lines))
     ("C-x C-k s" (kmacro-start-macro))
-
+    
     ("C-x RET C-\\" (set-input-method))
     ("C-x RET F" (set-file-name-coding-system))
     ("C-x RET X" (set-next-selection-coding-system))
@@ -599,7 +509,7 @@
     ("C-x RET r" (revert-buffer-with-coding-system))
     ("C-x RET t" (set-terminal-coding-system))
     ("C-x RET x" (set-selection-coding-system))
-
+    
     ("C-x ESC ESC" (repeat-complex-command))
     ("C-x M-:" (repeat-complex-command))
     
@@ -614,7 +524,7 @@
     ("C-x 4 f" (find-file-other-window))
     ("C-x 4 m" (compose-mail-other-window))
     ("C-x 4 r" (find-file-read-only-other-window))
-
+    
     ("C-x 5 C-f" (find-file-other-frame))
     ("C-x 5 C-o" (display-buffer-other-frame))
     ("C-x 5 ." (find-tag-other-frame))
@@ -632,7 +542,7 @@
     ("C-x 6 b" (2C-associate-buffer))
     ("C-x 6 s" (2C-split))
     ("C-x 6 <f2>" (2C-two-columns))
-
+    
     ("C-x 8 RET" (ucs-insert))
     
     ("C-x a C-a" (add-mode-abbrev))
@@ -645,7 +555,7 @@
     ("C-x a l" (add-mode-abbrev))
     ("C-x a n" (expand-jump-to-next-slot))
     ("C-x a p" (expand-jump-to-previous-slot))
-
+    
     ("C-x n b" (org-narrow-to-block))
     ("C-x n d" (narrow-to-defun))
     ("C-x n n" (narrow-to-region))
@@ -698,16 +608,16 @@
     ("C-x v v" (vc-next-action))
     ("C-x v ~" (vc-revision-other-window))
     
-    ("M-s h f" (hi-lock-find-patterns))
-    ("M-s h l" (highlight-lines-matching-regexp))
-    ("M-s h p" (highlight-phrase))
-    ("M-s h r" (highlight-regexp))
-    ("M-s h u" (unhighlight-regexp))
-    ("M-s h w" (hi-lock-write-interactive-patterns))
+    ("M-s h f" (hi-lock-find-patterns 1))
+    ("M-s h l" (highlight-lines-matching-regexp 1))
+    ("M-s h p" (highlight-phrase 1))
+    ("M-s h r" (highlight-regexp 1))
+    ("M-s h u" (unhighlight-regexp 1))
+    ("M-s h w" (hi-lock-write-interactive-patterns 1))
     
-    ("M-o M-S" (center-paragraph))
-    ("M-o M-o" (font-lock-fontify-block))
-    ("M-o M-s" (center-line))
+    ("M-o M-S" (center-paragraph 1))
+    ("M-o M-o" (font-lock-fontify-block 1))
+    ("M-o M-s" (center-line 1))
     
     ("M-g M-g" (goto-line))
     ("M-g M-n" (next-error))
@@ -911,10 +821,13 @@ Some exceptions we don't want to unset.
 (defvar ergoemacs-global-changed-cache '()
   "Cache of global variables that have changed.")
 
-(defun ergoemacs-global-changed-p (key &optional is-variable)
+(defun ergoemacs-global-changed-p (key &optional is-variable complain)
   "Returns if a global key has been changed.  If IS-VARIABLE is
 true and KEY is a string, then lookup the keyboard equivalent
-based on current layout."
+based on current layout.
+
+If COMPLAIN is true, complain about keys that have changed.
+"
   (let* ((key-code
           (cond
            ((eq (type-of key) 'string)
@@ -926,7 +839,16 @@ based on current layout."
            (t key)))
          (key-kbd (key-description key-code)))
     (if (member key-kbd ergoemacs-global-changed-cache)
-        t
+        (progn
+          (when complain
+            (let* ((key-function (lookup-key (current-global-map) key-code t))
+                   (old-bindings (assoc key-kbd ergoemacs-emacs-default-bindings))
+                   (trans-function (if (keymapp key-function)
+                                       'prefix
+                                     key-function)))
+              (message "Warning %s has been set globally. It is bound to %s not in %s." key-kbd
+                       trans-function old-bindings)))
+          t)
       (if (member key-kbd ergoemacs-global-not-changed-cache)
           nil
         (let* ((key-function (lookup-key (current-global-map) key-code t))
@@ -938,15 +860,39 @@ based on current layout."
                                 nil ; Assume that if not known, it hasn't changed.
                               (not (memq trans-function (nth 1 old-bindings))))))
           (when (and has-changed
-                     (string-match "/ergoemacs-old-key-" (symbol-name key-function)))
+                     (condition-case err
+                         (string-match "/ergoemacs-old-key-" (symbol-name key-function))
+                       (error nil)))
             ;; Already unset, assume that the old key hasn't changed.
             (setq has-changed nil))
           (if has-changed
               (progn
+                (when complain
+                  (message "Warning %s has been set globally. It is bound to %s not in %s." key-kbd
+                           trans-function old-bindings))
                 (add-to-list 'ergoemacs-global-changed-cache key-kbd))
             (add-to-list 'ergoemacs-global-not-changed-cache key-kbd))
           ;;(message "%s %s %s" key-kbd key-function has-changed)
           (symbol-value 'has-changed))))))
+
+(defun ergoemacs-warn-globally-changed-keys ()
+  "Warns about globally changed keys."
+  (interactive)
+  (mapc
+   (lambda(x)
+     (ergoemacs-global-changed-p (nth 0 x) nil t))
+   ergoemacs-emacs-default-bindings)
+  (message "Ergoemacs Keys warnings for this layout:")
+  (mapc
+   (lambda(x)
+     (and (eq 'string (type-of (nth 0 x)))
+          (ergoemacs-global-changed-p (nth 0 x) nil t)))
+      (symbol-value (ergoemacs-get-fixed-layout)))
+  (mapc
+   (lambda(x)
+     (and (eq 'string (type-of (nth 0 x)))
+                 (ergoemacs-global-changed-p (nth 0 x) t)))
+   (symbol-value (ergoemacs-get-variable-layout))))
 
 (defvar ergoemacs-overridden-global-keys '()
   "Alist to store overridden keyboard shortcuts in
