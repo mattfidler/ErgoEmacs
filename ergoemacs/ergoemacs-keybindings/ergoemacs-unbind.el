@@ -798,15 +798,26 @@ Some exceptions we don't want to unset.
      (interactive)
      (beep)
      (let ((fn (assoc ,key ergoemacs-emacs-default-bindings))
-           (last (substring ,key -1)))
+           (last (substring ,key -1))
+           (curr-fn nil))
        (message "%s keybinding is disabled! Use %s"
                 (ergoemacs-pretty-key ,key)
                 (ergoemacs-pretty-key-rep
                  (with-temp-buffer
-                   (when (and fn (not (eq 'prefix (nth 0 (nth 1 fn)))))
-                     (where-is
-                      (nth 0 (nth 1 fn))
-                      t))
+                   (setq curr-fn (nth 0 (nth 1 fn)))
+                   (when (and fn (not (eq 'prefix curr-fn)))
+                     (setq curr-fn
+                           (cond
+                            ((eq 'left-char curr-fn) 'backward-char)
+                            ((eq 'right-char curr-fn) 'forward-char)
+                            ((and (boundp 'cua-mode)
+                                  cua-mode (eq 'scroll-down-command curr-fn))
+                             'cua-scroll-down)
+                            ((and (boundp 'cua-mode)
+                                  cua-mode (eq 'scroll-up-command curr-fn))
+                             'cua-scroll-up)
+                            (t curr-fn)))
+                     (where-is curr-fn t))
                    (ergoemacs-format-where-is-buffer)
                    (buffer-string)))))))
 
