@@ -619,8 +619,8 @@ Valid values are:
     ;; Info Mode hooks
 
     (Info-mode-hook
-     ("<backspace>" Info-history-back Info-mode-map)
-     ("<S-backspace>" Info-history-forward Info-mode-map))
+     (("<backspace>" Info-history-back Info-mode-map)
+     ("<S-backspace>" Info-history-forward Info-mode-map)))
     
     ;; Helm mode hooks
     (helm-before-initialize-hook
