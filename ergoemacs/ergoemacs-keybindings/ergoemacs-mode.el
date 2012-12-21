@@ -248,8 +248,29 @@
                 `(const :tag ,elt :value ,elt))
               (sort (ergoemacs-get-layouts) 'string<))))
 
+(defun ergoemacs-set-layout (layout)
+  "Set the ergoemacs layout."
+  (ergoemacs-set-default 'ergoemacs-keyboard-layout layout))
+
 (defun ergoemacs-get-layouts-menu ()
-  "Gets the easymenu entry for ergoemacs-layouts.")
+  "Gets the easymenu entry for ergoemacs-layouts."
+  `("Keyboard Layouts"
+    ,@(mapcar
+       (lambda(lay)
+         (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
+                (alias (condition-case nil
+                           (indirect-variable variable)
+                         (error variable)))
+                (is-alias nil)
+                (doc nil))
+           (setq doc (or (documentation-property variable 'variable-documentation)
+                         (progn
+                           (setq is-alias t)
+                           (documentation-property alias 'variable-documentation))))
+           `[,(concat lay " - " doc)
+             (lambda() (interactive)
+               (ergoemacs-set-layout ,lay)) :style radio :selected (string= ergoemacs-keyboard-layout ,lay)]))
+       (ergoemacs-get-layouts))))
 
 (defun ergoemacs-get-layouts-doc ()
   "Gets the list of all known layouts and the documentation associated with the layouts."
@@ -1003,6 +1024,30 @@ format:
 ;;; Add the different keyboard variants
 
 
+(defun ergoemacs-get-variants-menu ()
+  "Gets the list of all known variants and the documentation associated with the variants."
+  `("ErgoEmacs Variants"
+    ["Standard" (lambda() (interactive)
+                  (ergoemacs-set-default 'ergoemacs-variant nil))
+     :style radio :selected (not ergoemacs-variant)]
+    ,@(let ((lays (sort (ergoemacs-get-variants) 'string<)))
+    (mapcar
+     (lambda(lay)
+       (let* ((variable (intern (concat "ergoemacs-" lay "-variant")))
+              (alias (condition-case nil
+                         (indirect-variable variable)
+                       (error variable)))
+              (is-alias nil)
+              (doc nil))
+         (setq doc (or (documentation-property variable 'group-documentation)
+                       (progn
+                         (setq is-alias t)
+                         (documentation-property alias 'group-documentation))))
+         `[,(concat lay " -" doc)
+           (lambda() (interactive)
+             (ergoemacs-set-default 'ergoemacs-variant ,lay))
+           :style radio :selected (and ergoemacs-variant (string= ergoemacs-variant ,lay))]))
+     lays ))))
 
 (defun ergoemacs-get-variants-doc ()
   "Gets the list of all known variants and the documentation associated with the variants."
@@ -1175,8 +1220,8 @@ Some exceptions we don't want to unset.
                               ;; Delete previous/next word.
                               ("M-e" backward-kill-word "⌫ word")
                               ("M-r" kill-word "⌦ word")))
-                      (setq ergoemacs-redundant-keys-tmp `(,ergoemacs-redundant-keys-tmp
-                                                           "M-f" "M-b" "M-d" "C-<backspace>" "C-d")))
+                      (setq ergoemacs-redundant-keys-tmp (append ergoemacs-redundant-keys-tmp
+                                                           (list "M-f" "M-b" "M-d" "C-<backspace>" "C-d"))))
 
 (ergoemacs-defvariant guru
                       "Unbind some commonly used keys such as <left> and <right> to get in the habit of using ergoemacs keybindings."
@@ -1370,16 +1415,41 @@ Some exceptions we don't want to unset.
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
   (ergoemacs-setup-keys-for-keymap ergoemacs-keymap)
+  (easy-menu-define ergoemacs-menu ergoemacs-keymap
+    "ErgoEmacs menu"
+    `("ErgoEmacs"
+      ,(ergoemacs-get-layouts-menu)
+      ,(ergoemacs-get-variants-menu)
+      ["Generate Documentation"
+       (lambda()
+         (interactive)
+         (ergoemacs-extras)) t]
+      ["Customize Ergoemacs"
+       (lambda()
+         (interactive)
+         (customize-group 'ergoemacs-mode)) t]
+      ["Save Settings for next session"
+       (lambda()
+         (interactive)
+         (customize-save-variable 'ergoemacs-variant ergoemacs-variant)
+         (customize-save-variable 'ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
+         (customize-save-customized)) t]
+      ["Exit ErgoEmacs"
+       (lambda()
+         (interactive)
+         (ergoemacs-mode -1)) t]))
   ;; Set appropriate mode-line indicator
   (setq minor-mode-alist
         (mapcar (lambda(x)
                   (if (not (eq 'ergoemacs-mode (nth 0 x)))
                       x
-                    `(ergoemacs-mode ,(if (not ergoemacs-variant)
+                    `(ergoemacs-mode ,(concat
+                                       (if (not ergoemacs-variant)
                                           " ErgoEmacs"
                                         (concat " Ergo"
                                                 (upcase (substring ergoemacs-variant 0 1))
-                                                (substring ergoemacs-variant 1))))))
+                                                (substring ergoemacs-variant 1)))
+                                       "[" ergoemacs-keyboard-layout "]"))))
                 minor-mode-alist))
   (ergoemacs-setup-backward-compatability))
 
