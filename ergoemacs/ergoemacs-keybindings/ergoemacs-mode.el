@@ -69,7 +69,7 @@
 ;; Include extra files
 (add-to-list 'load-path  ergoemacs-dir)
 
-(load "functions")
+(require 'ergoemacs-functions)
 
 (defvar ergoemacs-layout-sw
   '("" "½" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "+" "’" ""
@@ -323,8 +323,8 @@ Valid values are:
     ("M-o" forward-word "→ word")
     
     ;; Move by paragraph
-    ("M-U" backward-block "← ¶")
-    ("M-O" forward-block  "→ ¶")
+    ("M-U" ergoemacs-backward-block "← ¶")
+    ("M-O" ergoemacs-forward-block  "→ ¶")
     
     ;; Move to beginning/ending of line
     ("M-h" move-beginning-of-line "← line")
@@ -335,8 +335,8 @@ Valid values are:
     ("M-K" scroll-up "↑ page")
     
     ;; Move to beginning/ending of file
-    ("M-J" backward-open-bracket "↑ buffer")
-    ("M-L" forward-close-bracket "↓ buffer")
+    ("M-J" ergoemacs-backward-open-bracket "↑ buffer")
+    ("M-L" ergoemacs-forward-close-bracket "↓ buffer")
     
     ;; isearch
     ("M-y" isearch-forward "→ isearch")
@@ -355,12 +355,12 @@ Valid values are:
     ("M-r" kill-word "⌦ word")
     
     ;; Copy Cut Paste, Paste previous
-    ("M-x" cut-line-or-region "✂ region")
-    ("M-c" copy-line-or-region "copy")
+    ("M-x" ergoemacs-cut-line-or-region "✂ region")
+    ("M-c" ergoemacs-copy-line-or-region "copy")
     ("M-v" yank "paste")
     ("M-V" yank-pop "paste ↑")
-    ("M-C" copy-all "copy all")
-    ("M-X" cut-all "✂ all")
+    ("M-C" ergoemacs-copy-all "copy all")
+    ("M-X" ergoemacs-cut-all "✂ all")
     
     ;; undo and redo
     ("M-Z" redo "↷ redo")
@@ -368,20 +368,20 @@ Valid values are:
     
     ;; Kill line
     ("M-g" kill-line "⌦ line")
-    ("M-G" kill-line-backward "⌫ line")
+    ("M-G" ergoemacs-kill-line-backward "⌫ line")
     
     ;; Textual Transformation
     
     ("M-S-SPC" mark-paragraph "Mark Paragraph")
-    ("M-w" shrink-whitespaces "⌧ white")
+    ("M-w" ergoemacs-shrink-whitespaces "⌧ white")
     ("M-'" comment-dwim "cmt dwim")
-    ("M-/" toggle-letter-case "tog. case")
+    ("M-/" ergoemacs-toggle-letter-case "tog. case")
     
     ;; keyword completion, because Alt+Tab is used by OS
-    ("M-t" call-keyword-completion "↯ compl")
+    ("M-t" ergoemacs-call-keyword-completion "↯ compl")
     
     ;; Hard-wrap/un-hard-wrap paragraph
-    ("M-q" compact-uncompact-block "fill/unfill ¶")
+    ("M-q" ergoemacs-compact-uncompact-block "fill/unfill ¶")
     
     ;; EMACS'S SPECIAL COMMANDS
     
@@ -395,14 +395,14 @@ Valid values are:
     ("M-A" shell-command "shell cmd")
     
     ;; WINDOW SPLITING
-    ("M-s" move-cursor-next-pane "next pane")
-    ("M-S" move-cursor-previous-pane "prev pane")
+    ("M-s" ergoemacs-move-cursor-next-pane "next pane")
+    ("M-S" ergoemacs-move-cursor-previous-pane "prev pane")
     
     ;; --------------------------------------------------
     ;; OTHER SHORTCUTS
     
-    ("M-~" switch-to-previous-frame "prev frame")
-    ("M-`" switch-to-next-frame "next frame")
+    ("M-~" ergoemacs-switch-to-previous-frame "prev frame")
+    ("M-`" ergoemacs-switch-to-next-frame "next frame")
     
     ("M-5" query-replace "rep")
     ("M-%" query-replace-regexp "rep reg")
@@ -413,10 +413,10 @@ Valid values are:
     ("M-4" split-window-vertically "split |")
     ("M-$" split-window-horizontally "split —")
     
-    ("M-8" extend-selection "←region→")
-    ("M-*" select-text-in-quote "←quote→")
-    ("M-6" select-current-block "Sel. Block")
-    ("M-7" select-current-line "Sel. Line"))
+    ("M-8" ergoemacs-extend-selection "←region→")
+    ("M-*" ergoemacs-select-text-in-quote "←quote→")
+    ("M-6" ergoemacs-select-current-block "Sel. Block")
+    ("M-7" ergoemacs-select-current-line "Sel. Line"))
   
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
@@ -433,18 +433,18 @@ Valid values are:
   `(
     ("C-+" text-scale-increase)
     ("C--" text-scale-decrease)
-    ("C-0" text-scale-normal-size)
+    ("C-0" ergoemacs-text-scale-normal-size)
     ;; --------------------------------------------------
     ;; STANDARD SHORTCUTS
-    ("C-n" new-empty-buffer "New Buffer")
+    ("C-n" ergoemacs-new-empty-buffer "New Buffer")
     ("C-S-n" make-frame-command "New Frame")
     ("C-o" find-file "Edit File")
-    ("C-S-o" open-in-external-app "OS Open")
-    ("C-S-t" open-last-closed "Open Last")
-    ("C-w" close-current-buffer "Close Buf.")
+    ("C-S-o" ergoemacs-open-in-external-app "OS Open")
+    ("C-S-t" ergoemacs-open-last-closed "Open Last")
+    ("C-w" ergoemacs-close-current-buffer "Close Buf.")
     ("C-s" save-buffer "Save")
     ("C-S-s" write-file "Save As")
-    ("C-p" print-buffer-confirm "Print")
+    ("C-p" ergoemacs-print-buffer-confirm "Print")
     ("C-a" mark-whole-buffer "Select all")
     ("C-S-z" redo "↷ redo")
     ("C-y" redo "↷ redo")
@@ -454,18 +454,18 @@ Valid values are:
     
     ("<delete>" delete-char) ; the Del key for forward delete. Needed if C-d is set to nil.
     
-    ("C-<prior>" previous-user-buffer)
-    ("C-<next>" next-user-buffer)
+    ("C-<prior>" ergoemacs-previous-user-buffer)
+    ("C-<next>" ergoemacs-next-user-buffer)
     
-    ("C-S-<prior>" previous-emacs-buffer)
-    ("C-S-<next>" next-emacs-buffer)
+    ("C-S-<prior>" ergoemacs-previous-emacs-buffer)
+    ("C-S-<next>" ergoemacs-next-emacs-buffer)
     
     ("M-S-<prior>" backward-page)
     ("M-S-<next>" forward-page)
     
     ("C-x C-b" ibuffer)
-    ("C-h m" describe-major-mode)
-    ("<f1> m" describe-major-mode)
+    ("C-h m" ergoemacs-describe-major-mode)
+    ("<f1> m" ergoemacs-describe-major-mode)
     ("C-h o" ergoemacs-where-is-old-binding)
     ("<f1> o" ergoemacs-where-is-old-binding)
     
@@ -491,10 +491,10 @@ Valid values are:
     ("C-h 9" lookup-word-definition)
     ("C-h `" elisp-index-search)
     
-    ("<f2>" cut-line-or-region)
-    ("<C-f2>" cut-all)
-    ("<f3>" copy-line-or-region)
-    ("<C-f3>" copy-all)
+    ("<f2>" ergoemacs-cut-line-or-region)
+    ("<C-f2>" ergoemacs-cut-all)
+    ("<f3>" ergoemacs-copy-line-or-region)
+    ("<C-f3>" ergoemacs-copy-all)
     ("<f4>" yank)
     ("<C-f4>" yank-pop)
     
@@ -504,11 +504,11 @@ Valid values are:
     ("<M-delete>" kill-word)
     
     ;; arrow keys to traverse brackets
-    ("<M-left>" backward-open-bracket) ; Alt+←
-    ("<M-right>" forward-close-bracket) ; Alt+→
+    ("<M-left>" ergoemacs-backward-open-bracket) ; Alt+←
+    ("<M-right>" ergoemacs-forward-close-bracket) ; Alt+→
     
-    ("<M-up>" backward-block) ; Alt+↑
-    ("<M-down>" forward-block) ; Alt+↓
+    ("<M-up>" ergoemacs-backward-block) ; Alt+↑
+    ("<M-down>" ergoemacs-forward-block) ; Alt+↓
     )
   "Keybinding that are constant regardless of they keyboard used."
   :type '(repeat
@@ -531,8 +531,7 @@ Valid values are:
       ("<f11>" previous-history-element  minor-mode-overriding-map-alist)
       ("<f12>" next-history-element  minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element  minor-mode-overriding-map-alist)
-      ("S-<f12>" next-matching-history-element  minor-mode-overriding-map-alist)
-      ))
+      ("S-<f12>" next-matching-history-element  minor-mode-overriding-map-alist)))
     
     ;; Isearch Hook
     (isearch-mode-hook
@@ -787,8 +786,7 @@ Some exceptions we don't want to unset.
   "Get redundant keys based on current variant"
   (ergoemacs-get-variable-layout 'ergoemacs-redundant-keys))
 
-
-(load "ergoemacs-unbind")
+(require 'ergoemacs-unbind)
 
 (defvar ergoemacs-backward-compatability-variables 
   '((ergoemacs-backward-paragraph-key            backward-block)

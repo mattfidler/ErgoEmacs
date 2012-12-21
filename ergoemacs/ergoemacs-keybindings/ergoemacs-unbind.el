@@ -924,3 +924,7 @@ disabled at `ergoemacs-restore-global-keys'."
                    old-cmd
                    (ergoemacs-pretty-key-rep (buffer-string))))
       (message "Key %s was not bound to any command" (ergoemacs-pretty-key key-desc)))))
+
+(provide 'ergoemacs-unbind)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ergoemacs-unbind.el ends here

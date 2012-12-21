@@ -1,4 +1,6 @@
-;;-*- coding: utf-8 -*-
+;;; ergoemacs-functions.el --- Functions for use in ergoemacs -*- coding: utf-8 -*-
+;;; Code:
+
 
 (require 'redo "redo.elc" t) ; for redo shortcut
 
@@ -13,8 +15,6 @@
   (isearch-exit)
   (next-line))
 
-
-
 ;;; Ido-ergoemacs functional fixes
 (defun ergoemacs-ido-c-o (arg)
   "Ergoemacs ido C-o command"
@@ -25,6 +25,7 @@
    (t
     (minibuffer-keyboard-quit)
     (ido-find-file))))
+
 (defun ergoemacs-ido-prev-match-dir ()
   "Call the correct function based on if we are completing directories or not"
   (interactive)
@@ -39,46 +40,46 @@
       (ido-next-match-dir)
     (next-history-element)))
 
-(defun print-buffer-confirm ()
+(defun ergoemacs-print-buffer-confirm ()
   "Print current buffer, but ask for confirmation first."
   (interactive)
   (when
       (y-or-n-p "Print current buffer?")
     (print-buffer)))
 
-(defun call-keyword-completion ()
+(defun ergoemacs-call-keyword-completion ()
   "Call the command that has keyboard shortcut M-TAB."
   (interactive)
   (call-interactively (key-binding (kbd "M-TAB"))))
 
-(defun describe-major-mode ()
+(defun ergoemacs-describe-major-mode ()
   "Show inline doc for current major-mode."
   ;; code by Kevin Rodgers. 2009-02-25
   (interactive)
   (describe-function major-mode))
 
-(defun copy-all ()
+(defun ergoemacs-copy-all ()
   "Put the whole buffer content into the kill-ring.
 If narrow-to-region is in effect, then copy that region only."
   (interactive)
   (kill-new (buffer-string))
   (message "Buffer content copied copy-region-as-kill"))
 
-(defun cut-all ()
+(defun ergoemacs-cut-all ()
   "Cut the whole buffer content into the kill-ring.
 If narrow-to-region is in effect, then cut that region only."
   (interactive)
   (kill-region (point-min) (point-max))
   (message "Buffer content cut"))
 
-(defun copy-line-or-region ()
+(defun ergoemacs-copy-line-or-region ()
   "Copy current line, or current text selection."
   (interactive)
   (if (region-active-p)
       (kill-ring-save (region-beginning) (region-end))
     (kill-ring-save (line-beginning-position) (line-beginning-position 2)) ) )
 
-(defun cut-line-or-region ()
+(defun ergoemacs-cut-line-or-region ()
   "Cut the current line, or current text selection."
   (interactive)
   (if (region-active-p)
@@ -87,62 +88,58 @@ If narrow-to-region is in effect, then cut that region only."
 
 ;;; CURSOR MOVEMENT
 
-(defun forward-open-bracket ()
+(defun ergoemacs-forward-open-bracket ()
   "Move cursor to the next occurrence of left bracket or quotation mark."
   (interactive)
   (forward-char 1)
   (search-forward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t)
 ;;  (search-forward-regexp "\\s(\\|\\s\"\\|<\\|“\\|‘\\|‹") ; using syntax table
-  (backward-char 1)
-  )
+  (backward-char 1))
 
-(defun backward-open-bracket ()
+(defun ergoemacs-backward-open-bracket ()
   "Move cursor to the previous occurrence of left bracket or quotation mark.."
   (interactive)
   (search-backward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t))
 
-(defun forward-close-bracket ()
+(defun ergoemacs-forward-close-bracket ()
   "Move cursor to the next occurrence of right bracket or quotation mark."
   (interactive)
    (search-forward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
 ;;  (search-forward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›") ;using syntax table
  )
 
-(defun backward-close-bracket ()
+(defun ergoemacs-backward-close-bracket ()
   "Move cursor to the previous occurrence of right bracket or quotation mark."
   (interactive)
   (backward-char 1)
   (search-backward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
-  (forward-char 1)
-  )
+  (forward-char 1))
 
-(defun forward-block ()
+(defun ergoemacs-forward-block ()
   "Move cursor forward to next occurrence of double newline character.
-In most major modes, this is the same as `forward-paragraph', however, this command's behavior is the same regardless of syntax table."
+In most major modes, this is the same as `ergoemacs-forward-paragraph', however, this command's behavior is the same regardless of syntax table."
   (interactive)
   (skip-chars-forward "\n")
   (when (not (search-forward-regexp "\n[[:blank:]]*\n" nil t))
     (goto-char (point-max)) ) )
 
-(defun backward-block ()
+(defun ergoemacs-backward-block ()
   "Move cursor backward to previous occurrence of double newline char.
-See: `forward-block'"
+See: `ergoemacs-forward-block'"
   (interactive)
   (skip-chars-backward "\n")
   (when (not (search-backward-regexp "\n[[:blank:]]*\n" nil t))
-    (goto-char (point-min))
-    )
-  )
+    (goto-char (point-min))))
 
 ;;; TEXT SELECTION RELATED
 
-(defun select-current-line ()
+(defun ergoemacs-select-current-line ()
   "Select the current line"
   (interactive)
   (end-of-line) ; move to end of line
   (set-mark (line-beginning-position)))
 
-(defun select-current-block ()
+(defun ergoemacs-select-current-block ()
   "Select the current block of next between empty lines."
   (interactive)
   (let (p1 p2)
@@ -150,15 +147,14 @@ See: `forward-block'"
       (if (re-search-backward "\n[ \t]*\n" nil "move")
           (progn (re-search-forward "\n[ \t]*\n")
                  (setq p1 (point) ) )
-        (setq p1 (point) )
-        )
+        (setq p1 (point)))
       (if (re-search-forward "\n[ \t]*\n" nil "move")
           (progn (re-search-backward "\n[ \t]*\n")
                  (setq p2 (point) ))
         (setq p2 (point) ) ) )
     (set-mark p1) ) )
 
-(defun select-text-in-quote ()
+(defun ergoemacs-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
 Delimiters are paired characters:
  () [] {} «» ‹› “” 〖〗 【】 「」 『』 （） 〈〉 《》 〔〕 ⦗⦘ 〘〙 ⦅⦆ 〚〛 ⦃⦄
@@ -168,12 +164,10 @@ Delimiters are paired characters:
    (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃\"")
    (setq p1 (point))
    (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄\"")
-   (set-mark p1)
-   )
- )
+   (set-mark p1)))
 
 ;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
-(defun semnav-up (arg)
+(defun ergoemacs-semnav-up (arg)
   (interactive "p")
   (when (nth 3 (syntax-ppss))
     (if (> arg 0)
@@ -187,7 +181,7 @@ Delimiters are paired characters:
   (up-list arg))
 
 ;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
-(defun extend-selection (arg &optional incremental)
+(defun ergoemacs-extend-selection (arg &optional incremental)
   "Select the current word.
 Subsequent calls expands the selection to larger semantic unit."
   (interactive (list (prefix-numeric-value current-prefix-arg)
@@ -195,7 +189,7 @@ Subsequent calls expands the selection to larger semantic unit."
                          (eq last-command this-command))))
   (if incremental
       (progn
-        (semnav-up (- arg))
+        (ergoemacs-semnav-up (- arg))
         (forward-sexp)
         (mark-sexp -1))
     (if (> arg 1)
@@ -208,29 +202,25 @@ Subsequent calls expands the selection to larger semantic unit."
 
 ;;; TEXT TRANSFORMATION RELATED
 
-(defun kill-line-backward ()
+(defun ergoemacs-kill-line-backward ()
   "Kill text between the beginning of the line to the cursor position.
 If there's no text, delete the previous line ending."
   (interactive)
   (if (looking-back "\n")
       (delete-char -1)
-    (kill-line 0)
-    )
-  )
+    (kill-line 0)))
 
-(defun move-cursor-next-pane ()
+(defun ergoemacs-move-cursor-next-pane ()
   "Move cursor to the next pane."
   (interactive)
-  (other-window 1)
-  )
+  (other-window 1))
 
-(defun move-cursor-previous-pane ()
+(defun ergoemacs-move-cursor-previous-pane ()
   "Move cursor to the previous pane."
   (interactive)
-  (other-window -1)
-  )
+  (other-window -1))
 
-(defun unfill-paragraph ()
+(defun ergoemacs-unfill-paragraph ()
   "Replace newline char in current paragraph by space.
 This command does the reverse of `fill-paragraph'.
 See also: `compact-uncompact-block'"
@@ -238,15 +228,15 @@ See also: `compact-uncompact-block'"
   (let ((fill-column 90002000))
     (fill-paragraph nil)))
 
-(defun unfill-region (start end)
+(defun ergoemacs-unfill-region (start end)
   "Replace newline char in region by space.
 This command does the reverse of `fill-region'.
-See also: `compact-uncompact-block'"
+See also: `ergoemacs-compact-uncompact-block'"
   (interactive "r")
   (let ((fill-column 90002000))
     (fill-region start end)))
 
-(defun compact-uncompact-block ()
+(defun ergoemacs-compact-uncompact-block ()
   "Remove or add line ending chars on current paragraph.
 This command is similar to a toggle of `fill-paragraph'.
 When there is a text selection, act on the region."
@@ -272,9 +262,9 @@ When there is a text selection, act on the region."
           (let ((fill-column bigFillColumnVal))
             (fill-paragraph nil)) ) )
       
-      (put this-command 'stateIsCompact-p (if currentStateIsCompact nil t)) ) ) )
+      (put this-command 'stateIsCompact-p (if currentStateIsCompact nil t)))))
 
-(defun shrink-whitespaces ()
+(defun ergoemacs-shrink-whitespaces ()
   "Remove white spaces around cursor to just one or none.
 If current line does have visible chars, then shrink whitespace surrounding cursor to just one space.
 If current line does not have visible chars, then shrink al neighboring blank lines to just one.
@@ -282,14 +272,12 @@ If current line is a single space, remove that space.
 
 Calling this command 3 times will always result in no whitespaces around cursor."
   (interactive)
-  (let (
-        cursor-point
+  (let (cursor-point
         line-has-meat-p  ; current line contains non-white space chars
         spaceTabNeighbor-p
         whitespace-begin whitespace-end
         space-or-tab-begin space-or-tab-end
-        line-begin-pos line-end-pos
-        )
+        line-begin-pos line-end-pos)
     (save-excursion
       ;; todo: might consider whitespace as defined by syntax table, and also consider whitespace chars in unicode if syntax table doesn't already considered it.
       (setq cursor-point (point))
@@ -308,11 +296,11 @@ Calling this command 3 times will always result in no whitespaces around cursor.
       (skip-chars-backward "\t \n")
       (setq whitespace-begin (point))
       
-      (goto-char cursor-point)      (skip-chars-forward "\t ")
+      (goto-char cursor-point)
+      (skip-chars-forward "\t ")
       (setq space-or-tab-end (point))
       (skip-chars-forward "\t \n")
-      (setq whitespace-end (point))
-      )
+      (setq whitespace-end (point)))
     
     (if line-has-meat-p
         (let (deleted-text)
@@ -322,19 +310,16 @@ Calling this command 3 times will always result in no whitespaces around cursor.
             ;; insert a whitespace only if we have removed something
             ;; different that a simple whitespace
             (if (not (string= deleted-text " "))
-                (insert " ") ) ) )
+                (insert " "))))
       
       (progn
         ;; (delete-region whitespace-begin whitespace-end)
         ;; (insert "\n")
-        (delete-blank-lines)
-        )
+        (delete-blank-lines))
       ;; todo: possibly code my own delete-blank-lines here for better efficiency, because delete-blank-lines seems complex.
-      )
-    )
-  )
+      )))
 
-(defun toggle-letter-case ()
+(defun ergoemacs-toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
 Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
   (interactive)
@@ -361,26 +346,23 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
      ((string= "init caps" (get this-command 'state))
       (upcase-region p1 p2) (put this-command 'state "all caps"))
      ((string= "all caps" (get this-command 'state))
-      (downcase-region p1 p2) (put this-command 'state "all lower")) )
-    ) )
+      (downcase-region p1 p2) (put this-command 'state "all lower")) )) )
 
 ;;; FRAME
 
-(defun switch-to-next-frame ()
+(defun ergoemacs-switch-to-next-frame ()
   "Select the next frame on current display, and raise it."
   (interactive)
-  (other-frame 1)
-  )
+  (other-frame 1))
 
-(defun switch-to-previous-frame ()
+(defun ergoemacs-switch-to-previous-frame ()
   "Select the previous frame on current display, and raise it."
   (interactive)
-  (other-frame -1)
-  )
+  (other-frame -1))
 
 ;;; BUFFER RELATED
 
-(defun next-user-buffer ()
+(defun ergoemacs-next-user-buffer ()
   "Switch to the next user buffer.
 User buffers are those whose name does not start with *."
   (interactive)
@@ -389,7 +371,7 @@ User buffers are those whose name does not start with *."
     (while (and (string-equal "*" (substring (buffer-name) 0 1)) (< i 20))
       (setq i (1+ i)) (next-buffer))))
 
-(defun previous-user-buffer ()
+(defun ergoemacs-previous-user-buffer ()
   "Switch to the previous user buffer.
 User buffers are those whose name does not start with *."
   (interactive)
@@ -398,7 +380,7 @@ User buffers are those whose name does not start with *."
     (while (and (string-equal "*" (substring (buffer-name) 0 1)) (< i 20))
       (setq i (1+ i)) (previous-buffer) )))
 
-(defun next-emacs-buffer ()
+(defun ergoemacs-next-emacs-buffer ()
   "Switch to the next emacs buffer.
 Emacs buffers are those whose name starts with *."
   (interactive)
@@ -407,7 +389,7 @@ Emacs buffers are those whose name starts with *."
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (next-buffer) )))
 
-(defun previous-emacs-buffer ()
+(defun ergoemacs-previous-emacs-buffer ()
   "Switch to the previous emacs buffer.
 Emacs buffers are those whose name starts with *."
   (interactive)
@@ -416,7 +398,7 @@ Emacs buffers are those whose name starts with *."
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (previous-buffer) )))
 
-(defun new-empty-buffer ()
+(defun ergoemacs-new-empty-buffer ()
   "Opens a new empty buffer."
   (interactive)
   (let ((buf (generate-new-buffer "untitled")))
@@ -431,7 +413,7 @@ Emacs buffers are those whose name starts with *."
 ;; status to offer save
 ;; This custome kill buffer is close-current-buffer.
 
-(defun open-in-external-app ()
+(defun ergoemacs-open-in-external-app ()
   "Open the current file or dired marked files in external app.
 Works in Microsoft Windows, Mac OS X, Linux."
   (interactive)
@@ -455,7 +437,7 @@ Works in Microsoft Windows, Mac OS X, Linux."
        ((string-equal system-type "gnu/linux")
         (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
 
-(defun open-in-desktop ()
+(defun ergoemacs-open-in-desktop ()
   "Open the current file in desktop.
 Works in Microsoft Windows, Mac OS X, Linux."
   (interactive)
@@ -463,13 +445,12 @@ Works in Microsoft Windows, Mac OS X, Linux."
    ((string-equal system-type "windows-nt")
     (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
    ((string-equal system-type "darwin") (shell-command "open ."))
-   ((string-equal system-type "gnu/linux") (shell-command "xdg-open ."))
-   ) )
+   ((string-equal system-type "gnu/linux") (shell-command "xdg-open ."))) )
 
-(defvar recently-closed-buffers (cons nil nil) "A list of recently closed buffers. The max number to track is controlled by the variable recently-closed-buffers-max.")
-(defvar recently-closed-buffers-max 30 "The maximum length for recently-closed-buffers.")
+(defvar ergoemacs-recently-closed-buffers (cons nil nil) "A list of recently closed buffers. The max number to track is controlled by the variable recently-closed-buffers-max.")
+(defvar ergoemacs-recently-closed-buffers-max 30 "The maximum length for recently-closed-buffers.")
 
-(defun close-current-buffer ()
+(defun ergoemacs-close-current-buffer ()
   "Close the current buffer.
 
 Similar to (kill-buffer (current-buffer)) with the following addition:
@@ -482,9 +463,9 @@ A emacs buffer is one who's name starts with *.
 Else it is a user buffer."
   (interactive)
   (let (emacsBuff-p isEmacsBufferAfter)
-
+    
     (setq emacsBuff-p (if (string-match "^*" (buffer-name)) t nil) )
-
+    
     (if (string= major-mode "minibuffer-inactive-mode")
         nil ; if minibuffer, do nothing
       (progn 
@@ -494,35 +475,38 @@ Else it is a user buffer."
                    (not (string-equal major-mode "dired-mode"))
                    (if (equal (buffer-file-name) nil) 
                        (if (string-equal "" (save-restriction (widen) (buffer-string))) nil t)
-                     t
-                     )
-                   )
+                     t))
           (if (y-or-n-p (format "Buffer %s modified; Do you want to save?" (buffer-name)))
               (save-buffer)
             (set-buffer-modified-p nil)))
-
+        
         ;; save to a list of closed buffer
         (when (not (equal buffer-file-name nil))
-          (setq recently-closed-buffers
-                (cons (cons (buffer-name) (buffer-file-name)) recently-closed-buffers))
-          (when (> (length recently-closed-buffers) recently-closed-buffers-max)
-            (setq recently-closed-buffers (butlast recently-closed-buffers 1))
-            )
-          )
+          (setq ergoemacs-recently-closed-buffers
+                (cons (cons (buffer-name) (buffer-file-name)) ergoemacs-recently-closed-buffers))
+          (when (> (length ergoemacs-recently-closed-buffers) ergoemacs-recently-closed-buffers-max)
+            (setq ergoemacs-recently-closed-buffers (butlast ergoemacs-recently-closed-buffers 1))))
         
         ;; close
         (kill-buffer (current-buffer))
-
+        
         ;; if emacs buffer, switch to a user buffer
         (if (string-match "^*" (buffer-name))
             (setq isEmacsBufferAfter t)
           (setq isEmacsBufferAfter nil))
         (when isEmacsBufferAfter
-          (next-user-buffer) ) )
-      )
-    ) )
+          (next-user-buffer) ) ))))
 
-(defun open-last-closed ()
+(defun ergoemacs-open-last-closed ()
   "Open the last closed file."
   (interactive)
-  (find-file (cdr (pop recently-closed-buffers)) ) )
+  (find-file (cdr (pop ergoemacs-recently-closed-buffers)) ) )
+
+;;; Text scaling functions
+(defun ergoemacs-text-scale-normal-size ()
+  "Set the height of the default face in the current buffer to its default value."
+  (interactive)
+  (text-scale-increase 0))
+(provide 'ergoemacs-functions)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ergoemacs-functions.el ends here
