@@ -631,149 +631,6 @@
     ("C-x a i l" (inverse-add-mode-abbrev)))
   "Default Emacs Key Bindings")
 
-(defcustom ergoemacs-guru nil
-  "Unbind some commonly used keys such as <left> and <right> to
-  get in the habit of using ergoemacs keybindings."
-  :type 'boolean
-  :set 'ergoemacs-set-default
-  :group 'ergoemacs-mode)
-
-(defcustom ergoemacs-guru-keys
-  '("<left>"
-     "<right>"
-     "<up>"
-     "<down>"
-     "<C-left>"
-     "<C-right>"
-     "<C-up>"
-     "<C-down>"
-     "<M-left>"
-     "<M-right>"
-     "<M-up>"
-     "<M-down>"
-     "<delete>"
-     "<C-delete>"
-     "<M-delete>"
-     "<next>"
-     "<C-next>" 
-     "<prior>"
-     "<C-prior>" 
-     "<home>"
-     "<C-home>"
-     "<end>"
-     "<C-end>")
-  "Keys to unbind if ergoemacs-guru is enabled."
-  :type '(repeat
-          (string :tag "Kbd code"))
-  :set 'ergoemacs-set-default
-  :group 'ergoemacs-mode)
-
-
-
-(defvar ergoemacs-redundant-keys
-  '("C-/"
-    "C-0"
-    "C-1"
-    "C-2"
-    "C-3"
-    "C-4"
-    "C-5"
-    "C-6"
-    "C-7"
-    "C-8"
-    "C-9"
-    "C-<next>"
-    "C-<prior>"
-    "C-@"
-    "C-M-%"
-    "C-_"
-    "C-a"
-    "C-b"
-    "C-d"
-    "C-e"
-    "C-f"
-    "C-j"
-    "C-k"
-    "C-l"
-    "C-n"
-    "C-o"
-    "C-p"
-    "C-r"
-    "C-s"
-    "C-t"
-    "C-v"
-    "C-w"
-    "C-x 0"
-    "C-x 1"
-    "C-x 2"
-    "C-x 3"
-    "C-x 5 0"
-    "C-x 5 2"
-    "C-x C-d"
-    "C-x C-f"
-    "C-x C-s"
-    "C-x C-w"
-    "C-x h"
-    "C-x o"
-    "C-y"
-    "C-z"
-    "M--"
-    "M-0"
-    "M-1"
-    "M-2"
-    "M-3"
-    "M-4"
-    "M-5"
-    "M-6"
-    "M-7"
-    "M-8"
-    "M-9"
-    "M-<"
-    "M->"
-    "M-@"
-    "M-\\"
-    "M-a"
-    "M-b"
-    "M-c"
-    "M-d"
-    "M-e"
-    "M-f"
-    "M-h"
-    "M-i"
-    "M-j"
-    "M-k"
-    "M-l"
-    "M-m"
-    "M-n"
-    "M-o"
-    "M-p"
-    "M-q"
-    "M-r"
-    "M-s"
-    "M-t"
-    "M-u"
-    "M-v"
-    "M-w"
-    "M-x"
-    "M-y"
-    "M-z"
-    "M-{"
-    "M-}")
-  "These are the redundant key bindings in emacs that ErgoEmacs unbinds.  Some exceptions we do not want to unset are:
-
-Some exceptions we don't want to unset.
-\"C-g\" 'keyboard-quit
-\"C-i\" 'indent-for-tab-command
-\"C-m\" 'newline-and-indent
-\"C-q\" 'quote-insert
-\"C-u\" 'universal-argument
-\"C-h\" ; (help-map)
-\"C-x\" ; (ctl-x-map)
-\"C-c\" ; (prefix)
-\"M-g\" ; (prefix)
-
-")
-
 (defun ergoemacs-format-where-is-buffer (&optional include-menu-bar include-alias)
   "Format a buffer created from a `where-is' command."
   (when (and (boundp 'fn)
@@ -823,11 +680,6 @@ Some exceptions we don't want to unset.
                      (where-is curr-fn t))
                    (ergoemacs-format-where-is-buffer)
                    (buffer-string)))))))
-
-(mapc
- (lambda(x)
-   (eval `(ergoemacs-create-old-key-description-fn ,x)))
- `(,@ergoemacs-redundant-keys ,@ergoemacs-guru-keys))
 
 (defvar ergoemacs-global-not-changed-cache '()
   "Cache of global variables that have not changed")
@@ -948,12 +800,14 @@ disabled at `ergoemacs-restore-global-keys'."
 
 (defun ergoemacs-unset-redundant-global-keys ()
   "Unsets redundant keyboard shortcuts that should not be used in ErgoEmacs."
+  (mapc
+   (lambda(x)
+     (eval `(ergoemacs-create-old-key-description-fn ,x)))
+   (symbol-value (ergoemacs-get-redundant-keys)))
   (mapc (lambda (x)
           (unless (ergoemacs-global-changed-p x)
             (ergoemacs-unset-global-key (current-global-map) x)))
-	`(,@ergoemacs-redundant-keys ,@(if ergoemacs-guru
-                                           ergoemacs-guru-keys
-                                         nil))))
+        (symbol-value (ergoemacs-get-redundant-keys))))
 
 (defvar ergoemacs-do-not-restore-list '()
   "List of keys to not restore.")

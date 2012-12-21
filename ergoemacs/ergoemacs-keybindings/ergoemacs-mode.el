@@ -617,10 +617,10 @@ Valid values are:
       ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
 
     ;; Info Mode hooks
-
+    
     (Info-mode-hook
-     ("<backspace>" Info-history-back Info-mode-map)
-     ("<S-backspace>" Info-history-forward Info-mode-map))
+     (("<backspace>" Info-history-back Info-mode-map)
+      ("<S-backspace>" Info-history-forward Info-mode-map)))
     
     ;; Helm mode hooks
     (helm-before-initialize-hook
@@ -657,6 +657,137 @@ Valid values are:
   :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
+(defcustom ergoemacs-redundant-keys
+  '("C-/"
+    "C-0"
+    "C-1"
+    "C-2"
+    "C-3"
+    "C-4"
+    "C-5"
+    "C-6"
+    "C-7"
+    "C-8"
+    "C-9"
+    "C-<next>"
+    "C-<prior>"
+    "C-@"
+    "C-M-%"
+    "C-_"
+    "C-a"
+    "C-b"
+    "C-d"
+    "C-e"
+    "C-f"
+    "C-j"
+    "C-k"
+    "C-l"
+    "C-n"
+    "C-o"
+    "C-p"
+    "C-r"
+    "C-s"
+    "C-t"
+    "C-v"
+    "C-w"
+    "C-x 0"
+    "C-x 1"
+    "C-x 2"
+    "C-x 3"
+    "C-x 5 0"
+    "C-x 5 2"
+    "C-x C-d"
+    "C-x C-f"
+    "C-x C-s"
+    "C-x C-w"
+    "C-x h"
+    "C-x o"
+    "C-y"
+    "C-z"
+    "M--"
+    "M-0"
+    "M-1"
+    "M-2"
+    "M-3"
+    "M-4"
+    "M-5"
+    "M-6"
+    "M-7"
+    "M-8"
+    "M-9"
+    "M-<"
+    "M->"
+    "M-@"
+    "M-\\"
+    "M-a"
+    "M-b"
+    "M-c"
+    "M-d"
+    "M-e"
+    "M-f"
+    "M-h"
+    "M-i"
+    "M-j"
+    "M-k"
+    "M-l"
+    "M-m"
+    "M-n"
+    "M-o"
+    "M-p"
+    "M-q"
+    "M-r"
+    "M-s"
+    "M-t"
+    "M-u"
+    "M-v"
+    "M-w"
+    "M-x"
+    "M-y"
+    "M-z"
+    "M-{"
+    "M-}")
+  "These are the redundant key bindings in emacs that ErgoEmacs unbinds.  Some exceptions we do not want to unset are:
+
+Some exceptions we don't want to unset.
+\"C-g\" 'keyboard-quit
+\"C-i\" 'indent-for-tab-command
+\"C-m\" 'newline-and-indent
+\"C-q\" 'quote-insert
+\"C-u\" 'universal-argument
+\"C-h\" ; (help-map)
+\"C-x\" ; (ctl-x-map)
+\"C-c\" ; (prefix)
+\"M-g\" ; (prefix)
+
+"
+  :type '(repeat (string :tag "Kbd code to unset"))
+  :set 'ergoemacs-set-default
+  :group 'ergoemacs-mode)
+
+(defvar ergoemacs-variant nil)
+
+(defun ergoemacs-get-variable-layout (&optional var)
+  "Get Variable Layout for current variant."
+  (let ((cvar (or var 'ergoemacs-variable-layout)))
+    (if (and ergoemacs-variant
+             (intern-soft (concat (symbol-name cvar) "-" ergoemacs-variant)))
+        (intern (concat (symbol-name cvar) "-" ergoemacs-variant))
+      cvar)))
+
+
+(defun ergoemacs-get-fixed-layout ()
+  "Gets Fixed Layout for current variant."
+  (ergoemacs-get-variable-layout 'ergoemacs-fixed-layout))
+
+(defun ergoemacs-get-minor-mode-layout ()
+  "Get ergoemacs-minor-mode-layout based on current variant."
+  (ergoemacs-get-variable-layout 'ergoemacs-minor-mode-layout))
+
+(defun ergoemacs-get-redundant-keys ()
+  "Get redundant keys based on current variant"
+  (ergoemacs-get-variable-layout 'ergoemacs-redundant-keys))
+
+
 (load "ergoemacs-unbind")
 
 (defvar ergoemacs-backward-compatability-variables 
@@ -686,6 +817,7 @@ Valid values are:
   "Defines KEY in ergoemacs keyboard based on QWERTY and binds to FUNCTION.
 Optionally provides DESC for a description of the key."
   (let (found
+        key
         (no-ergoemacs-advice t))
     (set (if fixed-key (ergoemacs-get-fixed-layout)
            (ergoemacs-get-variable-layout))
@@ -705,9 +837,19 @@ Optionally provides DESC for a description of the key."
                      (ergoemacs-get-variable-layout))
                    `(,key ,function ,desc)))
     (if fixed-key
-        (define-key ergoemacs-keymap (read-kbd-macro (encode-coding-string key locale-coding-system))
-          function)
-      (define-key ergoemacs-keymap (ergoemacs-kbd key) function))))
+        (setq key (read-kbd-macro (encode-coding-string key locale-coding-system)))
+      (setq key (ergoemacs-kbd key)))
+    ;; Add to `ergoemacs-save-bound-keys'
+    (setq ergoemacs-save-bound-keys
+          (mapcar
+           (lambda(x)
+             (if (not (eq (nth 0 x) 'ergoemacs-keymap))
+                 x
+               (let ((lst (nth 1 x)))
+                 (add-to-list 'lst key)
+                 (list 'ergoemacs-keymap lst))))
+           ergoemacs-save-bound-keys))
+    (define-key ergoemacs-keymap key function)))
 
 ;;;###autoload
 (defun ergoemacs-fixed-key (key function &optional desc)
@@ -762,24 +904,6 @@ format:
 ;;; Add the different keyboard variants
 
 
-(defvar ergoemacs-variant nil)
-
-(defun ergoemacs-get-variable-layout (&optional var)
-  "Get Variable Layout for current variant."
-  (let ((cvar (or var 'ergoemacs-variable-layout)))
-    (if (and ergoemacs-variant
-             (intern-soft (concat (symbol-name cvar) "-" ergoemacs-variant)))
-        (intern (concat (symbol-name cvar) "-" ergoemacs-variant))
-      cvar)))
-
-
-(defun ergoemacs-get-fixed-layout ()
-  "Gets Fixed Layout for current variant."
-  (ergoemacs-get-variable-layout 'ergoemacs-fixed-layout))
-
-(defun ergoemacs-get-minor-mode-layout ()
-  "Get ergoemacs-minor-mode-layout based on current variant."
-  (ergoemacs-get-variable-layout 'ergoemacs-minor-mode-layout))
 
 (defun ergoemacs-get-variants-doc ()
   "Gets the list of all known variants and the documentation associated with the variants."
@@ -840,7 +964,10 @@ DIFFERENCES are the differences from the layout based on the functions.  These a
                                              'ergoemacs-variable-layout))
            (ergoemacs-minor-mode-layout-tmp ,(if based-on
                                                  (format "ergoemacs-minor-mode-layout-%s" name)
-                                               'ergoemacs-minor-mode-layout)))
+                                               'ergoemacs-minor-mode-layout))
+           (ergoemacs-redundant-keys-tmp ,(if based-on
+                                              (format "ergoemacs-redundant-keys-%s" name)
+                                            'ergoemacs-redundant-keys)))
        (setq ergoemacs-variant "tmp")
        ,@differences
        (setq ergoemacs-variant last-variant)
@@ -890,13 +1017,91 @@ DIFFERENCES are the differences from the layout based on the functions.  These a
                                (const :tag "Unbind Key" nil))
                               (symbol :tag "Keymap to Modify")))))
          :set 'ergoemacs-set-default
-         :group ',(intern (format "ergoemacs-%s-variant" name))))
+         :group ',(intern (format "ergoemacs-%s-variant" name)))
+       (defcustom ,(intern (format "ergoemacs-redundant-keys-%s" name))
+         ergoemacs-redundant-keys-tmp
+         "These are the redundant key bindings in emacs that ErgoEmacs unbinds.  Some exceptions we do not want to unset are:
+
+Some exceptions we don't want to unset.
+\"C-g\" 'keyboard-quit
+\"C-i\" 'indent-for-tab-command
+\"C-m\" 'newline-and-indent
+\"C-q\" 'quote-insert
+\"C-u\" 'universal-argument
+\"C-h\" ; (help-map)
+\"C-x\" ; (ctl-x-map)
+\"C-c\" ; (prefix)
+\"M-g\" ; (prefix)
+
+")
+       :type '(repeat (string :tag "Kbd code to unset"))
+       :set 'ergoemacs-set-default
+       :group 'ergoemacs-mode)
+     
      (defcustom ergoemacs-variant nil
        (concat "Ergoemacs Keyboard Layout variants.\nThere are different layout variants for ergoemacs.  These include:\n" (ergoemacs-get-variants-doc))
        :type (ergoemacs-get-variants-type)
        :set 'ergoemacs-set-default
        :group 'ergoemacs-mode)))
 
+
+(ergoemacs-defvariant lvl1
+                      "Level 1 Ergoemacs, just arrow keys."
+                      nil
+                      (setq ergoemacs-fixed-layout-tmp '())
+                      (setq ergoemacs-variable-layout-tmp
+                            '(("M-j" backward-char  "← char")
+                              ("M-l" forward-char "→ char")
+                              ("M-i" previous-line "↑ line")
+                              ("M-k" next-line "↓ line")
+                              ("M-SPC" set-mark-command "Set Mark")))
+                      (setq ergoemacs-redundant-keys-tmp '("C-b" "C-f" "C-p" "C-n" "C-SPC")))
+
+(ergoemacs-defvariant lvl2
+                      "Level 2 Ergoemacs, Arrow keys, word movement, and deletion."
+                      lvl1
+                      (setq ergoemacs-variable-layout-tmp
+                            `(,@ergoemacs-variable-layout-tmp
+                              ;; Move by word
+                              ("M-u" backward-word "← word")
+                              ("M-o" forward-word "→ word")
+                              ;; Delete previous/next char.
+                              ("M-d" delete-backward-char "⌫ char")
+                              ("M-f" delete-char "⌦ char")
+                              
+                              ;; Delete previous/next word.
+                              ("M-e" backward-kill-word "⌫ word")
+                              ("M-r" kill-word "⌦ word")))
+                      (setq ergoemacs-redundant-keys-tmp `(,ergoemacs-redundant-keys-tmp
+                                                           "M-f" "M-b" "M-d" "C-<backspace>" "C-d")))
+
+(ergoemacs-defvariant guru
+                      "Unbind some commonly used keys such as <left> and <right> to get in the habit of using ergoemacs keybindings."
+                      nil
+                      (setq ergoemacs-redundant-keys-tmp `(,@ergoemacs-redundant-keys-tmp
+                                                           "<left>"
+                                                            "<right>"
+                                                            "<up>"
+                                                            "<down>"
+                                                            "<C-left>"
+                                                            "<C-right>"
+                                                            "<C-up>"
+                                                            "<C-down>"
+                                                            "<M-left>"
+                                                            "<M-right>"
+                                                            "<M-up>"
+                                                            "<M-down>"
+                                                            "<delete>"
+                                                            "<C-delete>"
+                                                            "<M-delete>"
+                                                            "<next>"
+                                                            "<C-next>" 
+                                                            "<prior>"
+                                                            "<C-prior>" 
+                                                            "<home>"
+                                                            "<C-home>"
+                                                            "<end>"
+                                                            "<C-end>")))
 
 (ergoemacs-defvariant 5.3.7
                       "Old Ergoemacs layout.  Uses M-; and M-: for isearch.  Uses M-n for cancel."
@@ -956,12 +1161,58 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
         (read-kbd-macro (encode-coding-string new-key locale-coding-system))
       new-key)))
 
+
+(defvar ergoemacs-save-bound-keys '()
+  "Alist of bound keys saved. Used in `ergoemacs-setup-keys-for-keymap'")
+
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
   `(let ((no-ergoemacs-advice t)
          (case-fold-search t)
+         (keys-to-unbind '())
+         key
          cmd)
-     (setq ,keymap (make-sparse-keymap))
+     ;; When calling the (define-minor-mode ergoemacs-mode ...) in
+     ;; ergoemacs-setup-keys the ergoemacs-keymap is used after
+     ;; changes are made. Without this call, the old ergoemacs-keymap
+     ;; is retained even if it is changed within customize. Therefore
+     ;; the describe-variable for ergoemacs-keymap shows the proper
+     ;; bindings, but the C-h b shows the old bindings. I'm not sure
+     ;; if this is true for the minor-mode defined keymaps, but it
+     ;; could also be a problem.
+     
+     ;; A test case for this is changing the ergoemacs-variant to
+     ;; lvl1.  While the variable stored in ergoemacs-keymap is
+     ;; correct, the bindings that were previously defined are
+     ;; retained. In consequence, the "M-x" key is not restored.
+     
+     ;; However, as noted later in the file, this
+     ;; causes describe function in to say “ergoemacs-mode is an
+     ;; interactive Lisp function in `.emacs.desktop'”.
+     
+     ;; For this reason, this setup keys will now not only define a
+     ;; key, but destroy any key associations already setup, and save
+     ;; the keys setup for the next keymap change.
+     (when (or (not (boundp ',keymap)) (not ,keymap))
+       (setq ,keymap (make-sparse-keymap)))
+     
+     (defvar ,keymap (make-sparse-keymap)
+       ,(format "Ergoemacs %s keymap" (symbol-name keymap)))
+     
+     ;; Unbind old keys
+     (let ((old-keys (assoc ',keymap ergoemacs-save-bound-keys)))
+       (when old-keys
+         (mapc
+          (lambda(x)
+            (define-key ,keymap x nil))
+          (nth 1 old-keys))
+         (setq ergoemacs-save-bound-keys
+               (delete old-keys ergoemacs-save-bound-keys))))
+     
+     ;; At this point, `ergoemacs-save-bound-keys' has no information
+     ;; about the keymap.
+     
+     ;; Fixed layout keys
      (mapc
       (lambda(x)
         (when (and (eq 'string (type-of (nth 0 x)))
@@ -976,12 +1227,15 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                           (intern-soft
                            (concat "ergoemacs-" (symbol-name (nth 1 x)))))
                      (nth 1 x)))
-          (define-key ,keymap (read-kbd-macro 
-				 (encode-coding-string 
-				  (nth 0 x) 
-				  locale-coding-system))
-	      cmd)))
+          (setq key (read-kbd-macro 
+                     (encode-coding-string 
+                      (nth 0 x) 
+                      locale-coding-system)))
+          (add-to-list 'keys-to-unbind key)
+          (define-key ,keymap key cmd)))
       (symbol-value (ergoemacs-get-fixed-layout)))
+     
+     ;; Variable Layout Keys
      (mapc
       (lambda(x)
         (when (and (eq 'string (type-of (nth 0 x)))
@@ -996,13 +1250,28 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                           (intern-soft
                            (concat "ergoemacs-" (symbol-name (nth 1 x)))))
                      (nth 1 x)))
-          (define-key ,keymap (ergoemacs-kbd (nth 0 x)) cmd)))
-      (symbol-value (ergoemacs-get-variable-layout)))))
-
+          (setq key (ergoemacs-kbd (nth 0 x)))
+          (add-to-list 'keys-to-unbind key)
+          (define-key ,keymap  key cmd)))
+      (symbol-value (ergoemacs-get-variable-layout)))
+     
+     ;; Now add the saved keys to `ergoemacs-save-bound-keys'.
+     (add-to-list 'ergoemacs-save-bound-keys (list ',keymap keys-to-unbind))))
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
   (ergoemacs-setup-keys-for-keymap ergoemacs-keymap)
+  ;; Set appropriate mode-line indicator
+  (setq minor-mode-alist
+        (mapcar (lambda(x)
+                  (if (not (eq 'ergoemacs-mode (nth 0 x)))
+                      x
+                    `(ergoemacs-mode ,(if (not ergoemacs-variant)
+                                          " ErgoEmacs"
+                                        (concat " Ergo"
+                                                (upcase (substring ergoemacs-variant 0 1))
+                                                (substring ergoemacs-variant 1))))))
+                minor-mode-alist))
   (ergoemacs-setup-backward-compatability))
 
 (require 'lookup-word-on-internet nil "NOERROR")
@@ -1469,6 +1738,16 @@ EXTRA represents an extra file representation."
      (symbol-value (ergoemacs-get-variable-layout)))
     (symbol-value 'ret)))
 
+(defun ergoemacs-hook-define-key (keymap key definition)
+  "Ergoemacs  `define-key' in hook."
+  (when (keymapp keymap)
+    (cond
+     ((not key))
+     ((eq 'string (type-of 'key))
+      (define-key keymap key definition))
+     ((ergoemacs-key-fn-lookup key)
+      (define-key keymap (ergoemacs-key-fn-lookup key) definition)))))
+  
 (defmacro ergoemacs-create-hook-function (hook keys)
   "Creates a hook function based on the HOOK and the list of KEYS defined."
   (let ((is-override (make-symbol "is-override"))
@@ -1488,21 +1767,20 @@ This is an automatically generated function derived from `ergoemacs-get-minor-mo
             nil)
          ,@(mapcar
             (lambda(def)
-              (if (or (eq 'string (type-of (nth 0 def)))
-                      (ergoemacs-key-fn-lookup (nth 0 def)))
-                `(progn
-                   ,(if (and is-override (equal (nth 2 def) 'minor-mode-overriding-map-alist)) nil
-                      (if (member (nth 2 def) local-list) nil
-                        (add-to-list 'local-list (nth 2 def))
-                        `(set (make-local-variable ',(nth 2 def)) ,(nth 2 def))))
-                   (define-key ,(if (and is-override (equal (nth 2 def) 'minor-mode-overriding-map-alist))
-                                    (intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))
-                                  (nth 2 def))
-                     ,(if (eq 'string (type-of (nth 0 def)))
-                          `(kbd ,(nth 0 def))
-                        `(ergoemacs-key-fn-lookup ',(nth 0 def)))
-                     ',(nth 1 def)))
-                nil))
+              `(progn
+                 ,(if (and is-override (equal (nth 2 def) 'minor-mode-overriding-map-alist)) nil
+                    (if (member (nth 2 def) local-list) nil
+                      (add-to-list 'local-list (nth 2 def))
+                      `(set (make-local-variable ',(nth 2 def)) ,(nth 2 def))))
+                 (ergoemacs-hook-define-key ,(if (and is-override
+                                                      (equal (nth 2 def)
+                                                             'minor-mode-overriding-map-alist))
+                                                 (intern (concat "ergoemacs-" (symbol-name hook) "-keymap"))
+                                               (nth 2 def))
+                                            ,(if (eq (type-of (nth 0 def)) 'string)
+                                                 `,(nth 0 def)
+                                               `(quote ,(nth 0 def)))
+                                            ',(nth 1 def))))
             keys)
          ,(if is-override
               `(add-to-list 'minor-mode-overriding-map-alist
@@ -1538,8 +1816,9 @@ will change."
           (ergoemacs-unset-redundant-global-keys)
           
           ;; alt+n is the new "Quit" in query-replace-map
-          (ergoemacs-unset-global-key query-replace-map "\e")
-          (define-key query-replace-map (ergoemacs-key-fn-lookup 'keyboard-quit) 'exit-prefix))
+          (when (ergoemacs-key-fn-lookup 'keyboard-quit)
+            (ergoemacs-unset-global-key query-replace-map "\e")
+            (define-key query-replace-map (ergoemacs-key-fn-lookup 'keyboard-quit) 'exit-prefix)))
       ;; if ergoemacs was disabled: restore original keys
       (ergoemacs-restore-global-keys))
     
@@ -1628,7 +1907,7 @@ Home page URL `http://ergoemacs.org/emacs/ergonomic_emacs_keybinding.html'
 
 The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard's 【Menu】 key."
   nil
-  :lighter (if ergoemacs-guru " ErgoGuru" " ErgoEmacs") ;; TODO this should be nil (it is for testing purposes)
+  :lighter " ErgoEmacs"
   :global t
   :group 'ergoemacs-mode
   :keymap ergoemacs-keymap
@@ -1672,6 +1951,16 @@ The `execute-extended-command' 【Alt+x】 is now 【Alt+a】 or the PC keyboard
         (message "Only changed ergoemacs-keybinding for current variant, %s" (or ergoemacs-variant "which happens to be the default key-binding"))
         (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
           (let ((no-ergoemacs-advice t))
+            ;; Need to add to `ergoemacs-save-bound-keys'
+            (setq ergoemacs-save-bound-keys
+                  (mapcar
+                   (lambda(x)
+                     (if (not (eq (nth 0 x) 'ergoemacs-keymap))
+                         x
+                       (let ((lst (nth 1 x)))
+                         (add-to-list 'lst key)
+                         (list 'ergoemacs-keymap lst))))
+                   ergoemacs-save-bound-keys))
             (define-key ergoemacs-keymap key def))))
     ad-do-it))
 
