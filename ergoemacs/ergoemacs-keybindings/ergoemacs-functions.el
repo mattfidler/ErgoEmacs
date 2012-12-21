@@ -507,6 +507,102 @@ Else it is a user buffer."
   "Set the height of the default face in the current buffer to its default value."
   (interactive)
   (text-scale-increase 0))
+
+;;; Ergoprog functions
+(defun ergoemacs-is-text-mode ()
+  (or (eq major-mode 'text-mode)
+      (eq major-mode 'markdown-mode)))
+
+(defun ergoemacs-beginning-of-block ()
+  (interactive)
+  (if (ergoemacs-is-text-mode)
+      (backward-paragraph)
+    (beginning-of-defun)))
+
+(defun ergoemacs-end-of-block ()
+  (interactive)
+  (if (ergoemacs-is-text-mode)
+      (forward-paragraph)
+    (end-of-defun)))
+
+(defun ergoemacs-switch-macro-recording ()
+  (interactive)
+  (if (not defining-kbd-macro)
+      (kmacro-start-macro 0)
+    (kmacro-end-macro 1)))
+
+;; ==================================================
+;; Camel Case
+;; ==================================================
+
+;; These functions were taken from:
+;; http://www.emacswiki.org/emacs/CamelCase
+
+(defun ergoemacs-un-camelcase-string (s &optional sep start)
+  "Convert CamelCase string S to lower case with word separator SEP.
+    Default for SEP is a hyphen \"-\".
+    If third argument START is non-nil, convert words after that
+    index in STRING."
+  (let ((case-fold-search nil))
+    (while (string-match "[A-Z]" s (or start 1))
+      (setq s (replace-match (concat (or sep "-")
+                                     (downcase (match-string 0 s)))
+                             t nil s)))
+    (downcase s)))
+
+(defun ergoemacs-mapcar-head (fn-head fn-rest list)
+  "Like MAPCAR, but applies a different function to the first element."
+  (if list
+      (cons (funcall fn-head (car list)) (mapcar fn-rest (cdr list)))))
+
+(defun ergoemacs-camelize (s)
+  "Convert under_score string S to CamelCase string."
+  (mapconcat 'identity (mapcar
+                        '(lambda (word) (capitalize (downcase word)))
+                        (split-string s "_")) ""))
+(defun ergoemacs-camelize-method (s)
+  "Convert under_score string S to camelCase string."
+  (mapconcat 'identity (ergoemacs-mapcar-head
+                        '(lambda (word) (downcase word))
+                        '(lambda (word) (capitalize (downcase word)))
+                        (split-string s "_")) ""))
+
+;; This is my camel-case switcher
+
+(defun ergoemacs-toggle-camel-case ()
+  (interactive)
+  (let* ((bounds (progn (if (= (cdr (bounds-of-thing-at-point 'word))
+                               (car (bounds-of-thing-at-point 'sexp)))
+                            (backward-char))
+                        (bounds-of-thing-at-point 'sexp)))
+         (beg (car bounds))
+         (end (cdr bounds))
+         (rgn (filter-buffer-substring beg end))
+         (case-fold-search nil))
+    (delete-region beg end)
+    (cond
+     ((string-match "_" rgn)
+      (insert (camelize-method rgn)))
+     ((string-match "^[a-z]" rgn)
+      (progn (insert (capitalize (substring rgn 0 1)))
+             (insert (substring rgn 1))))
+     (t
+      (insert (un-camelcase-string rgn "_"))))))
+
+;; ==================================================
+;; PHP facilities
+;; ==================================================
+
+(defun ergoemacs-open-and-close-php-tag ()
+  (interactive)
+  (insert "<?php  ?>")
+  (backward-char 3))
+
+(defun ergoemacs-open-and-close-php-tag-with-echo ()
+  (interactive)
+  (insert "<?php echo ; ?>")
+  (backward-char 4))
+
 (provide 'ergoemacs-functions)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-functions.el ends here
