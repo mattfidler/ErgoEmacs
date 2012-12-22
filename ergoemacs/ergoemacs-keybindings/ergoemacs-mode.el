@@ -1264,13 +1264,10 @@ Some exceptions we don't want to unset.
                       5.3.7
                       (ergoemacs-replace-key 'split-window-vertically "M-@" "split |")
                       (ergoemacs-replace-key 'split-window-horizontally "M-4")
-                      (message "Point 1")
                       (ergoemacs-key "M-y" 'beginning-of-buffer "↑ buffer")
                       (ergoemacs-key "M-Y" 'end-of-buffer "↓ buffer")
-                      (message "Point 2")
                       (ergoemacs-fixed-key "M-S-<backspace>" 'backward-kill-sexp)
                       (ergoemacs-fixed-key "M-S-<delete>" 'kill-sexp)
-                      (message "Point 3")
                       (ergoemacs-key "M-D" 'backward-kill-sexp "")
                       (ergoemacs-key "M-F" 'kill-sexp "")
                       ;; ErgoEmacs problem: M-´ is a dead-key in Spanish keyboard
@@ -1411,6 +1408,7 @@ Some exceptions we don't want to unset.
      
      ;; Now add the saved keys to `ergoemacs-save-bound-keys'.
      (add-to-list 'ergoemacs-save-bound-keys (list ',keymap keys-to-unbind))))
+
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
@@ -1888,14 +1886,22 @@ EXTRA represents an extra file representation."
       (message "Layout generated to %s" file))))
 
 (defun ergoemacs-svgs (&optional layouts)
-  "Generate SVGs for all the defined layouts."
+  "Generate SVGs for all the defined layouts and variants."
   (interactive)
-  (let ((lay (or layouts (ergoemacs-get-layouts))))
+  (let* ((lay (or layouts (ergoemacs-get-layouts)))
+         (saved-variant ergoemacs-variant))
     (mapc
      (lambda(x)
        (message "Generate SVG for %s" x)
        (ergoemacs-gen-svg x)
-       (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts"))
+       (ergoemacs-set-default 'ergoemacs-variant nil)
+       (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts")
+       (mapc
+        (lambda(y)
+          (ergoemacs-set-default 'ergoemacs-variant y)
+          (ergoemacs-gen-svg x "kbd-ergo.svg" (concat y "/ergo-layouts")))
+        (sort (ergoemacs-get-variants) 'string<))
+       (ergoemacs-set-default 'ergoemacs-variant saved-variant))
      lay)))
 
 ;; ErgoEmacs hooks
