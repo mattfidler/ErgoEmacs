@@ -805,8 +805,9 @@ disabled at `ergoemacs-restore-global-keys'."
      (eval `(ergoemacs-create-old-key-description-fn ,x)))
    (symbol-value (ergoemacs-get-redundant-keys)))
   (mapc (lambda (x)
-          (unless (ergoemacs-global-changed-p x)
-            (ergoemacs-unset-global-key (current-global-map) x)))
+          (let ((key (ergoemacs-get-kbd-translation x)))
+            (unless (ergoemacs-global-changed-p key)
+              (ergoemacs-unset-global-key (current-global-map) key))))
         (symbol-value (ergoemacs-get-redundant-keys))))
 
 (defvar ergoemacs-do-not-restore-list '()
