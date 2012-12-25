@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.4.0, 2012-12-24 • added cycle between several punctuations and the fullwidth version: {, . : ; ! ? &}
 ;; v1.3.9, 2012-12-15 • added cycle for SPACE 「 」 → NO-BREAK SPACE 「 」 → IDEOGRAPHIC SPACE 「　」. Also, FULLWIDTH COMMA 「，」 and comma are now cycle. 
 ;; v1.3.8, 2012-12-09 • added cycle for 「· ．。」. That is, one of these cycles to other. Also, 「,→，」.
 ;; v1.3.7, 2012-06-28 • much improved parsing the input string. Now, if there's no text selection, then grab string from cursor point to the left up to a whitespace char (limit to 10 chars max), then try that, if not found, try with one char minus. e.g. If text is 「some abc▮」, try 「abc」, then 「bc」, then 「c」. This way, user doesn't have to add a whitespace as separator before the abbrev, or having to make a text selection. e.g. in coding elisp, if current text is 「(a▮」, user can call xmsi-change-to-symbol directly to get 「(α▮」.
@@ -100,7 +101,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.3.9")
+(setq xmsi-version "v1.4.0")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1028,15 +1029,32 @@
 (puthash "fwy" "ｙ" xmsi-abrvs)
 (puthash "fwz" "ｚ" xmsi-abrvs)
 
+
+
+;; non-ascii abbrevs
+
 (puthash "," "，" xmsi-abrvs)
 (puthash "，" "," xmsi-abrvs)
 
-;; non-ascii abbrevs
 (puthash "·" "．" xmsi-abrvs)      ; MIDDLE DOT to FULLWIDTH FULL STOP
 (puthash "．" "。" xmsi-abrvs) ; FULLWIDTH FULL STOP to IDEOGRAPHIC FULL STOP
 (puthash "。" "·" xmsi-abrvs)  ; IDEOGRAPHIC FULL STOP to MIDDLE DOT
 
-;; non-ascii abbrevs
+(puthash ":" "：" xmsi-abrvs)    ; FULLWIDTH COLON
+(puthash "：" ":" xmsi-abrvs)
+
+(puthash ";" "；" xmsi-abrvs)
+(puthash "；" ";" xmsi-abrvs)
+
+(puthash "!" "！" xmsi-abrvs)
+(puthash "！" "!" xmsi-abrvs)
+
+(puthash "?" "？" xmsi-abrvs)
+(puthash "？" "?" xmsi-abrvs)
+
+(puthash "&" "＆" xmsi-abrvs)
+(puthash "＆" "&" xmsi-abrvs)
+
 (puthash " " " " xmsi-abrvs)            ; space to NO-BREAK SPACE
 (puthash " " "　" xmsi-abrvs)           ; NO-BREAK SPACE to IDEOGRAPHIC SPACE
 (puthash "　" " " xmsi-abrvs)           ; IDEOGRAPHIC SPACE to space
