@@ -801,7 +801,6 @@ Some exceptions we don't want to unset.
         (intern (concat (symbol-name cvar) "-" ergoemacs-variant))
       cvar)))
 
-
 (defun ergoemacs-get-fixed-layout ()
   "Gets Fixed Layout for current variant."
   (ergoemacs-get-variable-layout 'ergoemacs-fixed-layout))
@@ -1264,13 +1263,10 @@ Some exceptions we don't want to unset.
                       5.3.7
                       (ergoemacs-replace-key 'split-window-vertically "M-@" "split |")
                       (ergoemacs-replace-key 'split-window-horizontally "M-4")
-                      (message "Point 1")
                       (ergoemacs-key "M-y" 'beginning-of-buffer "↑ buffer")
                       (ergoemacs-key "M-Y" 'end-of-buffer "↓ buffer")
-                      (message "Point 2")
                       (ergoemacs-fixed-key "M-S-<backspace>" 'backward-kill-sexp)
                       (ergoemacs-fixed-key "M-S-<delete>" 'kill-sexp)
-                      (message "Point 3")
                       (ergoemacs-key "M-D" 'backward-kill-sexp "")
                       (ergoemacs-key "M-F" 'kill-sexp "")
                       ;; ErgoEmacs problem: M-´ is a dead-key in Spanish keyboard
@@ -1319,12 +1315,35 @@ Some exceptions we don't want to unset.
                       (ergoemacs-key "M-m b b" 'bookmark-bmenu-list "" t) ;; b = Switch Buffer = List Bookmarks
                       )
 
+(defcustom ergoemacs-swap-alt-and-control nil
+  "Swaps Alt and Ctrl keys"
+  :type 'boolean
+  :set 'ergoemacs-set-default
+  :group 'ergoemacs-mode)
+
+(defun ergoemacs-get-kbd-translation (pre-kbd-code &optional dont-swap)
+  "This allows a translation from the listed kbd-code and the true kbd code."
+  (let ((ret (replace-regexp-in-string
+              "[Cc]\\(?:on\\)?tro?l[+-]" "C-"
+              (replace-regexp-in-string
+               "[Aa]lt[+-]" "M-" pre-kbd-code))))
+    (when (and ergoemacs-swap-alt-and-control (not dont-swap))
+      (setq ret
+            (replace-regexp-in-string
+             "\\^-" "M-"
+             (replace-regexp-in-string
+              "M-" "C-"
+              (replace-regexp-in-string
+               "C-" "^-" ret)))))
+    (symbol-value 'ret)))
+
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
   `(let ((no-ergoemacs-advice t)
          (case-fold-search t)
          (keys-to-unbind '())
          key
+         trans-key
          cmd)
      ;; When calling the (define-minor-mode ergoemacs-mode ...) in
      ;; ergoemacs-setup-keys the ergoemacs-keymap is used after
@@ -1369,48 +1388,52 @@ Some exceptions we don't want to unset.
      ;; Fixed layout keys
      (mapc
       (lambda(x)
-        (when (and (eq 'string (type-of (nth 0 x)))
-                   (not (ergoemacs-global-changed-p (nth 0 x))))
-          (setq cmd (or
-                     (and (or
-                           (string=
-                            (upcase (substring (nth 0 x) -1))
-                            (substring (nth 0 x) -1))
-                           (save-match-data
-                             (string-match "\\<S-" (nth 0 x))))
-                          (intern-soft
-                           (concat "ergoemacs-" (symbol-name (nth 1 x)))))
-                     (nth 1 x)))
-          (setq key (read-kbd-macro 
-                     (encode-coding-string 
-                      (nth 0 x) 
-                      locale-coding-system)))
-          (add-to-list 'keys-to-unbind key)
-          (define-key ,keymap key cmd)))
+        (when (and (eq 'string (type-of (nth 0 x))))
+          (setq trans-key (ergoemacs-get-kbd-translation (nth 0 x)))
+          (when (not (ergoemacs-global-changed-p trans-key))
+            (setq cmd (or
+                       (and (or
+                             (string=
+                              (upcase (substring trans-key -1))
+                              (substring trans-key -1))
+                             (save-match-data
+                               (string-match "\\<S-" trans-key)))
+                            (intern-soft
+                             (concat "ergoemacs-" (symbol-name (nth 1 x)))))
+                       (nth 1 x)))
+            (setq key (read-kbd-macro 
+                       (encode-coding-string 
+                        trans-key 
+                        locale-coding-system)))
+            (add-to-list 'keys-to-unbind key)
+            (define-key ,keymap key cmd))))
       (symbol-value (ergoemacs-get-fixed-layout)))
      
      ;; Variable Layout Keys
      (mapc
       (lambda(x)
-        (when (and (eq 'string (type-of (nth 0 x)))
-                   (not (ergoemacs-global-changed-p (nth 0 x) t)))
-          (setq cmd (or
-                     (and (or
-                           (string=
-                            (upcase (substring (nth 0 x) -1))
-                            (substring (nth 0 x) -1))
-                           (save-match-data
-                             (string-match "\\<S-" (nth 0 x))))
-                          (intern-soft
-                           (concat "ergoemacs-" (symbol-name (nth 1 x)))))
-                     (nth 1 x)))
-          (setq key (ergoemacs-kbd (nth 0 x) nil (nth 3 x)))
+        (when (and (eq 'string (type-of (nth 0 x))))
+          (setq trans-key
+                (ergoemacs-get-kbd-translation (nth 0 x)))
+          (when (not (ergoemacs-global-changed-p trans-key t))
+            (setq cmd (or
+                       (and (or
+                             (string=
+                              (upcase (substring trans-key -1))
+                              (substring trans-key -1))
+                             (save-match-data
+                               (string-match "\\<S-" trans-key)))
+                            (intern-soft
+                             (concat "ergoemacs-" (symbol-name (nth 1 x)))))
+                       (nth 1 x))))
+          (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
           (add-to-list 'keys-to-unbind key)
           (define-key ,keymap  key cmd)))
       (symbol-value (ergoemacs-get-variable-layout)))
      
      ;; Now add the saved keys to `ergoemacs-save-bound-keys'.
      (add-to-list 'ergoemacs-save-bound-keys (list ',keymap keys-to-unbind))))
+
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
@@ -1888,14 +1911,22 @@ EXTRA represents an extra file representation."
       (message "Layout generated to %s" file))))
 
 (defun ergoemacs-svgs (&optional layouts)
-  "Generate SVGs for all the defined layouts."
+  "Generate SVGs for all the defined layouts and variants."
   (interactive)
-  (let ((lay (or layouts (ergoemacs-get-layouts))))
+  (let* ((lay (or layouts (ergoemacs-get-layouts)))
+         (saved-variant ergoemacs-variant))
     (mapc
      (lambda(x)
        (message "Generate SVG for %s" x)
        (ergoemacs-gen-svg x)
-       (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts"))
+       (ergoemacs-set-default 'ergoemacs-variant nil)
+       (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts")
+       (mapc
+        (lambda(y)
+          (ergoemacs-set-default 'ergoemacs-variant y)
+          (ergoemacs-gen-svg x "kbd-ergo.svg" (concat y "/ergo-layouts")))
+        (sort (ergoemacs-get-variants) 'string<))
+       (ergoemacs-set-default 'ergoemacs-variant saved-variant))
      lay)))
 
 ;; ErgoEmacs hooks
