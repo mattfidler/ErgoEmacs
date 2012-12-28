@@ -654,6 +654,19 @@
     (when (re-search-forward " *([^)]*);\n.*alias *" nil t)
       (replace-match ""))))
 
+(defun ergoemacs-translate-current-function (curr-fn)
+  "Translate the current function"
+  (cond
+   ((eq 'delete-horizontal-space curr-fn)
+    'ergoemacs-shrink-whitespaces)
+   ((eq 'left-char curr-fn) 'backward-char)
+   ((eq 'right-char curr-fn) 'forward-char)
+   ((memq curr-fn '(scroll-down-command scroll-down cua-scroll-down))
+    'ergoemacs-scroll-down)
+   ((memq curr-fn '(scroll-up-command scroll-up cua-scroll-up))
+    'ergoemacs-scroll-up)
+   (t curr-fn)))
+
 (defmacro ergoemacs-create-old-key-description-fn (key)
   `(defun ,(intern (concat "/ergoemacs-old-key-" (md5 (format "%s" key)))) ()
      (interactive)
@@ -668,17 +681,7 @@
                  (with-temp-buffer
                    (setq curr-fn (nth 0 (nth 1 fn)))
                    (when (and fn (not (eq 'prefix curr-fn)))
-                     (setq curr-fn
-                           (cond
-                            ((eq 'delete-horizontal-space curr-fn)
-                             'ergoemacs-shrink-whitespaces)
-                            ((eq 'left-char curr-fn) 'backward-char)
-                            ((eq 'right-char curr-fn) 'forward-char)
-                            ((memq curr-fn '(scroll-down-command scroll-down cua-scroll-down))
-                             'ergoemacs-scroll-down)
-                            ((memq curr-fn '(scroll-up-command scroll-up cua-scroll-up))
-                             'ergoemacs-scroll-up)
-                            (t curr-fn)))
+                     (setq curr-fn (ergoemacs-translate-current-function curr-fn))
                      (where-is curr-fn t))
                    (ergoemacs-format-where-is-buffer)
                    (buffer-string)))))))
@@ -920,7 +923,7 @@ disabled at `ergoemacs-restore-global-keys'."
       (setq item (cdr item)))
     (if old-cmd
 	(with-temp-buffer
-	  (where-is old-cmd t)
+          (where-is (ergoemacs-translate-current-function old-cmd) t)
           (ergoemacs-format-where-is-buffer)
 	  (message "Key %s was bound to %s which is now invoked by %s"
 		   (ergoemacs-pretty-key key-desc)
