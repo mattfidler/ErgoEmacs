@@ -670,6 +670,8 @@
                    (when (and fn (not (eq 'prefix curr-fn)))
                      (setq curr-fn
                            (cond
+                            ((eq 'delete-horizontal-space curr-fn)
+                             'ergoemacs-shrink-whitespaces)
                             ((eq 'left-char curr-fn) 'backward-char)
                             ((eq 'right-char curr-fn) 'forward-char)
                             ((memq curr-fn '(scroll-down-command scroll-down cua-scroll-down))
