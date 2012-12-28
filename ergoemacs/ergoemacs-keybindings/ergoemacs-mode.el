@@ -1191,7 +1191,7 @@ Some exceptions we don't want to unset.
        :set 'ergoemacs-set-default
        :group 'ergoemacs-mode))))
   
-  
+
 (ergoemacs-defvariant lvl1
                       "Level 1 Ergoemacs, just arrow keys."
                       nil
@@ -1403,7 +1403,7 @@ Some exceptions we don't want to unset.
                        (nth 1 x)))
             (setq key (read-kbd-macro 
                        (encode-coding-string 
-                        trans-key 
+                        trans-key
                         locale-coding-system)))
             (add-to-list 'keys-to-unbind key)
             (define-key ,keymap key cmd))))
@@ -1425,10 +1425,10 @@ Some exceptions we don't want to unset.
                                (string-match "\\<S-" trans-key)))
                             (intern-soft
                              (concat "ergoemacs-" (symbol-name (nth 1 x)))))
-                       (nth 1 x))))
-          (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
-          (add-to-list 'keys-to-unbind key)
-          (define-key ,keymap  key cmd)))
+                       (nth 1 x)))
+            (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
+            (add-to-list 'keys-to-unbind key)
+            (define-key ,keymap  key cmd))))
       (symbol-value (ergoemacs-get-variable-layout)))
      
      ;; Now add the saved keys to `ergoemacs-save-bound-keys'.
