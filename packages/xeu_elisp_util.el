@@ -147,13 +147,13 @@ The main differences are:
               (setq p2 (point) ) ) ))
 
          ((eq unit 'filepath)
-          (let (p0 (filePathChars "!#$%&'+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz~"))
-            ;; note: for filePathChars, the goal is not to list all allowed chars. But avoid chars that are likely used as separators for paths. Paths can be url too.
+          (let (p0)
             (setq p0 (point))
-             (skip-chars-backward filePathChars) ;"^ \t\n,()[]{}<>〔〕“”\""
+            ;; chars that are likely to not be part of path. Note: dir separators such as slash are part of path.
+             (skip-chars-backward "^ \"\t\n:|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›")
              (setq p1 (point))
              (goto-char p0)
-             (skip-chars-forward filePathChars)
+             (skip-chars-forward "^ \"\t\n:|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›")
              (setq p2 (point)))
           )
 
