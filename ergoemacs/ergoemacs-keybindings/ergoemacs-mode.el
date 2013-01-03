@@ -303,7 +303,9 @@
 (defun ergoemacs-set-default (symbol new-value)
   "Ergoemacs equivalent to set-default.  Will reload `ergoemacs-mode' after setting the values."
   (set-default symbol new-value)
-  (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
+  (when (and (or (not (boundp 'ergoemacs-fixed-layout-tmp)) 
+                 (save-match-data (string-match "ergoemacs-redundant-keys-" (symbol-name symbol)))) 
+                  (boundp 'ergoemacs-mode) ergoemacs-mode)
     (ergoemacs-mode -1)
     (ergoemacs-mode 1)))
 
@@ -791,7 +793,12 @@ Some exceptions we don't want to unset.
   :set 'ergoemacs-set-default
   :group 'ergoemacs-standard-layout)
 
-(defvar ergoemacs-variant nil)
+(defcustom ergoemacs-variant nil
+  "Ergoemacs Keyboard Layout Variants"
+  :type '(choice
+          (const :tag "Standard" :value nil)
+          (symbol :tag "Other"))
+  :group 'ergoemacs-mode)
 
 (defun ergoemacs-get-variable-layout (&optional var)
   "Get Variable Layout for current variant."
@@ -876,23 +883,24 @@ Some exceptions we don't want to unset.
   "Translates kbd code KEY for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'.
 If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key sequence.
 "
-  (if (not key)
-      nil
-    (let ((new-key key))
-      (when ergoemacs-needs-translation
-        (setq new-key
-              (with-temp-buffer
-                (insert new-key)
-                (goto-char (point-min))
-                (when (re-search-forward ergoemacs-translation-regexp nil t)
-                  (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t))
-                (when (not only-first)
-                  (while (re-search-forward ergoemacs-translation-regexp nil t)
-                    (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t)))
-                (buffer-string))))
-      (if (not just-translate)
-          (read-kbd-macro (encode-coding-string new-key locale-coding-system))
-        new-key))))
+  (save-match-data
+    (if (not key)
+        nil
+      (let ((new-key key))
+        (when ergoemacs-needs-translation
+          (setq new-key
+                (with-temp-buffer
+                  (insert new-key)
+                  (goto-char (point-min))
+                  (when (re-search-forward ergoemacs-translation-regexp nil t)
+                    (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t))
+                  (when (not only-first)
+                    (while (re-search-forward ergoemacs-translation-regexp nil t)
+                      (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t)))
+                  (buffer-string))))
+        (if (not just-translate)
+            (read-kbd-macro (encode-coding-string new-key locale-coding-system))
+          new-key)))))
 
 (defvar ergoemacs-backward-compatability-variables 
   '((ergoemacs-backward-paragraph-key            backward-block)
@@ -1082,7 +1090,8 @@ format:
     ,@(mapcar
        (lambda(elt)
          `(const :tag ,elt :value ,elt))
-       (sort (ergoemacs-get-variants) 'string<))))
+       (sort (ergoemacs-get-variants) 'string<))
+    (symbol :tag "Other")))
 
 (defmacro ergoemacs-defvariant (name desc based-on &rest differences)
   "Creates a variant layout for Ergoemacs keybindings
@@ -1697,30 +1706,16 @@ Currently only supports two modifier plus key."
         (goto-char (point-min))
         (when (re-search-forward "QWERTY")
           (replace-match layout))
-        (mapc
-         (lambda(x)
-           (let ((from (nth 0 x))
-                 from-reg
-                 (to nil))
-             (setq to (ergoemacs-kbd from t))
-             (if (string= from to) nil
-               (setq from (ergoemacs-trans-ahk from))
-               (setq to (ergoemacs-trans-ahk to))
-               (when (string-match "\\([^a-z0-9]\\)$" to)
-                 (setq to (replace-match "`\\1" t nil to)))
-               (cond
-                ((string-match "^\\(\\+\\|!\\|\\^\\)\\{2\\}" from)
-                 (setq from-reg (regexp-opt `(,from
-                                              ,(concat (substring from 1 2) (substring from 0 1) (substring from 2)))
-                                            t)))
-                (t
-                 (setq from-reg (regexp-quote from))))
-               (goto-char (point-min))
-               (when (re-search-forward from-reg nil t)
-                 (replace-match to t t)))))
-         (symbol-value (ergoemacs-get-variable-layout)))
         (goto-char (point-min))
-        (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)))))
+        (while (re-search-forward "^[ \t]*\\(\\(?:[!+]\\|\\^\\)+\\)\\(.\\)\\(::\\)" nil t)
+          (replace-match (concat (match-string 1)
+                                 (ergoemacs-kbd (match-string 2) t)
+                                 "::")))
+        (goto-char (point-min))
+        (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
+      (when (executable-find "ahk2exe")
+        (shell-command (concat "ahk2exe /in " file)))
+      )))
 
 (defun ergoemacs-ahks (&optional layouts)
   "Generate Autohotkey scripts for all the defined layouts."
@@ -2090,8 +2085,6 @@ will change."
           (ergoemacs-mode 1)
           (when cua-state
             (cua-mode 1)))))))
-
-(ergoemacs-setup-keys)
 
 (defun ergoemacs-lookup-execute-extended-command ()
   "Lookup the execute-extended-command"
