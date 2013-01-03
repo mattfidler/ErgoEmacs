@@ -45,6 +45,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.16, 2012-12-29 changed implementation for unit-at-cursor for arg 'filepath
 ;; version 1.4.15, 2012-08-23 added “file-relative-name-emacs24.1.1-fix”
 ;; version 1.4.14, 2012-08-14 added “hash-to-list”.
 ;; version 1.4.13, 2012-07-03 removed curly bracket for 'filepath in “unit-at-cursor”.
@@ -147,13 +148,13 @@ The main differences are:
               (setq p2 (point) ) ) ))
 
          ((eq unit 'filepath)
-          (let (p0 (filePathChars "!#$%&'+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz~"))
-            ;; note: for filePathChars, the goal is not to list all allowed chars. But avoid chars that are likely used as separators for paths. Paths can be url too.
+          (let (p0)
             (setq p0 (point))
-             (skip-chars-backward filePathChars) ;"^ \t\n,()[]{}<>〔〕“”\""
+            ;; chars that are likely to not be part of path. Note: dir separators such as slash are part of path.
+             (skip-chars-backward "^ \"\t\n|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›\\`")
              (setq p1 (point))
              (goto-char p0)
-             (skip-chars-forward filePathChars)
+             (skip-chars-forward "^ \"\t\n|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›\\'")
              (setq p2 (point)))
           )
 
