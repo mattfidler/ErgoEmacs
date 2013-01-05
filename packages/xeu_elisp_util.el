@@ -150,7 +150,7 @@ The main differences are:
          ((eq unit 'filepath)
           (let (p0)
             (setq p0 (point))
-            ;; chars that are likely to not be part of path. Note: dir separators such as slash are part of path.
+            ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
              (skip-chars-backward "^ \"\t\n|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›\\`")
              (setq p1 (point))
              (goto-char p0)
