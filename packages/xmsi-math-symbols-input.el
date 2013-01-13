@@ -57,10 +57,11 @@
 
 ;;; HISTORY
 
-;; v1.4.2, 2013-01-13 • added � into the cycle ? ？ �.
+;; v1.4.3, 2013-01-13 • major code tweak. Several new symbols are added. Abbrevs are cleaned up for the better. Cycle symbol implementation changed. Some abbrev are taken off. e.g. there was {circle ●} and {circle2 ○}, now just “circle”, and the black and white versions are a cycle.
+;; v1.4.2, 2013-01-13 • added � into the cycle ? ？ �. Added cycle between black and white versions of triangle, heart, diamond, circle, square, etc.
 ;; v1.4.1, 2013-01-04 • added symbol for meter squared (m2 → ㎡). • Fixed xml entity abbrevs {lang, rang} to the correct angle brackets 〈〉. • major overhaul of braket abbrevs, now more intuitive. Abbrevs include: "" <> <<>> () [] [[]] [()] and more. Call xmsi-list-math-symbols for a list.
 ;; v1.4.0, 2012-12-24 • added cycle between several punctuations and the fullwidth version: {, . : ; ! ? &}
-;; v1.3.9, 2012-12-15 • added cycle for SPACE 「 」 → NO-BREAK SPACE 「 」 → IDEOGRAPHIC SPACE 「　」. Also, FULLWIDTH COMMA 「，」 and comma are now cycle. 
+;; v1.3.9, 2012-12-15 • added cycle for SPACE 「 」 → NO-BREAK SPACE 「 」 → IDEOGRAPHIC SPACE 「　」. Also, FULLWIDTH COMMA 「，」 and comma are now cycle.
 ;; v1.3.8, 2012-12-09 • added cycle for 「· ．。」. That is, one of these cycles to other. Also, 「,→，」.
 ;; v1.3.7, 2012-06-28 • much improved parsing the input string. Now, if there's no text selection, then grab string from cursor point to the left up to a whitespace char (limit to 10 chars max), then try that, if not found, try with one char minus. e.g. If text is 「some abc▮」, try 「abc」, then 「bc」, then 「c」. This way, user doesn't have to add a whitespace as separator before the abbrev, or having to make a text selection. e.g. in coding elisp, if current text is 「(a▮」, user can call xmsi-change-to-symbol directly to get 「(α▮」.
 ;; v1.3.6, 2012-05-08 • fixed a bug when any abbrev involving tilde ~ won't work.
@@ -357,6 +358,7 @@
     (puthash "diams" "♦" xmsi-abrvs)
     )
 
+(progn
   ;; Double struck letter forms (aka Double struck; double stroke)
   ;; others outside of the BMP (Unicode's Basic Multilingual Plane). Not much font supports it.
   (puthash "dsC" "ℂ" xmsi-abrvs)
@@ -376,7 +378,10 @@
   (puthash "dse" "ⅇ" xmsi-abrvs)
   (puthash "dsi" "ⅈ" xmsi-abrvs)
   (puthash "dsj" "ⅉ" xmsi-abrvs)
+)
 
+
+(progn
   ;; gothic letter forms (aka FRANKTUR). Most are outside BMP
   (puthash "goA" "𝔄" xmsi-abrvs)
   (puthash "goB" "𝔅" xmsi-abrvs)
@@ -430,7 +435,9 @@
   (puthash "gox" "𝔵" xmsi-abrvs)
   (puthash "goy" "𝔶" xmsi-abrvs)
   (puthash "goz" "𝔷" xmsi-abrvs)
+)
 
+
   ;; Scripted letter forms. Most are outside BMP.
   (puthash "sca" "𝒶" xmsi-abrvs)
   (puthash "scb" "𝒷" xmsi-abrvs)
@@ -442,12 +449,12 @@
   (puthash "sch" "𝒽" xmsi-abrvs)
   (puthash "sci" "𝒾" xmsi-abrvs)
   (puthash "scj" "𝒿" xmsi-abrvs)
-  (puthash "sck" "𝓀" xmsi-abrvs)
-  (puthash "scl2" "𝓁" xmsi-abrvs)
-  (puthash "scl" "ℓ" xmsi-abrvs) ;in BMP
+  (puthash "sck" "𝓀" xmsi-abrvs)        ;
+  (puthash "scl2" "𝓁" xmsi-abrvs)       ;MATHEMATICAL SCRIPT SMALL L
+  (puthash "scl" "ℓ" xmsi-abrvs)        ;in BMP ; SCRIPT SMALL L
   (puthash "scm" "𝓂" xmsi-abrvs)
   (puthash "scn" "𝓃" xmsi-abrvs)
-  (puthash "sco" "ℴ" xmsi-abrvs) ; in BMP
+  (puthash "sco" "ℴ" xmsi-abrvs) ; in BMP ;SCRIPT SMALL O
   (puthash "scp" "𝓅" xmsi-abrvs)
   (puthash "scq" "𝓆" xmsi-abrvs)
   (puthash "scw" "𝓌" xmsi-abrvs)
@@ -468,6 +475,7 @@
  ;; a b c d e f g h i j k l m n o p q w x y z
  ;; A B C D E F G H I J K L M N O P Q W X Y Z
 
+
   ;; accented letters
   (puthash "a`" "à" xmsi-abrvs)
   (puthash "e`" "è" xmsi-abrvs)
@@ -530,37 +538,19 @@
   (puthash "N~" "Ñ" xmsi-abrvs)
   (puthash "O~" "Õ" xmsi-abrvs)
 
+
   ;; misc non-math symbols
   (puthash "tm" "™" xmsi-abrvs)
   (puthash "3/4" "¾" xmsi-abrvs)
   (puthash "1/2" "½" xmsi-abrvs)
   (puthash "1/4" "¼" xmsi-abrvs)
   (puthash "..." "…" xmsi-abrvs)
-  (puthash "dag" "†" xmsi-abrvs)
-  (puthash "ddag" "‡" xmsi-abrvs)
   (puthash "--" "—" xmsi-abrvs)
   (puthash "-" "−" xmsi-abrvs)
-  (puthash "s&" "﹠" xmsi-abrvs)
   (puthash "?!" "⁈" xmsi-abrvs)
   (puthash "!?" "⁉" xmsi-abrvs)
   (puthash "!!" "‼" xmsi-abrvs)
-  (puthash "m2" "㎡" xmsi-abrvs)        ;meter squared
-
-  (puthash "ltrib" "◀" xmsi-abrvs)
-  (puthash "rtrib" "▶" xmsi-abrvs)
-  (puthash "trib" "▲" xmsi-abrvs)
-  (puthash "dtrib" "▼" xmsi-abrvs)
-  (puthash "ltri" "◁" xmsi-abrvs)
-  (puthash "rtri" "▷" xmsi-abrvs)
-  (puthash "tri" "△" xmsi-abrvs)
-  (puthash "dtri" "▽" xmsi-abrvs)
-  (puthash "sq" "□" xmsi-abrvs)
-  (puthash "cir" "○" xmsi-abrvs)
-  (puthash "dia" "◇" xmsi-abrvs)
-  (puthash "sqb" "■" xmsi-abrvs)
-  (puthash "cirb" "●" xmsi-abrvs)
-  (puthash "diab" "◆" xmsi-abrvs)
-  (puthash "<3" "♥" xmsi-abrvs)
+  (puthash "m2" "㎡" xmsi-abrvs)        ;SQUARE M SQUARED ,  meter squared
 
   (puthash ":)" "☺" xmsi-abrvs)         ;smiley, happy face
   (puthash ":(" "☹" xmsi-abrvs)
@@ -569,45 +559,45 @@
   (puthash "cmd" "⌘" xmsi-abrvs)
   (puthash "opt" "⌥" xmsi-abrvs)
   (puthash "caret" "‸" xmsi-abrvs)
-  (puthash "pgup" "⇞"xmsi-abrvs)
-  (puthash "pgdn" "⇟"xmsi-abrvs)
-  (puthash "nwarr" "↖"xmsi-abrvs)
-  (puthash "searr" "↘"xmsi-abrvs)
-  (puthash "power" "⎋"xmsi-abrvs)
-  (puthash "eject" "⏏"xmsi-abrvs)
-  (puthash "undo" "↶"xmsi-abrvs)
-  (puthash "redo" "↷"xmsi-abrvs)
-  (puthash "shift" "⇧"xmsi-abrvs)
+  (puthash "pgup" "⇞" xmsi-abrvs)
+  (puthash "pgdn" "⇟" xmsi-abrvs)
+  (puthash "nwarr" "↖" xmsi-abrvs)
+  (puthash "searr" "↘" xmsi-abrvs)
+  (puthash "power" "⎋" xmsi-abrvs)
+  (puthash "eject" "⏏" xmsi-abrvs)
+  (puthash "undo" "↶" xmsi-abrvs)
+  (puthash "redo" "↷" xmsi-abrvs)
+  (puthash "shift" "⇧" xmsi-abrvs)
 
-  (puthash "enter" "⌤"xmsi-abrvs)
-  (puthash "return3" "↵"xmsi-abrvs)
-  (puthash "return2" "↩"xmsi-abrvs)
-  (puthash "return" "⏎"xmsi-abrvs)
+  (puthash "enter" "↵" xmsi-abrvs)
+  (puthash "return" "⏎" xmsi-abrvs)
 
-  (puthash "dell" "⌫"xmsi-abrvs)
-  (puthash "delr" "⌦"xmsi-abrvs)
-  (puthash "kbd" "⌨"xmsi-abrvs)
-  (puthash "_" "␣"xmsi-abrvs)
+  (puthash "delete" "⌫" xmsi-abrvs)
+  (puthash "dell" "⌫" xmsi-abrvs)
+  (puthash "delr" "⌦" xmsi-abrvs)
+  (puthash "kbd" "⌨" xmsi-abrvs)
+  (puthash "space" "␣" xmsi-abrvs)      ;OPEN BOX
 
-  (puthash "lrarr" "⇄"xmsi-abrvs)
+  (puthash "lrarr" "⇄" xmsi-abrvs)
 
-  (puthash "|<-" "⇤"xmsi-abrvs)
-  (puthash "->|" "⇥"xmsi-abrvs)
+  (puthash "|<-" "⇤" xmsi-abrvs)
+  (puthash "->|" "⇥" xmsi-abrvs)
 
-  (puthash "tabl" "⇤"xmsi-abrvs)
-  (puthash "tabr" "⇥"xmsi-abrvs)
-  (puthash "tab" "↹"xmsi-abrvs)
-  (puthash "clear" "⌧"xmsi-abrvs)
-  (puthash "ibeam" "⌶"xmsi-abrvs)
-  (puthash "prevpage" "⎗"xmsi-abrvs)
-  (puthash "nextpage" "⎘"xmsi-abrvs)
-  (puthash "print" "⎙"xmsi-abrvs)
-  (puthash "watch" "⌚"xmsi-abrvs)
-  (puthash "hourglass" "⌛"xmsi-abrvs)
-  (puthash "scissor" "✂"xmsi-abrvs)
-  (puthash "scissorw" "✄"xmsi-abrvs)
-  (puthash "envelope" "✉"xmsi-abrvs)
-  (puthash "writing" "✍"xmsi-abrvs)
+  (puthash "tabl" "⇤" xmsi-abrvs)
+  (puthash "tabr" "⇥" xmsi-abrvs)
+  (puthash "tab" "↹" xmsi-abrvs)
+  (puthash "clear" "⌧" xmsi-abrvs)
+  (puthash "cursor" "▮" xmsi-abrvs)
+  (puthash "ibeam" "⌶" xmsi-abrvs)
+  (puthash "prevpage" "⎗" xmsi-abrvs)
+  (puthash "nextpage" "⎘" xmsi-abrvs)
+  (puthash "print" "⎙" xmsi-abrvs)
+  (puthash "watch" "⌚" xmsi-abrvs)
+  (puthash "hourglass" "⌛" xmsi-abrvs)
+  (puthash "scissor" "✂" xmsi-abrvs)
+  (puthash "scissorw" "✄" xmsi-abrvs)
+  (puthash "envelope" "✉" xmsi-abrvs)
+  (puthash "writing" "✍" xmsi-abrvs)
 
   ;; misc math
   (puthash "+-" "±" xmsi-abrvs)
@@ -693,8 +683,10 @@
   (puthash "es" "Ø" xmsi-abrvs)
 
   ;; brackets, matching pairs
-  (puthash "flr" "⌊⌋" xmsi-abrvs)
-  (puthash "ceil" "⌈⌉" xmsi-abrvs)
+  (puthash "flr" "⌊⌋" xmsi-abrvs)       ; floor
+  (puthash "ceil" "⌈⌉" xmsi-abrvs)      ; ceiling
+  (puthash "floor" "⌊⌋" xmsi-abrvs)       ; floor
+  (puthash "ceiling" "⌈⌉" xmsi-abrvs)      ; ceiling
 
   (puthash "\"" "“”" xmsi-abrvs)
   (puthash "\"\"" "“”" xmsi-abrvs)
@@ -709,13 +701,6 @@
   (puthash "[(" "【】" xmsi-abrvs)
   (puthash "[()]" "【】" xmsi-abrvs)
   (puthash "(" "〔〕" xmsi-abrvs)
-
-  (puthash "〘〙" "〔〕" xmsi-abrvs)
-  (puthash "〔〕" "〘〙" xmsi-abrvs)
-
-  (puthash "«»" "《》" xmsi-abrvs)
-  (puthash "‹›" "〈〉"  xmsi-abrvs)
-  (puthash "【】" "〖〗" xmsi-abrvs)
 
   ;; number forms
   (puthash "c1" "①" xmsi-abrvs)
@@ -870,7 +855,7 @@
   (puthash "union" "∩" xmsi-abrvs)
   (puthash "intersection" "∪" xmsi-abrvs)
 
-  (puthash "/_" "∠" xmsi-abrvs)
+  (puthash "/_" "∠" xmsi-abrvs)         ;ANGLE
   (puthash "rightangle" "⦜" xmsi-abrvs)
   (puthash "|_" "⦜" xmsi-abrvs)
   (puthash "measuredangle" "∡" xmsi-abrvs)
@@ -887,22 +872,23 @@
   (puthash "!->" "↛" xmsi-abrvs)
   (puthash "!<->" "↮" xmsi-abrvs)
 
-(puthash "<=2" "⇐" xmsi-abrvs)
+(puthash "≤" "⇐" xmsi-abrvs)            ;LEFTWARDS DOUBLE ARROW
+
 (puthash "=>" "⇒" xmsi-abrvs)
 (puthash "<=>" "⇔" xmsi-abrvs)
 (puthash "!<=" "⇍" xmsi-abrvs)
 (puthash "!=>" "⇏" xmsi-abrvs)
 (puthash "!=>" "⇎" xmsi-abrvs)
-  
+
 (puthash "<==" "⟸" xmsi-abrvs)
-(puthash "==>" "⟹" xmsi-abrvs)
+(puthash "==>" "⟹" xmsi-abrvs)          ;LONG RIGHTWARDS DOUBLE ARROW
 (puthash "<==>" "⟺" xmsi-abrvs)
- 
+
   (puthash "<-|" "↤" xmsi-abrvs)
-  (puthash "|->" "↦" xmsi-abrvs)
+  (puthash "|->" "↦" xmsi-abrvs)        ;RIGHTWARDS ARROW FROM BAR
 
   (puthash "<--" "⟵" xmsi-abrvs)
-  (puthash "-->" "⟶" xmsi-abrvs)
+  (puthash "-->" "⟶" xmsi-abrvs)        ;LONG RIGHTWARDS ARROW
   (puthash "<-->" "⟷" xmsi-abrvs)
 
   (puthash "xor" "⊻" xmsi-abrvs)
@@ -914,26 +900,24 @@
   (puthash "f-" "‒" xmsi-abrvs)
   (puthash "n-" "–" xmsi-abrvs)
 
-(puthash "delete" "⌫"xmsi-abrvs)
-(puthash "square" "■" xmsi-abrvs)
-(puthash "square2" "□" xmsi-abrvs)
-(puthash "circle" "●" xmsi-abrvs)
-(puthash "circle2" "○" xmsi-abrvs)
 (puthash "triangle" "▲" xmsi-abrvs)
-(puthash "triangle2" "△" xmsi-abrvs)
-(puthash "diamond" "◆" xmsi-abrvs)
-(puthash "diamond2" "◇" xmsi-abrvs)
-(puthash "star" "★" xmsi-abrvs)
-(puthash "star2" "☆" xmsi-abrvs)
-(puthash "spade" "♠" xmsi-abrvs)
-(puthash "spade2" "♤" xmsi-abrvs)
-(puthash "club" "♣" xmsi-abrvs)
-(puthash "club2" "♧" xmsi-abrvs)
-(puthash "heart" "♥" xmsi-abrvs)
-(puthash "heart2" "♡" xmsi-abrvs)
-(puthash "diam" "♦" xmsi-abrvs)
-(puthash "diam2" "♢" xmsi-abrvs)
+(puthash "tri" "▲" xmsi-abrvs)
+(puthash "tril" "◀" xmsi-abrvs)
+(puthash "trir" "▶" xmsi-abrvs)
+(puthash "trid" "▼" xmsi-abrvs)
 
+(puthash "square" "■" xmsi-abrvs)
+(puthash "circle" "●" xmsi-abrvs)
+(puthash "diamond" "◆" xmsi-abrvs)
+(puthash "star" "★" xmsi-abrvs)
+(puthash "spade" "♠" xmsi-abrvs)
+(puthash "club" "♣" xmsi-abrvs)
+(puthash "heart" "♥" xmsi-abrvs)
+(puthash "diam" "♦" xmsi-abrvs)
+
+(puthash "<3" "♥" xmsi-abrvs)
+
+
 ;; full width characters
 (puthash "fw," "，" xmsi-abrvs)
 (puthash "fw." "．" xmsi-abrvs)
@@ -1048,42 +1032,73 @@
 (puthash "fwy" "ｙ" xmsi-abrvs)
 (puthash "fwz" "ｚ" xmsi-abrvs)
 
-
-
-;; non-ascii abbrevs
-
-(puthash "," "，" xmsi-abrvs)
-(puthash "，" "," xmsi-abrvs)
-
-(puthash "·" "．" xmsi-abrvs)      ; MIDDLE DOT to FULLWIDTH FULL STOP
-(puthash "．" "。" xmsi-abrvs) ; FULLWIDTH FULL STOP to IDEOGRAPHIC FULL STOP
-(puthash "。" "·" xmsi-abrvs)  ; IDEOGRAPHIC FULL STOP to MIDDLE DOT
-
-(puthash ":" "：" xmsi-abrvs)    ; FULLWIDTH COLON
-(puthash "：" ":" xmsi-abrvs)
-
-(puthash ";" "；" xmsi-abrvs)
-(puthash "；" ";" xmsi-abrvs)
-
-(puthash "!" "！" xmsi-abrvs)
-(puthash "！" "!" xmsi-abrvs)
-
-(puthash "?" "？" xmsi-abrvs)
-(puthash "？" "�" xmsi-abrvs)
-(puthash "�" "?" xmsi-abrvs)
-
-(puthash "&" "＆" xmsi-abrvs)
-(puthash "＆" "&" xmsi-abrvs)
-
-(puthash " " " " xmsi-abrvs)            ; space to NO-BREAK SPACE
-(puthash " " "　" xmsi-abrvs)           ; NO-BREAK SPACE to IDEOGRAPHIC SPACE
-(puthash "　" " " xmsi-abrvs)           ; IDEOGRAPHIC SPACE to space
-
   ;; 2010-12-10. char to add
   ;; soft hyphen ­
   ;; ↥ ↧ ⇤ ⇥ ⤒ ⤓ ↨
 
   )
+
+(defun xmsi-add-cycle (cycleList)
+  "DOCSTRING"
+  (let (
+        (ll (- (length cycleList) 1) )
+        (ξi 0)
+        )
+    (while (< ξi ll)
+      (let (
+            (charThis (elt cycleList ξi ))
+            (charNext (elt cycleList (+ ξi 1) ))
+            )
+        (puthash charThis charNext xmsi-abrvs)
+        (setq ξi (1+ ξi) )
+        )
+      )
+    (puthash (elt cycleList ll) (elt cycleList 0) xmsi-abrvs)
+    ))
+
+;; cycle brackets
+(xmsi-add-cycle ["〘〙" "〔〕"])
+(xmsi-add-cycle ["«»" "《》"])
+(xmsi-add-cycle ["‹›" "〈〉"])
+(xmsi-add-cycle ["【】" "〖〗"])
+
+;; cycle arrows
+(xmsi-add-cycle ["←" "⇐"])
+(xmsi-add-cycle ["↑" "⇑"])
+(xmsi-add-cycle ["→" "⇒"])
+(xmsi-add-cycle ["↓" "⇓"])
+(xmsi-add-cycle ["↔" "⇔"])
+(xmsi-add-cycle ["⇐" "←"])
+(xmsi-add-cycle ["⇑" "↑"])
+(xmsi-add-cycle ["⇒" "→"])
+(xmsi-add-cycle ["⇓" "↓"])
+(xmsi-add-cycle ["⇔" "↔"])
+
+;; cycle black white chars
+(xmsi-add-cycle ["■" "□"])
+(xmsi-add-cycle ["●" "○"])
+(xmsi-add-cycle ["◆" "◇"])
+(xmsi-add-cycle ["▲" "△"])
+(xmsi-add-cycle ["◀" "◁"])
+(xmsi-add-cycle ["▶" "▷"])
+(xmsi-add-cycle ["▼" "▽"])
+(xmsi-add-cycle ["★" "☆"])
+(xmsi-add-cycle ["♠" "♤"])
+(xmsi-add-cycle ["♣" "♧"])
+(xmsi-add-cycle ["♥" "♡"])
+(xmsi-add-cycle ["♦" "♢"])
+
+(xmsi-add-cycle ["↹" "⇥" "⇤"])          ; tab
+(xmsi-add-cycle [ "⏎" "↩" "↵" "⌤"])     ; return/enter
+
+(xmsi-add-cycle ["," "，"])
+(xmsi-add-cycle ["·" "．" "。"])      ; MIDDLE DOT, FULLWIDTH FULL STOP, IDEOGRAPHIC FULL STOP
+(xmsi-add-cycle [":" "："])    ; FULLWIDTH COLON
+(xmsi-add-cycle [";" "；"])
+(xmsi-add-cycle ["!" "！"])
+(xmsi-add-cycle ["&" "＆" "﹠"])
+(xmsi-add-cycle ["?" "？" "�"])
+(xmsi-add-cycle [" " " " "　"])         ; space, NO-BREAK SPACE, IDEOGRAPHIC SPACE
 
 (defun xmsi-hash-to-list (hashtable)
   "Return a list that represent the HASHTABLE."
