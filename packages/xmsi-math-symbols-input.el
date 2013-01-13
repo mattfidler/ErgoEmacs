@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.4.2, 2013-01-13 • added � into the cycle ? ？ �.
 ;; v1.4.1, 2013-01-04 • added symbol for meter squared (m2 → ㎡). • Fixed xml entity abbrevs {lang, rang} to the correct angle brackets 〈〉. • major overhaul of braket abbrevs, now more intuitive. Abbrevs include: "" <> <<>> () [] [[]] [()] and more. Call xmsi-list-math-symbols for a list.
 ;; v1.4.0, 2012-12-24 • added cycle between several punctuations and the fullwidth version: {, . : ; ! ? &}
 ;; v1.3.9, 2012-12-15 • added cycle for SPACE 「 」 → NO-BREAK SPACE 「 」 → IDEOGRAPHIC SPACE 「　」. Also, FULLWIDTH COMMA 「，」 and comma are now cycle. 
@@ -106,7 +107,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.4.0")
+(setq xmsi-version "v1.4.2")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -1068,7 +1069,8 @@
 (puthash "！" "!" xmsi-abrvs)
 
 (puthash "?" "？" xmsi-abrvs)
-(puthash "？" "?" xmsi-abrvs)
+(puthash "？" "�" xmsi-abrvs)
+(puthash "�" "?" xmsi-abrvs)
 
 (puthash "&" "＆" xmsi-abrvs)
 (puthash "＆" "&" xmsi-abrvs)
