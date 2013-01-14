@@ -57,7 +57,7 @@
 
 ;;; HISTORY
 
-;; v1.4.4, 2013-01-13 • more improvements.
+;; v1.4.4, 2013-01-13 • Fixed union and intersection. Fixed abbrev “menu” for the menu key symbol. Fixed empty set symbol. Other misc improvements.
 ;; v1.4.3, 2013-01-13 • major code tweak. Several new symbols are added. Abbrevs are cleaned up for the better. Cycle symbol implementation changed. Some abbrev are taken off. e.g. there was {circle ●} and {circle2 ○}, now just “circle”, and the black and white versions are a cycle.
 ;; v1.4.2, 2013-01-13 • added � into the cycle ? ？ �. Added cycle between black and white versions of triangle, heart, diamond, circle, square, etc.
 ;; v1.4.1, 2013-01-04 • added symbol for meter squared (m2 → ㎡). • Fixed xml entity abbrevs {lang, rang} to the correct angle brackets 〈〉. • major overhaul of braket abbrevs, now more intuitive. Abbrevs include: "" <> <<>> () [] [[]] [()] and more. Call xmsi-list-math-symbols for a list.
@@ -547,6 +547,7 @@
   (puthash "1/2" "½" xmsi-abrvs)
   (puthash "1/4" "¼" xmsi-abrvs)
   (puthash "..." "…" xmsi-abrvs)
+(puthash "fdash" "‒" xmsi-abrvs)         ;FIGURE DASH. abbrev consistent with html entity
   (puthash "--" "—" xmsi-abrvs)         ;EM DASH
   (puthash "-" "−" xmsi-abrvs)          ;MINUS SIGN
   (puthash "?!" "⁈" xmsi-abrvs)
@@ -566,7 +567,7 @@
   (puthash "nwarr" "↖" xmsi-abrvs)
   (puthash "searr" "↘" xmsi-abrvs)
   (puthash "power" "⎋" xmsi-abrvs)
-  (puthash "power" "▤" xmsi-abrvs)      ;menu key. SQUARE WITH HORIZONTAL FILL
+  (puthash "menu" "▤" xmsi-abrvs)      ;menu key. SQUARE WITH HORIZONTAL FILL
 
   (puthash "eject" "⏏" xmsi-abrvs)
   (puthash "undo" "↶" xmsi-abrvs)
@@ -579,7 +580,7 @@
   (puthash "delete" "⌫" xmsi-abrvs)
   (puthash "dell" "⌫" xmsi-abrvs)
   (puthash "delr" "⌦" xmsi-abrvs)
-  (puthash "kbd" "⌨" xmsi-abrvs)
+  (puthash "keyboard" "⌨" xmsi-abrvs)
   (puthash "space" "␣" xmsi-abrvs)      ;OPEN BOX
 
   (puthash "lrarr" "⇄" xmsi-abrvs)
@@ -681,9 +682,9 @@
 
   ;; forms for constants-like things
   (puthash "inf" "∞" xmsi-abrvs)        ;INFINITY
-  (puthash "O/" "∅" xmsi-abrvs)         ;EMPTY SET
-  (puthash "o/" "Ø" xmsi-abrvs)
-  (puthash "es" "Ø" xmsi-abrvs)
+  (puthash "empty" "∅" xmsi-abrvs)         ;EMPTY SET
+  (puthash "es" "∅" xmsi-abrvs)         ;EMPTY SET
+  (puthash "o/" "Ø" xmsi-abrvs)         ;LATIN CAPITAL LETTER O WITH STROKE
 
 
 (progn 
@@ -846,6 +847,8 @@
   (puthash "fa" "∀" xmsi-abrvs) (puthash "forall" "∀" xmsi-abrvs) ; FOR ALL
   (puthash "ex" "∃" xmsi-abrvs) ; THERE EXISTS
 
+
+(progn 
   ;; operators
   (puthash "c+" "⊕" xmsi-abrvs)
   (puthash "c*" "⊗" xmsi-abrvs)
@@ -865,17 +868,15 @@
   (puthash "cint" "∮" xmsi-abrvs) ; contour integral
   (puthash "ccint" "∲" xmsi-abrvs)
   (puthash "cccint" "∳" xmsi-abrvs)
-  (puthash "union" "∩" xmsi-abrvs)
-  (puthash "intersection" "∪" xmsi-abrvs)
+  (puthash "union" "∪" xmsi-abrvs)
+  (puthash "intersection" "∩" xmsi-abrvs)
+)
 
   (puthash "/_" "∠" xmsi-abrvs)         ;ANGLE
   (puthash "rightangle" "⦜" xmsi-abrvs)
   (puthash "|_" "⦜" xmsi-abrvs)
   (puthash "measuredangle" "∡" xmsi-abrvs)
   (puthash "sphericalangle" "∢" xmsi-abrvs)
-
-  (puthash "intersection" "∪" xmsi-abrvs)
-  (puthash "intersection" "∪" xmsi-abrvs)
 
   ;; arrows and maps
   (puthash "<-" "←" xmsi-abrvs)
@@ -907,8 +908,6 @@
   (puthash "xor" "⊻" xmsi-abrvs)
   (puthash "nand" "⊼" xmsi-abrvs)
   (puthash "nor" "⊽" xmsi-abrvs)
-
-(puthash "fdash" "‒" xmsi-abrvs)         ;FIGURE DASH. abbrev consistent with html entity
 
 (puthash "triangle" "▲" xmsi-abrvs)
 (puthash "tri" "▲" xmsi-abrvs)
