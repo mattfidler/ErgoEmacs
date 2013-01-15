@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.4.5, 2013-01-14 • added abbrev “wdash” for “〜” WAVE DASH. • removed abbrev “-” for MINUS SIGN because it's seldom used and can be confusing. It already has abbrev “minus”. • removed abbrev “o/”. Use html entity “Oslash” Ø or “oslash” ø or math “empty” or “es” for empty set ∅.
 ;; v1.4.4, 2013-01-13 • Fixed union and intersection. Fixed abbrev “menu” for the menu key symbol. Fixed empty set symbol. Other misc improvements.
 ;; v1.4.3, 2013-01-13 • major code tweak. Several new symbols are added. Abbrevs are cleaned up for the better. Cycle symbol implementation changed. Some abbrev are taken off. e.g. there was {circle ●} and {circle2 ○}, now just “circle”, and the black and white versions are a cycle.
 ;; v1.4.2, 2013-01-13 • added � into the cycle ? ？ �. Added cycle between black and white versions of triangle, heart, diamond, circle, square, etc.
@@ -109,7 +110,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.4.4")
+(setq xmsi-version "v1.4.5")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -437,7 +438,7 @@
   (puthash "goz" "𝔷" xmsi-abrvs)
 )
 
-(progn 
+(progn
   ;; Scripted letter forms. Most are outside BMP.
   (puthash "sca" "𝒶" xmsi-abrvs)
   (puthash "scb" "𝒷" xmsi-abrvs)
@@ -476,7 +477,7 @@
  ;; a b c d e f g h i j k l m n o p q w x y z
  ;; A B C D E F G H I J K L M N O P Q W X Y Z
 
-(progn 
+(progn
   ;; accented letters
   (puthash "a`" "à" xmsi-abrvs)
   (puthash "e`" "è" xmsi-abrvs)
@@ -540,16 +541,17 @@
   (puthash "O~" "Õ" xmsi-abrvs)
 )
 
-
+
+(progn
   ;; misc non-math symbols
   (puthash "tm" "™" xmsi-abrvs)
   (puthash "3/4" "¾" xmsi-abrvs)
   (puthash "1/2" "½" xmsi-abrvs)
   (puthash "1/4" "¼" xmsi-abrvs)
   (puthash "..." "…" xmsi-abrvs)
-(puthash "fdash" "‒" xmsi-abrvs)         ;FIGURE DASH. abbrev consistent with html entity
-  (puthash "--" "—" xmsi-abrvs)         ;EM DASH
-  (puthash "-" "−" xmsi-abrvs)          ;MINUS SIGN
+  (puthash "fdash" "‒" xmsi-abrvs) ;FIGURE DASH. abbrev consistent with html entity mdash ndash
+  (puthash "wdash" "〜" xmsi-abrvs) ; WAVE DASH
+  (puthash "--" "—" xmsi-abrvs)     ;EM DASH
   (puthash "?!" "⁈" xmsi-abrvs)
   (puthash "!?" "⁉" xmsi-abrvs)
   (puthash "!!" "‼" xmsi-abrvs)
@@ -557,7 +559,9 @@
 
   (puthash ":)" "☺" xmsi-abrvs)         ;smiley, happy face
   (puthash ":(" "☹" xmsi-abrvs)
+  )
 
+(progn
   ;; computer keys and symbols
   (puthash "cmd" "⌘" xmsi-abrvs)
   (puthash "opt" "⌥" xmsi-abrvs)
@@ -602,11 +606,9 @@
   (puthash "scissor" "✂" xmsi-abrvs)    ;BLACK SCISSORS
   (puthash "envelope" "✉" xmsi-abrvs)
   (puthash "writing" "✍" xmsi-abrvs)
+)
 
-  ;; misc math
-  (puthash "+-" "±" xmsi-abrvs)
-  (puthash "-+" "∓" xmsi-abrvs)
-
+(progn
   ;; superscripts
   (puthash "^0" "⁰" xmsi-abrvs)
   (puthash "^1" "¹" xmsi-abrvs)
@@ -661,7 +663,9 @@
   (puthash "_v" "ᵥ" xmsi-abrvs)
   (puthash "_x" "ₓ" xmsi-abrvs)
   (puthash "_schwa" "ₔ" xmsi-abrvs)
+)
 
+(progn
   ;; astronomy
   (puthash "sun" "☉" xmsi-abrvs)
   (puthash "sunray" "☼" xmsi-abrvs)
@@ -679,15 +683,19 @@
   (puthash "female" "♀" xmsi-abrvs)
   (puthash "venus" "♀" xmsi-abrvs)
   (puthash "comet" "☄" xmsi-abrvs)
+)
 
+(progn
   ;; forms for constants-like things
   (puthash "inf" "∞" xmsi-abrvs)        ;INFINITY
   (puthash "empty" "∅" xmsi-abrvs)         ;EMPTY SET
-  (puthash "es" "∅" xmsi-abrvs)         ;EMPTY SET
-  (puthash "o/" "Ø" xmsi-abrvs)         ;LATIN CAPITAL LETTER O WITH STROKE
+  (puthash "es" "∅" xmsi-abrvs)         ;EMPTY SET not to be confused with  Ø ø Oslash oslash
+  ;; misc math
+  (puthash "+-" "±" xmsi-abrvs)
+  (puthash "-+" "∓" xmsi-abrvs)
+)
 
-
-(progn 
+(progn
   ;; brackets, matching pairs
   (puthash "flr" "⌊⌋" xmsi-abrvs)       ; floor
   (puthash "ceil" "⌈⌉" xmsi-abrvs)      ; ceiling
@@ -812,7 +820,7 @@
   (puthash "O" "Ω" xmsi-abrvs)
 )
 
-(progn 
+(progn
   ;; letter-like forms
   (puthash "al" "ℵ" xmsi-abrvs)
   (puthash "alef" "ℵ" xmsi-abrvs)
@@ -848,7 +856,7 @@
   (puthash "ex" "∃" xmsi-abrvs) ; THERE EXISTS
 
 
-(progn 
+(progn
   ;; operators
   (puthash "c+" "⊕" xmsi-abrvs)
   (puthash "c*" "⊗" xmsi-abrvs)
