@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.4.6, 2013-01-15 • added abbrev “smiley” for “☺”, added abbrev “sad” for “☹”
 ;; v1.4.5, 2013-01-14 • added abbrev “wdash” for “〜” WAVE DASH. • removed abbrev “-” for MINUS SIGN because it's seldom used and can be confusing. It already has abbrev “minus”. • removed abbrev “o/”. Use html entity “Oslash” Ø or “oslash” ø or math “empty” or “es” for empty set ∅.
 ;; v1.4.4, 2013-01-13 • Fixed union and intersection. Fixed abbrev “menu” for the menu key symbol. Fixed empty set symbol. Other misc improvements.
 ;; v1.4.3, 2013-01-13 • major code tweak. Several new symbols are added. Abbrevs are cleaned up for the better. Cycle symbol implementation changed. Some abbrev are taken off. e.g. there was {circle ●} and {circle2 ○}, now just “circle”, and the black and white versions are a cycle.
@@ -110,7 +111,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.4.5")
+(setq xmsi-version "v1.4.6")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -548,7 +549,7 @@
   (puthash "3/4" "¾" xmsi-abrvs)
   (puthash "1/2" "½" xmsi-abrvs)
   (puthash "1/4" "¼" xmsi-abrvs)
-  (puthash "..." "…" xmsi-abrvs)
+  (puthash "..." "…" xmsi-abrvs)        ;HORIZONTAL ELLIPSIS
   (puthash "fdash" "‒" xmsi-abrvs) ;FIGURE DASH. abbrev consistent with html entity mdash ndash
   (puthash "wdash" "〜" xmsi-abrvs) ; WAVE DASH
   (puthash "--" "—" xmsi-abrvs)     ;EM DASH
@@ -557,8 +558,10 @@
   (puthash "!!" "‼" xmsi-abrvs)
   (puthash "m2" "㎡" xmsi-abrvs)        ;SQUARE M SQUARED ,  meter squared
 
-  (puthash ":)" "☺" xmsi-abrvs)         ;smiley, happy face
+  (puthash "smiley" "☺" xmsi-abrvs)     ;WHITE SMILING FACE smiley, happy face
+  (puthash ":)" "☺" xmsi-abrvs)
   (puthash ":(" "☹" xmsi-abrvs)
+  (puthash "sad" "☹" xmsi-abrvs)        ; WHITE FROWNING FACE
   )
 
 (progn
