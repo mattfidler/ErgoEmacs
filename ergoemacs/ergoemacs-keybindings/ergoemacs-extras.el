@@ -343,7 +343,7 @@ Currently only supports two modifier plus key."
           (make-directory extra-dir t))
       (setq extra-dir (expand-file-name xtra extra-dir))
       
-      (if (not (file-exists-p extra-dcir))
+      (if (not (file-exists-p extra-dir))
           (make-directory extra-dir t))
       ;; Translate keys
       (setq file (expand-file-name
