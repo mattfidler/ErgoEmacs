@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.4.7, 2013-01-21 • changed the name of abbrev for 「↖」 from “nwarr” to “home”. Similarly, 「↘」 from “searr” to “end”. Added a cycle for left right delete ⌫ ⌦.
 ;; v1.4.6, 2013-01-15 • added abbrev “smiley” for “☺”, added abbrev “sad” for “☹”
 ;; v1.4.5, 2013-01-14 • added abbrev “wdash” for “〜” WAVE DASH. • removed abbrev “-” for MINUS SIGN because it's seldom used and can be confusing. It already has abbrev “minus”. • removed abbrev “o/”. Use html entity “Oslash” Ø or “oslash” ø or math “empty” or “es” for empty set ∅.
 ;; v1.4.4, 2013-01-13 • Fixed union and intersection. Fixed abbrev “menu” for the menu key symbol. Fixed empty set symbol. Other misc improvements.
@@ -111,7 +112,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.4.6")
+(setq xmsi-version "v1.4.7")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -571,8 +572,8 @@
   (puthash "caret" "‸" xmsi-abrvs)      ;control key symbol. CARET
   (puthash "pgup" "⇞" xmsi-abrvs)
   (puthash "pgdn" "⇟" xmsi-abrvs)
-  (puthash "nwarr" "↖" xmsi-abrvs)
-  (puthash "searr" "↘" xmsi-abrvs)
+  (puthash "home" "↖" xmsi-abrvs)
+  (puthash "end" "↘" xmsi-abrvs)
   (puthash "power" "⎋" xmsi-abrvs)
   (puthash "menu" "▤" xmsi-abrvs)      ;menu key. SQUARE WITH HORIZONTAL FILL
 
@@ -1109,6 +1110,7 @@
 (xmsi-add-cycle ["✂" "✄"])              ;scissor
 (xmsi-add-cycle ["↹" "⇥" "⇤"])          ; tab
 (xmsi-add-cycle [ "⏎" "↩" "↵" "⌤"])     ; return/enter
+(xmsi-add-cycle [ "⌫" "⌦"])     ; delete
 
 (xmsi-add-cycle ["," "，"])
 (xmsi-add-cycle ["·" "．" "。"])      ; MIDDLE DOT, FULLWIDTH FULL STOP, IDEOGRAPHIC FULL STOP
