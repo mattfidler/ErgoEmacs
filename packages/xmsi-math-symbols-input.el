@@ -57,7 +57,7 @@
 
 ;;; HISTORY
 
-;; v1.4.7, 2013-01-21 • changed the name of abbrev for 「↖」 from “nwarr” to “home”. Similarly, 「↘」 from “searr” to “end”. Added a cycle for left right delete ⌫ ⌦.
+;; v1.4.7, 2013-01-21 • changed the name of abbrev for 「↖」 from “nwarr” to “home”. Similarly, 「↘」 from “searr” to “end”. • Added a cycle for left right delete ⌫ ⌦. • added “control” for 「✲」, used on Microsoft keyboards.
 ;; v1.4.6, 2013-01-15 • added abbrev “smiley” for “☺”, added abbrev “sad” for “☹”
 ;; v1.4.5, 2013-01-14 • added abbrev “wdash” for “〜” WAVE DASH. • removed abbrev “-” for MINUS SIGN because it's seldom used and can be confusing. It already has abbrev “minus”. • removed abbrev “o/”. Use html entity “Oslash” Ø or “oslash” ø or math “empty” or “es” for empty set ∅.
 ;; v1.4.4, 2013-01-13 • Fixed union and intersection. Fixed abbrev “menu” for the menu key symbol. Fixed empty set symbol. Other misc improvements.
@@ -581,6 +581,7 @@
   (puthash "undo" "↶" xmsi-abrvs)
   (puthash "redo" "↷" xmsi-abrvs)
   (puthash "shift" "⇧" xmsi-abrvs)
+  (puthash "control" "✲" xmsi-abrvs)    ; OPEN CENTRE ASTERISK
 
   (puthash "enter" "↵" xmsi-abrvs)
   (puthash "return" "⏎" xmsi-abrvs)
