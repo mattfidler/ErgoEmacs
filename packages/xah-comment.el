@@ -6,78 +6,70 @@
 
 ;; unfinished. 2013-01-19
 
-
 (defvar xc-line-comment-syntax-table nil "a alist that maps major mode name to the lang's line comment beginning chars syntax.")
 
 (setq xc-line-comment-syntax-table
       ;; mode name, string
 '(
 
-           ("emacs-lisp-mode" . ";")
-           ("python-mode" . "#")
-           ("ruby-mode" . "#")
-           ("cperl-mode" . "#")
-           ("perl-mode" . "#")
-           ("shell-script-mode" . "#")
-           ("sh-mode" . "#")
-           ("php-mode" . "#")
+           (ahk-mode . ";")
+           (c++-mode . "//")
+           (c-mode . "//")
+           (clojure-mode . ";")  ; (comment …)
+           (cperl-mode . "#")
+           (emacs-lisp-mode . ";")
+           (fundamental-mode . "#")
+           (haskell-mode . "--") ; block 「{-…-}」 
+           (java-mode . "//")
+           (js-mode . "//")
+           (lisp-mode . ";")
+           (perl-mode . "#")
+           (php-mode . "#") ;; also 「//」. 「/*…*/」
+           (pov-mode . "//")
+           (powershell-mode . "#")
+           (python-mode . "#")
+           (ruby-mode . "#")
+           (scala-mode . "//") ; /* */
+           (scheme-mode . ";") ; #|…|#  #;sexp
+           (sh-mode . "#")
+           (shell-script-mode . "#")
+           (visual-basic-mode . "'")
+           (xlsl-mode . "//")
 
-
-           ("c-mode" . "//")
-           ("c++-mode" . "//")
-           ("java-mode" . "//")
-           ("js-mode" . "//")
-
+;; following is todo
  ;; (* Applescript, Mathematica, Pascal, OCaml *)
+;;           (dos-mode . "#")
 
-           ("ahk-mode" . ";")
+           (xbbcode-mode . "#")
+           (css-mode . nil)   ; /* … */
 
-           ("fundamental-mode" . "#")
+           (html-mode . nil)
+           (sql-mode . "#") ;; mysql, 「#」 or 「-- 」 or 「/* … */」. postgresql, 「--」 or 「/*…*/」
+           (sgml-mode . nil)
+           (html6-mode . nil)
+           (tuareg-mode . nil) ; ocaml (* … *)
+           (org-mode . "#")
 
-;           ("dos-mode" . "#")
-
-           ("xbbcode-mode" . "#")
-           ("lisp-mode" . "#")
-           ("clojure-mode" . "#")
-           ("css-mode" . "#")
-           ("haskell-mode" . "#")
-           ("html-mode" . "#")
-           ("sql-mode" . "#")
-           ("sgml-mode" . "#")
-           ("html6-mode" . "#")
-           ("xlsl-mode" . "#")
-           ("tuareg-mode" . "#")
-           ("org-mode" . "#")
-           ("pov-mode" . "#")
-           ("powershell-mode" . "#")
-
-           ("shen-mode" . "#")
-           ("scala-mode" . "#")
-           ("scheme-mode" . "#")
-           ("snippet-mode" . "#")
-           ("visual-basic-mode" . "#")
-           ("visual-basic-mode" . "#")
-           ("fundamental-mode" . "#")
+           (shen-mode . "#")
+           (snippet-mode . "#")
            ) )
 
-(defvar xc-comment-line-begin-marker nil "e.g. # // ;")
+(defvar xc-line-comment-marker nil "Current line comment string. e.g. # // ;")
 
-(defun xc-get-current-mode-line-comment-syntax ()
-  "Returns a string that's the char for line comment of current language.
+(defun xc-set-line-comment-syntax ()
+  "Sets `xc-line-comment-marker' and returns its value.
 e.g. “#”, “//”, “;”."
   (let ()
-xc-line-comment-syntax-table    
-  ))
+    (setq xc-line-comment-marker (cdr (assoc major-mode xc-line-comment-syntax-table)) )
+    xc-line-comment-marker
+    ))
 
 (defun xc-comment-smart ()
   "Comment or uncomment the current line or text selection."
   (interactive)
-
-  ;; If there's no text selection, comment or uncomment the line
-  ;; depending whether the WHOLE line is a comment. If there is a text
-  ;; selection, using the first line to determine whether to
-  ;; comment/uncomment.
+  ;; If there's no text selection, comment or uncomment the line depending whether the WHOLE line is a comment. If there is a text selection, using the first line to determine whether to comment/uncomment.
   (let (p1 p2)
+    (xc-set-line-comment-syntax)
     (if (region-active-p)
         (save-excursion
           (setq p1 (region-beginning) p2 (region-end))
@@ -95,27 +87,30 @@ xc-line-comment-syntax-table
 (defun xc-whole-line-is-comment-p ()
   (save-excursion
     (beginning-of-line 1)
-    (looking-at "[ \t]*#")
+    (looking-at (concat "[ \t]*" xc-line-comment-marker))
     ))
 
 (defun xc-comment-current-line ()
   (interactive)
+  (xc-set-line-comment-syntax)
   (beginning-of-line 1)
-  (insert "#")
+  (insert xc-line-comment-marker)
   )
 
 (defun xc-uncomment-current-line ()
-  "Remove “#” (if any) in the beginning of current line."
+  "Remove line comment string (if any) in the beginning of current line."
   (interactive)
+  (xc-set-line-comment-syntax)
   (when (xc-whole-line-is-comment-p)
     (beginning-of-line 1)
-    (search-forward "#")
-    (delete-backward-char 2)
+    (search-forward xc-line-comment-marker)
+    (delete-char -1)
     ))
 
 (defun xc-comment-region (p1 p2)
-  "Add “#” to the beginning of each line of selected text."
+  "Add line comment string to the beginning of each line of selected text."
   (interactive "r")
+  (xc-set-line-comment-syntax)
   (let ((deactivate-mark nil))
     (save-excursion
       (goto-char p2)
@@ -125,8 +120,9 @@ xc-line-comment-syntax-table
         ))))
 
 (defun xc-uncomment-region (p1 p2)
-  "Remove “#” (if any) in the beginning of each line of selected text."
+  "Remove line comment string (if any) in the beginning of each line of selected text."
   (interactive "r")
+  (xc-set-line-comment-syntax)
   (let ((deactivate-mark nil))
     (save-excursion
       (goto-char p2)
