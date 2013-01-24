@@ -130,5 +130,5 @@ e.g. “#”, “//”, “;”."
         (xc-uncomment-current-line)
         (previous-line) )) ))
 
-(provide 'xc-comment)
+(provide 'xah-comment)
 
