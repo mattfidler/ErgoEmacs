@@ -8,7 +8,7 @@
 
 (defcustom ergoemacs-ahk-script-header ";-*- coding: utf-8 -*-
 
-;; Ergohotkey for QWERTY
+;; Ergohotkey 
 ;; A AutoHotkey script for system-wide ErgoEmacs keybinding
 ;;
 ;;   Copyright © 2009 Milan Santosi
@@ -30,6 +30,8 @@
 ;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
+;; Version 0.6:
+;; - Unified autohotkey script
 ;; Version 0.5:
 ;; - Made this generated inside of ergoemacs.  Malfunctioning kill-line-backwards re-included.
 ;; Version 0.4: 
@@ -321,81 +323,213 @@ Currently only supports two modifier plus key."
     
     (symbol-value 'ret)))
 
-(defun ergoemacs-gen-ahk (layout &optional extra)
-  "Generates an Autohotkey Script for Ergoemacs Keybindings.
-Currently only supports two modifier plus key."
-  (let ((dir ergoemacs-dir)
-        (extra-dir)
-        (xtra (or extra "ahk"))
-        file
-        gtxt
-        (lay
-         (intern-soft
-          (concat "ergoemacs-layout-" layout)))
-        (i 0))
-    
-    ;; ergoemacs-variable-layout
-    (if (not lay)
-        (message "Layout %s not found" layout)
-      (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
-      (if (not (file-exists-p extra-dir))
-          (make-directory extra-dir t))
-      (setq extra-dir (expand-file-name xtra extra-dir))
-      
-      (if (not (file-exists-p extra-dcir))
-          (make-directory extra-dir t))
-      ;; Translate keys
-      (setq file (expand-file-name
-                  (concat "ergoemacs-layout-" layout ".ahk") extra-dir))
-      (with-temp-file file
-        (insert ergoemacs-ahk-script-header)
-        (goto-char (point-min))
-        (when (re-search-forward "QWERTY")
-          (replace-match layout)
-          (insert " layout ")
-          (insert ergoemacs-variant)
-          (insert " variant."))
-        
-        (goto-char (point-max))
+(defun ergoemacs-get-layouts-ahk-ini ()
+  "Gets the easymenu entry for ergoemacs-layouts."
+  (with-temp-buffer
+    (insert "[Layouts]\n")
+    (mapcar
+     (lambda(lay)
+       (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
+              (alias (condition-case nil
+                         (indirect-variable variable)
+                       (error variable)))
+              (is-alias nil)
+              (doc nil))
+         (setq doc (or (documentation-property variable 'variable-documentation)
+                       (progn
+                         (setq is-alias t)
+                         (documentation-property alias 'variable-documentation))))
+         (insert lay)
+         (insert "=")
+         (insert doc)
+         (insert "\n")))
+     (ergoemacs-get-layouts))
+    (buffer-string)))
+
+(defun ergoemacs-get-variants-ahk-ini ()
+  "Gets the list of all known variants and the documentation associated with the variants."
+  (with-temp-buffer
+    (insert "[Variants]\n")
+    (insert "Standard=Standard Variant\n")
+    (let ((lays (sort (ergoemacs-get-variants) 'string<)))
+      (mapcar
+       (lambda(lay)
+         (let* ((variable (intern (concat "ergoemacs-" lay "-variant")))
+                (alias (condition-case nil
+                           (indirect-variable variable)
+                         (error variable)))
+                (is-alias nil)
+                (doc nil))
+           (setq doc (or (documentation-property variable 'group-documentation)
+                         (progn
+                           (setq is-alias t)
+                           (documentation-property alias 'group-documentation))))
+           (insert lay)
+           (insert "=")
+           (insert doc)
+           (insert "\n")))
+       lays))
+    (buffer-string)))
+
+(defun ergoemacs-get-ahk-keys-ini ()
+  "Get ahk keys for all variants/ahk combinations and put into INI file."
+  (with-temp-buffer
+    (let ((old-lay ergoemacs-variant))
+      (ergoemacs-set-default 'ergoemacs-variant nil)
+      (mapc
+       (lambda(x)
+         (ergoemacs-setup-keys-for-layout x)
+         (insert (concat "[" x "-Standard]\n"))
+         (mapc
+          (lambda(y)
+            (message "Generating AHK ini for %s Standard" x)
+            (when (assoc (nth 1 y) ergoemacs-ahk-script-snippets)
+              (insert (symbol-name (nth 1 y)))
+              (insert "=")
+              (insert (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
+              (insert "\n")))
+          (symbol-value (ergoemacs-get-variable-layout))))
+       (ergoemacs-get-layouts))
+      (mapc
+       (lambda(z)
+         (ergoemacs-set-default 'ergoemacs-variant z)
+         (mapc
+          (lambda(x)
+            (ergoemacs-setup-keys-for-layout x)
+            (insert (concat "[" x "-" z "]\n"))
+            (mapc
+             (lambda(y)
+               (message "Generating AHK ini for %s %s" x z)
+               (when (assoc (nth 1 y) ergoemacs-ahk-script-snippets)
+                 (insert (symbol-name (nth 1 y)))
+                 (insert "=")
+                 (insert (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
+                 (insert "\n")))
+             (symbol-value (ergoemacs-get-variable-layout))))
+          (ergoemacs-get-layouts)))
+       (ergoemacs-get-variants))
+      (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)
+      (ergoemacs-set-default 'ergoemacs-variant old-lay))
+    (buffer-string)))
+
+(defun ergoemacs-gen-ahk (&optional extra)
+  "Generates autohotkey for all layouts and variants"
+  (interactive)
+  (let ((xtra (or extra "ahk"))
+        not-first
+        (extra-dir))
+    (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
+    (if (not (file-exists-p extra-dir))
+        (make-directory extra-dir t))
+    (setq extra-dir (expand-file-name xtra extra-dir))
+    (if (not (file-exists-p extra-dir))
+        (make-directory extra-dir t))
+    (setq file (expand-file-name "ergoemacs.ini" extra-dir))
+    (with-temp-file file
+      (insert (ergoemacs-get-layouts-ahk-ini))
+      (insert (ergoemacs-get-variants-ahk-ini))
+      (insert "[Commands]\n")
+      (let ((i 1))
         (mapc
          (lambda(x)
-           (let* ((key (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 x) t (nth 3 x))))
-                  (cmd (nth 1 x))
-                  (ahk (assoc cmd ergoemacs-ahk-script-snippets)))
-             (when ahk
-               (insert "\n;; ")
-               (insert (symbol-name cmd))
-               (insert "\n")
-               (insert key)
-               (insert "::\n")
-               (insert (nth 1 ahk))
-               (insert "\n"))))
-         (symbol-value (ergoemacs-get-variable-layout)))
-        
-        (goto-char (point-min))
-        (while (re-search-forward "::$" nil t)
-          (delete-region (point) (save-excursion (skip-chars-forward " \t\n") (point)))
-          (insert "\n  "))
-        (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
-      
-      (when (executable-find "ahk2exe")
-        (message "Generating executable for %s..." file)
-        (shell-command (concat "ahk2exe /in " file))))))
+           (insert (format "%s=%s\n" i (symbol-name (nth 0 x))))
+           (setq i (+ i 1)))
+         ergoemacs-ahk-script-snippets)
+        (insert (format "N=%s\n" (- i 1))))
+      (insert (ergoemacs-get-ahk-keys-ini)))
+    (setq file (expand-file-name "ergoemacs.ahk" extra-dir))
+    (with-temp-file file
+      (insert ergoemacs-ahk-script-header)
+      (goto-char (point-max))
+      (insert "ErgoKey(ErgoKeyFn){")
+      (mapc
+       (lambda(x)
+         (insert
+          (if not-first
+              "\n} else if (ErgoKeyFn = \""
+            "\nif (ErgoKeyFn = \""))
+         (insert (symbol-name (nth 0 x)))
+         (insert "\") {\n")
+         (insert (nth 1 x))
+         (setq not-first t))
+       ergoemacs-ahk-script-snippets)
+      (insert "\n} else{\n MsgBox Command Not Found\n}\n}\n"))))
 
-(defun ergoemacs-ahks (&optional layouts)
-  "Generate Autohotkey scripts for all the defined layouts."
-  (interactive)
-  (let* ((lay (or layouts (ergoemacs-get-layouts)))
-         (saved-variant ergoemacs-variant))
-    (mapc
-     (lambda(x)
-       (mapc
-        (lambda(y)
-          (ergoemacs-set-default 'ergoemacs-variant y)
-          (ergoemacs-gen-ahk x (concat y "/ahk")))
-        (sort (ergoemacs-get-variants) 'string<)))
-     lay)))
+;; (defun ergoemacs-gen-ahk (layout &optional extra)
+;;   "Generates an Autohotkey Script for Ergoemacs Keybindings.
+;; Currently only supports two modifier plus key."
+;;   (let ((dir ergoemacs-dir)
+;;         (extra-dir)
+;;         (xtra (or extra "ahk"))
+;;         file
+;;         gtxt
+;;         (lay
+;;          (intern-soft
+;;           (concat "ergoemacs-layout-" layout)))
+;;         (i 0))
+
+;;     ;; ergoemacs-variable-layout
+;;     (if (not lay)
+;;         (message "Layout %s not found" layout)
+;;       (ergoemacs-setup-keys-for-layout layout)
+;;       (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
+;;       (if (not (file-exists-p extra-dir))
+;;           (make-directory extra-dir t))
+;;       (setq extra-dir (expand-file-name xtra extra-dir))
+
+;;       (if (not (file-exists-p extra-dcir))
+;;           (make-directory extra-dir t))
+;;       ;; Translate keys
+;;       (setq file (expand-file-name
+;;                   (concat "ergoemacs-layout-" layout ".ahk") extra-dir))
+;;       (with-temp-file file
+;;         (insert ergoemacs-ahk-script-header)
+;;         (goto-char (point-min))
+;;         (when (re-search-forward "QWERTY")
+;;           (replace-match layout)
+;;           (insert " layout ")
+;;           (insert ergoemacs-variant)
+;;           (insert " variant."))
+
+;;         (goto-char (point-max))
+;;         (mapc
+;;          (lambda(x)
+;;            (let* ((key (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 x) t (nth 3 x))))
+;;                   (cmd (nth 1 x))
+;;                   (ahk (assoc cmd ergoemacs-ahk-script-snippets)))
+;;              (when ahk
+;;                (insert "\n;; ")
+;;                (insert (symbol-name cmd))
+;;                (insert "\n")
+;;                (insert key)
+;;                (insert "::\n")
+;;                (insert (nth 1 ahk))
+;;                (insert "\n"))))
+;;          (symbol-value (ergoemacs-get-variable-layout)))
+        
+;;         (goto-char (point-min))
+;;         (while (re-search-forward "::$" nil t)
+;;           (delete-region (point) (save-excursion (skip-chars-forward " \t\n") (point)))
+;;           (insert "\n  "))
+;;         (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout))
+
+;;       (when (executable-find "ahk2exe")
+;;         (message "Generating executable for %s..." file)
+;;         (shell-command (concat "ahk2exe /in " file))))))
+
+;; (defun ergoemacs-ahks (&optional layouts)
+;;   "Generate Autohotkey scripts for all the defined layouts."
+;;   (interactive)
+;;   (let* ((lay (or layouts (ergoemacs-get-layouts)))
+;;          (saved-variant ergoemacs-variant))
+;;     (mapc
+;;      (lambda(x)
+;;        (mapc
+;;         (lambda(y)
+;;           (ergoemacs-set-default 'ergoemacs-variant y)
+;;           (ergoemacs-gen-ahk x (concat y "/ahk")))
+;;         (sort (ergoemacs-get-variants) 'string<)))
+;;      lay)))
 
 ;;;###autoload
 (defun ergoemacs-extras ( &optional layouts)
