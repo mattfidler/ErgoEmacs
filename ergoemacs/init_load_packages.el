@@ -82,14 +82,20 @@
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
 
-;; auto-complete v1.3.1 (a enhanced word completion)
+;; a user interface library used by auto-complete
 (add-to-list 'load-path
  (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete-1.3.1/" ) )
+                     "../packages/popup-20121020.1203/" ) )
+
+;; auto-complete v1.3.1 (a enhanced word completion for computer 8languages)
+(add-to-list 'load-path
+ (concat (file-name-directory (or load-file-name buffer-file-name))
+                     "../packages/auto-complete/" ) )
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories
  (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete-1.3.1/ac-dict/" ))
+                     "../packages/auto-complete/dict/" ))
+(require 'auto-complete-config)
 (ac-config-default)
 (auto-complete-mode 1)
 

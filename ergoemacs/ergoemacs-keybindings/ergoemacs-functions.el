@@ -132,19 +132,19 @@ If narrow-to-region is in effect, then cut that region only."
   "Move cursor to the next occurrence of left bracket or quotation mark."
   (interactive)
   (forward-char 1)
-  (search-forward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t)
+  (search-forward-regexp (regexp-opt '("\"" "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t)
 ;;  (search-forward-regexp "\\s(\\|\\s\"\\|<\\|“\\|‘\\|‹") ; using syntax table
   (backward-char 1))
 
 (defun ergoemacs-backward-open-bracket ()
   "Move cursor to the previous occurrence of left bracket or quotation mark.."
   (interactive)
-  (search-backward-regexp (regexp-opt '( "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t))
+  (search-backward-regexp (regexp-opt '("\"" "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t))
 
 (defun ergoemacs-forward-close-bracket ()
   "Move cursor to the next occurrence of right bracket or quotation mark."
   (interactive)
-   (search-forward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
+   (search-forward-regexp (regexp-opt '("\"" ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
 ;;  (search-forward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›") ;using syntax table
  )
 
@@ -152,7 +152,7 @@ If narrow-to-region is in effect, then cut that region only."
   "Move cursor to the previous occurrence of right bracket or quotation mark."
   (interactive)
   (backward-char 1)
-  (search-backward-regexp (regexp-opt '( ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
+  (search-backward-regexp (regexp-opt '("\"" ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
   (forward-char 1))
 
 (defun ergoemacs-forward-block ()
