@@ -25,8 +25,8 @@
     ("M-H" move-end-of-line "→ line")
     
     ;; Move by screen (page up/down)
-    ("M-I" scroll-down "↓ page")
-    ("M-K" scroll-up "↑ page")
+    ("M-I" scroll-down "↑ page")
+    ("M-K" scroll-up "↓ page")
     
     ;; Move to beginning/ending of file
     ("M-J" ergoemacs-backward-open-bracket "← bracket")
