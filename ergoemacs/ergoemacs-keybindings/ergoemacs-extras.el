@@ -5,119 +5,38 @@
   "Documentation and script generation"
   :group 'ergoemacs-mode)
 
-
-(defcustom ergoemacs-ahk-script-header ";-*- coding: utf-8 -*-
-
-;; Ergohotkey 
-;; A AutoHotkey script for system-wide ErgoEmacs keybinding
-;;
-;;   Copyright © 2009 Milan Santosi
-;;   This program is free software: you can redistribute it and/or modify
-;;   it under the terms of the GNU General Public License as published by
-;;   the Free Software Foundation, either version 3 of the License, or
-;;   (at your option) any later version.
-;;
-;;   This program is distributed in the hope that it will be useful,
-;;   but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;   GNU General Public License for more details.
-;;
-;;   You should have received a copy of the GNU General Public License
-;;   along with this program.  If not, see http://www.gnu.org/licenses/
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Global ergonomic editing command shortcuts for 
-;; use with autohotkey http://www.autohotkey.com/
-;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Changelog:
-;; Version 0.6:
-;; - Unified autohotkey script
-;; Version 0.5:
-;; - Made this generated inside of ergoemacs.  Malfunctioning kill-line-backwards re-included.
-;; Version 0.4: 
-;; - Fixed a missing colon, that prevents Alt+i to work. Xah Lee
-;; Version 0.3:
-;; - added a #SingleInstance directive. Xah Lee
-;; Version 0.2: 
-;; - 'Fixed' malfunctioning kill-line-backwards by remapping it to
-;;   something without a shift modifier. Not very happy about it.
-;; - Replaced Send with SendInput
-;; - Replaced occurences of DEL with C-x to 'kill' to the clipboard
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; don't run multiple instance of this script
-#SingleInstance force
-
-;; Don't activate when in ErgoEmacs (because ErgoEmacs already defines them)
-#IfWinNotActive ahk_class Emacs
-"
-  "Header for autohotkey scripts.  QWERTY will be replaced with the layout and variant"
-  :type 'string
-  :group 'ergoemacs-extras)
-
 (defcustom ergoemacs-ahk-script-snippets
   '((previous-line "\n  SendInput {Up}\n  return")
     (next-line "\n  SendInput {Down}\n  return")
     (backward-char "\n SendInput {Left}\n return")
     (forward-char "\n SendInput {Right}\n return")
-    (backward-word "\n SendInput {Ctrl down}\n SendInput {Left}\n  SendInput {Ctrl up}\n  return")
-    (forward-word "\n  SendInput {Ctrl down}\n SendInput {Right}\n  SendInput {Ctrl up}\n  return")
+    (backward-word "\n SendInput {Ctrl down}{Left}{Ctrl up}\n  return")
+    (forward-word "\n  SendInput {Ctrl down}{Right}{Ctrl up}\n  return")
     (move-beginning-of-line "\n  SendInput {Home}\n  return")
     (move-end-of-line "\n SendInput {End}\n return")
     (delete-backward-char "\n SendInput {Backspace}\n  return")
     (delete-char "\n SendInput {Delete}\n return")
-    
-    (backward-kill-word "\n   SendInput {Ctrl down}
-  SendInput {Shift down}
-  SendInput {Left}
-  SendInput {Ctrl up}
-  SendInput {Shift up}
-  SendInput {Ctrl down}
-  SendInput {x}
-  SendInput {Ctrl up}
+    (scroll-down "\n SendInput {PgUp}\n return")
+    (scroll-up "\n SendInput {PgDn}\n return")
+    (isearch-forward "\n  SendInput {Ctrl down}{f}{Ctrl Up}\n return")
+    (query-replace "\n  SendInput {Ctrl down}{h}{Ctrl Up}\n return")
+    (backward-kill-word " SendInput {Shift down}{Home}{Shift up}{Ctrl down}{x}{Ctrl up}
   return")
-    (kill-word "\n  SendInput {Ctrl down}
-  SendInput {Shift down}
-  SendInput {Right}
-  SendInput {Ctrl up}
-  SendInput {Shift up}
-  SendInput {Ctrl down}
-  SendInput {x}
-  SendInput {Ctrl up}
+    (kill-word "\n  SendInput {Ctrl down}{Shift down}{Right}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}
   return")
-    (kill-line "\n SendInput {Shift down}
-  SendInput {End}
-  SendInput {Shift up}
-  SendInput {Ctrl down}
-  SendInput {x}
-  SendInput {Ctrl up}
+    (kill-line "\n SendInput {Shift down}{End}{Shift up}{Ctrl down}{x}{Ctrl up}
   return")
-    (ergoemacs-kill-line-backward "\n  SendInput {Shift down}
-  SendInput {Home}
-  SendInput {Shift up}
-  SendInput {Ctrl down}
-  SendInput {x}
-  SendInput {Ctrl up}
+    (ergoemacs-kill-line-backward "\n  SendInput {Shift down}{Home}{Shift up}{Ctrl down}{x}{Ctrl up}
   return")
-    (ergoemacs-cut-line-or-region "\n SendInput {Ctrl down}
-  SendInput {x}
-  SendInput {Ctrl up}
+    (ergoemacs-cut-line-or-region "\n SendInput {Ctrl down}{x}{Ctrl up}
   return")
-    (ergoemacs-copy-line-or-region "\n SendInput {Ctrl down}
-  SendInput {c}
-  SendInput {Ctrl up}
+    (ergoemacs-copy-line-or-region "\n SendInput {Ctrl down}{c}{Ctrl up}
   return")
-    (yank "\n SendInput {Ctrl down}
-  SendInput {v}
-  SendInput {Ctrl up}
+    (yank "\n SendInput {Ctrl down}{v}{Ctrl up}
   return")
-    (undo "\n  SendInput {Ctrl down}
-  SendInput {z}
-  SendInput {Ctrl up}
+    (undo "\n  SendInput {Ctrl down}{z}{Ctrl up}
   return")
-    (redo "\n SendInput {Ctrl down}
-  SendInput {y}
-  SendInput {Ctrl up}
+    (redo "\n SendInput {Ctrl down}{y}{Ctrl up}
   return"))
   "Autohotkey script snippets that define equivalent actions to emacs functions"
   :type '(repeat
@@ -323,7 +242,6 @@ Currently only supports two modifier plus key."
     
     (symbol-value 'ret)))
 
-<<<<<<< HEAD
 (defun ergoemacs-get-layouts-ahk-ini ()
   "Gets the easymenu entry for ergoemacs-layouts."
   (with-temp-buffer
@@ -429,71 +347,24 @@ Currently only supports two modifier plus key."
     (with-temp-file file
       (insert (ergoemacs-get-layouts-ahk-ini))
       (insert (ergoemacs-get-variants-ahk-ini))
-      (insert "[Commands]\n")
-      (let ((i 1))
-=======
-(defun ergoemacs-gen-ahk (layout &optional extra)
-  "Generates an Autohotkey Script for Ergoemacs Keybindings.
-Currently only supports two modifier plus key."
-  (let ((dir ergoemacs-dir)
-        (extra-dir)
-        (xtra (or extra "ahk"))
-        file
-        gtxt
-        (lay
-         (intern-soft
-          (concat "ergoemacs-layout-" layout)))
-        (i 0))
-    
-    ;; ergoemacs-variable-layout
-    (if (not lay)
-        (message "Layout %s not found" layout)
-      (ergoemacs-setup-keys-for-layout layout)
-      (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
-      (if (not (file-exists-p extra-dir))
-          (make-directory extra-dir t))
-      (setq extra-dir (expand-file-name xtra extra-dir))
-      
-      (if (not (file-exists-p extra-dir))
-          (make-directory extra-dir t))
-      ;; Translate keys
-      (setq file (expand-file-name
-                  (concat "ergoemacs-layout-" layout ".ahk") extra-dir))
-      (with-temp-file file
-        (insert ergoemacs-ahk-script-header)
-        (goto-char (point-min))
-        (when (re-search-forward "QWERTY")
-          (replace-match layout)
-          (insert " layout ")
-          (insert ergoemacs-variant)
-          (insert " variant."))
-        
-        (goto-char (point-max))
->>>>>>> 264cee0be0f8842dda17cd0a0806222591788d2b
-        (mapc
-         (lambda(x)
-           (insert (format "%s=%s\n" i (symbol-name (nth 0 x))))
-           (setq i (+ i 1)))
-         ergoemacs-ahk-script-snippets)
-        (insert (format "N=%s\n" (- i 1))))
       (insert (ergoemacs-get-ahk-keys-ini)))
     (setq file (expand-file-name "ergoemacs.ahk" extra-dir))
     (with-temp-file file
-      (insert ergoemacs-ahk-script-header)
+      (insert-file-contents (expand-file-name "ahk-us.ahk" ergoemacs-dir))
       (goto-char (point-max))
-      (insert "ErgoKey(ErgoKeyFn){")
+      (insert "\n;; Autogenerated functions below\n\n")
       (mapc
        (lambda(x)
-         (insert
-          (if not-first
-              "\n} else if (ErgoKeyFn = \""
-            "\nif (ErgoKeyFn = \""))
+         (insert "\n")
          (insert (symbol-name (nth 0 x)))
-         (insert "\") {\n")
+         (insert ":\n")
          (insert (nth 1 x))
-         (setq not-first t))
-       ergoemacs-ahk-script-snippets)
-      (insert "\n} else{\n MsgBox Command Not Found\n}\n}\n"))))
+         (insert "\n\n"))
+       ergoemacs-ahk-script-snippets))
+    (message "Generated ergoemacs.ahk")
+    (when (executable-find "ahk2exe")
+      (shell-command (format "ahk2exe /in %s" file))
+      (message "Generated ergoemacs.exe"))))
 
 
 ;;;###autoload
