@@ -9,7 +9,7 @@
 ;;     Matthew Fidler <matthew.fidler@gmail.com> ( http://github.com/mlf176f2/ )
 ;; Maintainer: Matthew Fidler, Xah Lee, David Capello
 ;; Created: August 01 2007
-;; Version: 5.7.3
+;; Version: 5.7.4
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 
 ;; You can redistribute this program and/or modify it under the terms
@@ -50,7 +50,7 @@
 
 (require 'easymenu)
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.7.3"
+(defconst ergoemacs-mode-version "5.7.4"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files
