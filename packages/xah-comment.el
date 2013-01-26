@@ -4,7 +4,7 @@
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Created: 2012
-;; Keywords: comment
+;; Keywords: comment TODO add proper keywords here
 
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2.
 
@@ -37,6 +37,7 @@
 ;; v1.0, 2013-01-24 First working prototype. Currently only works for language that has a line syntax.
 
 ;;; TODO
+;; in xc-comment-smart, when a region is selected, ignore blank lines in the beginning when determining whether to comment or uncomment
 
 
 (require 'newcomment )
@@ -126,11 +127,7 @@ e.g. “#”, “//”, “;”."
           (progn (let ()
                    (if (equal (point) (line-end-position)) ; if cursor is at end of line, comment at the end.
                        (progn (xc-comment-line "end"))
-                     (progn (xc-comment-line))
-                     )
-                   ))
-
-          )) )))
+                     (progn (xc-comment-line)) ) )) )) )))
 
 (defun xc-whole-line-is-comment-p ()
   (save-excursion

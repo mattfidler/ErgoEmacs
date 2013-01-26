@@ -4,6 +4,12 @@
 
 Note: When talking about key POSITION on keyboard, QWERTY is used, unless otherwise specified. For example, “Changed 【Alt+y】 to something”, that “y” means the key that is under the key 7 (which is Dvorak's “f”). But when talking about code, such as “remap 「M-r」 to something”, that means the letter “r” on whatever layout.
 
+* version 5.7.4, 2013-01-26 much more fixes and features by Matthew Fidler
+
+to be documented later.
+
+also, the commands “ergoemacs-forward-block” and “ergoemacs-backward-block” improved. Now they skip empty lines with whitespace in them properly.
+
 * version 5.7.3, 2012-12-14 major rewrite by Matthew Fidler
 
 A rewrite of the mode, with the following user-visible changes and features:

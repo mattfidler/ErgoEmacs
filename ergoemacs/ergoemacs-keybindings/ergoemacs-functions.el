@@ -156,20 +156,31 @@ If narrow-to-region is in effect, then cut that region only."
   (forward-char 1))
 
 (defun ergoemacs-forward-block ()
-  "Move cursor forward to next occurrence of double newline character.
-In most major modes, this is the same as `ergoemacs-forward-paragraph', however, this command's behavior is the same regardless of syntax table."
+  "Move cursor forward to the beginning of next text block.
+A text block is separated by 2 empty lines (or line with just whitespace).
+In most major modes, this is similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table."
   (interactive)
-  (skip-chars-forward "\n")
-  (when (not (search-forward-regexp "\n[[:blank:]]*\n" nil t))
-    (goto-char (point-max)) ) )
+                                        ;  (skip-chars-forward "\n\t ")
+  (if (search-forward-regexp "\n[[:blank:]\n]*\n+" nil "NOERROR")
+      (progn (backward-char))
+    (progn (goto-char (point-max)) )
+    )
+  )
 
 (defun ergoemacs-backward-block ()
-  "Move cursor backward to previous occurrence of double newline char.
+  "Move cursor backward to previous text block.
 See: `ergoemacs-forward-block'"
   (interactive)
-  (skip-chars-backward "\n")
-  (when (not (search-backward-regexp "\n[[:blank:]]*\n" nil t))
-    (goto-char (point-min))))
+                                        ;  (skip-chars-backward "\n\t ")
+  (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
+      (progn
+        ;; (goto-char (match-beginning 0))
+        (skip-chars-backward "\n\t ")
+        (forward-char 1)
+        )
+    (progn (goto-char (point-min)) )
+    )
+  )
 
 ;;; TEXT SELECTION RELATED
 
