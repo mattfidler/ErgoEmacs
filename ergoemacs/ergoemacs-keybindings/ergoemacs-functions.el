@@ -160,7 +160,6 @@ If narrow-to-region is in effect, then cut that region only."
 A text block is separated by 2 empty lines (or line with just whitespace).
 In most major modes, this is similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table."
   (interactive)
-                                        ;  (skip-chars-forward "\n\t ")
   (if (search-forward-regexp "\n[[:blank:]\n]*\n+" nil "NOERROR")
       (progn (backward-char))
     (progn (goto-char (point-max)) )
@@ -171,10 +170,8 @@ In most major modes, this is similar to `forward-paragraph', but this command's 
   "Move cursor backward to previous text block.
 See: `ergoemacs-forward-block'"
   (interactive)
-                                        ;  (skip-chars-backward "\n\t ")
   (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
       (progn
-        ;; (goto-char (match-beginning 0))
         (skip-chars-backward "\n\t ")
         (forward-char 1)
         )
