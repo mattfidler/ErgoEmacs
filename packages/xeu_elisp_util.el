@@ -45,6 +45,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.17, 2013-01-27 for unit-at-cursor for arg 'filepath, added no-break space as delimiter.
 ;; version 1.4.16, 2012-12-29 changed implementation for unit-at-cursor for arg 'filepath
 ;; version 1.4.15, 2012-08-23 added “file-relative-name-emacs24.1.1-fix”
 ;; version 1.4.14, 2012-08-14 added “hash-to-list”.
@@ -151,10 +152,10 @@ The main differences are:
           (let (p0)
             (setq p0 (point))
             ;; chars that are likely to be delimiters of full path, e.g. space, tabs, brakets.
-             (skip-chars-backward "^ \"\t\n|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›\\`")
+             (skip-chars-backward "^  \"\t\n|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›\\`")
              (setq p1 (point))
              (goto-char p0)
-             (skip-chars-forward "^ \"\t\n|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›\\'")
+             (skip-chars-forward "^  \"\t\n|()[]{}<>〔〕“”〈〉《》【】〖〗«»‹›\\'")
              (setq p2 (point)))
           )
 
