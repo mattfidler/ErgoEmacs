@@ -13,9 +13,6 @@
 (autoload 'php-mode "php-mode" "php mode by Aaron S Hawley." t)
 (add-to-list 'auto-mode-alist '("\\.php\\'" . php-mode))
 
-;; ;;; javascript. (IDE-like by Steve Yegge. Features a js syntax parser)
-;; (autoload 'js2-mode "js2-20090723b" "IDE-like Javascript mode; features a on-the-fly syntax parser." t)
-
 ;;; visual-basic-mode
 (autoload 'visual-basic-mode "visual-basic-mode" "Major moder for editing Visual Basic code." t)
 (add-to-list 'auto-mode-alist '("\\.vbs\\'" . visual-basic-mode)) ;VBscript
