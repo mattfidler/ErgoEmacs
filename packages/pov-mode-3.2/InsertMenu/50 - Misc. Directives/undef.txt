@@ -1,2 +1,0 @@
-// identifiers can be destroyed with
-#undef MyColor

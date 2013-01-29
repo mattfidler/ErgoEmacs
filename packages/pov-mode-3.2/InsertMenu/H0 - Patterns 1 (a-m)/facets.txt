@@ -1,6 +1,0 @@
-// pattern for use in normal {}
-// not usable in pigments
-  facets          // generates facets on the surface
-  coords 1.0      // for flat surfaces
-  //size 1.0      // for curved surfaces
-

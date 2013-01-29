@@ -1,3 +1,0 @@
-// various geometric transformation macros
-// 
-#include "transforms.inc"

@@ -1,2 +1,0 @@
-// illuminate also the shadow side of a surface
-  double_illuminate

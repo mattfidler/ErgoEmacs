@@ -1,3 +1,0 @@
-// internal functions usable in user defined functions
-// for example for isosurfaces and function pattern
-#include "functions.inc"

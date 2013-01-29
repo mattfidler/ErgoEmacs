@@ -1,3 +1,0 @@
-// various (mostly layered) wood textures
-// T_Wood1 - T_Wood35
-#include "woods.inc"

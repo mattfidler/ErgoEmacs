@@ -1,3 +1,0 @@
-// general math functions and macros
-// 
-#include "math.inc"

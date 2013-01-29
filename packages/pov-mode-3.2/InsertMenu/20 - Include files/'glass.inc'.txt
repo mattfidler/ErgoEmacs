@@ -1,3 +1,0 @@
-// various glass finishes, colors and interiors
-//
-#include "glass.inc"

@@ -47,13 +47,6 @@
 (autoload 'xahk-mode "xahk-mode" "AutoHotKey mode" t)
 (add-to-list 'auto-mode-alist '("\\.ahk\\'" . xahk-mode))
 
-;;; POV-Ray (3D rendering engine) http://en.wikipedia.org/wiki/POV-Ray
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/pov-mode-3.2/"))
-(autoload 'pov-mode "pov-mode" "Major mode for working with POV-Ray code." t)
-(add-to-list 'auto-mode-alist '("\\.pov\\'" . pov-mode))
-(add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
-
 ;;; tuareg mode for ML/Caml/OCaml lang
 ;; (add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-2.0.4/"))
 ;; (add-to-list 'auto-mode-alist '("\\.ml[iylp]?" . tuareg-mode))

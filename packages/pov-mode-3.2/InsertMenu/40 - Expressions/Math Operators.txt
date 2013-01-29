@@ -1,2 +1,0 @@
-//  ( ) ! * / + -
-#declare MyResult = -2*B + (A*A - 4)

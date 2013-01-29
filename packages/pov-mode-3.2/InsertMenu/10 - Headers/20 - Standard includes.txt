@@ -1,4 +1,0 @@
-// ==== Standard POV-Ray Includes ====
-#include "colors.inc"	  // Standard Color definitions
-#include "textures.inc"	  // Standard Texture definitions
-#include "functions.inc"  // internal functions usable in user defined functions

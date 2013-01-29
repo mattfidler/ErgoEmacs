@@ -1,2 +1,0 @@
-// give object no shadow
-  no_shadow

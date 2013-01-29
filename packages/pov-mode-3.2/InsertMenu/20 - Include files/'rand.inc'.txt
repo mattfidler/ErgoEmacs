@@ -1,3 +1,0 @@
-// random number generation macros
-// 
-#include "rand.inc"

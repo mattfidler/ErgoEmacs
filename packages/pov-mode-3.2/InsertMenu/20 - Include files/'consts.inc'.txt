@@ -1,3 +1,0 @@
-// various numerical constants
-// 
-#include "consts.inc"

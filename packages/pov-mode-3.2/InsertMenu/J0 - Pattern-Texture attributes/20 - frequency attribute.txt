@@ -1,3 +1,0 @@
-// pigment/normal/density attribute
-// oscillation frequency of radial, ripples, waves, etc
-  frequency 2.0

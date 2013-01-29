@@ -1,2 +1,0 @@
-// rgb - Red Green Blue color shortcut
-color rgb <0.2, 0.3, 0.4>

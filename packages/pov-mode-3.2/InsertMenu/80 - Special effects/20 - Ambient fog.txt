@@ -1,5 +1,0 @@
-fog {
-  fog_type 1
-  distance 100
-  color SkyBlue
-}

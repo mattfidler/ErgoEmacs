@@ -1,3 +1,0 @@
-// some predefined skies
-// 
-#include "skies.inc"

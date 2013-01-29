@@ -1,2 +1,0 @@
-// used in global_settings, sets image output to use grayscale only (TGA, PNG)
-  hf_gray_16 // [on/off]

@@ -1,3 +1,0 @@
-// pattern for use in texture/pigment/normal/density
-  gradient y         // specify gradient direction vector
-  //gradient y, 0.5  // for use with normal{} (0...1 or more)
