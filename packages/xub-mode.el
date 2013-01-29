@@ -18,18 +18,9 @@
 ;; you need to browse a file full of unicode characters, just type M-x
 ;; xub-mode.
 
-;; To install, place this file in the directory 〔~/.emacs.d/〕. For example:
-
-;; on Windows
-;; C:\Users\mary\.emacs.d\xub-mode.el
-
-;; on Mac OS X
-;; /Users/mary/.emacs.d\xub-mode.el
+;; To install, place this file in the directory 〔~/.emacs.d/〕. Create that dir if it doesn't exist.
 
 ;; Then, place the following code in your emacs init file, 〔~/.emacs〕.
-
-;; ;; add directory .emacs.d to load path
-;; (add-to-list 'load-path "~/.emacs.d/")
 
 ;; ;; set auto loading of xub-mode when xub-mode is called.
 ;; (autoload 'xub-mode "xub-mode" "Load xub-mode for browsing Unicode." t)

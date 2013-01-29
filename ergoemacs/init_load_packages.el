@@ -58,10 +58,10 @@
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . pov-mode))
 
 ;;; tuareg mode for ML/Caml/OCaml lang
-(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-2.0.4/"))
-(add-to-list 'auto-mode-alist '("\\.ml[iylp]?" . tuareg-mode))
-(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
-(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+;; (add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/tuareg-2.0.4/"))
+;; (add-to-list 'auto-mode-alist '("\\.ml[iylp]?" . tuareg-mode))
+;; (autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+;; (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
 
 ;;; xbbcode-mode for editing BBCode
 (add-to-list 'auto-mode-alist '("\\.bbcode\\'" . xbbcode-mode))

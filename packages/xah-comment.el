@@ -53,6 +53,7 @@
 '(
 
            (ahk-mode . ";")
+           (xahk-mode . ";")            ; doesn't work. when xc-use-comment-dwim-p is true. need to set comment to dwim.
            (c++-mode . "//")
            (c-mode . "//")
            (clojure-mode . ";")  ; (comment …)
