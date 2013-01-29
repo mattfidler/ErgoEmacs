@@ -50,7 +50,7 @@
 
 (require 'easymenu)
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.7.4"
+(defconst ergoemacs-mode-version "5.7.5"
   "Ergoemacs-keybindings minor mode version number.")
 
 ;; Include extra files

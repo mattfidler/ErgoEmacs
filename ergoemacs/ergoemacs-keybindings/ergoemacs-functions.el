@@ -71,14 +71,14 @@
   (interactive)
   (if (and (boundp 'item) item (eq item 'file))
       (ido-prev-match-dir)
-    (previous-history-element)))
+    (previous-history-element 1)))
 
 (defun ergoemacs-ido-next-match-dir ()
   "Call the correct function based on if we are completing directories or not."
   (interactive)
   (if (and (boundp 'item) item (eq item 'file))
       (ido-next-match-dir)
-    (next-history-element)))
+    (next-history-element 1)))
 
 (defun ergoemacs-print-buffer-confirm ()
   "Print current buffer, but ask for confirmation first."
@@ -606,7 +606,7 @@ Else it is a user buffer."
 (defun ergoemacs-camelize (s)
   "Convert under_score string S to CamelCase string."
   (mapconcat 'identity (mapcar
-                        '(lambda (word) (capitalize (downcase word)))
+                        (lambda (word) (capitalize (downcase word)))
                         (split-string s "_")) ""))
 (defun ergoemacs-camelize-method (s)
   "Convert under_score string S to camelCase string."
