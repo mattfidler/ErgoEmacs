@@ -17,15 +17,11 @@ endif
 RM = rm
 ELC_FILES = $(wildcard *.elc) $(wildcard */*.elc) $(wildcard */*/*.elc)
 
-PACKAGE_AUTOCOMPLETE = auto-complete-1.3.1
-PACKAGE_BOOKMARKPLUS = bookmarkplus
+PACKAGE_AUTOCOMPLETE = auto-complete
 PACKAGE_DICTIONARY = dictionary-1.8.7
-PACKAGE_ERLANG = erlang
-PACKAGE_HASKELL = haskell-mode-2.7.0
-PACKAGE_POV = pov-mode-3.2
+PACKAGE_EXPANDREGION = expand-region
+PACKAGE_POPUP = popup-20121020.1203
 PACKAGE_HUNSPELL = rw-hunspell
-PACKAGE_SCALA = scala-mode
-PACKAGE_TUAREG = tuareg-mode-1.45.7
 PACKAGE_YASNIPPET = yasnippet-0.6.1c
 
 all:
@@ -50,22 +46,19 @@ compile:
 	-$(RM) -f $(ELC_FILES)
 	$(EMACS) -L packages \
 		 -L packages/$(PACKAGE_AUTOCOMPLETE) \
-		 -L packages/$(PACKAGE_BOOKMARKPLUS) \
-		 -L packages/$(PACKAGE_ERLANG) \
-		 -L packages/$(PACKAGE_SCALA) \
+		 -L packages/$(PACKAGE_EXPANDREGION) \
+		 -L packages/$(PACKAGE_POPUP) \
 		 -L packages/$(PACKAGE_YASNIPPET) \
 		 -batch -f batch-byte-compile ergoemacs/*.el
 	-$(EMACS) -batch -f batch-byte-compile ergoemacs/ergoemacs-keybindings/*.el
 	-$(EMACS) -batch -f batch-byte-compile packages/*.el
-	$(EMACS) -L packages/$(PACKAGE_AUTOCOMPLETE) -batch -f batch-byte-compile packages/$(PACKAGE_AUTOCOMPLETE)/*.el
-	$(EMACS) -L packages/$(PACKAGE_BOOKMARKPLUS) -batch -f batch-byte-compile packages/$(PACKAGE_BOOKMARKPLUS)/*.el
+	$(EMACS) -L packages/$(PACKAGE_AUTOCOMPLETE) \
+		 -L packages/$(PACKAGE_POPUP) \
+		 -batch -f batch-byte-compile packages/$(PACKAGE_AUTOCOMPLETE)/*.el
 	$(EMACS) -L packages/$(PACKAGE_DICTIONARY) -batch -f batch-byte-compile packages/$(PACKAGE_DICTIONARY)/*.el
-	$(EMACS) -L packages/$(PACKAGE_ERLANG) -batch -f batch-byte-compile packages/$(PACKAGE_ERLANG)/*.el
-	$(EMACS) -L packages/$(PACKAGE_HASKELL) -batch -f batch-byte-compile packages/$(PACKAGE_HASKELL)/*.el
-	$(EMACS) -L packages/$(PACKAGE_POV) -batch -f batch-byte-compile packages/$(PACKAGE_POV)/*.el
+	$(EMACS) -L packages/$(PACKAGE_EXPANDREGION) -batch -f batch-byte-compile packages/$(PACKAGE_EXPANDREGION)/*.el
+	$(EMACS) -L packages/$(PACKAGE_POPUP) -batch -f batch-byte-compile packages/$(PACKAGE_POPUP)/*.el
 	$(EMACS) -L packages/$(PACKAGE_HUNSPELL) -batch -f batch-byte-compile packages/$(PACKAGE_HUNSPELL)/*.el
-	$(EMACS) -L packages/$(PACKAGE_SCALA) -batch -f batch-byte-compile packages/$(PACKAGE_SCALA)/*.el
-	$(EMACS) -L packages/$(PACKAGE_TUAREG) -batch -f batch-byte-compile packages/$(PACKAGE_TUAREG)/*.el
 	$(EMACS) -L packages/$(PACKAGE_YASNIPPET) -batch -f batch-byte-compile packages/$(PACKAGE_YASNIPPET)/*.el
 	$(EMACS) -batch -f batch-byte-compile site-lisp/*.el
 
