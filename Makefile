@@ -33,7 +33,7 @@ all:
 	@echo "  make compile"
 	@echo "    Byte-compiles all .el files with the specified emacs in EMACS variable."
 	@echo "    E.g. You can use it as:"
-	@echo "      make compile EMACS=../emacs-23.3/bin/emacs.exe"
+	@echo "      make compile EMACS=../emacs-24.2/bin/emacs.exe"
 	@echo
 	@echo "  make clean"
 	@echo "    Removes all .elc files."

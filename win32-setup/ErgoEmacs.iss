@@ -5,8 +5,8 @@
 ; <root>
 ;   |
 ;   |- bin-extra/
-;   |- emacs-23.3/
-;   |- ergoemacs/            <-- SVN trunk content
+;   |- emacs-24.2/
+;   |- ergoemacs/            <-- Git clone
 ;   |- hunspell/
 ;   `- msys/
 ;
@@ -15,7 +15,7 @@
 ; 
 
 #define AppVersion    "1.9.4"
-#define EmacsDir      "..\..\emacs-23.3"
+#define EmacsDir      "..\..\emacs-24.2"
 #define MsysDir       "..\..\msys"
 #define HunspellDir   "..\..\hunspell"
 #define BinExtraDir   "..\..\bin-extra"
