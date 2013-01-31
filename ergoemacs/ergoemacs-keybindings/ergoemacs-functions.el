@@ -630,12 +630,12 @@ Else it is a user buffer."
     (delete-region beg end)
     (cond
      ((string-match "_" rgn)
-      (insert (camelize-method rgn)))
+      (insert (ergoemacs-camelize-method rgn)))
      ((string-match "^[a-z]" rgn)
       (progn (insert (capitalize (substring rgn 0 1)))
              (insert (substring rgn 1))))
      (t
-      (insert (un-camelcase-string rgn "_"))))))
+      (insert (ergoemacs-un-camelcase-string rgn "_"))))))
 
 ;; ==================================================
 ;; PHP facilities

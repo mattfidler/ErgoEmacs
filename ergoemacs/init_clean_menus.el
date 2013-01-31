@@ -9,11 +9,11 @@
 ;; File menu
 (setq menu-bar-file-menu
       '(keymap
-	(new-file menu-item "New" new-empty-buffer)
+	(new-file menu-item "New" ergoemacs-new-empty-buffer)
 	(make-frame menu-item "New Frame" make-frame-command)
 	(open-file menu-item "Open..." find-file)
-	(open-last-closed menu-item "Open last closed" open-last-closed)
-	(kill-buffer menu-item "Close" close-current-buffer)
+	(open-last-closed menu-item "Open last closed" ergoemacs-open-last-closed)
+	(kill-buffer menu-item "Close" ergoemacs-close-current-buffer)
 	(separator1 menu-item "--")
 	(save-buffer menu-item "Save" save-buffer)
 	(write-file menu-item "Save As..." write-file)
