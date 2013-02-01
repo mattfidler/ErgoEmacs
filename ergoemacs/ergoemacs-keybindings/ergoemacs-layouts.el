@@ -194,7 +194,7 @@
     "" ""  "B" "É" "P" "O" "È" "!" "V" "D" "L" "J" "Z" "W" ""
     "" ""  "A" "U" "I" "E" ";" "C" "T" "S" "R" "N" "M" "Ç" ""
     "" "Ê" "À" "Y" "X" ":" "K" "?" "Q" "G" "H" "F" "" "" "")
-  "French BÉPO layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
+  "French BÉPO layout. URL `http://bepo.fr/'")
 
 
 
