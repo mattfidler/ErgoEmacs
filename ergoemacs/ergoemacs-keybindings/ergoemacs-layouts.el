@@ -184,6 +184,21 @@
     "" ""  "Y" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
   "German QWERTZ layout")
 
+;; From bateast@bat.fr.eu.org 
+(defvar ergoemacs-layout-bépo
+  '("" "$" "\"" "«" "»" "(" ")" "@" "+" "-" "/" "*" "=" "%" ""
+    "" ""  "b" "é" "p" "o" "è" "^" "v" "d" "l" "j" "z" "w" ""
+    "" ""  "a" "u" "i" "e" "," "c" "t" "s" "r" "n" "m" "ç" ""
+    "" "ê" "à" "y" "x" "." "k" "'" "q" "g" "h" "f" "" "" ""
+    ;; Shifted
+    "" "#" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "°" "`" ""
+    "" ""  "B" "É" "P" "O" "È" "!" "V" "D" "L" "J" "Z" "W" ""
+    "" ""  "A" "U" "I" "E" ";" "C" "T" "S" "R" "N" "M" "Ç" ""
+    "" "Ê" "À" "Y" "X" ":" "K" "?" "Q" "G" "H" "F" "" "" "")
+  "French BÉPO layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
+
+
+
 
 ;;; Layout Functions
 (defun ergoemacs-get-layouts-type ()
