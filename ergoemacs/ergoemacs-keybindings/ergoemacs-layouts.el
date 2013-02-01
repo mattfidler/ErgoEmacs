@@ -170,8 +170,7 @@
     "" ">"  "W" "X" "C" "V" "B" "N" "?" "." "/" "§" "" "" "")
   "French AZERTY layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
-;; From workhorse.t,
-
+;; From Thomas Rikl
 (defvar ergoemacs-layout-ge
   '("" "" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "ß" "" ""
     "" ""  "q" "w" "e" "r" "t" "z" "u" "i" "o" "p" "ü" "+" ""
@@ -184,7 +183,7 @@
     "" ""  "Y" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
   "German QWERTZ layout")
 
-;; From bateast@bat.fr.eu.org 
+;; From Baptiste Fouques
 (defvar ergoemacs-layout-bépo
   '("" "$" "\"" "«" "»" "(" ")" "@" "+" "-" "/" "*" "=" "%" ""
     "" ""  "b" "é" "p" "o" "è" "^" "v" "d" "l" "j" "z" "w" ""

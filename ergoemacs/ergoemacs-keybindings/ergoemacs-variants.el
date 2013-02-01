@@ -601,7 +601,10 @@ Optionally provides DESC for a description of the key."
     (unless (and (boundp 'ergoemacs-variant)
                  (string= ergoemacs-variant "tmp"))
       (if fixed-key
-          (setq cur-key (read-kbd-macro (encode-coding-string key locale-coding-system)))
+          (condition-case err
+              (setq cur-key (read-kbd-macro key))
+            (error
+             (setq cur-key (read-kbd-macro (encode-coding-string key locale-coding-system)))))
         (setq cur-key (ergoemacs-kbd key nil only-first)))
       (define-key ergoemacs-keymap cur-key function))))
 

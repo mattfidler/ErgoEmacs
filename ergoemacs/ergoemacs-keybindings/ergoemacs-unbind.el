@@ -717,9 +717,11 @@ This should only be run when no global keys have been set.
            ((eq (type-of key) 'string)
             (if is-variable
                 (ergoemacs-kbd key)
-              (read-kbd-macro
-               (encode-coding-string
-                key locale-coding-system))))
+              (condition-case err
+                  (read-kbd-macro key)
+                (error (read-kbd-macro
+                        (encode-coding-string
+                         key locale-coding-system))))))
            (t key)))
          (key-kbd (key-description key-code)))
     (if (member key-kbd ergoemacs-global-changed-cache)

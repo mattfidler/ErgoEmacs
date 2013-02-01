@@ -2,7 +2,7 @@
 
 ;; Copyright © 2007, 2008, 2009 by Xah Lee
 ;; Copyright © 2009, 2010 by David Capello
-;; Copyright © 2012 by Matthew Fidler
+;; Copyright © 2012, 2013 by Matthew Fidler
 
 ;; Author: Xah Lee <xah@xahlee.org> ( http://xahlee.org/ )
 ;;     David Capello <davidcapello@gmail.com>  ( http://www.davidcapello.com.ar/ )
@@ -32,6 +32,8 @@
 ;; See the file “_HISTORY.txt”.
 
 ;;; Acknowledgment:
+;; Thanks to Thomas Rikl workhorse.t at googlemail.com for german layout
+;; Thanks to Baptiste Fouques  bateast at bat.fr.eu.org for bepo layout
 ;; Thanks to Andrey Kotlarski (aka m00naticus) for a patch on 2012-12-08
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
@@ -78,7 +80,7 @@
   (set-default symbol new-value)
   (when (and (or (not (boundp 'ergoemacs-fixed-layout-tmp)) 
                  (save-match-data (string-match "ergoemacs-redundant-keys-" (symbol-name symbol)))) 
-                  (boundp 'ergoemacs-mode) ergoemacs-mode)
+             (boundp 'ergoemacs-mode) ergoemacs-mode)
     (ergoemacs-mode -1)
     (ergoemacs-mode 1)))
 
@@ -174,7 +176,10 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                       (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t)))
                   (buffer-string))))
         (if (not just-translate)
-            (read-kbd-macro (encode-coding-string new-key locale-coding-system))
+            (condition-case err
+                (read-kbd-macro new-key)
+              (error
+               (read-kbd-macro (encode-coding-string new-key locale-coding-system))))
           new-key)))))
 
 (defvar ergoemacs-backward-compatability-variables 
@@ -272,10 +277,14 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                             (intern-soft
                              (concat "ergoemacs-" (symbol-name (nth 1 x)))))
                        (nth 1 x)))
-            (setq key (read-kbd-macro 
-                       (encode-coding-string 
-                        trans-key
-                        locale-coding-system)))
+            (condition-case err
+                (setq key (read-kbd-macro
+                           trans-key))
+              (error
+               (setq key (read-kbd-macro 
+                          (encode-coding-string 
+                           trans-key
+                           locale-coding-system)))))
             (define-key ,keymap key cmd)
             (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                 (message "Fixed: %s -> %s %s" trans-key cmd key)))))
@@ -357,10 +366,10 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                       x
                     `(ergoemacs-mode ,(concat
                                        (if (not ergoemacs-variant)
-                                          " ErgoEmacs"
-                                        (concat " Ergo"
-                                                (upcase (substring ergoemacs-variant 0 1))
-                                                (substring ergoemacs-variant 1)))
+                                           " ErgoEmacs"
+                                         (concat " Ergo"
+                                                 (upcase (substring ergoemacs-variant 0 1))
+                                                 (substring ergoemacs-variant 1)))
                                        "[" ergoemacs-keyboard-layout "]"))))
                 minor-mode-alist))
   (ergoemacs-setup-backward-compatability))
@@ -388,8 +397,10 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
             ((and translate (eq 'string (type-of key-def)))
              (ergoemacs-kbd key-def))
             ((eq 'string (type-of key-def))
-             (read-kbd-macro
-              (encode-coding-string key-def locale-coding-system)))
+             (condition-case err
+                 (read-kbd-macro key-def)
+               (error (read-kbd-macro
+                       (encode-coding-string key-def locale-coding-system)))))
             ((ergoemacs-key-fn-lookup key-def)
              (ergoemacs-key-fn-lookup key-def))
             (t nil))))
@@ -436,7 +447,7 @@ This is an automatically generated function derived from `ergoemacs-get-minor-mo
                             (cons 'ergoemacs-mode ,(intern (concat "ergoemacs-" (symbol-name hook) "-keymap")))
                             nil ,(if (equal hook 'minibuffer-setup-hook)
                                      '(lambda (x y)
-                                         (equal (car y) (car x)))
+                                        (equal (car y) (car x)))
                                    nil))
             nil)
          t)
@@ -579,7 +590,11 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
                (mapcar
                 (lambda(x)
                   (if (not (or (and (type-of (nth 0 x) 'string)
-                                    (string= (key-description (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))
+                                    (string= (key-description
+                                              (condition-case err
+                                                  (read-kbd-macro (nth 0 x))
+                                                (error
+                                                 (read-kbd-macro (encode-coding-string (nth 0 x) locale-coding-system)))))
                                              (key-description key)))
                                (and (not (type-of (nth 0 x) 'string))
                                     (string= (key-description (nth 0 x)) (key-description key)))))
