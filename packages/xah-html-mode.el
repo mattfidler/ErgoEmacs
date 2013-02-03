@@ -12,8 +12,9 @@
 ;; Major mode for editing pure HTML5 files. Alpha stage.
 
 ;;; HISTORY
+;; version 0.5.5, 2013-02-03 added xhm-replace-html-chars-to-entities, xhm-replace-html-chars-to-unicode
 ;; version 0.5.4, 2013-01-26 lots additions and changes. added xhm-wrap-html-tag xhm-wrap-p-tag xhm-lines-to-html-list xhm-make-html-table xhm-wikipedia-linkify xhm-wrap-url xhm-wikipedia-url-linkify xhm-source-url-linkify xhm-make-link-defunct xhm-make-citation xhm-update-title xhm-extract-url xhm-remove-html-tags xhm-remove-span-tag-region xhm-htmlize-keyboard-shortcut-notation
-;; version 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work. 
+;; version 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work.
 ;; version 0.5.2, 2012-09-25 added a color for curly quoted text.
 ;; version 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
 ;; version 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
@@ -63,7 +64,6 @@
 
 ;; keybinding
 
-
 (defvar xhm-keymap nil "Keybinding for `xah-html-mode'")
 (progn
   (setq xhm-keymap (make-sparse-keymap))
@@ -91,7 +91,6 @@
 ;; (modify-syntax-entry ?: "." synTable)
 ;; (modify-syntax-entry ?? "." synTable)
 ;; (modify-syntax-entry ?\; "." synTable)
-
 
 ;; (modify-syntax-entry ?! "." synTable)
 ;; (modify-syntax-entry ?@ "." synTable)
@@ -127,10 +126,8 @@
         (modify-syntax-entry ?> "." synTable)
         (modify-syntax-entry ?' "w" synTable)
 
-
 ;; (modify-syntax-entry ?“ "\"" synTable)
 ;; (modify-syntax-entry ?” "\"" synTable)
-
 
         synTable))
 
@@ -142,7 +139,7 @@
   "Delete the tag under cursor.
 Also delete the matching beginning/ending tag."
   (interactive)
-(save-excursion 
+(save-excursion
   ;; search for current tag.
   ;; find left nearest >, and right nearest <
   ;; or left nearest <, and right nearest >
@@ -174,7 +171,7 @@ cursor<…▮…>-p
 (setq p5-right> (point) )
 
 (when
-    (and 
+    (and
      (< p2-left< p3-left>)
      (< p4-right< p5-right>)
      )
@@ -182,7 +179,7 @@ cursor<…▮…>-p
   )
 
 (when
-    (and 
+    (and
      (< p3-left> p2-left< )
      (< p5-right> p4-right< )
      )
@@ -190,7 +187,6 @@ cursor<…▮…>-p
   )
 
 )
- 
 
 )
 ;  (sgml-delete-tag 1)
@@ -216,6 +212,34 @@ For detail, see `comment-dwim'."
    (require 'newcomment)
    (let ((deactivate-mark nil) (comment-start "<!--") (comment-end "-->"))
      (comment-dwim arg)))
+
+(defun xhm-replace-html-chars-to-entities ()
+  "Replace “<” to “&lt;” and some other special characters in HTML.
+This works on the current text selection or block of text.
+The string replaced are:
+ & ⇒ &amp;
+ < ⇒ &lt;
+ > ⇒ &gt;"
+  (interactive)
+  (let (bds p1 p2 myText)
+    (setq bds (get-selection-or-unit 'block))
+    (setq myText (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )
+    (save-excursion (replace-pairs-region p1 p2 '( ["&" "&amp;"] ["<" "&lt;"] [">" "&gt;"] ) ))
+     ) )
+
+(defun xhm-replace-html-chars-to-unicode ()
+  "Replace “<” to “‹” and some other special characters in HTML.
+This works on the current text selection or block of text.
+The characters replaced are:
+ & ⇒ ＆
+ < ⇒ ‹
+ > ⇒ ›"
+  (interactive)
+  (let (bds p1 p2 myText)
+    (setq bds (get-selection-or-unit 'block))
+    (setq myText (elt bds 0) p1 (elt bds 1) p2 (elt bds 2)  )
+
+    (replace-pairs-region p1 p2 '( ["&" "＆"] ["<" "‹"] [">" "›"] ) ) ) )
 
 (defun xhm-lines-to-html-list ()
   "Make the current block of lines into a HTML list.
