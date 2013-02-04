@@ -20,7 +20,7 @@
     (scroll-up "\n SendInput {PgDn}\n return")
     (isearch-forward "\n  SendInput {Ctrl down}{f}{Ctrl Up}\n return")
     (query-replace "\n  SendInput {Ctrl down}{h}{Ctrl Up}\n return")
-    (backward-kill-word " SendInput {Shift down}{Home}{Shift up}{Ctrl down}{x}{Ctrl up}
+    (backward-kill-word " SendInput {Shift down}{Ctrl down}{Left}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}
   return")
     (kill-word "\n  SendInput {Ctrl down}{Shift down}{Right}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}
   return")
