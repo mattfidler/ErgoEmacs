@@ -275,7 +275,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                              (save-match-data
                                (string-match "\\<S-" trans-key)))
                             (intern-soft
-                             (concat "ergoemacs-" (symbol-name (nth 1 x)))))
+                             (concat "ergoemacs-shifted-" (symbol-name (nth 1 x)))))
                        (nth 1 x)))
             (condition-case err
                 (setq key (read-kbd-macro
@@ -305,7 +305,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                              (save-match-data
                                (string-match "\\<S-" trans-key)))
                             (intern-soft
-                             (concat "ergoemacs-" (symbol-name (nth 1 x)))))
+                             (concat "ergoemacs-shifted-" (symbol-name (nth 1 x)))))
                        (nth 1 x)))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
             (define-key ,keymap  key cmd)

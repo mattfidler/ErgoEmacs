@@ -39,7 +39,7 @@
            (isearch-exit)
            (call-interactively ',command t)
            (setq this-command ',command)))
-     (defun ,(intern (concat "ergoemacs-" (symbol-name command))) (&optional arg)
+     (defun ,(intern (concat "ergoemacs-shifted-" (symbol-name command))) (&optional arg)
        ,(format "Ergoemacs shifted movement command for `%s'." (symbol-name command))
        (interactive)
        (let ((active (mark)))
