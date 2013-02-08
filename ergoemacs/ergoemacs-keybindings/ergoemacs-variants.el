@@ -575,19 +575,22 @@ Some exceptions we don't want to unset.
 (defun ergoemacs-key (key function &optional desc only-first fixed-key)
   "Defines KEY in ergoemacs keyboard based on QWERTY and binds to FUNCTION.
 Optionally provides DESC for a description of the key."
-  (let (found
-        (cur-key key)
+  (let* (found
+        (str-key (or
+                    (and (eq (type-of key) 'string) key)
+                    (key-description key)))
+        (cur-key str-key)
         (no-ergoemacs-advice t))
     (set (if fixed-key (ergoemacs-get-fixed-layout)
            (ergoemacs-get-variable-layout))
          (mapcar
           (lambda(x)
-            (if (not (string= key (nth 0 x)))
+            (if (not (string= str-key (nth 0 x)))
                 x
               (setq found t)
               (if fixed-key
-                  `(,key ,function ,desc)
-                `(,key ,function ,desc ,only-first))))
+                  `(,str-key ,function ,desc)
+                `(,str-key ,function ,desc ,only-first))))
           (symbol-value (if fixed-key
                             (ergoemacs-get-fixed-layout)
                           (ergoemacs-get-variable-layout)))))
@@ -596,16 +599,16 @@ Optionally provides DESC for a description of the key."
                        (ergoemacs-get-fixed-layout)
                      (ergoemacs-get-variable-layout))
                    (if fixed-key
-                       `(,key ,function ,desc)
-                     `(,key ,function ,desc ,only-first))))
+                       `(,str-key ,function ,desc)
+                     `(,str-key ,function ,desc ,only-first))))
     (unless (and (boundp 'ergoemacs-variant)
                  (string= ergoemacs-variant "tmp"))
       (if fixed-key
           (condition-case err
-              (setq cur-key (read-kbd-macro key))
+              (setq cur-key (read-kbd-macro str-key))
             (error
-             (setq cur-key (read-kbd-macro (encode-coding-string key locale-coding-system)))))
-        (setq cur-key (ergoemacs-kbd key nil only-first)))
+             (setq cur-key (read-kbd-macro (encode-coding-string str-key locale-coding-system)))))
+        (setq cur-key (ergoemacs-kbd str-key nil only-first)))
       (define-key ergoemacs-keymap cur-key function))))
 
 ;;;###autoload
