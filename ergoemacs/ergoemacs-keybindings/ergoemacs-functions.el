@@ -11,48 +11,11 @@
   :type 'boolean
   :group 'ergoemacs-mode)
 
-(defvar ergoemacs-movement-functions
-  '(scroll-down move-beginning-of-line move-end-of-line scroll-up scroll-down forward-block backward-block forward-word backward-word next-line previous-line forward-char backward-char)
-  "Defines movement functions that ergoemacs is aware of.")
 
 (defvar ergoemacs-delete-functions
   '(delete-backward-char delete-char kill-word backward-kill-word)
   "Defines deletion functions that ergoemacs is aware of.")
 
-;; Shifted movement command fixes (without advising cua-mode)
-(defmacro ergoemacs-create-movement-commands (command)
-  "Creates a shifted and isearch command command."
-  `(progn
-     ,(if (eq 'backward-char command)
-          `(defun ,(intern (concat "ergoemacs-isearch-" (symbol-name command))) (&optional arg)
-             ,(format "Ergoemacs isearch movement command for `%s'.  Behviour controlled with `ergoemacs-isearch-backward-char-to-edit'.  A prefix command will temporarily toggle if the keyboard will edit the item." (symbol-name command))
-             (interactive "^P")
-             (if (or (and arg (not ergoemacs-isearch-backward-char-to-edit))
-                     (and (not arg) ergoemacs-isearch-backward-char-to-edit))
-                 (isearch-edit-string)
-               (isearch-exit)
-               (call-interactively ',command t)
-               (setq this-command ',command)))
-        `(defun ,(intern (concat "ergoemacs-isearch-" (symbol-name command))) (&optional arg)
-           ,(format "Ergoemacs isearch movement command for `%s'." (symbol-name command))
-           (interactive "^P")
-           (isearch-exit)
-           (call-interactively ',command t)
-           (setq this-command ',command)))
-     (defun ,(intern (concat "ergoemacs-shifted-" (symbol-name command))) (&optional arg)
-       ,(format "Ergoemacs shifted movement command for `%s'." (symbol-name command))
-       (interactive)
-       (let ((active (mark)))
-         (call-interactively ',command t)
-         (setq this-command ',command)
-         (unless active
-           (deactivate-mark))))))
-
-
-(mapc
- (lambda(x)
-   (eval `(ergoemacs-create-movement-commands ,x)))
- ergoemacs-movement-functions)
 
 
 ;;; Ido-ergoemacs functional fixes

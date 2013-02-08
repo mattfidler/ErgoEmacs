@@ -64,9 +64,6 @@
   "Ergoemacs Directory")
 (add-to-list 'load-path  ergoemacs-dir)
 
-(require 'ergoemacs-functions)
-(require 'ergoemacs-layouts)
-
 
 (defgroup ergoemacs-mode nil
   "Emulate CUA key bindings including C-x and C-c."
@@ -74,6 +71,10 @@
   :group 'convenience
   :group 'emulations)
 
+(require 'ergoemacs-layouts)
+(defvar ergoemacs-movement-functions
+  '(scroll-down move-beginning-of-line move-end-of-line scroll-up scroll-down forward-block backward-block forward-word backward-word next-line previous-line forward-char backward-char)
+  "Defines movement functions that ergoemacs is aware of.")
 
 (defun ergoemacs-set-default (symbol new-value)
   "Ergoemacs equivalent to set-default.  Will reload `ergoemacs-mode' after setting the values."
@@ -118,8 +119,147 @@ Valid values are:
 
 ;;; ergoemacs-keymap
 
+(defcustom ergoemacs-repeat-movement-commands 'single
+  "Allow movement commands to be repeated without pressing the ALT key."
+  :group 'ergoemacs-mode
+  :type '(choice
+          (const :tag "Do not allow fast repeat commands." nil)
+          (const :tag "Allow fast repeat command of the current movement command" 'single)
+          (const :tag "Allow fast repeat of all movement commands" 'all)))
+
+;; Shifted movement command fixes (without advising cua-mode)
+(defmacro ergoemacs-create-movement-commands (command)
+  "Creates a shifted and isearch commands."
+  `(progn
+     ,(if (eq 'backward-char command)
+          `(defun ,(intern (concat "ergoemacs-isearch-" (symbol-name command))) (&optional arg)
+             ,(format "Ergoemacs isearch movement command for `%s'.  Behviour controlled with `ergoemacs-isearch-backward-char-to-edit'.  A prefix command will temporarily toggle if the keyboard will edit the item." (symbol-name command))
+             (interactive "^P")
+             (if (or (and arg (not ergoemacs-isearch-backward-char-to-edit))
+                     (and (not arg) ergoemacs-isearch-backward-char-to-edit))
+                 (isearch-edit-string)
+               (isearch-exit)
+               (call-interactively ',command t)
+               (setq this-command ',command)))
+        `(defun ,(intern (concat "ergoemacs-isearch-" (symbol-name command))) (&optional arg)
+           ,(format "Ergoemacs isearch movement command for `%s'." (symbol-name command))
+           (interactive "^P")
+           (isearch-exit)
+           (call-interactively ',command t)
+           (setq this-command ',command)))
+     (defvar ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")) (make-sparse-keymap)
+       ,(format "Ergoemacs fast keymap for `%s'." (symbol-name command)))
+     (defun ,(intern (concat "ergoemacs-fast-" (symbol-name command))) (&optional arg)
+       ,(format "Ergoemacs movement command for `%s'.
+May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'." (symbol-name command) (symbol-name command))
+       (interactive)
+       (call-interactively ',command t)
+       (setq this-command ',command)
+       (when  ergoemacs-repeat-movement-commands
+         (set-temporary-overlay-map (cond
+                                     ((eq ergoemacs-repeat-movement-commands 'single)
+                                      ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
+                                     ((eq ergoemacs-repeat-movement-commands 'all)
+                                      ergoemacs-full-fast-keys-keymap)
+                                     (t ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))) t)))
+     (defun ,(intern (concat "ergoemacs-shifted-" (symbol-name command))) (&optional arg)
+       ,(format "Ergoemacs shifted movement command for `%s'.
+May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'." (symbol-name command) (symbol-name command))
+       (interactive)
+       (let ((active (mark)))
+         (call-interactively ',command t)
+         (setq this-command ',command)
+         (unless active
+           (deactivate-mark)))
+       (when  ergoemacs-repeat-movement-commands
+         (set-temporary-overlay-map (cond
+                                     ((eq ergoemacs-repeat-movement-commands 'single)
+                                      ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
+                                     ((eq ergoemacs-repeat-movement-commands 'all)
+                                      ergoemacs-full-fast-keys-keymap)
+                                     (t ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))) t)))))
+(mapc
+ (lambda(x)
+   (eval `(ergoemacs-create-movement-commands ,x)))
+ ergoemacs-movement-functions)
+
+
+(when (not (fboundp 'set-temporary-overlay-map))
+  ;; Backport this function from newer emacs versions
+  (defun set-temporary-overlay-map (map &optional keep-pred)
+    "Set a new keymap that will only exist for a short period of time.
+The new keymap to use must be given in the MAP variable. When to
+remove the keymap depends on user input and KEEP-PRED:
+
+- if KEEP-PRED is nil (the default), the keymap disappears as
+  soon as any key is pressed, whether or not the key is in MAP;
+
+- if KEEP-PRED is t, the keymap disappears as soon as a key *not*
+  in MAP is pressed;
+
+- otherwise, KEEP-PRED must be a 0-arguments predicate that will
+  decide if the keymap should be removed (if predicate returns
+  nil) or kept (otherwise). The predicate will be called after
+  each key sequence."
+    
+    (let* ((clearfunsym (make-symbol "clear-temporary-overlay-map"))
+           (overlaysym (make-symbol "t"))
+           (alist (list (cons overlaysym map)))
+           (clearfun
+            `(lambda ()
+               (unless ,(cond ((null keep-pred) nil)
+                              ((eq t keep-pred)
+                               `(eq this-command
+                                    (lookup-key ',map
+                                                (this-command-keys-vector))))
+                              (t `(funcall ',keep-pred)))
+                 (remove-hook 'pre-command-hook ',clearfunsym)
+                 (setq emulation-mode-map-alists
+                       (delq ',alist emulation-mode-map-alists))))))
+      (set overlaysym overlaysym)
+      (fset clearfunsym clearfun)
+      (add-hook 'pre-command-hook clearfunsym)
+      
+      (push alist emulation-mode-map-alists))))
+
 (defvar ergoemacs-keymap (make-sparse-keymap)
   "ErgoEmacs minor mode keymap.")
+
+(defvar ergoemacs-full-fast-keys-keymap (make-sparse-keymap)
+  "Ergoemacs full fast keys keymap")
+
+(defun ergoemacs-setup-fast-keys ()
+  "Setup an array listing the fast keys"
+  (interactive)
+  (setq ergoemacs-full-fast-keys-keymap (make-sparse-keymap))
+  (mapc
+   (lambda(var)
+     (let* ((key (ergoemacs-kbd (nth 0 var) t))
+           (cmd (nth 1 var))
+           (new-cmd (or
+                     (and (or
+                           (string=
+                            (upcase (substring key -1))
+                            (substring key -1))
+                           (save-match-data
+                             (string-match "\\<S-" key)))
+                          (intern-soft
+                           (concat "ergoemacs-shifted-" (symbol-name (nth 1 var)))))
+                     (intern-soft
+                      (concat "ergoemacs-fast-" (symbol-name (nth 1 var))))
+                     (nth 1 var))))
+       (when (member cmd ergoemacs-movement-functions)
+         (set (intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
+            (make-sparse-keymap))
+         (eval `(define-key ,(intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
+                  ,(edmacro-parse-keys (replace-regexp-in-string "\\<[CM]-" "" key)) new-cmd))
+         (define-key ergoemacs-full-fast-keys-keymap
+           (edmacro-parse-keys (replace-regexp-in-string "\\<[CM]-" "" key))
+           new-cmd))))
+   (symbol-value (ergoemacs-get-variable-layout))))
+
+(require 'ergoemacs-functions)
+
 
 (defun ergoemacs-setup-translation (layout &optional base-layout)
   "Setup translation from BASE-LAYOUT to LAYOUT."
@@ -227,7 +367,6 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 
 (defvar ergoemacs-debug nil
   "Debugging variable for ergoemacs.  Set to t to see debugging information in messages.")
-
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
   `(let ((no-ergoemacs-advice t)
@@ -276,6 +415,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                                (string-match "\\<S-" trans-key)))
                             (intern-soft
                              (concat "ergoemacs-shifted-" (symbol-name (nth 1 x)))))
+                       (intern-soft
+                        (concat "ergoemacs-fast-" (symbol-name (nth 1 x))))
                        (nth 1 x)))
             (condition-case err
                 (setq key (read-kbd-macro
@@ -306,6 +447,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                                (string-match "\\<S-" trans-key)))
                             (intern-soft
                              (concat "ergoemacs-shifted-" (symbol-name (nth 1 x)))))
+                       (intern-soft
+                        (concat "ergoemacs-fast-" (symbol-name (nth 1 x))))
                        (nth 1 x)))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
             (define-key ,keymap  key cmd)
@@ -329,6 +472,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
+  (ergoemacs-setup-fast-keys)
   (ergoemacs-setup-keys-for-keymap ergoemacs-keymap)
   (easy-menu-define ergoemacs-menu ergoemacs-keymap
     "ErgoEmacs menu"
