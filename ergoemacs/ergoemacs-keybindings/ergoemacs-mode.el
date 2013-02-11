@@ -102,22 +102,6 @@ Valid values are:
   :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
 
-(require 'ergoemacs-variants)
-(require 'ergoemacs-unbind)
-
-
-(defvar ergoemacs-needs-translation nil
-  "Tells if ergoemacs keybindings need a translation")
-(defvar ergoemacs-translation-from nil
-  "Translation from keyboard layout")
-(defvar ergoemacs-translation-to nil
-  "Translation to keyboard layout")
-(defvar ergoemacs-translation-assoc nil
-  "Translation alist")
-(defvar ergoemacs-translation-regexp nil
-  "Translation regular expression")
-
-;;; ergoemacs-keymap
 
 (defcustom ergoemacs-repeat-movement-commands 'single
   "Allow movement commands to be repeated without pressing the ALT key."
@@ -126,6 +110,9 @@ Valid values are:
           (const :tag "Do not allow fast repeat commands." nil)
           (const :tag "Allow fast repeat command of the current movement command" 'single)
           (const :tag "Allow fast repeat of all movement commands" 'all)))
+
+;; Movement commands need to be defined before ergoemacs-variants is
+;; called to get the correct movement commands for isearch.
 
 ;; Shifted movement command fixes (without advising cua-mode)
 (defmacro ergoemacs-create-movement-commands (command)
@@ -182,6 +169,25 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
  (lambda(x)
    (eval `(ergoemacs-create-movement-commands ,x)))
  ergoemacs-movement-functions)
+
+(require 'ergoemacs-variants)
+(require 'ergoemacs-unbind)
+
+
+(defvar ergoemacs-needs-translation nil
+  "Tells if ergoemacs keybindings need a translation")
+(defvar ergoemacs-translation-from nil
+  "Translation from keyboard layout")
+(defvar ergoemacs-translation-to nil
+  "Translation to keyboard layout")
+(defvar ergoemacs-translation-assoc nil
+  "Translation alist")
+(defvar ergoemacs-translation-regexp nil
+  "Translation regular expression")
+
+;;; ergoemacs-keymap
+
+
 
 
 (when (not (fboundp 'set-temporary-overlay-map))
@@ -548,6 +554,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
             ((ergoemacs-key-fn-lookup key-def)
              (ergoemacs-key-fn-lookup key-def))
             (t nil))))
+      (when ergoemacs-debug
+        (when ergoemacs-debug
+          (message "hook: %s->%s %s %s" key-def key-code
+                   definition translate)
+          ))
       (when key-code
         (define-key keymap key-code definition)))))
 
@@ -677,7 +688,7 @@ will change."
       (ergoemacs-setup-keys-for-layout "us")))
     (ergoemacs-create-hooks)
     ;; (define-minor-mode ergoemacs-mode … )
-    ;; 2012-12-15 Xah: problem: when calling describe-function on ergoemacs-mode, it will say “ergoemacs-mode is an interactive Lisp function in `.emacs.desktop'”. So commented out this for now. What's the consequence of not updating keymap?
+    ;; 2012-12-15 Xah: problem: when calling describe-function on ergoemacs-mode, it will say “ergoemacs-mode is an interactive Lisp function in `.emacs.desktop'”. So comment3ed out this for now. What's the consequence of not updating keymap?
     (unless no-check
       (when ergoemacs-state
         (when (fboundp 'ergoemacs-mode)
