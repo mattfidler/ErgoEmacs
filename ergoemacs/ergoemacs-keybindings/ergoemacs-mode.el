@@ -114,9 +114,8 @@ Valid values are:
 ;; Movement commands need to be defined before ergoemacs-variants is
 ;; called to get the correct movement commands for isearch.
 
-;; Shifted movement command fixes (without advising cua-mode)
 (defmacro ergoemacs-create-movement-commands (command)
-  "Creates a shifted and isearch commands."
+  "Creates a shifted and repeat advices and isearch commands."
   `(progn
      ,(if (eq 'backward-char command)
           `(defun ,(intern (concat "ergoemacs-isearch-" (symbol-name command))) (&optional arg)
@@ -136,35 +135,22 @@ Valid values are:
            (setq this-command ',command)))
      (defvar ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")) (make-sparse-keymap)
        ,(format "Ergoemacs fast keymap for `%s'." (symbol-name command)))
-     (defun ,(intern (concat "ergoemacs-fast-" (symbol-name command))) (&optional arg)
-       ,(format "Ergoemacs movement command for `%s'.
-May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'." (symbol-name command) (symbol-name command))
-       (interactive)
-       (call-interactively ',command t)
-       (setq this-command ',command)
-       (when  ergoemacs-repeat-movement-commands
-         (set-temporary-overlay-map (cond
-                                     ((eq ergoemacs-repeat-movement-commands 'single)
-                                      ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
-                                     ((eq ergoemacs-repeat-movement-commands 'all)
-                                      ergoemacs-full-fast-keys-keymap)
-                                     (t ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))) t)))
-     (defun ,(intern (concat "ergoemacs-shifted-" (symbol-name command))) (&optional arg)
-       ,(format "Ergoemacs shifted movement command for `%s'.
-May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'." (symbol-name command) (symbol-name command))
-       (interactive)
+     ;; Change to advices
+     (defadvice ,(intern (symbol-name command)) (around ergoemacs-movement-advice activate)
+       ,(format "Ergoemacs advice for command for `%s'.
+May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'.e" (symbol-name command) (symbol-name command))
        (let ((active (mark)))
-         (call-interactively ',command t)
-         (setq this-command ',command)
-         (unless active
-           (deactivate-mark)))
-       (when  ergoemacs-repeat-movement-commands
-         (set-temporary-overlay-map (cond
-                                     ((eq ergoemacs-repeat-movement-commands 'single)
-                                      ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
-                                     ((eq ergoemacs-repeat-movement-commands 'all)
-                                      ergoemacs-full-fast-keys-keymap)
-                                     (t ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))) t)))))
+         ad-do-it
+         (when ergoemacs-mode
+           (unless active
+             (deactivate-mark)))
+         (when (and ergoemacs-mode ergoemacs-repeat-movement-commands)
+           (set-temporary-overlay-map (cond
+                                       ((eq ergoemacs-repeat-movement-commands 'single)
+                                        ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
+                                       ((eq ergoemacs-repeat-movement-commands 'all)
+                                        ergoemacs-full-fast-keys-keymap)
+                                       (t ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))) t))))))
 (mapc
  (lambda(x)
    (eval `(ergoemacs-create-movement-commands ,x)))
@@ -241,22 +227,11 @@ remove the keymap depends on user input and KEEP-PRED:
   (mapc
    (lambda(var)
      (let* ((key (ergoemacs-kbd (nth 0 var) t))
-           (cmd (nth 1 var))
-           (new-cmd (or
-                     (and (or
-                           (string=
-                            (upcase (substring key -1))
-                            (substring key -1))
-                           (save-match-data
-                             (string-match "\\<S-" key)))
-                          (intern-soft
-                           (concat "ergoemacs-shifted-" (symbol-name (nth 1 var)))))
-                     (intern-soft
-                      (concat "ergoemacs-fast-" (symbol-name (nth 1 var))))
-                     (nth 1 var))))
+            (cmd (nth 1 var))
+            (new-cmd (nth 1 var)))
        (when (member cmd ergoemacs-movement-functions)
          (set (intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
-            (make-sparse-keymap))
+              (make-sparse-keymap))
          (eval `(define-key ,(intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
                   ,(edmacro-parse-keys (replace-regexp-in-string "\\<[CM]-" "" key)) new-cmd))
          (define-key ergoemacs-full-fast-keys-keymap
@@ -412,18 +387,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
         (when (and (eq 'string (type-of (nth 0 x))))
           (setq trans-key (ergoemacs-get-kbd-translation (nth 0 x)))
           (when (not (ergoemacs-global-changed-p trans-key))
-            (setq cmd (or
-                       (and (or
-                             (string=
-                              (upcase (substring trans-key -1))
-                              (substring trans-key -1))
-                             (save-match-data
-                               (string-match "\\<S-" trans-key)))
-                            (intern-soft
-                             (concat "ergoemacs-shifted-" (symbol-name (nth 1 x)))))
-                       (intern-soft
-                        (concat "ergoemacs-fast-" (symbol-name (nth 1 x))))
-                       (nth 1 x)))
+            (setq cmd (nth 1 x))
             (condition-case err
                 (setq key (read-kbd-macro
                            trans-key))
@@ -444,18 +408,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
           (setq trans-key
                 (ergoemacs-get-kbd-translation (nth 0 x)))
           (when (not (ergoemacs-global-changed-p trans-key t))
-            (setq cmd (or
-                       (and (or
-                             (string=
-                              (upcase (substring trans-key -1))
-                              (substring trans-key -1))
-                             (save-match-data
-                               (string-match "\\<S-" trans-key)))
-                            (intern-soft
-                             (concat "ergoemacs-shifted-" (symbol-name (nth 1 x)))))
-                       (intern-soft
-                        (concat "ergoemacs-fast-" (symbol-name (nth 1 x))))
-                       (nth 1 x)))
+            (setq cmd (nth 1 x))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
             (define-key ,keymap  key cmd)
             (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
