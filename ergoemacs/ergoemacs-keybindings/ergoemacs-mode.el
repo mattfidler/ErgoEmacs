@@ -114,6 +114,26 @@ Valid values are:
 ;; Movement commands need to be defined before ergoemacs-variants is
 ;; called to get the correct movement commands for isearch.
 
+(defvar ergoemacs-is-movement-command nil
+  "Variable to tell if the current command is an ergoemacs-movement command.")
+
+(defvar ergoemacs-mark-active nil
+  "Help with CUA and shifted commands")
+
+(defadvice cua--pre-command-handler (around ergoemacs-fix-shifted-commands activate)
+  "Fixes shifted movement problems"
+  (setq ergoemacs-mark-active mark-active)
+  ad-do-it)
+
+(defadvice cua--post-command-handler (around ergoemacs-fix-shifted-commands activate)
+  "Fixes shifted movement problems"
+  ad-do-it
+  (when ergoemacs-is-movement-command
+    (unless ergoemacs-mark-active
+      (deactivate-mark))
+    (setq ergoemacs-mark-active nil))
+  (setq ergoemacs-is-movement-command nil))
+
 (defmacro ergoemacs-create-movement-commands (command)
   "Creates a shifted and repeat advices and isearch commands."
   `(progn
@@ -140,19 +160,17 @@ Valid values are:
        ,(format "Ergoemacs advice for command for `%s'.
 May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'.
 
-This also installs a advice that keeps the selection when the mark is set if you use a shifted key to move around." (symbol-name command) (symbol-name command))
-       (let ((active (mark)))
-         ad-do-it
-         (when ergoemacs-mode
-           (unless active
-             (deactivate-mark)))
-         (when (and ergoemacs-mode ergoemacs-repeat-movement-commands)
-           (set-temporary-overlay-map (cond
-                                       ((eq ergoemacs-repeat-movement-commands 'single)
-                                        ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
-                                       ((eq ergoemacs-repeat-movement-commands 'all)
-                                        ergoemacs-full-fast-keys-keymap)
-                                       (t ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))) t))))))
+This also installs a advice that keeps the selection when the mark is set if you use a shifted key to move around.
+" (symbol-name command) (symbol-name command))
+       (setq ergoemacs-is-movement-command t)
+       ad-do-it
+       (when (and ergoemacs-mode ergoemacs-repeat-movement-commands)
+         (set-temporary-overlay-map (cond
+                                     ((eq ergoemacs-repeat-movement-commands 'single)
+                                      ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
+                                     ((eq ergoemacs-repeat-movement-commands 'all)
+                                      ergoemacs-full-fast-keys-keymap)
+                                     (t ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))) t)))))
 (mapc
  (lambda(x)
    (eval `(ergoemacs-create-movement-commands ,x)))
