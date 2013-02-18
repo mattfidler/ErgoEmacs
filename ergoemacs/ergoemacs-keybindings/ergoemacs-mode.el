@@ -138,7 +138,9 @@ Valid values are:
      ;; Change to advices
      (defadvice ,(intern (symbol-name command)) (around ergoemacs-movement-advice activate)
        ,(format "Ergoemacs advice for command for `%s'.
-May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'.e" (symbol-name command) (symbol-name command))
+May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'.
+
+This also installs a advice that keeps the selection when the mark is set if you use a shifted key to move around." (symbol-name command) (symbol-name command))
        (let ((active (mark)))
          ad-do-it
          (when ergoemacs-mode
