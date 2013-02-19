@@ -80,7 +80,7 @@
   "Ergoemacs equivalent to set-default.  Will reload `ergoemacs-mode' after setting the values."
   (set-default symbol new-value)
   (when (and (or (not (boundp 'ergoemacs-fixed-layout-tmp)) 
-                 (save-match-data (string-match "ergoemacs-redundant-keys-" (symbol-name symbol)))) 
+                 (save-match-data (string-match "ergoemacs-redundant-keys-" (symbol-name symbol))))
              (boundp 'ergoemacs-mode) ergoemacs-mode)
     (ergoemacs-mode -1)
     (ergoemacs-mode 1)))
@@ -114,25 +114,18 @@ Valid values are:
 ;; Movement commands need to be defined before ergoemacs-variants is
 ;; called to get the correct movement commands for isearch.
 
-(defvar ergoemacs-is-movement-command nil
-  "Variable to tell if the current command is an ergoemacs-movement command.")
-
-(defvar ergoemacs-mark-active nil
-  "Help with CUA and shifted commands")
-
 (defadvice cua--pre-command-handler (around ergoemacs-fix-shifted-commands activate)
   "Fixes shifted movement problems"
-  (setq ergoemacs-mark-active mark-active)
-  ad-do-it)
-
-(defadvice cua--post-command-handler (around ergoemacs-fix-shifted-commands activate)
-  "Fixes shifted movement problems"
-  ad-do-it
-  (when ergoemacs-is-movement-command
-    (unless ergoemacs-mark-active
-      (deactivate-mark))
-    (setq ergoemacs-mark-active nil))
-  (setq ergoemacs-is-movement-command nil))
+  (let ((do-it t))
+    (condition-case nil
+        (when ergoemacs-mode
+          (when (and (string-match "\\(^\\|-\\)M-" (key-description (this-single-command-keys))) ;; Alt command
+                     (or (eq (get this-command 'CUA) 'move)
+                         (memq this-command ergoemacs-movement-functions)))
+            (setq do-it nil)))
+      (error nil))
+    (when do-it
+      ad-do-it)))
 
 (defmacro ergoemacs-create-movement-commands (command)
   "Creates a shifted and repeat advices and isearch commands."
@@ -159,10 +152,7 @@ Valid values are:
      (defadvice ,(intern (symbol-name command)) (around ergoemacs-movement-advice activate)
        ,(format "Ergoemacs advice for command for `%s'.
 May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'.
-
-This also installs a advice that keeps the selection when the mark is set if you use a shifted key to move around.
 " (symbol-name command) (symbol-name command))
-       (setq ergoemacs-is-movement-command t)
        ad-do-it
        (when (and ergoemacs-mode ergoemacs-repeat-movement-commands)
          (set-temporary-overlay-map (cond
