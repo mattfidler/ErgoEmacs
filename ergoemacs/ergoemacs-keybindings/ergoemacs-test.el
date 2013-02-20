@@ -5,7 +5,7 @@
 ;; Author: Matthew L. Fidler
 ;; Maintainer: 
 ;; Created: Mon Feb 18 10:19:21 2013 (-0600)
-;; Version: 
+;; Version:
 ;; Last-Updated: 
 ;;           By: 
 ;;     Update #: 0
@@ -62,7 +62,37 @@
     (setq test (ergoemacs-test-shifted-move-no-mark))
     (setq ret (and ret test))
     (message "Shifted movement and do not select: %s" test)
+    (setq test (ergoemacs-test-119))
+    (setq ret (and ret test))
+    (message "Test repeated C-f: %s" test)
     (message "Overall test: %s" ret)))
+
+(defun ergoemacs-test-119 ()
+  "C-f doesn't work in isearch-mode."
+  (let ((old-ergoemacs-variant ergoemacs-variant)
+        (old-ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
+        (macro (edmacro-parse-keys "C-f ars C-f C-f" t))
+        (ret t))
+    (ergoemacs-mode -1)
+    (setq ergoemacs-variant nil)
+    (setq ergoemacs-keyboard-layout "colemak")
+    (ergoemacs-mode 1)
+    (cua-mode 1)
+    (let ((ergoemacs-debug t))
+      (save-excursion
+        (switch-to-buffer (get-buffer-create "*ergoemacs-test*"))
+        (insert "aars1\nars2\nars3\nars4")
+        (goto-char (point-min))
+        (execute-kbd-macro macro)
+        (when (looking-at ".*")
+          (unless (string= "3" (match-string 0))
+            (setq ret nil)))
+        (kill-buffer (current-buffer))))
+    (ergoemacs-mode -1)
+    (setq ergoemacs-variant old-ergoemacs-variant)
+    (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
+    (ergoemacs-mode 1)
+    (symbol-value 'ret)))
 
 (defun ergoemacs-test-shifted-move-no-mark ()
   "Tests another shifted selection bug."
@@ -115,6 +145,8 @@
     (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
     (ergoemacs-mode 1)
     (symbol-value 'ret)))
+
+
 (provide 'ergoemacs-test)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-test.el ends here

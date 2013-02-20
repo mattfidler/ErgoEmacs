@@ -233,7 +233,8 @@
     (isearch-mode-hook
      (("M-p" isearch-other-meta-char isearch-mode-map) ; was isearch-ring-retreat
       ("M-n" isearch-other-meta-char isearch-mode-map) ; was isearch-ring-advance
-      ("M-y" iseach-other-meta-char isearch-mode-map) ; was isearch-yank-kill
+      ("M-y" isearch-other-meta-char isearch-mode-map) ; was isearch-yank-kill
+      ("C-f" isearch-other-meta-char isearch-mode-map) ; was isearch-yank-kill
       ("M-c" isearch-other-meta-char isearch-mode-map) ; was isearch-toggle-case-fold
       ("M-r" isearch-other-meta-char isearch-mode-map) ; was isearch-toggle-regexp
       ("M-e" isearch-other-meta-char isearch-mode-map) ; was isearch-edit-string
@@ -257,6 +258,7 @@
       
       (keyboard-quit isearch-abort isearch-mode-map)
       (isearch-forward isearch-repeat-forward isearch-mode-map)
+      ("C-f" isearch-repeat-forward isearch-mode-map)
       (isearch-backward isearch-repeat-backward isearch-mode-map)
       (recenter recenter isearch-mode-map)
       (yank isearch-yank-kill isearch-mode-map)
@@ -324,9 +326,8 @@
       ("<f12>" next-history-element minor-mode-overriding-map-alist)
       ("S-<f11>" previous-matching-history-element minor-mode-overriding-map-alist)
       ("S-<f12>" next-matching-history-element minor-mode-overriding-map-alist)))
-
-    ;; Info Mode hooks
     
+    ;; Info Mode hooks
     (Info-mode-hook
      (("<backspace>" Info-history-back Info-mode-map)
       ("<S-backspace>" Info-history-forward Info-mode-map)))
