@@ -21,7 +21,7 @@
 
 ;; these are convenient functions that lets you do multiple find/replace pairs.
 
-;; For some explanation of the need for these functions, see:
+;; For explanation of the need for these functions, see:
 ;;  http://ergoemacs.org/emacs/elisp_replace_string_region.html
 
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
@@ -33,7 +33,8 @@
 
 ;;; HISTORY
 
-;; version 1.5.0, 2013-02-17 • major rewrite. The algorithm has changed. The prev algo is O(n^2). The new algo is O(n). The prev algo works by replacing string to unique strings, then replace them by replacement. Also, the new algorithm fixed a bug in “replace-pairs-region” and “replace-pairs-in-string”, when you have a lot replacement pairs and many of the find string are single char. Example: (let ((case-fold-search nil)) (replace-pairs-in-string "For a little fun today, i wrote “replace-latin-alphabet-to-gothic”. This will replace all English alphabet by Gothic version (aka Blackletter, Fraktur) that's available in Unicode as characters. Here's the code." [ ["A" "𝔄"] ["B" "𝔅"] ["C" "ℭ"] ["D" "𝔇"] ["E" "𝔈"] ["F" "𝔉"] ["G" "𝔊"] ["H" "ℌ"] ["I" "ℑ"] ["J" "𝔍"] ["K" "𝔎"] ["L" "𝔏"] ["M" "𝔐"] ["N" "𝔑"] ["O" "𝔒"] ["P" "𝔓"] ["Q" "𝔔"] ["R" "ℜ"] ["S" "𝔖"] ["T" "𝔗"] ["U" "𝔘"] ["V" "𝔙"] ["W" "𝔚"] ["X" "𝔛"] ["Y" "𝔜"] ["Z" "ℨ"] ["a" "𝔞"] ["b" "𝔟"] ["c" "𝔠"] ["d" "𝔡"] ["e" "𝔢"] ["f" "𝔣"] ["g" "𝔤"] ["h" "𝔥"] ["i" "𝔦"] ["j" "𝔧"] ["k" "𝔨"] ["l" "𝔩"] ["m" "𝔪"] ["n" "𝔫"] ["o" "𝔬"] ["p" "𝔭"] ["q" "𝔮"] ["r" "𝔯"] ["s" "𝔰"] ["t" "𝔱"] ["u" "𝔲"] ["v" "𝔳"] ["w" "𝔴"] ["x" "𝔵"] ["y" "𝔶"] ["z" "𝔷"] ])) The unique strings are generated as a combination of rare Unicode char plus hexadecimal. The new algo generate a map of replacement positions instead.
+;; version 1.5.1, 2013-02-22 • major rewrite. Last version 1.5.0 had a bug too. So, the algorithm is changed again. On testing, version 1.4.6 is 9 seconds, version 1.5.0 is 12 seconds, version 1.5.1 is 6 seconds.
+;; version 1.5.0, 2013-02-17 • major rewrite. The algorithm has changed. The prev algo is O(n^2). The new algo is O(n). The prev algo works by replacing each string to unique string, then replace them by replacement. Also, the new algorithm fixed a bug in “replace-pairs-region” and “replace-pairs-in-string”, when you have a lot replacement pairs and many of the find string are single char. Example: (let ((case-fold-search nil)) (replace-pairs-in-string "For a little fun today, i wrote “replace-latin-alphabet-to-gothic”. This will replace all English alphabet by Gothic version (aka Blackletter, Fraktur) that's available in Unicode as characters. Here's the code." [ ["A" "𝔄"] ["B" "𝔅"] ["C" "ℭ"] ["D" "𝔇"] ["E" "𝔈"] ["F" "𝔉"] ["G" "𝔊"] ["H" "ℌ"] ["I" "ℑ"] ["J" "𝔍"] ["K" "𝔎"] ["L" "𝔏"] ["M" "𝔐"] ["N" "𝔑"] ["O" "𝔒"] ["P" "𝔓"] ["Q" "𝔔"] ["R" "ℜ"] ["S" "𝔖"] ["T" "𝔗"] ["U" "𝔘"] ["V" "𝔙"] ["W" "𝔚"] ["X" "𝔛"] ["Y" "𝔜"] ["Z" "ℨ"] ["a" "𝔞"] ["b" "𝔟"] ["c" "𝔠"] ["d" "𝔡"] ["e" "𝔢"] ["f" "𝔣"] ["g" "𝔤"] ["h" "𝔥"] ["i" "𝔦"] ["j" "𝔧"] ["k" "𝔨"] ["l" "𝔩"] ["m" "𝔪"] ["n" "𝔫"] ["o" "𝔬"] ["p" "𝔭"] ["q" "𝔮"] ["r" "𝔯"] ["s" "𝔰"] ["t" "𝔱"] ["u" "𝔲"] ["v" "𝔳"] ["w" "𝔴"] ["x" "𝔵"] ["y" "𝔶"] ["z" "𝔷"] ])) The unique strings are generated as a combination of rare Unicode char plus hexadecimal. The new algo generate a map of replacement positions instead.
 ;; version 1.4.6, 2012-07-05 • fixed several documentation error: mismatched paren in doc.
 ;; version 1.4.5, 2011-11-12 • added a optional argument to replace-regexp-pairs-region.
 ;; version 1.4.4, 2011-10-30 • fix a important error on documentation of replace-regexp-pairs-in-string, about the reversal of its 3rd argument fixedcase.
@@ -57,42 +58,38 @@ The replacement are literal and case sensitive.
 
 Once a subsring in the input string is replaced, that part is not changed again.  For example, if the input string is “abcd”, and the pairs are a → c and c → d, then, result is “cbdd”, not “dbdd”. If you simply want repeated replacements, use `replace-pairs-in-string-recursive'.
 
-Same as `replace-pairs-in-string' except does on a region."
-  (let (ξi (rpMap '()))
+Same as `replace-pairs-in-string' except does on a region.
 
+Note: the region's text or any string in pairs is assumed to NOT contain any character from Unicode Private Use Area A. That is, U+F0000 to U+FFFFD. And, there are no more than 65534 pairs."
+(let (
+(unicodePriveUseA #xf0000)
+ξi (tempMapPoints '()))
+    ;; generate a list of Unicode chars for intermediate replacement. These chars are in  Private Use Area.
+    (setq ξi 0)
+    (while (< ξi (length pairs))
+      (setq tempMapPoints (cons (char-to-string (+ unicodePriveUseA ξi)) tempMapPoints ))
+      (setq ξi (1+ ξi))
+      )
     (save-excursion
       (save-restriction
         (narrow-to-region p1 p2)
-        ;; build a list of vectors. Each vector has the form [‹match begin› ‹match end› ‹replace string› ‹i›]. the ‹i› is the ith replacement pair.
+
+        ;; replace each find string by corresponding item in tempMapPoints
         (setq ξi 0)
         (while (< ξi (length pairs))
           (goto-char (point-min))
           (while (search-forward (elt (elt pairs ξi) 0) nil t)
-            (setq rpMap (cons
-                         (vector (match-beginning 0) (match-end 0) (elt (elt pairs ξi) 1) ξi)
-                         rpMap ))
-            )
+            (replace-match (elt tempMapPoints ξi) t t) )
           (setq ξi (1+ ξi))
           )
 
-        ;; sort it, so the ones near the end of buffer comes first.
-        (setq rpMap (sort rpMap (lambda (x y) (> (elt x 0) (elt y 0)))))
-
-        ;; go thru the list of vectors and do replacement on each
-        (mapc
-         (lambda (x)
-           (let (
-                 (ξbegin (elt x 0))
-                 (ξend (elt x 1))
-                 (ξrep (elt x 2))
-                 )
-             (delete-region ξbegin ξend )
-             (goto-char ξbegin)
-             (insert ξrep)
-             )
-           )
-         rpMap)
-        ) ) ) )
+        ;; replace each tempMapPoints by corresponding replacement string
+        (setq ξi 0)
+        (while (< ξi (length pairs))
+          (goto-char (point-min))
+          (while (search-forward (elt tempMapPoints ξi) nil t)
+            (replace-match (elt (elt pairs ξi) 1) t t) )
+          (setq ξi (1+ ξi)) ) ) ) ) )
 
 (defun replace-pairs-in-string (ξstr ξpairs)
   "Replace string ΞSTR by find/replace ΞPAIRS sequence.
@@ -103,7 +100,7 @@ Example:
  (replace-pairs-in-string \"abcdef\"
  '([\"a\" \"1\"] [\"b\" \"2\"] [\"c\" \"3\"]))  ⇒ “\"123def\"”.
 
-This function calls `replace-pairs-region' to do its work. See there for detail about case sensitivity."
+This function calls `replace-pairs-region' to do its work."
   (let (outputStr)
     (setq outputStr
           (with-temp-buffer
@@ -162,17 +159,9 @@ variable `case-fold-search' to “nil”. Like this: (let ((case-fold-search nil
 (defun replace-pairs-in-string-recursive (str pairs)
   "Replace string STR recursively by find/replace pairs PAIRS sequence.
 
-This function is similar to `replace-pairs-in-string', except that
-the replacement is done recursively after each find/replace pair.
-Earlier replaced value may be replaced again.
+This function is similar to `replace-pairs-in-string', except that the replacement is done recursively after each find/replace pair.  Earlier replaced value may be replaced again.
 
-For example, if the input string is “abcd”, and the pairs are
-a → c and c → d, then,
-
-replace-pairs-in-string would return
-“cbdd”
-but replace-pairs-in-string-recursive would return
-“dbdd”.
+For example, if the input string is “abcd”, and the pairs are a → c and c → d, then, the result is “dbdd” (not “cbdd”).
 
 See `replace-pairs-in-string' for full doc."
   (let (myStr)
