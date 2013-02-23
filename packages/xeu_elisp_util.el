@@ -45,6 +45,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.18, 2013-02-22 removed delete-subdirs-by-regex and delete-files-by-regex . These are either buggy or very inefficient. Pending work. 
 ;; version 1.4.17, 2013-01-27 for unit-at-cursor for arg 'filepath, added no-break space as delimiter.
 ;; version 1.4.16, 2012-12-29 changed implementation for unit-at-cursor for arg 'filepath
 ;; version 1.4.15, 2012-08-23 added “file-relative-name-emacs24.1.1-fix”
@@ -278,23 +279,25 @@ See also: `get-image-dimensions'."
 
 
 
-(defun delete-subdirs-by-regex (ξdir regex-pattern)
-  "Delete sub-directories in ξdir whose path matches REGEX-PATTERN."
-  (require 'find-lisp)
-  (mapc
-   (lambda (ξx) (if (and (file-directory-p ξx) (file-exists-p ξx))
-                    (delete-directory ξx t)))
-   (find-lisp-find-files ξdir regex-pattern)) )
+;; 2013-02-21 inefficient. buggy. 
+;; (defun delete-subdirs-by-regex (ξdir regex-pattern)
+;;   "Delete sub-directories in ξdir whose path matches REGEX-PATTERN."
+;;   (require 'find-lisp)
+;;   (mapc
+;;    (lambda (ξx) (when (and (file-directory-p ξx) (file-exists-p ξx))
+;;                     (delete-directory ξx t)))
+;;    (find-lisp-find-files ξdir regex-pattern)) )
 
-(defun delete-files-by-regex (ξdir regex-pattern)
-  "Delete all files in a ξdir whose path matches a REGEX-PATTERN.
-Example:
- (delete-files-by-regex \"~/web\" \"~$\")
-This deletes all files ending in “~”."
-  (require 'find-lisp)
-  (mapc
-   (lambda (ξx) (if (and (file-regular-p ξx) (file-exists-p ξx)) (delete-file ξx)) )
-   (find-lisp-find-files ξdir regex-pattern)) )
+;; 2013-02-21 inefficient.
+;; (defun delete-files-by-regex (ξdir regex-pattern)
+;;   "Delete all files in a ξdir whose path matches a REGEX-PATTERN.
+;; Example:
+;;  (delete-files-by-regex \"~/web\" \"~$\")
+;; This deletes all files ending in “~”."
+;;   (require 'find-lisp)
+;;   (mapc
+;;    (lambda (ξx) (if (and (file-regular-p ξx) (file-exists-p ξx)) (delete-file ξx)) )
+;;    (find-lisp-find-files ξdir regex-pattern)) )
 
 
 (defun get-html-file-title (fName)
