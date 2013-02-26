@@ -661,10 +661,6 @@
     'ergoemacs-shrink-whitespaces)
    ((eq 'left-char curr-fn) 'backward-char)
    ((eq 'right-char curr-fn) 'forward-char)
-   ((memq curr-fn '(scroll-down-command scroll-down cua-scroll-down))
-    'ergoemacs-scroll-down)
-   ((memq curr-fn '(scroll-up-command scroll-up cua-scroll-up))
-    'ergoemacs-scroll-up)
    (t curr-fn)))
 
 (defmacro ergoemacs-create-old-key-description-fn (key)
