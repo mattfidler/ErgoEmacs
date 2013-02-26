@@ -72,6 +72,7 @@
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
 
+
 ;; a user interface library used by auto-complete
 (add-to-list 'load-path
  (concat (file-name-directory (or load-file-name buffer-file-name))

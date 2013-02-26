@@ -154,7 +154,7 @@ Valid values are:
 May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'.
 " (symbol-name command) (symbol-name command))
        ad-do-it
-       (when (and ergoemacs-mode ergoemacs-repeat-movement-commands)
+       (when (and ergoemacs-mode ergoemacs-repeat-movement-commands (interactive-p))
          (set-temporary-overlay-map (cond
                                      ((eq ergoemacs-repeat-movement-commands 'single)
                                       ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
