@@ -57,6 +57,7 @@
 
 ;;; HISTORY
 
+;; v1.4.8, 2013-03-01 • added abbrev “esc” for 「⎋」. • removed “power” for 「⎋」 because it's incorrect. there's no dedicate symbol in unicode for this. • added “sleep” for 「☾」 • added “break” for 「⎊」 • added “pause” for 「⎉」 • removed abbrev “control” for 「✲」, added abbrev “ctrl” for 「✲」. Because that symbol is associated with keyboard label only, not really “control”. • added the cycle 「✲ ⎈ ‸」 for control key symbol. • changed “enter” to insert 「⌤」 instead of 「↵」, because the new is more correct. • added abbrev “helm” for 「⎈」, may use for Control key. Microsoft keyboard uses 「✲」. • added cycles 「⏎ ↩ ↵ ⌤ ⎆」 • added a cycle for undo 「↶ ⎌」 (the latter is proper undo symbol, but there's no corresponding symbol for redo). • added “alt” for 「⎇」
 ;; v1.4.7, 2013-01-21 • changed the name of abbrev for 「↖」 from “nwarr” to “home”. Similarly, 「↘」 from “searr” to “end”. • Added a cycle for left right delete ⌫ ⌦. • added “control” for 「✲」, used on Microsoft keyboards.
 ;; v1.4.6, 2013-01-15 • added abbrev “smiley” for “☺”, added abbrev “sad” for “☹”
 ;; v1.4.5, 2013-01-14 • added abbrev “wdash” for “〜” WAVE DASH. • removed abbrev “-” for MINUS SIGN because it's seldom used and can be confusing. It already has abbrev “minus”. • removed abbrev “o/”. Use html entity “Oslash” Ø or “oslash” ø or math “empty” or “es” for empty set ∅.
@@ -114,7 +115,7 @@
 
 ;;; Code:
 
-(setq xmsi-version "v1.4.7")
+(setq xmsi-version "v1.4.8")
 
 (defvar xmsi-abrvs nil "A abbreviation hash table that maps a string to unicode char.")
 
@@ -385,7 +386,6 @@
   (puthash "dsj" "ⅉ" xmsi-abrvs)
 )
 
-
 (progn
   ;; gothic letter forms (aka FRANKTUR). Most are outside BMP
   (puthash "goA" "𝔄" xmsi-abrvs)
@@ -545,7 +545,6 @@
   (puthash "O~" "Õ" xmsi-abrvs)
 )
 
-
 (progn
   ;; misc non-math symbols
   (puthash "tm" "™" xmsi-abrvs)
@@ -570,44 +569,49 @@
 (progn
   ;; computer keys and symbols
   (puthash "cmd" "⌘" xmsi-abrvs)
-  (puthash "opt" "⌥" xmsi-abrvs)
-  (puthash "caret" "‸" xmsi-abrvs)      ;control key symbol. CARET
+  (puthash "opt" "⌥" xmsi-abrvs)        ; OPTION KEY
+  (puthash "alt" "⎇" xmsi-abrvs)        ; ALTERNATIVE KEY SYMBOL
+  (puthash "ctrl" "✲" xmsi-abrvs) ; OPEN CENTRE ASTERISK used by Microsoft on their keyboards.
+  (puthash "helm" "⎈" xmsi-abrvs) ; HELM SYMBOL, may use for control key.
+  (puthash "caret" "‸" xmsi-abrvs)      ; CARET control key symbol.
+  (puthash "menu" "▤" xmsi-abrvs)      ; SQUARE WITH HORIZONTAL FILL for menu key.
+
+  (puthash "enter" "⌤" xmsi-abrvs)
+  (puthash "return" "⏎" xmsi-abrvs)
   (puthash "pgup" "⇞" xmsi-abrvs)
   (puthash "pgdn" "⇟" xmsi-abrvs)
   (puthash "home" "↖" xmsi-abrvs)
   (puthash "end" "↘" xmsi-abrvs)
-  (puthash "power" "⎋" xmsi-abrvs)
-  (puthash "menu" "▤" xmsi-abrvs)      ;menu key. SQUARE WITH HORIZONTAL FILL
+  (puthash "esc" "⎋" xmsi-abrvs)        ; used in Apple's doc and GUI menu
 
   (puthash "eject" "⏏" xmsi-abrvs)
-  (puthash "undo" "↶" xmsi-abrvs)
+  (puthash "undo" "↶" xmsi-abrvs) ; more proper is ⎌, but there's no corresponding redo.
   (puthash "redo" "↷" xmsi-abrvs)
   (puthash "shift" "⇧" xmsi-abrvs)
-  (puthash "control" "✲" xmsi-abrvs)    ; OPEN CENTRE ASTERISK
-
-  (puthash "enter" "↵" xmsi-abrvs)
-  (puthash "return" "⏎" xmsi-abrvs)
 
   (puthash "delete" "⌫" xmsi-abrvs)
   (puthash "dell" "⌫" xmsi-abrvs)
   (puthash "delr" "⌦" xmsi-abrvs)
-  (puthash "keyboard" "⌨" xmsi-abrvs)
-  (puthash "space" "␣" xmsi-abrvs)      ;OPEN BOX
-
+  (puthash "space" "␣" xmsi-abrvs)      ; OPEN BOX
   (puthash "lrarr" "⇄" xmsi-abrvs)
-
   (puthash "|<-" "⇤" xmsi-abrvs)
   (puthash "->|" "⇥" xmsi-abrvs)
-
   (puthash "tabl" "⇤" xmsi-abrvs)
   (puthash "tabr" "⇥" xmsi-abrvs)
   (puthash "tab" "↹" xmsi-abrvs)
-  (puthash "clear" "⌧" xmsi-abrvs)
-  (puthash "cursor" "▮" xmsi-abrvs)
-  (puthash "ibeam" "⌶" xmsi-abrvs)
+
+  (puthash "sleep" "☾" xmsi-abrvs)  ; LAST QUARTER MOON. for Sleep key
+  (puthash "break" "⎊" xmsi-abrvs)  ; CIRCLED TRIANGLE DOWN for Break key
+  (puthash "pause" "⎉" xmsi-abrvs)  ; CIRCLED HORIZONTAL BAR WITH NOTCH for Pause key
   (puthash "prevpage" "⎗" xmsi-abrvs)
   (puthash "nextpage" "⎘" xmsi-abrvs)
   (puthash "print" "⎙" xmsi-abrvs)
+
+  (puthash "keyboard" "⌨" xmsi-abrvs)
+
+  (puthash "clear" "⌧" xmsi-abrvs)
+  (puthash "cursor" "▮" xmsi-abrvs)
+  (puthash "ibeam" "⌶" xmsi-abrvs)
   (puthash "watch" "⌚" xmsi-abrvs)
   (puthash "hourglass" "⌛" xmsi-abrvs)
   (puthash "scissor" "✂" xmsi-abrvs)    ;BLACK SCISSORS
@@ -862,7 +866,6 @@
   (puthash "fa" "∀" xmsi-abrvs) (puthash "forall" "∀" xmsi-abrvs) ; FOR ALL
   (puthash "ex" "∃" xmsi-abrvs) ; THERE EXISTS
 
-
 (progn
   ;; operators
   (puthash "c+" "⊕" xmsi-abrvs)
@@ -1112,8 +1115,10 @@
 
 (xmsi-add-cycle ["✂" "✄"])              ;scissor
 (xmsi-add-cycle ["↹" "⇥" "⇤"])          ; tab
-(xmsi-add-cycle [ "⏎" "↩" "↵" "⌤"])     ; return/enter
-(xmsi-add-cycle [ "⌫" "⌦"])     ; delete
+(xmsi-add-cycle ["⏎" "↩" "↵" "⌤" "⎆"])     ; return/enter
+(xmsi-add-cycle ["⌫" "⌦"])     ; delete
+(xmsi-add-cycle ["↶" "⎌"])     ; undo
+(xmsi-add-cycle ["✲" "⎈" "‸"])     ; control
 
 (xmsi-add-cycle ["," "，"])
 (xmsi-add-cycle ["·" "．" "。"])      ; MIDDLE DOT, FULLWIDTH FULL STOP, IDEOGRAPHIC FULL STOP
