@@ -51,6 +51,8 @@
 
 
 (require 'easymenu)
+(require 'cua-base)
+(require 'cua-rect)
 ;; Ergoemacs-keybindings version
 (defconst ergoemacs-mode-version "5.7.5"
   "Ergoemacs-keybindings minor mode version number.")
@@ -71,7 +73,16 @@
   :group 'convenience
   :group 'emulations)
 
+(defvar ergoemacs-cua-rect-load-hook nil
+  "Hook to help with CUA's rectangles")
+
+(defadvice cua-set-rectangle-mark (around ergoemacs-setup-kbd activate)
+  "Runs `ergoemacs-cua-rect-load-hook' after starting CUA's rectangle mode."
+  ad-do-it
+  (run-hooks 'ergoemacs-cua-rect-load-hook))
+
 (require 'ergoemacs-layouts)
+
 (defvar ergoemacs-movement-functions
   '(scroll-down move-beginning-of-line move-end-of-line scroll-up scroll-down forward-block backward-block forward-word backward-word next-line previous-line forward-char backward-char)
   "Defines movement functions that ergoemacs is aware of.")
@@ -183,9 +194,6 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 
 ;;; ergoemacs-keymap
 
-
-
-
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
   (defun set-temporary-overlay-map (map &optional keep-pred)
@@ -250,7 +258,6 @@ remove the keymap depends on user input and KEEP-PRED:
    (symbol-value (ergoemacs-get-variable-layout))))
 
 (require 'ergoemacs-functions)
-
 
 (defun ergoemacs-setup-translation (layout &optional base-layout)
   "Setup translation from BASE-LAYOUT to LAYOUT."
@@ -633,6 +640,8 @@ will change."
 (defun ergoemacs-setup-keys (&optional no-check)
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'."
   (interactive)
+  ;; make cua-rectangle refresh
+  ;; its keymap
   (let ((ergoemacs-state (if (boundp 'ergoemacs-mode) ergoemacs-mode nil))
         (cua-state cua-mode)
         (layout
