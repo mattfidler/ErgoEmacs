@@ -73,14 +73,6 @@
   :group 'convenience
   :group 'emulations)
 
-(defvar ergoemacs-cua-rect-load-hook nil
-  "Hook to help with CUA's rectangles")
-
-(defadvice cua-set-rectangle-mark (around ergoemacs-setup-kbd activate)
-  "Runs `ergoemacs-cua-rect-load-hook' after starting CUA's rectangle mode."
-  ad-do-it
-  (run-hooks 'ergoemacs-cua-rect-load-hook))
-
 (require 'ergoemacs-layouts)
 
 (defvar ergoemacs-movement-functions
@@ -112,6 +104,18 @@ Valid values are:
   :type 'boolean
   :set 'ergoemacs-set-default
   :group 'ergoemacs-mode)
+(defvar ergoemacs-cua-rect-modifier-orig cua--rectangle-modifier-key)
+
+(defcustom ergoemacs-cua-rect-modifier 'super
+  "Change the CUA rectangle modifier to this key."
+  :type '(choice
+          (const :tag "Do not modify the cua-rectangle modifier" nil)
+          (const :tag "Meta Modifier" 'meta)
+          (const :tag "Super Modifier" 'super)
+          (const :tag "Hyper Modifier" 'hyper)
+          (const :tag "Alt Modifier" 'alt))
+  :set 'ergoemacs-set-default
+  :group 'ergoemacs-mode)
 
 
 (defcustom ergoemacs-repeat-movement-commands 'single
@@ -124,17 +128,19 @@ Valid values are:
 
 ;; Movement commands need to be defined before ergoemacs-variants is
 ;; called to get the correct movement commands for isearch.
-
 (defadvice cua--pre-command-handler (around ergoemacs-fix-shifted-commands activate)
   "Fixes shifted movement problems"
   (let ((do-it t))
     (condition-case nil
-        (when ergoemacs-mode
+        (progn
+          ;; Fix shifted commands.
           (when (and (string-match "\\(^\\|-\\)M-" (key-description (this-single-command-keys))) ;; Alt command
                      (or (eq (get this-command 'CUA) 'move)
                          (memq this-command ergoemacs-movement-functions)))
             (setq do-it nil)))
       (error nil))
+    (when cua--rectangle
+      (setq do-it t))
     (when do-it
       ad-do-it)))
 
@@ -165,7 +171,8 @@ Valid values are:
 May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `ergoemacs-full-fast-keys-keymap' and `ergoemacs-fast-%s-keymap'.
 " (symbol-name command) (symbol-name command))
        ad-do-it
-       (when (and ergoemacs-mode ergoemacs-repeat-movement-commands (interactive-p))
+       (when (and ergoemacs-mode ergoemacs-repeat-movement-commands
+                  (interactive-p) (not cua--rectangle-overlays)) ;; Don't add overlays to rectangles
          (set-temporary-overlay-map (cond
                                      ((eq ergoemacs-repeat-movement-commands 'single)
                                       ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
@@ -365,6 +372,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 
 (defvar ergoemacs-debug nil
   "Debugging variable for ergoemacs.  Set to t to see debugging information in messages.")
+
 (defmacro ergoemacs-setup-keys-for-keymap (keymap)
   "Setups ergoemacs keys for a specific keymap"
   `(let ((no-ergoemacs-advice t)
@@ -527,12 +535,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
       (when ergoemacs-debug
         (when ergoemacs-debug
           (message "hook: %s->%s %s %s" key-def key-code
-                   definition translate)
-          ))
+                   definition translate)))
       (when key-code
         (define-key keymap key-code definition)))))
 
-(defmacro ergoemacs-create-hook-function (hook keys)
+(defmacro ergoemacs-create-hook-function (hook keys &optional global)
   "Creates a hook function based on the HOOK and the list of KEYS defined."
   (let ((is-override (make-symbol "is-override"))
         (local-list '()))
@@ -579,7 +586,7 @@ This is an automatically generated function derived from `ergoemacs-get-minor-mo
        (ergoemacs-add-hook ',hook ',(intern (concat "ergoemacs-" (symbol-name hook)))))))
 
 (defvar ergoemacs-hook-list (list)
-  "List of hook and hook-function pairs.")
+"List of hook and hook-function pairs.")
 
 (defun ergoemacs-add-hook (hook hook-function)
   "Adds a pair of HOOK and HOOK-FUNCTION to the list `ergoemacs-hook-list'."
@@ -599,7 +606,6 @@ will change."
     (if (and (boundp 'ergoemacs-mode) ergoemacs-mode (not (equal ergoemacs-mode 0)))
         (progn
           (ergoemacs-unset-redundant-global-keys)
-          
           ;; alt+n is the new "Quit" in query-replace-map
           (when (ergoemacs-key-fn-lookup 'keyboard-quit)
             (ergoemacs-unset-global-key query-replace-map "\e")
@@ -640,8 +646,6 @@ will change."
 (defun ergoemacs-setup-keys (&optional no-check)
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'."
   (interactive)
-  ;; make cua-rectangle refresh
-  ;; its keymap
   (let ((ergoemacs-state (if (boundp 'ergoemacs-mode) ergoemacs-mode nil))
         (cua-state cua-mode)
         (layout
@@ -696,6 +700,34 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   :group 'ergoemacs-mode
   :keymap ergoemacs-keymap
   (ergoemacs-setup-keys t)
+  (when ergoemacs-cua-rect-modifier
+    (if ergoemacs-mode
+        (progn
+          (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
+          (setq cua--rectangle-keymap (make-sparse-keymap))
+          (setq cua--rectangle-initialized nil)
+          (cua--init-rectangles)
+          (setq cua--keymap-alist
+                `((cua--ena-prefix-override-keymap . ,cua--prefix-override-keymap)
+                  (cua--ena-prefix-repeat-keymap . ,cua--prefix-repeat-keymap)
+                  (cua--ena-cua-keys-keymap . ,cua--cua-keys-keymap)
+                  (cua--ena-global-mark-keymap . ,cua--global-mark-keymap)
+                  (cua--rectangle . ,cua--rectangle-keymap)
+                  (cua--ena-region-keymap . ,cua--region-keymap)
+                  (cua-mode . ,cua-global-keymap))))
+      (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier-orig)
+      (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
+      (setq cua--rectangle-keymap (make-sparse-keymap))
+      (setq cua--rectangle-initialized nil)
+      (cua--init-rectangles)
+      (setq cua--keymap-alist
+            `((cua--ena-prefix-override-keymap . ,cua--prefix-override-keymap)
+              (cua--ena-prefix-repeat-keymap . ,cua--prefix-repeat-keymap)
+              (cua--ena-cua-keys-keymap . ,cua--cua-keys-keymap)
+              (cua--ena-global-mark-keymap . ,cua--global-mark-keymap)
+              (cua--rectangle . ,cua--rectangle-keymap)
+              (cua--ena-region-keymap . ,cua--region-keymap)
+              (cua-mode . ,cua-global-keymap)))))
   (when ergoemacs-change-smex-M-x
     (if ergoemacs-mode
         (setq smex-prompt-string (concat (ergoemacs-pretty-key "M-x") " "))

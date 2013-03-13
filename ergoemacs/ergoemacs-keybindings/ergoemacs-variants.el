@@ -315,7 +315,7 @@
       ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
     
     ;; Ido minibuffer setup hook
-    (ido-minibuffer-setup-hook       
+    (ido-minibuffer-setup-hook
      ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
       ("C-o" ergoemacs-ido-c-o minor-mode-overriding-map-alist)
       (forward-char ido-next-match minor-mode-overriding-map-alist)
@@ -331,39 +331,6 @@
     (Info-mode-hook
      (("<backspace>" Info-history-back Info-mode-map)
       ("<S-backspace>" Info-history-forward Info-mode-map)))
-    ;;;
-    ;;;; cua-rect-load-hook
-    (ergoemacs-cua-rect-load-hook
-     (("M-a" nil cua--rectangle-keymap)
-      ("M-b" nil cua--rectangle-keymap)
-      ("M-c" nil cua--rectangle-keymap)
-      ("M-f" nil cua--rectangle-keymap)
-      ("M-i" nil cua--rectangle-keymap)
-      ("M-k" nil cua--rectangle-keymap)
-      ("M-l" nil cua--rectangle-keymap)
-      ("M-m" nil cua--rectangle-keymap)
-      ("M-n" nil cua--rectangle-keymap)
-      ("M-o" nil cua--rectangle-keymap)
-      ("M-p" nil cua--rectangle-keymap)
-      ("M-P" nil cua--rectangle-keymap)
-      ("M-q" nil cua--rectangle-keymap)
-      ("M-r" nil cua--rectangle-keymap)
-      ("M-u" nil cua--rectangle-keymap)
-      ("M-|" nil cua--rectangle-keymap)
-      ("M-'" nil cua--rectangle-keymap)
-      ("M-/" nil cua--rectangle-keymap)
-      (next-line cua-resize-rectangle-down cua--rectangle-keymap cua--rectangle-keymap)
-      (previous-line cua-resize-rectangle-up cua--rectangle-keymap cua--rectangle-keymap)
-      (end-of-line cua-resize-rectangle-eol cua--rectangle-keymap)
-      (beginning-of-line cua-resize-rectangle-bol cua--rectangle-keymap)
-      (forward-char cua-resize-rectangle-right cua--rectangle-keymap)
-      (end-of-buffer cua-resize-rectangle-bot cua--rectangle-keymap)
-      (beginning-of-buffer cua-resize-rectangle-top cua--rectangle-keymap)
-      (scroll-down cua-resize-rectangle-page-up cua--rectangle-keymap)
-      (scroll-up cua-resize-rectangle-page-down cua--rectangle-keymap)
-      (delete-backward-char cua-delete-char-rectangle cua--rectangle-keymap)
-      (backward-delete-char cua-delete-char-rectangle cua--rectangle-keymap)
-      (backward-delete-char-untabify cua-delete-char-rectangle cua--rectangle-keymap)))
     ;; Helm mode hooks
     (helm-before-initialize-hook
      (("C-w" helm-keyboard-quit helm-map)
