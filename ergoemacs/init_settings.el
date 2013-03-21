@@ -105,13 +105,12 @@
 (show-paren-mode 1)
 (setq show-paren-style 'expression)
 
-(progn 
+(when (>= emacs-major-version 24)
 ;; typing opening brackets auto insert closing one
 (electric-pair-mode 1)
-
 ;; setting for auto-close brackets for electric-pair-mode regardless of current major mode syntax table
 (setq electric-pair-pairs '( (?\" . ?\") (?\{ . ?\}) ) )
-)
+ )
 
 ;; automatically copy text when mouse drag. Similar to Linux X11 behavior
 (setq mouse-drag-copy-region t)
@@ -206,7 +205,7 @@
         ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
         '(
           (space-mark 32 [183] [46]) ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-          (newline-mark 10 [182 10]) ; LINE FEED, 
+          (newline-mark 10 [182 10]) ; LINE FEED,
           (tab-mark 9 [9655 9] [92 9]) ; tab
           )) )
 
