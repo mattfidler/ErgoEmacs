@@ -1,6 +1,6 @@
 ;;; xmsi-math-symbols-input.el --- a mode to input math chars. -*- coding: utf-8 -*-
 
-;; Copyright © 2010, 2011 by Xah Lee
+;; Copyright © 2010, 2011, 2012, 2013 by Xah Lee
 
 ;; Author: Xah Lee ( http://xahlee.org/ )
 ;; Created: 2010-12-08
@@ -10,8 +10,8 @@
 
 ;;; DESCRIPTION
 
-;; A minor mode for inputing hundreds of math symbols
-;; for download location and documentation, see:
+;; A minor mode for inputing math symbols and Unicode symbols.
+;; For download location and documentation, see:
 ;; http://ergoemacs.org/emacs/xmsi-math-symbols-input.html
 
 ;;; INSTALL
@@ -20,13 +20,11 @@
 
 ;; To have emacs automatically load the file when it restarts, follow these steps:
 
-;; Rename the file to 〔xmsi-math-symbols-input.el〕 (if the file is not already that name).
-;; place the file in the dir 〔~/.emacs.d/〕. On Windows, it's 〔$HOMEPATH\.emacs.d\〕. Create the 〔.emacs.d〕 folder if you don't have it.
-
-;; Now, put the following lines in your emacs init file “.emacs”:
-
+;; ① Rename the file to 〔xmsi-math-symbols-input.el〕 (if the file is not already that name).
+;; ② Place the file in the dir 〔~/.emacs.d/〕. On Windows, it's 〔$HOMEPATH\.emacs.d\〕. Create the 〔.emacs.d〕 folder if you don't have it.
+;; ③ Put the following lines in your emacs init file “.emacs”:
 ;; (add-to-list 'load-path "~/.emacs.d/")
-;; (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math (Unicode) symbols." t)
+;; (autoload 'xmsi-mode "xmsi-math-symbols-input" "Load xmsi minor mode for inputting math/Unicode symbols." t)
 ;; (xmsi-mode 1) ; activate the mode.
 
 ;; Then, restart emacs.
@@ -57,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.4.9, 2013-03-09 • added abbrev “tv” for 「📺」.
 ;; v1.4.8, 2013-03-01 • added abbrev “esc” for 「⎋」. • removed “power” for 「⎋」 because it's incorrect. there's no dedicate symbol in unicode for this. • added “sleep” for 「☾」 • added “break” for 「⎊」 • added “pause” for 「⎉」 • removed abbrev “control” for 「✲」, added abbrev “ctrl” for 「✲」. Because that symbol is associated with keyboard label only, not really “control”. • added the cycle 「✲ ⎈ ‸」 for control key symbol. • changed “enter” to insert 「⌤」 instead of 「↵」, because the new is more correct. • added abbrev “helm” for 「⎈」, may use for Control key. Microsoft keyboard uses 「✲」. • added cycles 「⏎ ↩ ↵ ⌤ ⎆」 • added a cycle for undo 「↶ ⎌」 (the latter is proper undo symbol, but there's no corresponding symbol for redo). • added “alt” for 「⎇」
 ;; v1.4.7, 2013-01-21 • changed the name of abbrev for 「↖」 from “nwarr” to “home”. Similarly, 「↘」 from “searr” to “end”. • Added a cycle for left right delete ⌫ ⌦. • added “control” for 「✲」, used on Microsoft keyboards.
 ;; v1.4.6, 2013-01-15 • added abbrev “smiley” for “☺”, added abbrev “sad” for “☹”
@@ -1058,6 +1057,13 @@
 (puthash "fwx" "ｘ" xmsi-abrvs)
 (puthash "fwy" "ｙ" xmsi-abrvs)
 (puthash "fwz" "ｚ" xmsi-abrvs)
+
+
+(progn 
+(puthash "tv" "📺" xmsi-abrvs)
+
+)
+
 
   ;; 2010-12-10. char to add
   ;; soft hyphen ­
