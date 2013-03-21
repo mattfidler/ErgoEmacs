@@ -9,10 +9,11 @@
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; Commentary:
-;; Major mode for editing pure HTML5 files. Alpha stage.
+;; Major mode for editing pure HTML5 files. Beta stage.
 
 ;;; HISTORY
 
+;; version 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
 ;; version 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
 ;; version 0.5.6, 2013-02-16 added xhm-replace-html-named-entities
 ;; version 0.5.5, 2013-02-03 added xhm-replace-html-chars-to-entities, xhm-replace-html-chars-to-unicode
@@ -139,7 +140,8 @@
 ;; (require 'sgml-mode)
 
 (defun xhm-delete-tag ()
-  "Delete the tag under cursor.
+  "work in progress. do nothing.
+Delete the tag under cursor.
 Also delete the matching beginning/ending tag."
   (interactive)
 (save-excursion
@@ -707,9 +709,9 @@ tempStr
 (defun xhm-extract-url (htmlText &optional convert-relative-URL-p)
   "Returns a list of URLs in the HTML text string htmlText.
 
-When called interactively, use text selection as input, or current text block between empty lines. Output URLs in a buffer named 「*extract URL output*」.
+When called interactively, use text selection as input, or current text block between empty lines. Output URLs in a buffer named 「*extract URL output*」, also copy output to `kill-ring'.
 
-If `universal-argument' 【Ctrl+u】 is called first, tries to convert relative URL to HTTP form.
+If `universal-argument' is called first, tries to convert relative URL to HTTP form.
 
 WARNING: this function extract all text of the form 「<a … href=\"…\" …>」 by a simple regex. It does not extract single quote form 「href='…'」 nor 「src=\"…\"」 , nor other considerations."
   (interactive (list (elt (get-selection-or-unit 'block) 0) current-prefix-arg ) )
@@ -735,11 +737,11 @@ WARNING: this function extract all text of the form 「<a … href=\"…\" …>�
 
     (when (called-interactively-p 'any)
       (with-output-to-temp-buffer "*extract URL output*"
-        (mapc (lambda (ξx) (princ ξx) (terpri) ) urlList)
-        )
-      )
-    urlList
-    ))
+        (let ((printedResult (mapconcat 'identity urlList "\n")))
+          (princ printedResult)
+          (kill-new (mapconcat 'identity urlList "\n"))
+          ) ) )
+    urlList ))
 
 (defun xhm-update-title (newTitle)
   "Update a HTML article's title and h1 tags.
@@ -1172,29 +1174,25 @@ Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings."
 (defvar xhm-class-input-history nil "for input history of `xhm-wrap-html-tag'")
 (setq xhm-class-input-history (list) )
 
-(defun xhm-wrap-html-tag (tagName &optional className)
-  "Add/Insert a HTML tag to beginning and ending of current word or text selection.
+(defvar xhm-html5-tag-names nil "a list of tag names of HTML5")
+(setq xhm-html5-tag-names '( "a" "abbr" "address" "area" "article" "aside" "audio" "b" "base" "bdi" "bdo" "blockquote" "body" "bq" "br" "button" "canvas" "caption" "cite" "class" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "id" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "mailto" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "src" "strike" "strong" "style" "sub" "summary" "sup" "t" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "track" "u" "ul" "var" "video" "wbr") )
 
-If current line or word is empty, then insert the tag and move cursor into it.
+(defun xhm-wrap-html-tag (tagName &optional className)
+  "Insert/wrap a HTML tags to text selection or cursor position.
+If current line or word is empty, then insert open/end tags and place cursor between them.
 
 The command will also prompt for a “class” and “id”. Empty value means don't add the attribute.
 
 When called in lisp program, if className is nil or empty string, don't add the attribute."
   (interactive
-(let (
-(html5tags '( "a" "abbr" "address" "area" "article" "aside" "audio" "b" "base" "bdi" "bdo" "blockquote" "body" "bq" "br" "button" "canvas" "caption" "cite" "class" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "id" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "mailto" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "src" "strike" "strong" "style" "sub" "summary" "sup" "t" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "track" "u" "ul" "var" "video" "wbr"))
-)
-(list
-
-(ido-completing-read "HTML tag:" html5tags "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
-        ;; (read-string "Tag (p):" nil nil "p")
-        (read-string "class:" nil xhm-class-input-history "")
-         )
-)
-    )
+   (let ()
+     (list
+      (ido-completing-read "HTML tag:" xhm-html5-tag-names "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
+      ;; (read-string "Tag (p):" nil nil "p")
+      (read-string "class:" nil xhm-class-input-history "")
+      ) ) )
   (let (bds p1 p2 inputText outputText
             (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
-
             )
     (setq bds (get-selection-or-unit 'word))
     (setq inputText (elt bds 0) )
