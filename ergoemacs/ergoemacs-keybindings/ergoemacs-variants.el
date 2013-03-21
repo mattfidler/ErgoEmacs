@@ -315,7 +315,7 @@
       ("S-<f12>" iswitchb-next-match minor-mode-overriding-map-alist)))
     
     ;; Ido minibuffer setup hook
-    (ido-minibuffer-setup-hook       
+    (ido-minibuffer-setup-hook
      ((keyboard-quit minibuffer-keyboard-quit minor-mode-overriding-map-alist)
       ("C-o" ergoemacs-ido-c-o minor-mode-overriding-map-alist)
       (forward-char ido-next-match minor-mode-overriding-map-alist)
@@ -331,7 +331,6 @@
     (Info-mode-hook
      (("<backspace>" Info-history-back Info-mode-map)
       ("<S-backspace>" Info-history-forward Info-mode-map)))
-    
     ;; Helm mode hooks
     (helm-before-initialize-hook
      (("C-w" helm-keyboard-quit helm-map)

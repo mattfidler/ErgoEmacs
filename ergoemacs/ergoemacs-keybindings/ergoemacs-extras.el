@@ -381,7 +381,7 @@ The following are generated:
 Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'."
   (interactive)
   (ergoemacs-svgs layouts)
-  (ergoemacs-ahks layouts)
+  (ergoemacs-gen-ahk)
   (ergoemacs-bashs layouts)
   (ergoemacs-mac-osx-dicts layouts)
   (find-file (expand-file-name "ergoemacs-extras" user-emacs-directory)) )
