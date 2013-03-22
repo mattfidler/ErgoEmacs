@@ -56,6 +56,8 @@
   (interactive)
   (let ((ret t)
         (test))
+    (message "Updating for the current version of emacs")
+    (ergoemacs-warn-globally-changed-keys t)
     (setq test (ergoemacs-test-shifted-move-keep-mark))
     (setq ret (and ret test))
     (message "Shifted Move, Keep Mark: %s" test)

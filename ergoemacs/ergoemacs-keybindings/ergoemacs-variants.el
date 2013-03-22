@@ -831,6 +831,35 @@ Some exceptions we don't want to unset.
                                        "<end>"
                                        "<C-end>")))
 
+(ergoemacs-defvariant master
+  "Unbind commonly used keys like left and right.  Also unbind backspace..."
+  nil
+  (setq ergoemacs-redundant-keys-tmp `(,@ergoemacs-redundant-keys-tmp
+                                       "<left>"
+                                       "<right>"
+                                       "<up>"
+                                       "<down>"
+                                       "<C-left>"
+                                       "<C-right>"
+                                       "<C-up>"
+                                       "<C-down>"
+                                       "<M-left>"
+                                       "<M-right>"
+                                       "<M-up>"
+                                       "<M-down>"
+                                       "<delete>"
+                                       "<C-delete>"
+                                       "<M-delete>"
+                                       "<next>"
+                                       "<C-next>" 
+                                       "<prior>"
+                                       "<C-prior>" 
+                                       "<home>"
+                                       "<C-home>"
+                                       "<end>"
+                                       "<C-end>"
+                                       "<backspace>")))
+
 (ergoemacs-defvariant 5.3.7
   "Old Ergoemacs layout.  Uses M-; and M-: for isearch.  Uses M-n for cancel."
   nil
