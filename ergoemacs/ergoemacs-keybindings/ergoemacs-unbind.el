@@ -175,7 +175,7 @@
     ("C-x C-n" (set-goal-column))
     ("C-x C-o" (delete-blank-lines))
     ("C-x C-p" (mark-page))
-    ("C-x C-q" (toggle-read-only))
+    ("C-x C-q" (read-only-mode toggle-read-only))
     ("C-x C-r" (find-file-read-only))
     ("C-x C-s" (save-buffer))
     ("C-x C-t" (transpose-lines))
@@ -543,7 +543,7 @@
     ("C-x 6 s" (2C-split))
     ("C-x 6 <f2>" (2C-two-columns))
     
-    ("C-x 8 RET" (2 ucs-insert))
+    ("C-x 8 RET" (insert-char 2 ucs-insert))
     
     ("C-x a C-a" (add-mode-abbrev))
     ("C-x a '" (expand-abbrev))
@@ -690,6 +690,7 @@
 
 (defun ergoemacs-global-fix-defualt-bindings (kbd-code function)
   "Helper function to fix `ergoemacs-emacs-default-bindings' based on currently running emacs."
+  (interactive)
   (with-temp-buffer
     (insert-file-contents (expand-file-name "ergoemacs-unbind.el" ergoemacs-dir))
     (goto-char (point-min))
