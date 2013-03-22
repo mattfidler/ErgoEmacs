@@ -425,8 +425,7 @@ Emacs buffers are those whose name starts with *."
 ;; This custome kill buffer is close-current-buffer.
 
 (defun ergoemacs-open-in-external-app ()
-  "Open the current file or dired marked files in external app.
-Works in Microsoft Windows, Mac OS X, Linux."
+  "Open the current file or dired marked files in external app."
   (interactive)
   (let ( doIt
          (myFileList
@@ -449,8 +448,7 @@ Works in Microsoft Windows, Mac OS X, Linux."
         (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList) ) ) ) ) )
 
 (defun ergoemacs-open-in-desktop ()
-  "Open the current file in desktop.
-Works in Microsoft Windows, Mac OS X, Linux."
+  "Show current file in desktop (OS's file manager)."
   (interactive)
   (cond
    ((string-equal system-type "windows-nt")
