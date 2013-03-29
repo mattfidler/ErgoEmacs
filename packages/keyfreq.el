@@ -1,3 +1,4 @@
+;;; keyfreq.el --- track command frequencies
 ;; -*- coding: utf-8 -*-
 ;; keyfreq.el -- track command frequencies
 ;;
@@ -162,7 +163,7 @@ it from the least used commands.  If LIMIT is positive number
 only commands which were used more then LIMIT times will be
 added.  If it is negative number only commands which were used
 less then -LIMIT times will be added."
-
+  
   (let (l (sum 0))
     (maphash
      (cond
@@ -286,7 +287,7 @@ buffer is used as MAJOR-MODE-SYMBOL argument."
 			 (symbol-name major-mode-symbol))))
        (keyfreq-used-major-modes table))
       (insert "</ul>\n")
-
+      
       (insert "<h2><a name=\"all\">All major modes</a></h2>\n")
       (funcall htmltable (keyfreq-list (keyfreq-groups-major-modes table)))
 
@@ -485,3 +486,4 @@ value will take effect only after (re)enabling
 
 
 (provide 'keyfreq)
+;;; keyfreq.el ends here
