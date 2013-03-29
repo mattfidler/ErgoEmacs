@@ -837,6 +837,13 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (let ((no-ergoemacs-advice t))
     (define-key ergoemacs-keymap key nil)))
 
+;; Org edit source bug fix to allow C-s to save the org file in a
+;; source snippet.
+
+(eval-after-load "org-src"
+  '(progn
+     (define-key org-src-mode-map [remap save-buffer] 'org-edit-src-save)))
+
 (require 'ergoemacs-variants)
 (provide 'ergoemacs-mode)
 
