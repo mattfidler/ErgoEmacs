@@ -680,6 +680,101 @@ will change."
        (ergoemacs-key-fn-lookup 'smex-if-exists)
        (ergoemacs-key-fn-lookup 'ergoemacs-smex-if-exists))))
 
+(defvar ergoemacs-ctl-x-unchorded nil
+  "Keymap for unchorded 【Ctl+x】 combinations.")
+
+(defvar ergoemacs-ctl-x nil
+  "Keymap for 【Ctl+x】combinations.  C-x C- are mapped to C-x M-")
+
+(defvar ergoemacs-ctl-c nil
+  "Keymap for 【Ctl+c】 combinations.  Should be buffer local.")
+
+(defvar ergoemacs-ctl-c-unchorded nil
+  "Keymap for unchorded 【Ctl+c】 combinations.  Should be buffer local.")
+
+(defmacro ergoemacs-extract-map (keymap &optional prefix chord rep-chord new-chord)
+  "Takes out the key-chords from the buffer-defined map.
+If Prefix is nil assume C-x.
+If chord is nil, assume C-
+If new-chord is nil, assume M-
+
+If chord is not an empty string and chorded is nil, then all
+control sequences will be translate as follows:
+
+Control characters will be translated to normal characters.
+Normal characters will be translated to new-chord prefixed characters.
+new-chord prefixed characters will be translated to the old chord.
+
+For example for the C-x map,
+
+Original Key   Translated Key  Function
+C-k C-n     -> k n             (kmacro-cycle-ring-next)
+C-k a       -> k M-a           (kmacro-add-counter)
+C-k M-a     -> k C-a           not defined
+C-k S-a     -> k S-a           not defined
+
+If prefix is an empty string extract the map and remove the prefix.
+
+If rep-chord is non-nil, like M- instead these same translations would be:
+
+C-k C-n     -> M-k M-n             (kmacro-cycle-ring-next)
+C-k a       -> M-k M-a           (kmacro-add-counter)
+C-k M-a     -> k C-a           not defined
+C-k S-a     -> k S-a           not defined
+
+"
+  `(let ((ret "")
+         (buf (current-buffer))
+         (curr-prefix (or ,prefix "C-x"))
+         (new-key "")
+         (fn "")
+         (chord (or ,chord "C-"))
+         (rep-chord (or ,rep-chord ""))
+         (new-chord (or ,new-chord "M-")))
+     
+     (setq ,keymap (make-keymap))
+     
+     (with-temp-buffer
+       (describe-buffer-bindings buf (kbd curr-prefix))
+       (goto-char (point-min))
+       
+       (while (re-search-forward
+               (concat curr-prefix " \\("
+                       (if (string= "" rep-chord)
+                           chord
+                         "") ".*?\\)[ \t]\\{2,\\}\\(.+\\)$")
+               nil t)
+         (setq new-key (match-string 1))
+         (setq fn (match-string 2))
+         (condition-case err
+             (with-temp-buffer
+               (insert "(setq fn '" fn ")")
+               (eval-buffer))
+           (error (setq fn nil)))
+         (save-match-data
+           (unless (string= chord "")
+             (with-temp-buffer
+               (insert new-key)
+               (goto-char (point-min))
+               (while (re-search-forward "\\<" nil t)
+                 (if (looking-at chord)
+                     (replace-match rep-chord)
+                   (if (or (and (not (string= "" new-chord))
+                                (looking-at new-chord))
+                           (and (not (string= "" rep-chord))
+                                (looking-at rep-chord)))
+                       (replace-match chord)
+                     (if (not (looking-at ".-"))
+                         (insert new-chord))))
+                 (forward-char))
+               (setq new-key (buffer-string)))))
+         (unless (or (string= new-key "")
+                     (not fn)
+                     (eq fn 'Prefix))
+           (when ergoemacs-debug
+             (message "%s -> %s (%s)" (match-string 1) new-key fn))
+           (define-key ,keymap (kbd new-key) fn))))))
+
 
 ;; ErgoEmacs minor mode
 ;;;###autoload
@@ -703,6 +798,8 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
   (when ergoemacs-cua-rect-modifier
     (if ergoemacs-mode
         (progn
+          (ergoemacs-extract-map ergoemacs-ctl-x-unchorded)
+          (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" "")
           (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
           (setq cua--rectangle-keymap (make-sparse-keymap))
           (setq cua--rectangle-initialized nil)
@@ -843,6 +940,8 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
 (eval-after-load "org-src"
   '(progn
      (define-key org-src-mode-map [remap save-buffer] 'org-edit-src-save)))
+
+
 
 (require 'ergoemacs-variants)
 (provide 'ergoemacs-mode)
