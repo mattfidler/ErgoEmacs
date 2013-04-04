@@ -299,8 +299,6 @@ remove the keymap depends on user input and KEEP-PRED:
                       (regexp-opt (mapcar (lambda(x) (nth 0 x))
                                           ergoemacs-translation-assoc) nil)))))))
 
-
-
 (defun ergoemacs-kbd (key &optional just-translate only-first)
   "Translates kbd code KEY for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'.
 If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key sequence.
@@ -421,7 +419,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                           (encode-coding-string 
                            trans-key
                            locale-coding-system)))))
-            (define-key ,keymap key cmd)
+            (if (condition-case err
+                    (keymapp (symbol-value cmd))
+                  (error nil))
+                (define-key ,keymap key (symbol-value cmd))
+              (define-key ,keymap key cmd))
             (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                 (message "Fixed: %s -> %s %s" trans-key cmd key)))))
       (symbol-value (ergoemacs-get-fixed-layout)))
@@ -435,7 +437,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
           (when (not (ergoemacs-global-changed-p trans-key t))
             (setq cmd (nth 1 x))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
-            (define-key ,keymap  key cmd)
+            (if (condition-case err
+                    (keymapp (symbol-value cmd))
+                  (error nil))
+                (define-key ,keymap  key (symbol-value cmd))
+              (define-key ,keymap  key cmd))
             (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                 (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))
       (symbol-value (ergoemacs-get-variable-layout)))
@@ -686,11 +692,11 @@ will change."
 (defvar ergoemacs-ctl-x nil
   "Keymap for 【Ctl+x】combinations.  C-x C- are mapped to C-x M-")
 
-(defvar ergoemacs-ctl-c nil
-  "Keymap for 【Ctl+c】 combinations.  Should be buffer local.")
+(defvar ergoemacs-ctl-h nil
+  "Keymap for 【Ctl+h】 combinations.")
 
-(defvar ergoemacs-ctl-c-unchorded nil
-  "Keymap for unchorded 【Ctl+c】 combinations.  Should be buffer local.")
+(defvar ergoemacs-ctl-h-unchorded nil
+  "Keymap for unchorded 【Ctl+h】 combinations.")
 
 (defmacro ergoemacs-extract-map (keymap &optional prefix chord rep-chord new-chord)
   "Takes out the key-chords from the buffer-defined map.
@@ -775,6 +781,37 @@ C-k S-a     -> k S-a           not defined
              (message "%s -> %s (%s)" (match-string 1) new-key fn))
            (define-key ,keymap (kbd new-key) fn))))))
 
+(defun ergoemacs-ctl-c-unchorded ()
+  "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
+  (interactive)
+  (eval
+   `(progn
+      (defvar ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) nil
+        ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
+      (unless ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode))
+        (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) "C-c"))
+      ;; Install keymap locally per buffer.  Would do in each mode,
+      ;; but modes like ESS makes this a bit tricky...
+      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-unchorded)
+                     ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))
+      ;; On first run, the unchorded ctl-c map is a temporary-keymap.
+      (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode))))))
+
+(defun ergoemacs-ctl-c ()
+  "Creates a keymap for the current major mode that extract the 【Ctl+c】 combinations."
+  (interactive)
+  (eval
+   `(progn
+      (defvar ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) nil
+        ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
+      (unless ,(intern (format "ergoemacs-ctl-c-%s" major-mode))
+        (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) "C-c" "C-" "M-" ""))
+      ;; Install keymap locally.
+      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c)
+                     ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))
+      ;; On first run, the unchorded ctl-c map is a temporary-keymap.
+      (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode))))))
+
 
 ;; ErgoEmacs minor mode
 ;;;###autoload
@@ -798,8 +835,19 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
   (when ergoemacs-cua-rect-modifier
     (if ergoemacs-mode
         (progn
-          (ergoemacs-extract-map ergoemacs-ctl-x-unchorded)
-          (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" "")
+          
+          (unless ergoemacs-ctl-x-unchorded
+            (ergoemacs-extract-map ergoemacs-ctl-x-unchorded))
+          
+          (unless ergoemacs-ctl-x
+            (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" ""))
+          
+          (unless ergoemacs-ctl-h-unchorded
+            (ergoemacs-extract-map ergoemacs-ctl-h-unchorded "C-h"))
+          
+          (unless ergoemacs-ctl-h
+            (ergoemacs-extract-map ergoemacs-ctl-h "C-h" "C-" "M-" ""))
+          
           (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
           (setq cua--rectangle-keymap (make-sparse-keymap))
           (setq cua--rectangle-initialized nil)
