@@ -113,7 +113,8 @@ save buffer
 ** Windows
 In windows some of the ergoemacs keys are implemented system wide by
 assuming apps follow the CUA-style keys like CTRL-f for find, CTRL-h
-for replace.
+for replace.  This also optionally implements:
+- CapsLock as Menu in emacs
 ** Mac OS X
 * Developer information
 ** Layouts
