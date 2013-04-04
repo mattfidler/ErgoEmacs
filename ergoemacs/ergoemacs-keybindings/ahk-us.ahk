@@ -43,7 +43,6 @@
 #SingleInstance force
 ;; Don't activate when in ErgoEmacs (because ErgoEmacs already defines them)
 #Persistent  ; Keep the script running until the user exits it.
-#IfWinNotActive ahk_class Emacs
 IniRead CurrCaps, ergoemacs.ini, Caps, App
 
 LayLst=
@@ -51,6 +50,18 @@ VarLst=
 CareL = 0
 CareV = 0
 CareLV = 0
+
+SendNonEmacs(key){
+ If WinActive("ahk_class Emacs") {
+   pressedKey := SubStr(A_ThisHotkey,0)
+   modifiers := GetModifiers()
+   Suspend On
+   SendInput % modifiers pressedKey
+   Suspend Off 
+ } Else {
+  SendInput %key%
+ }   
+}
 
 IniRead CurrLayout, ergoemacs.ini, Curr, Layout
 If (CurrLayout == "ERROR"){
@@ -106,6 +117,8 @@ Loop, Read, ergoemacs.ini
   }
 }
 
+
+HotKey,Capslock,capslock-handle
 ;; HotKey,(,autopair-paren
 
 
@@ -146,14 +159,6 @@ If (CurrCaps == "1"){
   Menu, Tray, Check, Caps to Menu in Emacs
 }
 Menu, tray, add, Exit, Exit
-
-#IfWinActive  ahk_class Emacs  ; if in emacs
-  If (CurrCaps == "1"){
-   +Capslock::Capslock ; make shift+Caps-Lock the Caps Lock toggle
-   Capslock::AppsKey   ; make Caps Lock the Apps key.
-  }
-
-
 return
 
 ToggleCaps:
@@ -194,3 +199,201 @@ autopair-paren:
   }
   ClipSaved = ; Free memory in case the clipboard was large
   return 
+
+
+capslock-handle:
+  If (WinActive("ahk_class Emacs") && CurrCaps == "1") {
+     SendInput {AppsKey}
+  } else {
+    Suspend On
+    SendInput {Capslock}
+    Suspend Off
+  }
+  return
+
+
+
+previous-line:
+
+  SendNonEmacs("{Up}")
+  return
+
+
+next-line:
+
+  SendNonEmacs("{Down}")
+  return
+
+
+backward-char:
+
+ SendNonEmacs("{Left}")
+ return
+
+
+forward-char:
+
+ SendNonEmacs("{Right}")
+ return
+
+
+backward-word:
+
+ SendNonEmacs("{Ctrl down}{Left}{Ctrl up}")
+  return
+
+
+forward-word:
+
+  SendNonEmacs("{Ctrl down}{Right}{Ctrl up}")
+  return
+
+
+move-beginning-of-line:
+
+  SendNonEmacs("{Home}")
+  return
+
+
+move-end-of-line:
+
+ SendNonEmacs("{End}")
+ return
+
+
+delete-backward-char:
+
+ SendNonEmacs("{Backspace}")
+  return
+
+
+delete-char:
+
+ SendNonEmacs("{Delete}")
+ return
+
+
+scroll-down:
+
+ SendNonEmacs("{PgUp}")
+ return
+
+
+scroll-up:
+
+ SendNonEmacs("{PgDn}")
+ return
+
+
+isearch-forward:
+
+  SendNonEmacs("{Ctrl down}{f}{Ctrl Up}")
+ return
+
+
+query-replace:
+
+  SendNonEmacs("{Ctrl down}{h}{Ctrl Up}")
+ return
+
+
+backward-kill-word:
+ SendNonEmacs("{Shift down}{Ctrl down}{Left}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  return
+
+
+kill-word:
+
+  SendNonEmacs("{Ctrl down}{Shift down}{Right}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  return
+
+
+kill-line:
+
+ SendNonEmacs("{Shift down}{End}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  return
+
+
+ergoemacs-kill-line-backward:
+
+  SendNonEmacs("{Shift down}{Home}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  return
+
+
+ergoemacs-cut-line-or-region:
+
+ SendNonEmacs("{Ctrl down}{x}{Ctrl up}")
+  return
+
+
+ergoemacs-copy-line-or-region:
+
+ SendNonEmacs("{Ctrl down}{c}{Ctrl up}")
+  return
+
+
+yank:
+
+ SendNonEmacs("{Ctrl down}{v}{Ctrl up}")
+  return
+
+
+undo:
+
+  SendNonEmacs("{Ctrl down}{z}{Ctrl up}")
+  return
+
+
+redo:
+
+ SendNonEmacs("{Ctrl down}{y}{Ctrl up}")
+  return
+
+
+;; Get Modifiers taken from https://github.com/benhansenslc/BigCtrl/blob/master/BigCtrl.ahk
+; Return the hotkey symbols (ie !, #, ^ and +) for the modifiers that
+; are currently activated
+GetModifiers()
+{
+  Modifiers =
+  GetKeyState, state1, LWin
+  GetKeyState, state2, RWin
+  state = %state1%%state2%
+  if state <> UU  ; At least one Windows key is down.
+    Modifiers = %Modifiers%# 
+  GetKeyState, state1, Alt
+  if state1 = D
+    Modifiers = %Modifiers%!
+  GetKeyState, state1, Control
+  if state1 = D
+    Modifiers = %Modifiers%^
+  GetKeyState, state1, Alt
+  GetKeyState, state1, Shift
+  if state1 = D
+    Modifiers = %Modifiers%+
+  Return Modifiers
+}
+
+;; Copyright information for BiGCtl
+
+; Copyright (c) 2012 Benjamin Hansen
+;
+; Permission is hereby granted, free of charge, to any person
+; obtaining a copy of this software and associated documentation files
+; (the "Software"), to deal in the Software without restriction,
+; including without limitation the rights to use, copy, modify, merge,
+; publish, distribute, sublicense, and/or sell copies of the Software,
+; and to permit persons to whom the Software is furnished to do so,
+; subject to the following conditions:
+; 
+; The above copyright notice and this permission notice shall be
+; included in all copies or substantial portions of the Software.
+; 
+; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+; BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+; ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+; SOFTWARE.
