@@ -816,10 +816,11 @@ C-k S-a     -> k S-a           not defined
   "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
   (interactive)
   (when (intern-soft (format "%s-map" major-mode))
-    (let ((fn (lookup-key (intern-soft (format "%s-map") (kbd "C-c C-c")))))
+    (let ((fn (lookup-key (intern-soft (format "%s-map" major-mode)) (kbd "C-c C-c"))))
       (when fn
         (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
         (call-interactively fn t)))))
+
 
 
 ;; ErgoEmacs minor mode
