@@ -812,6 +812,15 @@ C-k S-a     -> k S-a           not defined
       ;; On first run, the unchorded ctl-c map is a temporary-keymap.
       (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode))))))
 
+(defun ergoemacs-ctl-c-ctl-c ()
+  "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
+  (interactive)
+  (when (intern-soft (format "%s-map" major-mode))
+    (let ((fn (lookup-key (intern-soft (format "%s-map") (kbd "C-c C-c")))))
+      (when fn
+        (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
+        (call-interactively fn t)))))
+
 
 ;; ErgoEmacs minor mode
 ;;;###autoload

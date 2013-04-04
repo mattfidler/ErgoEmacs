@@ -1,6 +1,6 @@
 ;-*- coding: utf-8 -*-
 ;; Ergohotkey
-;; A AutoHotkey script for system-wide ErgoEmacs keybinding
+;; A AutopairHotkey script for system-wide ErgoEmacs keybinding
 ;;
 ;;   Copyright © 2009 Milan Santosi
 ;;   Copyright © 2013 Matthew Fidler
@@ -22,6 +22,8 @@
 ;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
+;; Version 0.7:
+;; - Added Caps lock to Menu in emacs.
 ;; Version 0.6:
 ;; - Unified Script, fixed kill-line-backwards
 ;; Version 0.5:
@@ -39,11 +41,10 @@
 
 ;; don't run multiple instance of this script
 #SingleInstance force
-
 ;; Don't activate when in ErgoEmacs (because ErgoEmacs already defines them)
-#IfWinNotActive ahk_class Emacs
 #Persistent  ; Keep the script running until the user exits it.
-
+#IfWinNotActive ahk_class Emacs
+IniRead CurrCaps, ergoemacs.ini, Caps, App
 
 LayLst=
 VarLst=
@@ -105,6 +106,8 @@ Loop, Read, ergoemacs.ini
   }
 }
 
+;; HotKey,(,autopair-paren
+
 
 ; Create Menu
 
@@ -138,7 +141,28 @@ Menu, Tray, DeleteAll
 Menu, Tray, NoStandard
 Menu, tray, add, Keyboard Layouts, :MenuKey
 Menu, tray, add, Variants, :VariantKey
+Menu, Tray, add, Caps to Menu in Emacs, ToggleCaps
+If (CurrCaps == "1"){
+  Menu, Tray, Check, Caps to Menu in Emacs
+}
 Menu, tray, add, Exit, Exit
+
+#IfWinActive  ahk_class Emacs  ; if in emacs
+  If (CurrCaps == "1"){
+   +Capslock::Capslock ; make shift+Caps-Lock the Caps Lock toggle
+   Capslock::AppsKey   ; make Caps Lock the Apps key.
+  }
+
+
+return
+
+ToggleCaps:
+If (CurrCaps == "1"){
+   IniWrite,0,ergoemacs.ini,Caps,App
+} Else {
+   IniWrite,1,ergoemacs.ini,Caps,App
+}
+Reload
 return
 
 VariantKeyHandler:
@@ -154,3 +178,19 @@ return
 Exit:
 ExitApp
 return
+
+
+autopair-paren:
+  ClipSave := ClipboardAll
+  Clipboard := ; Clear the Clipboard
+  SendInput {Ctrl down}{c}{Ctrl up}
+  ClipWait
+  if (Clipboard = "") {
+     ;; Nothing copied
+     SendInput (){Left}
+  } else {
+    SendInput {Ctrl down}{x}{Ctrl up}({Ctrl down}{v}{Control up}){Left}
+    Clipboard := ClipSave
+  }
+  ClipSaved = ; Free memory in case the clipboard was large
+  return 

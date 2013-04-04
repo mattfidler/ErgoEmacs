@@ -116,12 +116,13 @@
     ("M-*" ergoemacs-select-text-in-quote "←quote→")
     ("M-6" ergoemacs-select-current-block "Sel. Block")
     ("M-7" ergoemacs-select-current-line "Sel. Line")
-    ("<menu> j" ergoemacs-ctl-c-unchorded "Unchorded Ctl-c")
-    ("<menu> u" ergoemacs-ctl-c "Ctl-c*")
+    ("<menu> j" ergoemacs-ctl-c-unchorded "Ctl-c*")
+    ("<menu> u" ergoemacs-ctl-c "Ctl-c")
     ("<menu> f" ergoemacs-ctl-x-unchorded "Ctl-x*")
     ("<menu> r" ergoemacs-ctl-x "Ctl-x")
     ("<menu> h" ergoemacs-ctl-h "Ctl-h")
     ("<menu> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
+    ("<menu> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
     ("<menu> SPC" set-mark-command "Set Mark"))
   
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
