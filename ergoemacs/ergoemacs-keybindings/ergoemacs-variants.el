@@ -2,6 +2,10 @@
 ;;; Code:
 ;; Ergoemacs keys
 
+(define-key key-translation-map (kbd "<apps>") (kbd "<menu>"))
+(define-key key-translation-map (kbd "<f6>") (kbd "<menu>"))
+;; F6 is fall back
+
 (defgroup ergoemacs-standard-layout nil
   "Default Ergoemacs Layout"
   :group 'ergoemacs-mode)
@@ -111,13 +115,22 @@
     ("M-8" ergoemacs-extend-selection "←region→")
     ("M-*" ergoemacs-select-text-in-quote "←quote→")
     ("M-6" ergoemacs-select-current-block "Sel. Block")
-    ("M-7" ergoemacs-select-current-line "Sel. Line"))
+    ("M-7" ergoemacs-select-current-line "Sel. Line")
+    ("<menu> g" keyboard-quit "Quit")
+    ("<menu> j" ergoemacs-ctl-c "Ctl-c")
+    ("<menu> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
+    ("<menu> f" ergoemacs-ctl-x "Ctl-x")
+    ("<menu> r" ergoemacs-ctl-x-unchorded "Ctl-x*")
+    ("<menu> h" ergoemacs-ctl-h "Ctl-h")
+    ("<menu> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
+    ("<menu> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
+    ("<menu> SPC" set-mark-command "Set Mark"))
   
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
           (list :tag "Keys"
                 (string :tag "QWERTY Kbd Code")
-                (symbol :tag "Function")
+                (symbol :tag "Function/Keymap")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))
                 (boolean :tag "Translate Only first key?")))
@@ -211,7 +224,7 @@
           (list :tag "Fixed Key"
                 (choice (string :tag "Kbd code")
                         (sexp :tag "Key"))
-                (symbol :tag "Function to Run")
+                (symbol :tag "Function/Keymap")
                 (choice (const :tag "No Label" nil)
                         (string :tag "Label"))))
   :set 'ergoemacs-set-default

@@ -299,8 +299,6 @@ remove the keymap depends on user input and KEEP-PRED:
                       (regexp-opt (mapcar (lambda(x) (nth 0 x))
                                           ergoemacs-translation-assoc) nil)))))))
 
-
-
 (defun ergoemacs-kbd (key &optional just-translate only-first)
   "Translates kbd code KEY for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'.
 If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key sequence.
@@ -421,7 +419,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                           (encode-coding-string 
                            trans-key
                            locale-coding-system)))))
-            (define-key ,keymap key cmd)
+            (if (condition-case err
+                    (keymapp (symbol-value cmd))
+                  (error nil))
+                (define-key ,keymap key (symbol-value cmd))
+              (define-key ,keymap key cmd))
             (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                 (message "Fixed: %s -> %s %s" trans-key cmd key)))))
       (symbol-value (ergoemacs-get-fixed-layout)))
@@ -435,7 +437,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
           (when (not (ergoemacs-global-changed-p trans-key t))
             (setq cmd (nth 1 x))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
-            (define-key ,keymap  key cmd)
+            (if (condition-case err
+                    (keymapp (symbol-value cmd))
+                  (error nil))
+                (define-key ,keymap  key (symbol-value cmd))
+              (define-key ,keymap  key cmd))
             (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                 (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))
       (symbol-value (ergoemacs-get-variable-layout)))
@@ -680,6 +686,142 @@ will change."
        (ergoemacs-key-fn-lookup 'smex-if-exists)
        (ergoemacs-key-fn-lookup 'ergoemacs-smex-if-exists))))
 
+(defvar ergoemacs-ctl-x-unchorded nil
+  "Keymap for unchorded 【Ctl+x】 combinations.")
+
+(defvar ergoemacs-ctl-x nil
+  "Keymap for 【Ctl+x】combinations.  C-x C- are mapped to C-x M-")
+
+(defvar ergoemacs-ctl-h nil
+  "Keymap for 【Ctl+h】 combinations.")
+
+(defvar ergoemacs-ctl-h-unchorded nil
+  "Keymap for unchorded 【Ctl+h】 combinations.")
+
+(defmacro ergoemacs-extract-map (keymap &optional prefix chord rep-chord new-chord)
+  "Takes out the key-chords from the buffer-defined map.
+If Prefix is nil assume C-x.
+If chord is nil, assume C-
+If new-chord is nil, assume M-
+
+If chord is not an empty string and chorded is nil, then all
+control sequences will be translate as follows:
+
+Control characters will be translated to normal characters.
+Normal characters will be translated to new-chord prefixed characters.
+new-chord prefixed characters will be translated to the old chord.
+
+For example for the C-x map,
+
+Original Key   Translated Key  Function
+C-k C-n     -> k n             (kmacro-cycle-ring-next)
+C-k a       -> k M-a           (kmacro-add-counter)
+C-k M-a     -> k C-a           not defined
+C-k S-a     -> k S-a           not defined
+
+If prefix is an empty string extract the map and remove the prefix.
+
+If rep-chord is non-nil, like M- instead these same translations would be:
+
+C-k C-n     -> M-k M-n             (kmacro-cycle-ring-next)
+C-k a       -> M-k M-a           (kmacro-add-counter)
+C-k M-a     -> k C-a           not defined
+C-k S-a     -> k S-a           not defined
+
+"
+  `(let ((ret "")
+         (buf (current-buffer))
+         (curr-prefix (or ,prefix "C-x"))
+         (new-key "")
+         (fn "")
+         (chord (or ,chord "C-"))
+         (rep-chord (or ,rep-chord ""))
+         (new-chord (or ,new-chord "M-")))
+     
+     (setq ,keymap (make-keymap))
+     
+     (with-temp-buffer
+       (describe-buffer-bindings buf (kbd curr-prefix))
+       (goto-char (point-min))
+       
+       (while (re-search-forward
+               (concat curr-prefix " \\("
+                       (if (string= "" rep-chord)
+                           chord
+                         "") ".*?\\)[ \t]\\{2,\\}\\(.+\\)$")
+               nil t)
+         (setq new-key (match-string 1))
+         (setq fn (match-string 2))
+         (condition-case err
+             (with-temp-buffer
+               (insert "(setq fn '" fn ")")
+               (eval-buffer))
+           (error (setq fn nil)))
+         (save-match-data
+           (unless (string= chord "")
+             (with-temp-buffer
+               (insert new-key)
+               (goto-char (point-min))
+               (while (re-search-forward "\\<" nil t)
+                 (if (looking-at chord)
+                     (replace-match rep-chord)
+                   (if (or (and (not (string= "" new-chord))
+                                (looking-at new-chord))
+                           (and (not (string= "" rep-chord))
+                                (looking-at rep-chord)))
+                       (replace-match chord)
+                     (if (not (looking-at ".-"))
+                         (insert new-chord))))
+                 (forward-char))
+               (setq new-key (buffer-string)))))
+         (unless (or (string= new-key "")
+                     (not fn)
+                     (eq fn 'Prefix))
+           (when ergoemacs-debug
+             (message "%s -> %s (%s)" (match-string 1) new-key fn))
+           (define-key ,keymap (kbd new-key) fn))))))
+
+(defun ergoemacs-ctl-c-unchorded ()
+  "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
+  (interactive)
+  (eval
+   `(progn
+      (defvar ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) nil
+        ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
+      (unless ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode))
+        (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) "C-c"))
+      ;; Install keymap locally per buffer.  Would do in each mode,
+      ;; but modes like ESS makes this a bit tricky...
+      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-unchorded)
+                     ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))
+      ;; On first run, the unchorded ctl-c map is a temporary-keymap.
+      (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode))))))
+
+(defun ergoemacs-ctl-c ()
+  "Creates a keymap for the current major mode that extract the 【Ctl+c】 combinations."
+  (interactive)
+  (eval
+   `(progn
+      (defvar ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) nil
+        ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
+      (unless ,(intern (format "ergoemacs-ctl-c-%s" major-mode))
+        (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) "C-c" "C-" "M-" ""))
+      ;; Install keymap locally.
+      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c)
+                     ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))
+      ;; On first run, the unchorded ctl-c map is a temporary-keymap.
+      (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode))))))
+
+(defun ergoemacs-ctl-c-ctl-c ()
+  "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
+  (interactive)
+  (when (intern-soft (format "%s-map" major-mode))
+    (let ((fn (lookup-key (intern-soft (format "%s-map" major-mode)) (kbd "C-c C-c"))))
+      (when fn
+        (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
+        (call-interactively fn t)))))
+
+
 
 ;; ErgoEmacs minor mode
 ;;;###autoload
@@ -703,6 +845,19 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
   (when ergoemacs-cua-rect-modifier
     (if ergoemacs-mode
         (progn
+          
+          (unless ergoemacs-ctl-x-unchorded
+            (ergoemacs-extract-map ergoemacs-ctl-x-unchorded))
+          
+          (unless ergoemacs-ctl-x
+            (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" ""))
+          
+          (unless ergoemacs-ctl-h-unchorded
+            (ergoemacs-extract-map ergoemacs-ctl-h-unchorded "C-h"))
+          
+          (unless ergoemacs-ctl-h
+            (ergoemacs-extract-map ergoemacs-ctl-h "C-h" "C-" "M-" ""))
+          
           (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
           (setq cua--rectangle-keymap (make-sparse-keymap))
           (setq cua--rectangle-initialized nil)
@@ -836,6 +991,15 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
     (delete (key-description key) ergoemacs-global-not-changed-cache))
   (let ((no-ergoemacs-advice t))
     (define-key ergoemacs-keymap key nil)))
+
+;; Org edit source bug fix to allow C-s to save the org file in a
+;; source snippet.
+
+(eval-after-load "org-src"
+  '(progn
+     (define-key org-src-mode-map [remap save-buffer] 'org-edit-src-save)))
+
+
 
 (require 'ergoemacs-variants)
 (provide 'ergoemacs-mode)
