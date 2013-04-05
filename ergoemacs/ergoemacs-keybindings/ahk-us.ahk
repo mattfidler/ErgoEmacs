@@ -50,8 +50,9 @@ VarLst=
 CareL = 0
 CareV = 0
 CareLV = 0
+MarkSet = 0
 
-SendNonEmacs(key){
+SendNonEmacs(key,IsMovement = 0){
  If WinActive("ahk_class Emacs") {
    pressedKey := SubStr(A_ThisHotkey,0)
    modifiers := GetModifiers()
@@ -59,7 +60,16 @@ SendNonEmacs(key){
    SendInput % modifiers pressedKey
    Suspend Off 
  } Else {
-  SendInput %key%
+  If (IsMovement == 0){
+    MarkSet = 0
+    SendInput %key%
+  } Else {
+    If (MarkSet == 0){
+      SendInput %key%
+    } Else {
+      SendInput {Shift down}%key%{Shift up}
+    }
+  }
  }   
 }
 
@@ -184,6 +194,13 @@ Exit:
 ExitApp
 return
 
+ahk-set-mark:
+  If (MarkSet == 0){
+    MarkSet = 1
+  } Else {
+    MarkSet = 0
+  }
+  return
 
 autopair-paren:
   ClipSave := ClipboardAll
@@ -214,140 +231,118 @@ capslock-handle:
 
 
 previous-line:
-
-  SendNonEmacs("{Up}")
+  SendNonEmacs("{Up}", 1)
   return
 
 
 next-line:
-
-  SendNonEmacs("{Down}")
+  SendNonEmacs("{Down}", 1)
   return
 
 
 backward-char:
-
- SendNonEmacs("{Left}")
+ SendNonEmacs("{Left}", 1)
  return
 
 
 forward-char:
-
- SendNonEmacs("{Right}")
+ SendNonEmacs("{Right}", 1)
  return
 
 
 backward-word:
-
- SendNonEmacs("{Ctrl down}{Left}{Ctrl up}")
-  return
+ SendNonEmacs("{Ctrl down}{Left}{Ctrl up}", 1)
+ return
 
 
 forward-word:
-
-  SendNonEmacs("{Ctrl down}{Right}{Ctrl up}")
+  SendNonEmacs("{Ctrl down}{Right}{Ctrl up}", 1)
   return
 
 
 move-beginning-of-line:
-
-  SendNonEmacs("{Home}")
+  SendNonEmacs("{Home}", 1)
   return
 
 
 move-end-of-line:
-
- SendNonEmacs("{End}")
+ SendNonEmacs("{End}", 1)
  return
 
 
 delete-backward-char:
-
- SendNonEmacs("{Backspace}")
+  SendNonEmacs("{Backspace}")
   return
 
 
 delete-char:
-
  SendNonEmacs("{Delete}")
  return
 
 
 scroll-down:
-
- SendNonEmacs("{PgUp}")
+ SendNonEmacs("{PgUp}", 1)
  return
 
 
 scroll-up:
-
- SendNonEmacs("{PgDn}")
+ SendNonEmacs("{PgDn}", 1)
  return
 
 
 isearch-forward:
-
-  SendNonEmacs("{Ctrl down}{f}{Ctrl Up}")
+ SendNonEmacs("{Ctrl down}{f}{Ctrl Up}")
  return
 
 
 query-replace:
-
-  SendNonEmacs("{Ctrl down}{h}{Ctrl Up}")
+ SendNonEmacs("{Ctrl down}{h}{Ctrl Up}")
  return
 
 
 backward-kill-word:
  SendNonEmacs("{Shift down}{Ctrl down}{Left}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}")
-  return
+ return
 
 
 kill-word:
-
   SendNonEmacs("{Ctrl down}{Shift down}{Right}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}")
   return
 
 
 kill-line:
-
- SendNonEmacs("{Shift down}{End}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  SendNonEmacs("{Shift down}{End}{Shift up}{Ctrl down}{x}{Ctrl up}")
   return
 
 
 ergoemacs-kill-line-backward:
-
   SendNonEmacs("{Shift down}{Home}{Shift up}{Ctrl down}{x}{Ctrl up}")
   return
 
 
 ergoemacs-cut-line-or-region:
-
  SendNonEmacs("{Ctrl down}{x}{Ctrl up}")
-  return
+ return
 
 
 ergoemacs-copy-line-or-region:
-
  SendNonEmacs("{Ctrl down}{c}{Ctrl up}")
-  return
+ return
 
 
 yank:
-
  SendNonEmacs("{Ctrl down}{v}{Ctrl up}")
-  return
+ return
 
 
 undo:
-
   SendNonEmacs("{Ctrl down}{z}{Ctrl up}")
   return
 
 
 redo:
-
  SendNonEmacs("{Ctrl down}{y}{Ctrl up}")
-  return
+ return
 
 
 ;; Get Modifiers taken from https://github.com/benhansenslc/BigCtrl/blob/master/BigCtrl.ahk
