@@ -1,5 +1,73 @@
 #+TITLE: Ergoemacs Keybindings
 #+AUTHOR: Xah Lee, David Capello, and Matthew Fidler
+
+ErgoEmacs improves GNU Emacs for people who did not grew up with
+emacs. User interface is based on common modern software interface
+familiar to most people today, such as using 【Ctrl+C】 key for Copy,
+【Ctrl+Z】 for undo, 【Ctrl+O】 for Open file, and also bundles many
+elisp packages that are not in GNU Emacs.
+
+* Standard Keyboard Shutcuts
+
+Common keyboard shortcut are supported, so you don't have to change
+your mindset when you switch in and out of emacs. The following are
+supported standard keys in Windows, Mac OS X, and Linux. (Mac uses Cmd
+instead of Ctrl.)
+
+|---------------+--------------+----------------------|
+| Standard name | Key press    | Emacs command name   |
+|---------------+--------------+----------------------|
+| Copy          | Ctrl+c       | kill-ring-save       |
+| Cut           | Ctrl+x       | kill-region          |
+| Paste         | Ctrl+v       | yank                 |
+| Undo          | Ctrl+z       | undo                 |
+| Redo          | Ctrl+Shift+z | redo                 |
+| Redo          | Ctrl+y       | redo                 |
+| Open New File | Ctrl+n       | new-empty-buffer     |
+| Open          | Ctrl+o       | find-file            |
+| Close         | Ctrl+w       | close-current-buffer |
+| Save          | Ctrl+s       | save-buffer          |
+| Save As       | Ctrl+Shift+s | write-file           |
+| Print         | Ctrl+p       | print-buffer         |
+| Select All    | Ctrl+a       | mark-whole-buffer    |
+| Find          | Ctrl+f       | search-forward       |
+|---------------+--------------+----------------------|
+
+Standard shortcuts for cursor navigation are also supported. Example:
+【Ctrl+Left】 ⇒ go to previous word, ↖ Home ⇒ beginning of line, 【⇧
+Shift+Down】 ⇒ selecting text downward
+
+* Window/Tab Switching
+The following are some new commands that lets you easily switch
+windows or buffers.
+
+|-----------------+----------------------------+--------------------------|
+| Standard name   | Key press                  | Emacs command name       |
+|-----------------+----------------------------+--------------------------|
+| Next Window     | 【Alt+`】                  | switch-to-next-frame     |
+| Previous Window | 【Alt+~】                  | switch-to-previous-frame |
+| Next Tab        | 【Ctrl+⇟PageDown▽】        | next-user-buffer         |
+| Previous Tab    | 【Ctrl+⇞PageUp△】          | previous-user-buffer     |
+| NA              | 【Ctrl+⇧Shift+⇟PageDown▽】 | next-emacs-buffer        |
+| NA              | 【Ctrl+⇧Shift+⇞PageUp △】  | previous-emacs-buffer    |
+|-----------------+----------------------------+--------------------------|
+
+* Shrink-whitespaces, compact/uncompact-block, toggle-letter-case
+The following are new commands that combine the functionality of
+several similar commands into one. This way, you have one single
+command with one single shortcut to remember. They do what you want
+depending on context.
+
+|-------------------------+-----------+-----------------------------------------|
+| Name                    | Shortcut  | Description                             |
+|-------------------------+-----------+-----------------------------------------|
+| shrink-whitespaces      | 【Alt+w】 | Takes out spaces/tabs around cursor     |
+| compact-uncompact-block | 【Alt+q】 | Hard Wraps or unwraps text             u |
+| toggle-letter-case      | 【Alt+/】 | Change capitilzation (ALL, First,lower) |
+|-------------------------+-----------+-----------------------------------------|
+
+* Fast/Ergonomic Shortcuts
+* Layouts Supported
 * Tips for adopting ErgoEmacs Keybindings
 If you are a long time emacs user, you may find it painful to adopt
 this setup.
@@ -8,18 +76,17 @@ This difficulty is nothing special. It's the same difficulty when you
 switching to dvorak after years of qwerty. Basically, it's about
 changing muscle memory.
 
-* Where Did My Command Go?
+** Where Did My Command Go?
 The ergonomic-mode minor mode features the command
 where-is-old-binding, with shortcut “Ctrl+h o”. This command asks you
 to type a shortcut, and tells you which command it was bound in GNU
 Emacs, and the new shortcut for it under ErgoEmacs?.
 
-* Shortcut To Open Cheatsheet
-You can define a key such as F8 to open the image file showing the layout. 
+** Shortcut To Open Cheatsheet
 
-* Gradual Adoption for an Emacs User
+** Gradual Adoption for an Emacs User
 Here's some tips that may help you adopt.
-** Level 1
+*** Level 1
 If you find it too painful to switch, don't use the whole package. Instead, start off with just the arrow key movements.
 #+BEGIN_SRC emacs-lisp
   (setq ergoemacs-variant "lvl1")
@@ -32,27 +99,27 @@ With only the above change, you will increase your emacs productivity, especiall
 
 Once you used the above for a couple of weeks, you may add more keys to adopt.
 
-** Level 2
+*** Level 2
 Adding keys for moving around words and deleting words.
 
 #+BEGIN_SRC emacs-lisp
   (setq ergoemacs-variant "lvl2")
   (ergoemacs-mode 1)
 #+END_SRC
-** Level 3
+*** Level 3
 Try to use the full ergoemacs mode.
 #+BEGIN_SRC emacs-lisp
   (setq ergoemacs-variant nil)
   (ergoemacs-mode 1)
 #+END_SRC
-** Guru
+*** Guru
 The guru variant takes away the arrow keys and page up/page down keys.
 
 #+BEGIN_SRC emacs-lisp
   (setq ergoemacs-variant "guru")
   (ergoemacs-mode 1)
 #+END_SRC
-** Master
+*** Master
 The Master variant takes away the backspace.  This key is not
 particularly ergonomic, and can cause possible pinky issues.
 Changing this means that you may wish to try to get ergoemacs
