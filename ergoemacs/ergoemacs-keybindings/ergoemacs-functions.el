@@ -16,7 +16,23 @@
   '(delete-backward-char delete-char kill-word backward-kill-word)
   "Defines deletion functions that ergoemacs is aware of.")
 
+(defun ergoemacs-cheat-sheet-file ()
+  "Cheet sheet file for ergoemacs"
+  (let ((var-dir "") extra-dir)
+    (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
+    (when ergoemacs-variant
+      (setq var-dir (concat ergoemacs-variant "/"))
+      (setq extra-dir (expand-file-name ergoemacs-variant extra-dir)))
+    (setq extra-dir (expand-file-name "ergo-layouts" extra-dir))
+    (setq extra-dir (expand-file-name (concat "ergoemacs-layout-" ergoemacs-keyboard-layout ".svg")))
+    (when (not (file-exists-p extra-dir))
+      (ergoemacs-gen-svg ergoemacs-variant "kbd-ergo.svg" (concat var-dir "ergo-layouts")))
+    (symbol-value 'extra-dir)))
 
+(defun ergoemacs-cheat-sheet ()
+  "Opens Ergoemacs Cheat Sheet in Browser."
+  
+  )
 
 ;;; Ido-ergoemacs functional fixes
 (defun ergoemacs-ido-c-o (arg)
