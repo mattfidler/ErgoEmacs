@@ -43,8 +43,7 @@
 (require 'newcomment )
 
 (defvar xc-use-comment-dwim-p nil "whether to use emacs's builtin comment-dwim 〔newcomment.el〕 commands.")
-
-(setq xc-use-comment-dwim-p t )
+(setq xc-use-comment-dwim-p nil )
 
 (defvar xc-line-comment-syntax-table nil "a alist that maps major mode name to the lang's line comment beginning chars syntax.")
 
@@ -59,10 +58,14 @@
            (clojure-mode . ";")  ; (comment …)
            (cperl-mode . "#")
            (emacs-lisp-mode . ";")
+           (xah-elisp-mode . ";")
            (fundamental-mode . "#")
            (haskell-mode . "--") ; block 「{-…-}」
            (java-mode . "//")
            (js-mode . "//")
+           (shell-script-mode . "#")
+           (conf-space-mode . "#")
+
            (lisp-mode . ";")
            (perl-mode . "#")
            (php-mode . "#") ;; also 「//」. 「/*…*/」

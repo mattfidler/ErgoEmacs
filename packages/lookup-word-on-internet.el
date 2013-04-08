@@ -61,6 +61,7 @@
 
 ;;; HISTORY
 
+;; version 1.4, 2013-03-23 added 2 more dict to the all-dictionaries. Good for vocabulary researchers
 ;; version 1.3, 2012-05-11 added “lookup-all-dictionaries”.
 ;; version 1.2, 2012-05-10 added “lookup-answers.com”. Improved inline docs.
 ;; version 1.1, 2012-05-09 changed the input from 「'symbol」 to 「'word」. Changed the English dictionary used from 「http://www.answers.com/main/ntquery?s=�」 to 「http://www.thefreedictionary.com/�」.
@@ -71,12 +72,14 @@
 
 (require 'xeu_elisp_util)
 
-(defvar all-dictionaries nil "a vector of dictionaries. Used by `lookup-all-dictionaries'.")
+(defvar all-dictionaries nil "A vector of dictionaries. Used by `lookup-all-dictionaries'. http://wordyenglish.com/words/dictionary_tools.html ")
 (setq all-dictionaries [
-"http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=�"
-"http://www.thefreedictionary.com/�"
-"http://www.answers.com/main/ntquery?s=�" 
+"http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=�" ; 1913 Webster, WordNet
+"http://www.thefreedictionary.com/�"                         ; AHD
+"http://www.answers.com/main/ntquery?s=�"                    ; AHD
 "http://en.wiktionary.org/wiki/�"
+"http://www.google.com/search?q=define:+�" ; google
+"http://www.etymonline.com/index.php?search=�" ; etymology
 ] )
 
 (defun lookup-word-on-internet (&optional input-word site-to-use)

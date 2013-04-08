@@ -1026,14 +1026,13 @@ If there's a text selection, wrap p around each text block (separated by 2 newli
   )
 
 (defun xhm-htmlize-keyboard-shortcut-notation ()
-  "Wrap a “kbd” tag around keyboard keys on current text inside 【】, or text selection.
+  "Wrap a “kbd” tag around keyboard keys on text selection or current text inside 【】.
 e.g.
  【ctrl+w】
 becomes
  【<kbd>Ctrl</kbd>+<kbd>w</kbd>】
 Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings."
   (interactive)
-
   (let (p1 p2 inputStr resultStr replaceList)
     (if (region-active-p)
         (progn
@@ -1056,34 +1055,34 @@ Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings."
 
     (setq replaceList [
  ;; case in find string shouldn't matter.
-["Control" "<kbd>Ctrl</kbd>"]
-["Ctrl" "<kbd>Ctrl</kbd>"]
-["AltGr" "<kbd>AltGr</kbd>"]
-["Alt" "<kbd>Alt</kbd>"]
-["Shift" "<kbd>⇧ Shift</kbd>"]
+["control" "<kbd>Ctrl</kbd>"]
+["ctrl" "<kbd>Ctrl</kbd>"]
+["altgr" "<kbd>AltGr</kbd>"]
+["alt" "<kbd>Alt</kbd>"]
+["shift" "<kbd>⇧ Shift</kbd>"]
 ["command" "<kbd>⌘ Cmd</kbd>"]
-["Cmd" "<kbd>⌘ Cmd</kbd>"]
-["Option" "<kbd>⌥ Opt</kbd>"]
-["Opt" "<kbd>⌥ Opt</kbd>"]
-["Win" "<kbd>❖ Win</kbd>"]
-["App" "<kbd>▤ Menu</kbd>"]
-["Menu" "<kbd>▤ Menu</kbd>"]
-["Meta" "<kbd>Meta</kbd>"]
+["cmd" "<kbd>⌘ Cmd</kbd>"]
+["option" "<kbd>⌥ Opt</kbd>"]
+["opt" "<kbd>⌥ Opt</kbd>"]
+["win" "<kbd>❖ Win</kbd>"]
+["app" "<kbd>▤ Menu</kbd>"]
+["menu" "<kbd>▤ Menu</kbd>"]
+["meta" "<kbd>Meta</kbd>"]
 ["super" "<kbd>Super</kbd>"]
 ["hyper" "<kbd>Hyper</kbd>"]
 
-["Return" "<kbd>Return ↩</kbd>"]
-["Enter" "<kbd>Enter ↵</kbd>"]
-["Backspace" "<kbd>⌫ Backspace</kbd>"]
-["Delete" "<kbd>⌦ Delete</kbd>"]
-["Del" "<kbd>⌦ Delete</kbd>"]
-["Space" "<kbd>Space</kbd>"]
-["Caps Lock" "<kbd>Caps Lock</kbd>"]
-["CapsLock" "<kbd>Caps Lock</kbd>"]
-["F Lock" "<kbd>F Lock</kbd>"]
-["Num Lock" "<kbd>Num Lock</kbd>"]
-["Tab" "<kbd>Tab ↹</kbd>"]
-["Esc" "<kbd>Esc</kbd>"]
+["return" "<kbd>Return ↩</kbd>"]
+["enter" "<kbd>Enter ↵</kbd>"]
+["backspace" "<kbd>⌫ Backspace</kbd>"]
+["delete" "<kbd>⌦ Delete</kbd>"]
+["del" "<kbd>⌦ Delete</kbd>"]
+["space" "<kbd>Space</kbd>"]
+["capslock" "<kbd>Caps Lock</kbd>"]
+["flock" "<kbd>F Lock</kbd>"]
+["numlock" "<kbd>Num Lock</kbd>"]
+["scrolllock" "<kbd>Scroll Lock</kbd>"]
+["tab" "<kbd>Tab ↹</kbd>"]
+["esc" "<kbd>Esc</kbd>"]
 
 ["copy" "<kbd>Copy</kbd>"]
 ["cut" "<kbd>✂ Cut</kbd>"]
@@ -1139,6 +1138,8 @@ Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings."
 ["PgDn" "<kbd>⇟ Page ▽</kbd>"]
 ["insert" "<kbd>Insert</kbd>"]
 ["ins" "<kbd>Insert</kbd>"]
+["pause" "<kbd>Pause</kbd>"]
+["break" "<kbd>Break</kbd>"]
 
 ["‹key›" "<kbd>‹key›</kbd>"]
                        ])
