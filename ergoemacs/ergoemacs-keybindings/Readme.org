@@ -273,7 +273,11 @@ to type a shortcut, and tells you which command it was bound in GNU
 Emacs, and the new shortcut for it under ErgoEmacs?.
 
 ** Shortcut To Open Cheatsheet
-
+You can open a cheatsheet by pressing [Control+h] ['].  On the first
+run, this will create a svg and (possibly) create a png based on the
+svg (if =ergoemacs-inkscape= points to the inkscape executable). Once
+these are created, the cheatsheet will be opened displaying all the
+keys based on your layout.
 ** Gradual Adoption for an Emacs User
 Here's some tips that may help you adopt.
 *** Level 1

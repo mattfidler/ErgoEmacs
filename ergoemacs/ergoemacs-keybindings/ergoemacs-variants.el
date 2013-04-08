@@ -177,6 +177,8 @@
     ("<f1> m" ergoemacs-describe-major-mode)
     ("C-h o" ergoemacs-where-is-old-binding)
     ("<f1> o" ergoemacs-where-is-old-binding)
+    ("C-h '" ergoemacs-display-current-svg)
+    ("<f1> '" ergoemacs-display-current-svg)
     
     ("C-<pause>" kill-compilation)      ; stop compilation/find/grep
     

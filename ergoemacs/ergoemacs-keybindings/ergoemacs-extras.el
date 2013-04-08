@@ -375,7 +375,9 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
   (ergoemacs-gen-ahk)
   (ergoemacs-bashs layouts)
   (ergoemacs-mac-osx-dicts layouts)
-  (find-file (expand-file-name "ergoemacs-extras" user-emacs-directory)) )
+  (find-file (expand-file-name "ergoemacs-extras" user-emacs-directory)))
+
+
 
 (defun ergoemacs-gen-svg (layout &optional file-name extra)
   "Generates a SVG picture of the layout
@@ -537,6 +539,31 @@ EXTRA represents an extra file representation."
           (replace-match "><")))
       (message "Layout generated to %s" file))))
 
+
+(defun ergoemacs-curr-svg ()
+  "Generates the current ergoemacs layout, unless it already exists."
+  (interactive)
+  (let ((var ergoemacs-variant)
+        (layout ergoemacs-keyboard-layout)
+        (extra "ergo-layouts")
+        (dir "")
+        (file ""))
+    (when var
+      (setq extra (concat var "/ergo-layouts")))
+    (setq dir (expand-file-name extra
+                                (expand-file-name "ergoemacs-extras" user-emacs-directory)))
+    (setq file (expand-file-name (concat "ergoemacs-layout-" layout ".svg") dir))
+    (unless (file-exists-p file)
+      (message "Generating SVG file...")
+      (unless (featurep 'ergoemacs-extras)
+        (require 'ergoemacs-extras))
+      (ergoemacs-gen-svg layout "kbd-ergo.svg" extra)
+      (message "Generated!"))
+    (when (interactive-p)
+      (browse-url (concat "file://" file)))
+    (symbol-value 'file)))
+
+;;;###autoload
 (defun ergoemacs-svgs (&optional layouts)
   "Generate SVGs for all the defined layouts and variants."
   (interactive)
