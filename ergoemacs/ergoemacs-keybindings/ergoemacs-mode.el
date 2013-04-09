@@ -782,7 +782,9 @@ C-k S-a     -> k S-a           not defined
                      (eq fn 'Prefix))
            (when ergoemacs-debug
              (message "%s -> %s (%s)" (match-string 1) new-key fn))
-           (define-key ,keymap (kbd new-key) fn))))))
+           (condition-case err
+               (define-key ,keymap (kbd new-key) fn)
+             (error (message "Error defining %s: %s" new-key err))))))))
 
 (defun ergoemacs-ctl-c-unchorded ()
   "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
