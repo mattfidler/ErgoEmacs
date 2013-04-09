@@ -784,7 +784,9 @@ C-k S-a     -> k S-a           not defined
              (message "%s -> %s (%s)" (match-string 1) new-key fn))
            (condition-case err
                (define-key ,keymap (kbd new-key) fn)
-             (error (message "Error defining %s: %s" new-key err))))))))
+             (error
+              (when ergoemacs-debug
+                (message "Error defining %s: %s" new-key err)))))))))
 
 (defun ergoemacs-ctl-c-unchorded ()
   "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
@@ -826,7 +828,8 @@ C-k S-a     -> k S-a           not defined
               (intern
                (format "ergoemacs-ctl-c-unchorded-%s" major-mode))) (kbd "c"))))
     (if (not fn)
-        (message "[Ctl+c] [Ctl+c] is not defined")
+        (when (interactive-p)
+          (message "[Ctl+c] [Ctl+c] is not defined."))
       (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
       (when (interactive-p)
         (call-interactively fn t)))))
