@@ -36,8 +36,6 @@ many elisp packages that are not in GNU Emacs.
 * Window/Tab Switching::
 * Shrink-whitespaces compact/uncompact-block toggle-letter-case::
 * Banish Key Chords::
-* Layouts Supported::
-* Tips for adopting ErgoEmacs Keybindings::
 * Changing key layouts or adding variants::
 * Ergoemacs Keys System wide::
 
@@ -102,7 +100,7 @@ compact-uncompact-block  【Alt+q】  Hard Wraps or unwraps text u Change
 toggle-letter-case       【Alt+/】  capitilzation (ALL, First,lower)
 
 
-File: ergoemacs-mode.info,  Node: Banish Key Chords,  Next: Layouts Supported,  Prev: Shrink-whitespaces compact/uncompact-block toggle-letter-case,  Up: Ergoemacs Keybindings
+File: ergoemacs-mode.info,  Node: Banish Key Chords,  Next: Changing key layouts or adding variants,  Prev: Shrink-whitespaces compact/uncompact-block toggle-letter-case,  Up: Ergoemacs Keybindings
 
 1.4 Banish Key Chords
 =====================
@@ -112,6 +110,8 @@ File: ergoemacs-mode.info,  Node: Banish Key Chords,  Next: Layouts Supported,  
 * Background::
 * Keyboard Shortcut Design::
 * Ergoemacs Key Chord Reduction::
+* Where Did My Command Go?::
+* Shortcut To Open Cheatsheet::
 
 
 File: ergoemacs-mode.info,  Node: Background,  Next: Keyboard Shortcut Design,  Up: Banish Key Chords
@@ -295,10 +295,21 @@ shortcut system is that most frequently used commands be mapped to the
 most easy-to-press keys.
 
 
-File: ergoemacs-mode.info,  Node: Ergoemacs Key Chord Reduction,  Prev: Keyboard Shortcut Design,  Up: Banish Key Chords
+File: ergoemacs-mode.info,  Node: Ergoemacs Key Chord Reduction,  Next: Where Did My Command Go?,  Prev: Keyboard Shortcut Design,  Up: Banish Key Chords
 
 1.4.3 Ergoemacs Key Chord Reduction
 -----------------------------------
+
+* Menu:
+
+* [Control+x] and [Control-c] reduction::
+* Movement without key-chords::
+
+
+File: ergoemacs-mode.info,  Node: [Control+x] and [Control-c] reduction,  Next: Movement without key-chords,  Up: Ergoemacs Key Chord Reduction
+
+1.4.3.1 [Control+x] and [Control-c] reduction
+.............................................
 
 For emacs, the most common prefixes are [Control-x] or [Control-c].
 
@@ -348,33 +359,37 @@ is bound to [Menu] [h] for the normal Control-h keymap. It is also
 bound to [Menu] [y] for the unchorded Control-h keymap.
 
 
-File: ergoemacs-mode.info,  Node: Layouts Supported,  Next: Tips for adopting ErgoEmacs Keybindings,  Prev: Banish Key Chords,  Up: Ergoemacs Keybindings
+File: ergoemacs-mode.info,  Node: Movement without key-chords,  Prev: [Control+x] and [Control-c] reduction,  Up: Ergoemacs Key Chord Reduction
 
-1.5 Layouts Supported
-=====================
+1.4.3.2 Movement without key-chords
+...................................
 
-
-File: ergoemacs-mode.info,  Node: Tips for adopting ErgoEmacs Keybindings,  Next: Changing key layouts or adding variants,  Prev: Layouts Supported,  Up: Ergoemacs Keybindings
-
-1.6 Tips for adopting ErgoEmacs Keybindings
-===========================================
-
-If you are a long time emacs user, you may find it painful to adopt
-this setup.
+One can enable movement without key-chords as follows: - On QWERTY,
+press [Menu] [k] and then the movement key. This key is repeatable.
+Therefore [Menu] [k] [k] [k] would move the cursor down two lines. If
+this is followed by [i] this would have the cursor move up a line. To
+exit the repeatable movement/delete keys press [Menu]. This is similar
+to VIM's edit mode, with a toggle of the [Menu] key. - Shifted keys
+still are allowed. For example, page up can be accomplished in QWERTY
+by [Shift+i]. - Any command that enters the minibuffer also exits the
+repeatable movement/deletion. - To reduce the shifted key-chords, on
+QWERTY you can also press [Menu] [i]. Therefore [Menu] [i] [i] is
+equivalent to one page up. Followed by a [k] will be the page-down
+equivalent - Again, [Menu] stops the movement mode and anything that
+enters the minibuffer removes the movement mode. - Shift and the key is
+the unshifted command. Therefore [Menu] [i] [i] [Shift+k] would be Page
+Up followed by down one character. ## Layouts Supported ## Tips for
+adopting ErgoEmacs Keybindings If you are a long time emacs user, you
+may find it painful to adopt this setup.
 
 This difficulty is nothing special. It's the same difficulty when you
 switching to dvorak after years of qwerty. Basically, it's about
 changing muscle memory.
 
-* Menu:
-
-* Where Did My Command Go?::
-* Shortcut To Open Cheatsheet::
-
 
-File: ergoemacs-mode.info,  Node: Where Did My Command Go?,  Next: Shortcut To Open Cheatsheet,  Up: Tips for adopting ErgoEmacs Keybindings
+File: ergoemacs-mode.info,  Node: Where Did My Command Go?,  Next: Shortcut To Open Cheatsheet,  Prev: Ergoemacs Key Chord Reduction,  Up: Banish Key Chords
 
-1.6.1 Where Did My Command Go?
+1.4.4 Where Did My Command Go?
 ------------------------------
 
 The ergonomic-mode minor mode features the command
@@ -383,9 +398,9 @@ you to type a shortcut, and tells you which command it was bound in GNU
 Emacs, and the new shortcut for it under ErgoEmacs?.
 
 
-File: ergoemacs-mode.info,  Node: Shortcut To Open Cheatsheet,  Prev: Where Did My Command Go?,  Up: Tips for adopting ErgoEmacs Keybindings
+File: ergoemacs-mode.info,  Node: Shortcut To Open Cheatsheet,  Prev: Where Did My Command Go?,  Up: Banish Key Chords
 
-1.6.2 Shortcut To Open Cheatsheet
+1.4.5 Shortcut To Open Cheatsheet
 ---------------------------------
 
 You can open a cheatsheet by pressing [Control+h] [']. On the first
@@ -420,7 +435,7 @@ adopt.
 
 File: ergoemacs-mode.info,  Node: Level 2,  Next: Level 3,  Up: Shortcut To Open Cheatsheet
 
-1.6.2.1 Level 2
+1.4.5.1 Level 2
 ...............
 
 Adding keys for moving around words and deleting words.
@@ -430,7 +445,7 @@ Adding keys for moving around words and deleting words.
 
 File: ergoemacs-mode.info,  Node: Level 3,  Next: Guru,  Prev: Level 2,  Up: Shortcut To Open Cheatsheet
 
-1.6.2.2 Level 3
+1.4.5.2 Level 3
 ...............
 
 Try to use the full ergoemacs mode.
@@ -440,7 +455,7 @@ Try to use the full ergoemacs mode.
 
 File: ergoemacs-mode.info,  Node: Guru,  Next: Master,  Prev: Level 3,  Up: Shortcut To Open Cheatsheet
 
-1.6.2.3 Guru
+1.4.5.3 Guru
 ............
 
 The guru variant takes away the arrow keys and page up/page down keys.
@@ -450,7 +465,7 @@ The guru variant takes away the arrow keys and page up/page down keys.
 
 File: ergoemacs-mode.info,  Node: Master,  Prev: Guru,  Up: Shortcut To Open Cheatsheet
 
-1.6.2.4 Master
+1.4.5.4 Master
 ..............
 
 The Master variant takes away the backspace. This key is not
@@ -461,9 +476,9 @@ everywhere.
 (setq ergoemacs-variant "master") (ergoemacs-mode 1)
 
 
-File: ergoemacs-mode.info,  Node: Changing key layouts or adding variants,  Next: Ergoemacs Keys System wide,  Prev: Tips for adopting ErgoEmacs Keybindings,  Up: Ergoemacs Keybindings
+File: ergoemacs-mode.info,  Node: Changing key layouts or adding variants,  Next: Ergoemacs Keys System wide,  Prev: Banish Key Chords,  Up: Ergoemacs Keybindings
 
-1.7 Changing key layouts or adding variants
+1.5 Changing key layouts or adding variants
 ===========================================
 
 * Menu:
@@ -473,7 +488,7 @@ File: ergoemacs-mode.info,  Node: Changing key layouts or adding variants,  Next
 
 File: ergoemacs-mode.info,  Node: Globally defined keys,  Up: Changing key layouts or adding variants
 
-1.7.1 Globally defined keys
+1.5.1 Globally defined keys
 ---------------------------
 
 These keys are defined on the global keymap and should be retained
@@ -509,7 +524,7 @@ that this is an "Open" command when generating keyboard layout diagrams.
 
 File: ergoemacs-mode.info,  Node: Adding an ergonomic key map with fixed mappings,  Next: Creating a keyboard variant,  Up: Globally defined keys
 
-1.7.1.1 Adding an ergonomic key map with fixed mappings
+1.5.1.1 Adding an ergonomic key map with fixed mappings
 .......................................................
 
 When you want to add an ergonomic keymap with fixed mappings such as
@@ -523,13 +538,13 @@ save buffer
 
 File: ergoemacs-mode.info,  Node: Creating a keyboard variant,  Prev: Adding an ergonomic key map with fixed mappings,  Up: Globally defined keys
 
-1.7.1.2 Creating a keyboard variant
+1.5.1.2 Creating a keyboard variant
 ...................................
 
 
 File: ergoemacs-mode.info,  Node: Ergoemacs Keys System wide,  Prev: Changing key layouts or adding variants,  Up: Ergoemacs Keybindings
 
-1.8 Ergoemacs Keys System wide
+1.6 Ergoemacs Keys System wide
 ==============================
 
 * Menu:
@@ -542,13 +557,13 @@ File: ergoemacs-mode.info,  Node: Ergoemacs Keys System wide,  Prev: Changing ke
 
 File: ergoemacs-mode.info,  Node: Bash,  Next: Windows,  Up: Ergoemacs Keys System wide
 
-1.8.1 Bash
+1.6.1 Bash
 ----------
 
 
 File: ergoemacs-mode.info,  Node: Windows,  Next: Extras,  Prev: Bash,  Up: Ergoemacs Keys System wide
 
-1.8.2 Windows
+1.6.2 Windows
 -------------
 
 In windows some of the ergoemacs keys are implemented system wide by
@@ -590,7 +605,7 @@ keybindings by typing M-x customize-group ergoemacs-mode
 
 File: ergoemacs-mode.info,  Node: Extras,  Next: Updating Ergoemacs for the latest version of emacs,  Prev: Windows,  Up: Ergoemacs Keys System wide
 
-1.8.3 Extras
+1.6.3 Extras
 ------------
 
 To generate keyboard binding diagrams and scripts that allow you to use
@@ -606,7 +621,7 @@ layout variant.
 
 File: ergoemacs-mode.info,  Node: Updating Ergoemacs for the latest version of emacs,  Prev: Extras,  Up: Ergoemacs Keys System wide
 
-1.8.4 Updating Ergoemacs for the latest version of emacs
+1.6.4 Updating Ergoemacs for the latest version of emacs
 --------------------------------------------------------
 
 To tell if a key was a globally defined emacs key, ergoemacs needs to
@@ -624,34 +639,34 @@ This is also done in the test suite. This can be accessed by
 Tag Table:
 Node: Top224
 Node: Ergoemacs Keybindings352
-Node: Standard Keyboard Shortcuts1153
-Node: Window/Tab Switching2302
-Node: Shrink-whitespaces compact/uncompact-block toggle-letter-case3107
-Node: Banish Key Chords3916
-Node: Background4228
-Node: Whence Did Key Chord Came From?5669
-Node: What Should a Keyboard Nerd Do with Key Chords?6487
-Node: Principles on Efficient Use of Key Chords8042
-Node: Keyboard Shortcut Design9564
-Node: Repeatable and Non-Repeatable Keys10782
-Node: Ergoemacs Key Chord Reduction12417
-Node: Layouts Supported14865
-Node: Tips for adopting ErgoEmacs Keybindings15067
-Node: Where Did My Command Go?15647
-Node: Shortcut To Open Cheatsheet16101
-Node: Level 217426
-Node: Level 317663
-Node: Guru17890
-Node: Master18148
-Node: Changing key layouts or adding variants18530
-Node: Globally defined keys18843
-Node: Adding an ergonomic key map with fixed mappings20298
-Node: Creating a keyboard variant20806
-Node: Ergoemacs Keys System wide21028
-Node: Bash21328
-Node: Windows21442
-Node: Extras23653
-Node: Updating Ergoemacs for the latest version of emacs24314
+Node: Standard Keyboard Shortcuts1087
+Node: Window/Tab Switching2236
+Node: Shrink-whitespaces compact/uncompact-block toggle-letter-case3041
+Node: Banish Key Chords3850
+Node: Background4245
+Node: Whence Did Key Chord Came From?5686
+Node: What Should a Keyboard Nerd Do with Key Chords?6504
+Node: Principles on Efficient Use of Key Chords8059
+Node: Keyboard Shortcut Design9581
+Node: Repeatable and Non-Repeatable Keys10799
+Node: Ergoemacs Key Chord Reduction12434
+Node: [Control+x] and [Control-c] reduction12748
+Node: Movement without key-chords15239
+Node: Where Did My Command Go?16769
+Node: Shortcut To Open Cheatsheet17239
+Node: Level 218542
+Node: Level 318779
+Node: Guru19006
+Node: Master19264
+Node: Changing key layouts or adding variants19646
+Node: Globally defined keys19937
+Node: Adding an ergonomic key map with fixed mappings21392
+Node: Creating a keyboard variant21900
+Node: Ergoemacs Keys System wide22122
+Node: Bash22422
+Node: Windows22536
+Node: Extras24747
+Node: Updating Ergoemacs for the latest version of emacs25408
 
 End Tag Table
 

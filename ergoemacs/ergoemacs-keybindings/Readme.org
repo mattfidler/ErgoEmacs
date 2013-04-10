@@ -209,6 +209,7 @@ mapped to the most easy-to-press keys.
 
 
 ** Ergoemacs Key Chord Reduction
+*** [Control+x] and [Control-c] reduction
 For emacs, the most common prefixes are [Control-x] or [Control-c].
 
 For QWERTY, an additional mapping of these keys have been made:
@@ -257,6 +258,25 @@ This is bound to [Menu] [h] for the normal Control-h keymap.  It is
 also bound to [Menu] [y] for the unchorded Control-h keymap.
 
 
+*** Movement without key-chords
+One can enable movement without key-chords as follows:
+- On QWERTY, press [Menu] [k] and then the movement key.  This key is
+  repeatable.  Therefore [Menu] [k] [k] [k] would move the cursor down
+  two lines.  If this is followed by [i] this would have the cursor
+  move up a line.  To exit the repeatable movement/delete keys press
+  [Menu].  This is similar to VIM's edit mode, with a toggle of the
+  [Menu] key.
+  - Shifted keys still are allowed.  For example, page up can be
+    accomplished in QWERTY by [Shift+i].
+  - Any command that enters the minibuffer also exits the repeatable
+    movement/deletion.
+- To reduce the shifted key-chords, on QWERTY you can also press
+  [Menu] [i].  Therefore [Menu] [i] [i] is equivalent to one page
+  up. Followed by a [k] will be the page-down equivalent
+  - Again, [Menu] stops the movement mode and anything that enters
+    the minibuffer removes the movement mode.
+  - Shift and the key is the unshifted command.  Therefore [Menu] [i]
+    [i] [Shift+k] would be Page Up followed by down one character.
 * Layouts Supported
 * Tips for adopting ErgoEmacs Keybindings
 If you are a long time emacs user, you may find it painful to adopt

@@ -197,13 +197,13 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
   "Translation from keyboard layout")
 (defvar ergoemacs-translation-to nil
   "Translation to keyboard layout")
+
 (defvar ergoemacs-translation-assoc nil
   "Translation alist")
 (defvar ergoemacs-translation-regexp nil
   "Translation regular expression")
 
 ;;; ergoemacs-keymap
-
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
   (defun set-temporary-overlay-map (map &optional keep-pred)
@@ -248,24 +248,108 @@ remove the keymap depends on user input and KEEP-PRED:
 (defvar ergoemacs-full-fast-keys-keymap (make-sparse-keymap)
   "Ergoemacs full fast keys keymap")
 
+(defvar ergoemacs-full-alt-keymap (make-keymap)
+  "Ergoemacs full Alt+ keymap.  Alt is removed from all these keys so that no key chord is necessary.")
+
+(defvar ergoemacacs-full-alt-shift-keymap (make-keymap)
+  "Ergoemacs full Alt+Shift+ keymap. Alt+shift is removed from all
+  these keys so that no key chord is necessary. Unshifted keys are changed to shifted keys.")
+
+(defun ergoemacs-exit-dummy ()
+  "Dummy function for exiting keymaps."
+  (interactive))
+
 (defun ergoemacs-setup-fast-keys ()
   "Setup an array listing the fast keys"
   (interactive)
   (setq ergoemacs-full-fast-keys-keymap (make-sparse-keymap))
+  (setq ergoemacs-full-alt-keymap (make-keymap))
+  (setq ergoemacs-full-alt-shift-keymap (make-keymap))
+  (define-key ergoemacs-full-alt-keymap (kbd "<menu>") 'ergoemacs-exit-dummy)
+  (define-key ergoemacs-full-alt-shift-keymap (kbd "<menu>") 'ergoemacs-exit-dummy)
   (mapc
    (lambda(var)
      (let* ((key (ergoemacs-kbd (nth 0 var) t))
             (cmd (nth 1 var))
+            (stripped-key (replace-regexp-in-string "\\<[CM]-" "" key))
             (new-cmd (nth 1 var)))
+       (when (string-match "^[A-Za-z]$" stripped-key)
+         ;;(message "Stripped key: %s" stripped-key)
+         (if (string= (downcase stripped-key) stripped-key)
+             (progn
+               (define-key ergoemacs-full-alt-keymap (edmacro-parse-keys stripped-key) new-cmd)
+               (define-key ergoemacs-full-alt-shift-keymap (edmacro-parse-keys (upcase stripped-key)) new-cmd))
+           (define-key ergoemacs-full-alt-shift-keymap (edmacro-parse-keys (downcase stripped-key)) new-cmd)
+           (define-key ergoemacs-full-alt-keymap (edmacro-parse-keys stripped-key) new-cmd)))
        (when (member cmd ergoemacs-movement-functions)
          (set (intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
               (make-sparse-keymap))
          (eval `(define-key ,(intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
-                  ,(edmacro-parse-keys (replace-regexp-in-string "\\<[CM]-" "" key)) new-cmd))
+                  ,(edmacro-parse-keys stripped-key) new-cmd))
          (define-key ergoemacs-full-fast-keys-keymap
-           (edmacro-parse-keys (replace-regexp-in-string "\\<[CM]-" "" key))
+           (edmacro-parse-keys stripped-key)
            new-cmd))))
    (symbol-value (ergoemacs-get-variable-layout))))
+
+(defvar ergoemacs-exit-temp-map-var nil)
+
+(defun ergoemacs-minibuffer-exit-maps ()
+  "Exit temporary overlay maps."
+  (setq ergoemacs-exit-temp-map-var t))
+
+(add-hook 'minibuffer-setup-hook #'ergoemacs-minibuffer-exit-maps)
+
+(defun ergoemacs-exit-alt-keys ()
+  "Exit alt keys predicate"
+  (let (ret cmd)
+    (condition-case err
+        (progn
+          (setq cmd (lookup-key ergoemacs-full-alt-keymap
+                                (this-command-keys-vector)))
+          (when cmd
+            (setq ret t))
+          (when (eq cmd 'ergoemacs-exit-dummy)
+            (setq ret nil))
+          (when ergoemacs-exit-temp-map-var
+            (setq ret nil)
+            (setq ergoemacs-exit-temp-map-var nil)))
+      (error (message "Err %s" err)))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-alt-keys ()
+  "Install the alt keymap temporarily"
+  (interactive)
+  (setq ergoemacs-exit-temp-map-var nil)
+  (set-temporary-overlay-map  ergoemacs-full-alt-keymap
+                              'ergoemacs-exit-alt-keys))
+
+
+
+(defun ergoemacs-exit-alt-shift-keys ()
+  "Exit alt-shift keys predicate"
+  (let (ret cmd)
+    (condition-case err
+        (progn
+          (setq cmd (lookup-key ergoemacs-full-alt-shift-keymap
+                                (this-command-keys-vector)))
+          (when cmd
+            (setq ret t))
+          (when (eq cmd 'ergoemacs-exit-dummy)
+            (setq ret nil))
+          (when ergoemacs-exit-temp-map-var
+            (setq ret nil)
+            (setq ergoemacs-exit-temp-map-var nil)))
+      (error (message "Err %s" err)))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-alt-shift-keys ()
+  "Install the alt-shift keymap temporarily"
+  (interactive)
+  (setq ergoemacs-exit-temp-map-var nil)
+  (set-temporary-overlay-map  ergoemacs-full-alt-shift-keymap
+                              'ergoemacs-exit-alt-shift-keys))
+
+
 
 (require 'ergoemacs-functions)
 
