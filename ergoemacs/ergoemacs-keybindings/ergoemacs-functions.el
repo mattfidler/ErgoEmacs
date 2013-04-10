@@ -16,6 +16,12 @@
   '(delete-backward-char delete-char kill-word backward-kill-word)
   "Defines deletion functions that ergoemacs is aware of.")
 
+(defun ergoemacs-smex-if-exists (&optional prefix-arg)
+  (interactive "p")
+  (if (fboundp 'smex)
+      (smex)
+    (execute-extended-command prefix-arg)))
+
 (defun ergoemacs-cheat-sheet-file ()
   "Cheet sheet file for ergoemacs"
   (let ((var-dir "") extra-dir)

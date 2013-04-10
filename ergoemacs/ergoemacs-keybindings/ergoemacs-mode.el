@@ -260,7 +260,7 @@ remove the keymap depends on user input and KEEP-PRED:
   (interactive))
 
 (defun ergoemacs-setup-fast-keys ()
-  "Setup an array listing the fast keys"
+  "Setup an array listing the fast keys."
   (interactive)
   (setq ergoemacs-full-fast-keys-keymap (make-sparse-keymap))
   (setq ergoemacs-full-alt-keymap (make-keymap))

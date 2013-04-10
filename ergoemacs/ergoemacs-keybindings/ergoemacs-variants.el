@@ -126,7 +126,8 @@
     ("<menu> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
     ("<menu> SPC" set-mark-command "Set Mark")
     ("<menu> k" ergoemacs-alt-keys "Repeat Alt")
-    ("<menu> i" ergoemacs-alt-shift-keys "Repeat Alt+Shift"))
+    ("<menu> i" ergoemacs-alt-shift-keys "Repeat Alt+Shift")
+    ("<menu> <return>" ergoemacs-smex-if-exists "M-x"))
   
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
