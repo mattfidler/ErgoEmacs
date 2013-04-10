@@ -673,9 +673,10 @@ Else it is a user buffer."
         (message "Converting to png")
         (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
                                file png))
-        (message "Done!"))
-      (when (file-exists-p png)
-        (setq file png)))
+        (message "Done!")))
+    
+    (when (file-exists-p png)
+      (setq file png))
     
     (when (interactive-p)
       (condition-case err
