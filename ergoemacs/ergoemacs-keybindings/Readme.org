@@ -270,11 +270,15 @@ One can enable movement without key-chords as follows:
     accomplished in QWERTY by [Shift+i].
   - Any command that enters the minibuffer also exits the repeatable
     movement/deletion.
+  - Any undefined key in the keymap (like 1) would exit the mode and
+    insert the character
 - To reduce the shifted key-chords, on QWERTY you can also press
   [Menu] [i].  Therefore [Menu] [i] [i] is equivalent to one page
   up. Followed by a [k] will be the page-down equivalent
   - Again, [Menu] stops the movement mode and anything that enters
     the minibuffer removes the movement mode.
+  - Any undefined key in the keymap (like 1) would exit the mode and
+    insert the character
   - Shift and the key is the unshifted command.  Therefore [Menu] [i]
     [i] [Shift+k] would be Page Up followed by down one character.
 * Layouts Supported
