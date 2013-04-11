@@ -1146,7 +1146,7 @@ Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings."
 
     (let ((case-fold-search t) (case-replace nil)
           )
-      (setq resultStr (replace-pairs-in-string inputStr replaceList))
+      (setq resultStr (replace-pairs-in-string (emacs-to-windows-kbd-notation-string inputStr) replaceList))
       )
 
     (setq resultStr (replace-regexp-pairs-in-string resultStr

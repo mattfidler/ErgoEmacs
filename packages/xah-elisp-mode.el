@@ -277,6 +277,7 @@ elisp keywords are colored. Basically that's it.
 
 \\{xem-keymap}"
 
+  (emacs-lisp-mode)
   (setq font-lock-defaults '((xem-font-lock-keywords)))
 
   (set-syntax-table xem-syntax-table)
