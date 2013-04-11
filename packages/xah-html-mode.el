@@ -13,6 +13,7 @@
 
 ;;; HISTORY
 
+;; version 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
 ;; version 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
 ;; version 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
 ;; version 0.5.6, 2013-02-16 added xhm-replace-html-named-entities
@@ -1025,13 +1026,88 @@ If there's a text selection, wrap p around each text block (separated by 2 newli
     )
   )
 
+(defun xhm-emacs-to-windows-kbd-notation-string (inputStr)
+  "Change emacs keyboard-shortcut notation to Windows's notation.
+For example:
+ 「C-h f」⇒ 「Ctrl+h f」
+ 「M-a」⇒ 「Meta+a」
+ 「<f9> <f8>」 ⇒ 「F9 F8」
+
+This command will do most emacs syntax correctly, but not 100% correct.
+"
+(replace-regexp-pairs-in-string inputStr
+[
+                            ["C-\\(.\\)" "Ctrl+\\1"]
+                            ["M-\\(.\\)" "Meta+\\1"]
+                            ["S-\\(.\\)" "Shift+\\1"]
+                            ["s-\\(.\\)" "Super+\\1"]
+                            ["H-\\(.\\)" "Hyper+\\1"]
+
+                            ["<prior>" "PageUp"]
+                            ["<next>" "PageDown"]
+                            ["<home>" "Home"]
+                            ["<end>" "End"]
+
+                            ["<f1>" "F1"]
+                            ["<f2>" "F2"]
+                            ["<f3>" "F3"]
+                            ["<f4>" "F4"]
+                            ["<f5>" "F5"]
+                            ["<f6>" "F6"]
+                            ["<f7>" "F7"]
+                            ["<f8>" "F8"]
+                            ["<f9>" "F9"]
+                            ["<f10>" "F10"]
+                            ["<f11>" "F11"]
+                            ["<f12>" "F12"]
+
+                            ["RET" "Enter"]
+                            ["<return>" "Return"]
+                            ["TAB" "Tab"]
+                            ["<tab>" "Tab"]
+
+                            ["<right>" "→"]
+                            ["<left>" "←"]
+                            ["<up>" "↑"]
+                            ["<down>" "↓"]
+
+                            ["<insert>" "Insert"]
+                            ["<delete>" "Delete"]
+
+                            ["<backspace>" "Backspace"]
+                            ["DEL" "Delete"]
+                            ]
+ "FIXEDCASE")
+  )
+
+(defun xhm-emacs-to-windows-kbd-notation (p1 p2)
+  "Change emacs key notation to Windows's notation.
+
+For example:
+ 【C-h f】⇒ 【Ctrl+h f】
+ 【M-a】⇒ 【Meta+a】
+
+When called interactively, work on text selection or text enclosed in 【…】.
+
+For detail on exactly which string are changed, see `xhm-emacs-to-windows-kbd-notation-string'.
+"
+  (interactive
+   (let ((bds (get-selection-or-unit ["^【" "^】"])) )
+     (list (elt bds 1) (elt bds 2)) ) )
+
+  (let (  (case-fold-search nil)
+          (inputStr (buffer-substring-no-properties p1 p2))
+          )
+    (delete-region p1 p2 )
+    (insert
+     (xhm-emacs-to-windows-kbd-notation-string inputStr) ) ) )
+
 (defun xhm-htmlize-keyboard-shortcut-notation ()
   "Wrap a “kbd” tag around keyboard keys on text selection or current text inside 【】.
-e.g.
- 【ctrl+w】
-becomes
- 【<kbd>Ctrl</kbd>+<kbd>w</kbd>】
-Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings."
+Example: 【ctrl+w】 ⇒ 【<kbd>Ctrl</kbd>+<kbd>w</kbd>】
+Emacs's key notation also supported. Example: 【C-x t】 ⇒ 【Ctrl+x t】
+Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings.
+"
   (interactive)
   (let (p1 p2 inputStr resultStr replaceList)
     (if (region-active-p)
@@ -1146,7 +1222,7 @@ Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings."
 
     (let ((case-fold-search t) (case-replace nil)
           )
-      (setq resultStr (replace-pairs-in-string (emacs-to-windows-kbd-notation-string inputStr) replaceList))
+      (setq resultStr (replace-pairs-in-string (xhm-emacs-to-windows-kbd-notation-string inputStr) replaceList))
       )
 
     (setq resultStr (replace-regexp-pairs-in-string resultStr
