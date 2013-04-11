@@ -158,8 +158,14 @@ If at-end-p is true, then add comment at end."
                 ) ) ) ) ) ) )
     (progn
       (xc-set-line-comment-syntax)
-      (beginning-of-line 1)
-      (insert xc-line-comment-marker) ) ) )
+      (if at-end-p
+          (progn
+            (end-of-line)
+            (insert xc-line-comment-marker))
+        (progn
+          (beginning-of-line 1)
+          (insert xc-line-comment-marker))
+        ) ) ) )
 
 (defun xc-uncomment-line ()
   "Remove line comment string (if any) in the beginning of current line."

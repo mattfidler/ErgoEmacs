@@ -55,6 +55,7 @@
 
 ;;; HISTORY
 
+;; v1.5.1, 2013-04-09 • added ㎝ ㎠ ㎤. Why not?
 ;; v1.4.9, 2013-03-09 • added abbrev “tv” for 「📺」.
 ;; v1.4.8, 2013-03-01 • added abbrev “esc” for 「⎋」. • removed “power” for 「⎋」 because it's incorrect. there's no dedicate symbol in unicode for this. • added “sleep” for 「☾」 • added “break” for 「⎊」 • added “pause” for 「⎉」 • removed abbrev “control” for 「✲」, added abbrev “ctrl” for 「✲」. Because that symbol is associated with keyboard label only, not really “control”. • added the cycle 「✲ ⎈ ‸」 for control key symbol. • changed “enter” to insert 「⌤」 instead of 「↵」, because the new is more correct. • added abbrev “helm” for 「⎈」, may use for Control key. Microsoft keyboard uses 「✲」. • added cycles 「⏎ ↩ ↵ ⌤ ⎆」 • added a cycle for undo 「↶ ⎌」 (the latter is proper undo symbol, but there's no corresponding symbol for redo). • added “alt” for 「⎇」
 ;; v1.4.7, 2013-01-21 • changed the name of abbrev for 「↖」 from “nwarr” to “home”. Similarly, 「↘」 from “searr” to “end”. • Added a cycle for left right delete ⌫ ⌦. • added “control” for 「✲」, used on Microsoft keyboards.
@@ -557,7 +558,10 @@
   (puthash "?!" "⁈" xmsi-abrvs)
   (puthash "!?" "⁉" xmsi-abrvs)
   (puthash "!!" "‼" xmsi-abrvs)
-  (puthash "m2" "㎡" xmsi-abrvs)        ;SQUARE M SQUARED ,  meter squared
+  (puthash "m2" "㎡" xmsi-abrvs)        ;SQUARE M SQUARED , meter squared
+(puthash "cm" "㎝" xmsi-abrvs) ; centimeter
+(puthash "cm2" "㎠" xmsi-abrvs)
+(puthash "cm3" "㎤" xmsi-abrvs)
 
   (puthash "smiley" "☺" xmsi-abrvs)     ;WHITE SMILING FACE smiley, happy face
   (puthash ":)" "☺" xmsi-abrvs)
@@ -834,7 +838,6 @@
   ;; letter-like forms
   (puthash "al" "ℵ" xmsi-abrvs)
   (puthash "alef" "ℵ" xmsi-abrvs)
-  (puthash "aleph" "ℵ" xmsi-abrvs)
   (puthash "beth" "ב" xmsi-abrvs)
   (puthash "gimel" "ג" xmsi-abrvs)
   (puthash "dalet" "ד" xmsi-abrvs)
@@ -1058,12 +1061,10 @@
 (puthash "fwy" "ｙ" xmsi-abrvs)
 (puthash "fwz" "ｚ" xmsi-abrvs)
 
-
-(progn 
+(progn
 (puthash "tv" "📺" xmsi-abrvs)
 
 )
-
 
   ;; 2010-12-10. char to add
   ;; soft hyphen ­
