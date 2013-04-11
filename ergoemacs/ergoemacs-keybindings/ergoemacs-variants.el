@@ -124,7 +124,10 @@
     ("<menu> h" ergoemacs-ctl-h "Ctl-h")
     ("<menu> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
     ("<menu> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
-    ("<menu> SPC" set-mark-command "Set Mark"))
+    ("<menu> SPC" set-mark-command "Set Mark")
+    ("<menu> k" ergoemacs-alt-keys "Repeat Alt")
+    ("<menu> i" ergoemacs-alt-shift-keys "Repeat Alt+Shift")
+    ("<menu> <return>" ergoemacs-smex-if-exists "M-x"))
   
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
@@ -177,6 +180,8 @@
     ("<f1> m" ergoemacs-describe-major-mode)
     ("C-h o" ergoemacs-where-is-old-binding)
     ("<f1> o" ergoemacs-where-is-old-binding)
+    ("C-h '" ergoemacs-display-current-svg)
+    ("<f1> '" ergoemacs-display-current-svg)
     
     ("C-<pause>" kill-compilation)      ; stop compilation/find/grep
     

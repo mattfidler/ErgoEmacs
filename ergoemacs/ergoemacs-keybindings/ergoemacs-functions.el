@@ -16,7 +16,29 @@
   '(delete-backward-char delete-char kill-word backward-kill-word)
   "Defines deletion functions that ergoemacs is aware of.")
 
+(defun ergoemacs-smex-if-exists (&optional prefix-arg)
+  (interactive "p")
+  (if (fboundp 'smex)
+      (smex)
+    (execute-extended-command prefix-arg)))
 
+(defun ergoemacs-cheat-sheet-file ()
+  "Cheet sheet file for ergoemacs"
+  (let ((var-dir "") extra-dir)
+    (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
+    (when ergoemacs-variant
+      (setq var-dir (concat ergoemacs-variant "/"))
+      (setq extra-dir (expand-file-name ergoemacs-variant extra-dir)))
+    (setq extra-dir (expand-file-name "ergo-layouts" extra-dir))
+    (setq extra-dir (expand-file-name (concat "ergoemacs-layout-" ergoemacs-keyboard-layout ".svg")))
+    (when (not (file-exists-p extra-dir))
+      (ergoemacs-gen-svg ergoemacs-variant "kbd-ergo.svg" (concat var-dir "ergo-layouts")))
+    (symbol-value 'extra-dir)))
+
+(defun ergoemacs-cheat-sheet ()
+  "Opens Ergoemacs Cheat Sheet in Browser."
+  
+  )
 
 ;;; Ido-ergoemacs functional fixes
 (defun ergoemacs-ido-c-o (arg)
@@ -424,14 +446,15 @@ Emacs buffers are those whose name starts with *."
 ;; status to offer save
 ;; This custome kill buffer is close-current-buffer.
 
-(defun ergoemacs-open-in-external-app ()
+(defun ergoemacs-open-in-external-app (&optional file)
   "Open the current file or dired marked files in external app."
   (interactive)
   (let ( doIt
          (myFileList
           (cond
            ((string-equal major-mode "dired-mode") (dired-get-marked-files))
-           (t (list (buffer-file-name))) ) ) )
+           ((not file) (list (buffer-file-name)))
+           (file (list file)))))
     
     (setq doIt (if (<= (length myFileList) 5)
                    t
@@ -614,6 +637,53 @@ Else it is a user buffer."
   (interactive)
   (insert "<?php echo ; ?>")
   (backward-char 4))
+
+;; Help
+
+(defcustom ergoemacs-inkscape (executable-find "inkscape")
+  "Location of inkscape (used to convert svgs to png files)"
+  :type 'string
+  :group 'ergoemacs-mode)
+
+(defun ergoemacs-display-current-svg ()
+  "Generates the current ergoemacs layout, unless it already exists and opens it in a browser."
+  (interactive)
+  (let ((var ergoemacs-variant)
+        (layout ergoemacs-keyboard-layout)
+        (extra "ergo-layouts")
+        (dir "")
+        (png "")
+        (file ""))
+    (when var
+      (setq extra (concat var "/ergo-layouts")))
+    (setq dir (expand-file-name extra
+                                (expand-file-name "ergoemacs-extras" user-emacs-directory)))
+    (setq file (expand-file-name (concat "ergoemacs-layout-" layout ".svg") dir))
+    (setq png (expand-file-name (concat "ergoemacs-layout-" layout ".png") dir))
+    
+    (unless (file-exists-p file)
+      (message "Generating SVG file...")
+      (unless (featurep 'ergoemacs-extras)
+        (require 'ergoemacs-extras))
+      (ergoemacs-gen-svg layout "kbd-ergo.svg" extra)
+      (message "Generated!"))
+    
+    (when ergoemacs-inkscape
+      (unless (file-exists-p png)
+        (message "Converting to png")
+        (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
+                               file png))
+        (message "Done!")))
+    
+    (when (file-exists-p png)
+      (setq file png))
+    
+    (when (interactive-p)
+      (condition-case err
+          (browse-url-of-file file)
+        (error
+         (ergoemacs-open-in-external-app file))))
+    (symbol-value 'file)))
 
 (provide 'ergoemacs-functions)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

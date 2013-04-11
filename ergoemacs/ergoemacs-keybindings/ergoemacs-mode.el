@@ -32,13 +32,16 @@
 ;; See the file “_HISTORY.txt”.
 
 ;;; Acknowledgment:
+;; Thanks to Shahin Azad for persian layout (fa) ishahinism at g
+;; mail.com 
 ;; Thanks to Thomas Rikl workhorse.t at googlemail.com for german layout
 ;; Thanks to Baptiste Fouques  bateast at bat.fr.eu.org for bepo layout
 ;; Thanks to Andrey Kotlarski (aka m00naticus) for a patch on 2012-12-08
 ;; Thanks to Nikolaj Schumacher for his implementation of extend-selection.
 ;; Thanks to Andreas Politz and Nikolaj Schumacher for correcting/improving implementation of toggle-letter-case.
 ;; Thanks to Lennart Borgman for several suggestions on code to prevent shortcuts involving shift key to start select text when CUA-mode is on.
-;; Thanks to marciomazza for spotting several default bindings that should have been unbound.
+;; Thanks to marciomazza for spotting several default bindings that
+;; should have been unbound.
 ;; Thanks to lwarxx for bug report on diff-mode
 ;; Thanks to maddin for ergoemacs-global/local-set-key functions and ergoemacs-hook-modes improvements.
 ;; Thanks to many users who send in comments and appreciations on this.
@@ -194,13 +197,13 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
   "Translation from keyboard layout")
 (defvar ergoemacs-translation-to nil
   "Translation to keyboard layout")
+
 (defvar ergoemacs-translation-assoc nil
   "Translation alist")
 (defvar ergoemacs-translation-regexp nil
   "Translation regular expression")
 
 ;;; ergoemacs-keymap
-
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
   (defun set-temporary-overlay-map (map &optional keep-pred)
@@ -245,24 +248,108 @@ remove the keymap depends on user input and KEEP-PRED:
 (defvar ergoemacs-full-fast-keys-keymap (make-sparse-keymap)
   "Ergoemacs full fast keys keymap")
 
+(defvar ergoemacs-full-alt-keymap (make-keymap)
+  "Ergoemacs full Alt+ keymap.  Alt is removed from all these keys so that no key chord is necessary.")
+
+(defvar ergoemacacs-full-alt-shift-keymap (make-keymap)
+  "Ergoemacs full Alt+Shift+ keymap. Alt+shift is removed from all
+  these keys so that no key chord is necessary. Unshifted keys are changed to shifted keys.")
+
+(defun ergoemacs-exit-dummy ()
+  "Dummy function for exiting keymaps."
+  (interactive))
+
 (defun ergoemacs-setup-fast-keys ()
-  "Setup an array listing the fast keys"
+  "Setup an array listing the fast keys."
   (interactive)
   (setq ergoemacs-full-fast-keys-keymap (make-sparse-keymap))
+  (setq ergoemacs-full-alt-keymap (make-keymap))
+  (setq ergoemacs-full-alt-shift-keymap (make-keymap))
+  (define-key ergoemacs-full-alt-keymap (kbd "<menu>") 'ergoemacs-exit-dummy)
+  (define-key ergoemacs-full-alt-shift-keymap (kbd "<menu>") 'ergoemacs-exit-dummy)
   (mapc
    (lambda(var)
      (let* ((key (ergoemacs-kbd (nth 0 var) t))
             (cmd (nth 1 var))
+            (stripped-key (replace-regexp-in-string "\\<[CM]-" "" key))
             (new-cmd (nth 1 var)))
+       (when (string-match "^[A-Za-z]$" stripped-key)
+         ;;(message "Stripped key: %s" stripped-key)
+         (if (string= (downcase stripped-key) stripped-key)
+             (progn
+               (define-key ergoemacs-full-alt-keymap (edmacro-parse-keys stripped-key) new-cmd)
+               (define-key ergoemacs-full-alt-shift-keymap (edmacro-parse-keys (upcase stripped-key)) new-cmd))
+           (define-key ergoemacs-full-alt-shift-keymap (edmacro-parse-keys (downcase stripped-key)) new-cmd)
+           (define-key ergoemacs-full-alt-keymap (edmacro-parse-keys stripped-key) new-cmd)))
        (when (member cmd ergoemacs-movement-functions)
          (set (intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
               (make-sparse-keymap))
          (eval `(define-key ,(intern (concat "ergoemacs-fast-" (symbol-name cmd) "-keymap"))
-                  ,(edmacro-parse-keys (replace-regexp-in-string "\\<[CM]-" "" key)) new-cmd))
+                  ,(edmacro-parse-keys stripped-key) new-cmd))
          (define-key ergoemacs-full-fast-keys-keymap
-           (edmacro-parse-keys (replace-regexp-in-string "\\<[CM]-" "" key))
+           (edmacro-parse-keys stripped-key)
            new-cmd))))
    (symbol-value (ergoemacs-get-variable-layout))))
+
+(defvar ergoemacs-exit-temp-map-var nil)
+
+(defun ergoemacs-minibuffer-exit-maps ()
+  "Exit temporary overlay maps."
+  (setq ergoemacs-exit-temp-map-var t))
+
+(add-hook 'minibuffer-setup-hook #'ergoemacs-minibuffer-exit-maps)
+
+(defun ergoemacs-exit-alt-keys ()
+  "Exit alt keys predicate"
+  (let (ret cmd)
+    (condition-case err
+        (progn
+          (setq cmd (lookup-key ergoemacs-full-alt-keymap
+                                (this-command-keys-vector)))
+          (when cmd
+            (setq ret t))
+          (when (eq cmd 'ergoemacs-exit-dummy)
+            (setq ret nil))
+          (when ergoemacs-exit-temp-map-var
+            (setq ret nil)
+            (setq ergoemacs-exit-temp-map-var nil)))
+      (error (message "Err %s" err)))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-alt-keys ()
+  "Install the alt keymap temporarily"
+  (interactive)
+  (setq ergoemacs-exit-temp-map-var nil)
+  (set-temporary-overlay-map  ergoemacs-full-alt-keymap
+                              'ergoemacs-exit-alt-keys))
+
+
+
+(defun ergoemacs-exit-alt-shift-keys ()
+  "Exit alt-shift keys predicate"
+  (let (ret cmd)
+    (condition-case err
+        (progn
+          (setq cmd (lookup-key ergoemacs-full-alt-shift-keymap
+                                (this-command-keys-vector)))
+          (when cmd
+            (setq ret t))
+          (when (eq cmd 'ergoemacs-exit-dummy)
+            (setq ret nil))
+          (when ergoemacs-exit-temp-map-var
+            (setq ret nil)
+            (setq ergoemacs-exit-temp-map-var nil)))
+      (error (message "Err %s" err)))
+    (symbol-value 'ret)))
+
+(defun ergoemacs-alt-shift-keys ()
+  "Install the alt-shift keymap temporarily"
+  (interactive)
+  (setq ergoemacs-exit-temp-map-var nil)
+  (set-temporary-overlay-map  ergoemacs-full-alt-shift-keymap
+                              'ergoemacs-exit-alt-shift-keys))
+
+
 
 (require 'ergoemacs-functions)
 
@@ -779,48 +866,67 @@ C-k S-a     -> k S-a           not defined
                      (eq fn 'Prefix))
            (when ergoemacs-debug
              (message "%s -> %s (%s)" (match-string 1) new-key fn))
-           (define-key ,keymap (kbd new-key) fn))))))
+           (condition-case err
+               (define-key ,keymap (kbd new-key) fn)
+             (error
+              (when ergoemacs-debug
+                (message "Error defining %s: %s" new-key err)))))))))
 
 (defun ergoemacs-ctl-c-unchorded ()
   "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
   (interactive)
   (eval
    `(progn
-      (defvar ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) nil
+      (defvar ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) (make-keymap)
         ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
-      (unless ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode))
-        (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) "C-c"))
+      (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) "C-c")
       ;; Install keymap locally per buffer.  Would do in each mode,
       ;; but modes like ESS makes this a bit tricky...
       (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-unchorded)
                      ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))
       ;; On first run, the unchorded ctl-c map is a temporary-keymap.
-      (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode))))))
+      (when (interactive-p)
+        (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))))))
 
 (defun ergoemacs-ctl-c ()
   "Creates a keymap for the current major mode that extract the 【Ctl+c】 combinations."
   (interactive)
   (eval
    `(progn
-      (defvar ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) nil
+      (defvar ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) (make-keymap)
         ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
-      (unless ,(intern (format "ergoemacs-ctl-c-%s" major-mode))
-        (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) "C-c" "C-" "M-" ""))
+      (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) "C-c" "C-" "M-" "")
       ;; Install keymap locally.
       (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c)
                      ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))
       ;; On first run, the unchorded ctl-c map is a temporary-keymap.
-      (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode))))))
+      (when (interactive-p)
+        (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))))))
 
 (defun ergoemacs-ctl-c-ctl-c ()
   "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
   (interactive)
-  (when (intern-soft (format "%s-map" major-mode))
-    (let ((fn (lookup-key (intern-soft (format "%s-map" major-mode)) (kbd "C-c C-c"))))
-      (when fn
-        (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
+  (ergoemacs-ctl-c-unchorded)
+  (let ((fn (lookup-key
+             (symbol-value
+              (intern
+               (format "ergoemacs-ctl-c-unchorded-%s" major-mode))) (kbd "c"))))
+    (if (not fn)
+        (when (interactive-p)
+          (message "[Ctl+c] [Ctl+c] is not defined."))
+      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
+      (when (interactive-p)
         (call-interactively fn t)))))
 
+(defun ergoemacs-setup-ctl-c-maps ()
+  "Setup control+c maps on change major modes."
+  (interactive)
+  (when (and ergoemacs-mode (not (minibufferp)))
+    (ergoemacs-ctl-c-ctl-c)
+    (ergoemacs-ctl-c)))
+
+(add-hook 'after-change-major-mode-hook
+          'ergoemacs-setup-ctl-c-maps)
 
 
 ;; ErgoEmacs minor mode
@@ -998,8 +1104,6 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
 (eval-after-load "org-src"
   '(progn
      (define-key org-src-mode-map [remap save-buffer] 'org-edit-src-save)))
-
-
 
 (require 'ergoemacs-variants)
 (provide 'ergoemacs-mode)
