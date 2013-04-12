@@ -83,7 +83,7 @@
                 forward-word backward-word next-line previous-line forward-char backward-char
                 ergoemacs-backward-block ergoemacs-forward-block ergoemacs-backward-open-bracket
                 ergoemacs-forward-close-bracket move-end-of-line move-beginning-of-line backward-word forward-word
-                )
+                subword-backward subword-forward)
   "Defines movement functions that ergoemacs is aware of.")
 
 (defun ergoemacs-set-default (symbol new-value)
