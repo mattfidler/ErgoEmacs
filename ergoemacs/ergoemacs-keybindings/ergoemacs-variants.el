@@ -116,7 +116,6 @@
     ("M-*" ergoemacs-select-text-in-quote "←quote→")
     ("M-6" ergoemacs-select-current-block "Sel. Block")
     ("M-7" ergoemacs-select-current-line "Sel. Line")
-    ("<menu> g" keyboard-quit "Quit")
     ("<menu> j" ergoemacs-ctl-c "Ctl-c")
     ("<menu> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
     ("<menu> f" ergoemacs-ctl-x "Ctl-x")
@@ -820,6 +819,13 @@ Some exceptions we don't want to unset.
           ("M-r" kill-word "⌦ word")))
   (setq ergoemacs-redundant-keys-tmp (append ergoemacs-redundant-keys-tmp
                                              (list "M-f" "M-b" "M-d" "C-<backspace>" "C-d"))))
+
+
+(ergoemacs-defvariant lvl3
+  "Level 3 Ergoemacs -- ALL key except <menu> keys."
+  nil
+  (setq ergoemacs-variable-layout-tmp
+        (remove-if (lambda (x) (string-match "<menu>" (car x))) ergoemacs-variable-layout)))
 
 (ergoemacs-defvariant guru
   "Unbind some commonly used keys such as <left> and <right> to get in the habit of using ergoemacs keybindings."

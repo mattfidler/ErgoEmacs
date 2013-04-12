@@ -325,6 +325,13 @@ Adding keys for moving around words and deleting words.
   (ergoemacs-mode 1)
 #+END_SRC
 *** Level 3
+Full ergoemacs keyset without the <menu> unchorded keys.
+#+BEGIN_SRC emacs-lisp
+  (setq ergoemacs-variant "lvl3")
+  (ergoemacs-mode 1)
+#+END_SRC
+
+*** Full Ergoemacs Keys
 Try to use the full ergoemacs mode.
 #+BEGIN_SRC emacs-lisp
   (setq ergoemacs-variant nil)
