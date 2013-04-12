@@ -540,7 +540,7 @@ Some exceptions we don't want to unset.
                            (error variable)))
                   (is-alias nil)
                   (doc nil))
-             (setq doc (or (documentation-property variable 'group-documentation)
+u             (setq doc (or (documentation-property variable 'group-documentation)
                            (progn
                              (setq is-alias t)
                              (documentation-property alias 'group-documentation))))
@@ -819,6 +819,13 @@ Some exceptions we don't want to unset.
           ("M-r" kill-word "⌦ word")))
   (setq ergoemacs-redundant-keys-tmp (append ergoemacs-redundant-keys-tmp
                                              (list "M-f" "M-b" "M-d" "C-<backspace>" "C-d"))))
+
+
+(ergoemacs-defvariant lvl3
+  "Level 3 Ergoemacs -- ALL key except <menu> keys."
+  nil
+  (setq ergoemacs-variable-layout-tmp
+        (remove-if (lambda (x) (string-match "<menu>" (car x))))))
 
 (ergoemacs-defvariant guru
   "Unbind some commonly used keys such as <left> and <right> to get in the habit of using ergoemacs keybindings."

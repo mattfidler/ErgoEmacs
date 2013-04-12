@@ -372,15 +372,18 @@ exit the repeatable movement/delete keys press [Menu]. This is similar
 to VIM's edit mode, with a toggle of the [Menu] key. - Shifted keys
 still are allowed. For example, page up can be accomplished in QWERTY
 by [Shift+i]. - Any command that enters the minibuffer also exits the
-repeatable movement/deletion. - To reduce the shifted key-chords, on
-QWERTY you can also press [Menu] [i]. Therefore [Menu] [i] [i] is
-equivalent to one page up. Followed by a [k] will be the page-down
-equivalent - Again, [Menu] stops the movement mode and anything that
-enters the minibuffer removes the movement mode. - Shift and the key is
-the unshifted command. Therefore [Menu] [i] [i] [Shift+k] would be Page
-Up followed by down one character. ## Layouts Supported ## Tips for
-adopting ErgoEmacs Keybindings If you are a long time emacs user, you
-may find it painful to adopt this setup.
+repeatable movement/deletion. - Any undefined key in the keymap (like
+1) would exit the mode and insert the character - To reduce the shifted
+key-chords, on QWERTY you can also press [Menu] [i]. Therefore [Menu]
+[i] [i] is equivalent to one page up. Followed by a [k] will be the
+page-down equivalent - Again, [Menu] stops the movement mode and
+anything that enters the minibuffer removes the movement mode. - Any
+undefined key in the keymap (like 1) would exit the mode and insert the
+character - Shift and the key is the unshifted command. Therefore
+[Menu] [i] [i] [Shift+k] would be Page Up followed by down one
+character. ## Layouts Supported ## Tips for adopting ErgoEmacs
+Keybindings If you are a long time emacs user, you may find it painful
+to adopt this setup.
 
 This difficulty is nothing special. It's the same difficulty when you
 switching to dvorak after years of qwerty. Basically, it's about
@@ -429,6 +432,7 @@ adopt.
 
 * Level 2::
 * Level 3::
+* Full Ergoemacs Keys::
 * Guru::
 * Master::
 
@@ -443,19 +447,29 @@ Adding keys for moving around words and deleting words.
 (setq ergoemacs-variant "lvl2") (ergoemacs-mode 1)
 
 
-File: ergoemacs-mode.info,  Node: Level 3,  Next: Guru,  Prev: Level 2,  Up: Shortcut To Open Cheatsheet
+File: ergoemacs-mode.info,  Node: Level 3,  Next: Full Ergoemacs Keys,  Prev: Level 2,  Up: Shortcut To Open Cheatsheet
 
 1.4.5.2 Level 3
 ...............
+
+Full ergoemacs keyset without the unchorded keys.
+
+(setq ergoemacs-variant "lvl3") (ergoemacs-mode 1)
+
+
+File: ergoemacs-mode.info,  Node: Full Ergoemacs Keys,  Next: Guru,  Prev: Level 3,  Up: Shortcut To Open Cheatsheet
+
+1.4.5.3 Full Ergoemacs Keys
+...........................
 
 Try to use the full ergoemacs mode.
 
 (setq ergoemacs-variant nil) (ergoemacs-mode 1)
 
 
-File: ergoemacs-mode.info,  Node: Guru,  Next: Master,  Prev: Level 3,  Up: Shortcut To Open Cheatsheet
+File: ergoemacs-mode.info,  Node: Guru,  Next: Master,  Prev: Full Ergoemacs Keys,  Up: Shortcut To Open Cheatsheet
 
-1.4.5.3 Guru
+1.4.5.4 Guru
 ............
 
 The guru variant takes away the arrow keys and page up/page down keys.
@@ -465,7 +479,7 @@ The guru variant takes away the arrow keys and page up/page down keys.
 
 File: ergoemacs-mode.info,  Node: Master,  Prev: Guru,  Up: Shortcut To Open Cheatsheet
 
-1.4.5.4 Master
+1.4.5.5 Master
 ..............
 
 The Master variant takes away the backspace. This key is not
@@ -652,21 +666,22 @@ Node: Repeatable and Non-Repeatable Keys10799
 Node: Ergoemacs Key Chord Reduction12434
 Node: [Control+x] and [Control-c] reduction12748
 Node: Movement without key-chords15239
-Node: Where Did My Command Go?16769
-Node: Shortcut To Open Cheatsheet17239
-Node: Level 218542
-Node: Level 318779
-Node: Guru19006
-Node: Master19264
-Node: Changing key layouts or adding variants19646
-Node: Globally defined keys19937
-Node: Adding an ergonomic key map with fixed mappings21392
-Node: Creating a keyboard variant21900
-Node: Ergoemacs Keys System wide22122
-Node: Bash22422
-Node: Windows22536
-Node: Extras24747
-Node: Updating Ergoemacs for the latest version of emacs25408
+Node: Where Did My Command Go?16945
+Node: Shortcut To Open Cheatsheet17415
+Node: Level 218742
+Node: Level 318979
+Node: Full Ergoemacs Keys19238
+Node: Guru19501
+Node: Master19771
+Node: Changing key layouts or adding variants20153
+Node: Globally defined keys20444
+Node: Adding an ergonomic key map with fixed mappings21899
+Node: Creating a keyboard variant22407
+Node: Ergoemacs Keys System wide22629
+Node: Bash22929
+Node: Windows23043
+Node: Extras25254
+Node: Updating Ergoemacs for the latest version of emacs25915
 
 End Tag Table
 
