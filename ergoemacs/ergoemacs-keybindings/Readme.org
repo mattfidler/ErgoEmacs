@@ -259,6 +259,7 @@ also bound to [Menu] [y] for the unchorded Control-h keymap.
 
 
 *** Movement without key-chords
+**** Method #1 -- <menu> Movement mode
 One can enable movement without key-chords as follows:
 - On QWERTY, press [Menu] [k] and then the movement key.  This key is
   repeatable.  Therefore [Menu] [k] [k] [k] would move the cursor down
@@ -281,6 +282,7 @@ One can enable movement without key-chords as follows:
     insert the character
   - Shift and the key is the unshifted command.  Therefore [Menu] [i]
     [i] [Shift+k] would be Page Up followed by down one character.
+
 * Layouts Supported
 * Tips for adopting ErgoEmacs Keybindings
 If you are a long time emacs user, you may find it painful to adopt

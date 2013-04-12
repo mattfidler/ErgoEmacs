@@ -121,7 +121,7 @@ Valid values are:
   :group 'ergoemacs-mode)
 
 
-(defcustom ergoemacs-repeat-movement-commands 'single
+(defcustom ergoemacs-repeat-movement-commands nil 
   "Allow movement commands to be repeated without pressing the ALT key."
   :group 'ergoemacs-mode
   :type '(choice
