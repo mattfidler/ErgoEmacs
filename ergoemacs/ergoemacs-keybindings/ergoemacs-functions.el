@@ -147,9 +147,7 @@ In most major modes, this is similar to `forward-paragraph', but this command's 
   (interactive)
   (if (search-forward-regexp "\n[[:blank:]\n]*\n+" nil "NOERROR")
       (progn (backward-char))
-    (progn (goto-char (point-max)) )
-    )
-  )
+    (progn (goto-char (point-max)))))
 
 (defun ergoemacs-backward-block ()
   "Move cursor backward to previous text block.
@@ -158,11 +156,8 @@ See: `ergoemacs-forward-block'"
   (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
       (progn
         (skip-chars-backward "\n\t ")
-        (forward-char 1)
-        )
-    (progn (goto-char (point-min)) )
-    )
-  )
+        (forward-char 1))
+    (progn (goto-char (point-min)) )))
 
 ;;; TEXT SELECTION RELATED
 
