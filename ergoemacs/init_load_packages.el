@@ -116,22 +116,22 @@
    )
   )
 
-;;; enhanced text selection, expand-region
-(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/expand-region/"))
-(require 'expand-region)
-(when
-    (member 'expand-region features)
-  (if 
-      (fboundp 'ergoemacs-key )
-      (progn (ergoemacs-key "M-8" 'er/expand-region "←region→")
-             (ergoemacs-key "M-9" 'er/contract-region "→region←")
-             )
-    (progn
-      (global-set-key (kbd "M-8") 'er/expand-region)
-      (global-set-key (kbd "M-9") 'er/contract-region)
-      )
-    )
-  )
+;; enhanced text selection, expand-region
+;(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/expand-region/"))
+;(require 'expand-region)
+;(when
+;    (member 'expand-region features)
+;  (if 
+;      (fboundp 'ergoemacs-key )
+;      (progn (ergoemacs-key "M-8" 'er/expand-region "←region→")
+;             (ergoemacs-key "M-9" 'er/contract-region "→region←")
+;             )
+;    (progn
+;      (global-set-key (kbd "M-8") 'er/expand-region)
+;      (global-set-key (kbd "M-9") 'er/contract-region)
+;      )
+;    )
+;  )
 
 ;;; color CSS color code
 (autoload 'rainbow-mode "rainbow-mode" "Colorize strings that represent colors, e.g. #aabbcc." t nil)
