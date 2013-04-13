@@ -1328,6 +1328,8 @@ When cursor is in HTML link file path, e.g.  <img src=\"gki/macosxlogo.png\" > a
 HTML5 keywords are colored.
 Basically that's it.
 
+beta stage. Mostly just used by me. There are about 20 functions that act on HTML. They have inline doc. But don't have keys. No over-all doc.
+
 \\{xhm-keymap}"
 
   (setq font-lock-defaults '((xhm-font-lock-keywords)))
