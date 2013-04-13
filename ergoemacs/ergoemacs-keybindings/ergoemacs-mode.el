@@ -79,7 +79,11 @@
 (require 'ergoemacs-layouts)
 
 (defvar ergoemacs-movement-functions
-  '(scroll-down move-beginning-of-line move-end-of-line scroll-up scroll-down forward-block backward-block forward-word backward-word next-line previous-line forward-char backward-char)
+  '(scroll-down move-beginning-of-line move-end-of-line scroll-up scroll-down forward-block backward-block
+                forward-word backward-word next-line previous-line forward-char backward-char
+                ergoemacs-backward-block ergoemacs-forward-block ergoemacs-backward-open-bracket
+                ergoemacs-forward-close-bracket move-end-of-line move-beginning-of-line backward-word forward-word
+                )
   "Defines movement functions that ergoemacs is aware of.")
 
 (defun ergoemacs-set-default (symbol new-value)
@@ -121,7 +125,7 @@ Valid values are:
   :group 'ergoemacs-mode)
 
 
-(defcustom ergoemacs-repeat-movement-commands 'single
+(defcustom ergoemacs-repeat-movement-commands nil 
   "Allow movement commands to be repeated without pressing the ALT key."
   :group 'ergoemacs-mode
   :type '(choice
