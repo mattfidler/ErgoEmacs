@@ -1105,8 +1105,9 @@ For detail on exactly which string are changed, see `xhm-emacs-to-windows-kbd-no
 (defun xhm-htmlize-keyboard-shortcut-notation ()
   "Wrap a “kbd” tag around keyboard keys on text selection or current text inside 【】.
 Example: 【ctrl+w】 ⇒ 【<kbd>Ctrl</kbd>+<kbd>w</kbd>】
-Emacs's key notation also supported. Example: 【C-x t】 ⇒ 【Ctrl+x t】
+Emacs's key notation also supported. Example: 【C-x t】 ⇒ 【<kbd>Ctrl</kbd>+<kbd>x</kbd> <kbd>t</kbd>】
 Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings.
+Case shouldn't matter, except when it's emacs's key notation.
 "
   (interactive)
   (let (p1 p2 inputStr resultStr replaceList)
