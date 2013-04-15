@@ -743,6 +743,10 @@ will change."
 (defun ergoemacs-setup-keys (&optional no-check)
   "Setups keys based on a particular layout. Based on `ergoemacs-keyboard-layout'."
   (interactive)
+  (when ergoemacs-debug
+    (message "Ergoemacs layout: %s" ergoemacs-keyboard-layout)
+    (message "Ergoemacs variant: %s" ergoemacs-variant)
+    (message "Emacs Version: %s" (emacs-version) ))
   (let ((ergoemacs-state (if (boundp 'ergoemacs-mode) ergoemacs-mode nil))
         (cua-state cua-mode)
         (layout
@@ -869,7 +873,7 @@ C-k S-a     -> k S-a           not defined
                      (not fn)
                      (eq fn 'Prefix))
            (when ergoemacs-debug
-             (message "%s -> %s (%s)" (match-string 1) new-key fn))
+             (message "Translate: %s -> %s (%s)" (match-string 1) new-key fn))
            (condition-case err
                (define-key ,keymap (kbd new-key) fn)
              (error
@@ -952,6 +956,8 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   :group 'ergoemacs-mode
   :keymap ergoemacs-keymap
   (ergoemacs-setup-keys t)
+  (when ergoemacs-debug
+    (message "Ergoemacs Keys have loaded."))
   (when ergoemacs-cua-rect-modifier
     (if ergoemacs-mode
         (progn
@@ -993,6 +999,8 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
               (cua--rectangle . ,cua--rectangle-keymap)
               (cua--ena-region-keymap . ,cua--region-keymap)
               (cua-mode . ,cua-global-keymap)))))
+  (when ergoemacs-debug
+    (message "CUA rectangle mode modifier changed."))
   (when ergoemacs-change-smex-M-x
     (if ergoemacs-mode
         (setq smex-prompt-string (concat (ergoemacs-pretty-key "M-x") " "))
