@@ -53,6 +53,7 @@
 ;; Italian QWERTY layout “it”. Contributor: David Capello, Francesco Biccari
 
 
+(require 'cl)
 (require 'easymenu)
 (require 'cua-base)
 (require 'cua-rect)

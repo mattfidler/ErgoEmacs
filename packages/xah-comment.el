@@ -179,7 +179,7 @@ If at-end-p is true, then add comment at end."
   (xc-set-line-comment-syntax)
     (beginning-of-line 1)
     (search-forward xc-line-comment-marker)
-    (delete-char -1)
+    (delete-char (- (length xc-line-comment-marker)) )
        ) )
     ))
 
