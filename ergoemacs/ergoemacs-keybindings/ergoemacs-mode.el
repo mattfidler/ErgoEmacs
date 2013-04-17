@@ -959,22 +959,36 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (ergoemacs-setup-keys t)
   (when ergoemacs-debug
     (message "Ergoemacs Keys have loaded."))
-  (when ergoemacs-cua-rect-modifier
-    (if ergoemacs-mode
-        (progn
-          
-          (unless ergoemacs-ctl-x-unchorded
-            (ergoemacs-extract-map ergoemacs-ctl-x-unchorded))
-          
-          (unless ergoemacs-ctl-x
-            (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" ""))
-          
-          (unless ergoemacs-ctl-h-unchorded
-            (ergoemacs-extract-map ergoemacs-ctl-h-unchorded "C-h"))
-          
-          (unless ergoemacs-ctl-h
-            (ergoemacs-extract-map ergoemacs-ctl-h "C-h" "C-" "M-" ""))
-          
+  (condition-case err
+      (when ergoemacs-cua-rect-modifier
+        (if ergoemacs-mode
+            (progn
+              
+              (unless ergoemacs-ctl-x-unchorded
+                (ergoemacs-extract-map ergoemacs-ctl-x-unchorded))
+              
+              (unless ergoemacs-ctl-x
+                (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" ""))
+              
+              (unless ergoemacs-ctl-h-unchorded
+                (ergoemacs-extract-map ergoemacs-ctl-h-unchorded "C-h"))
+              
+              (unless ergoemacs-ctl-h
+                (ergoemacs-extract-map ergoemacs-ctl-h "C-h" "C-" "M-" ""))
+              
+              (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
+              (setq cua--rectangle-keymap (make-sparse-keymap))
+              (setq cua--rectangle-initialized nil)
+              (cua--init-rectangles)
+              (setq cua--keymap-alist
+                    `((cua--ena-prefix-override-keymap . ,cua--prefix-override-keymap)
+                      (cua--ena-prefix-repeat-keymap . ,cua--prefix-repeat-keymap)
+                      (cua--ena-cua-keys-keymap . ,cua--cua-keys-keymap)
+                      (cua--ena-global-mark-keymap . ,cua--global-mark-keymap)
+                      (cua--rectangle . ,cua--rectangle-keymap)
+                      (cua--ena-region-keymap . ,cua--region-keymap)
+                      (cua-mode . ,cua-global-keymap))))
+          (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier-orig)
           (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
           (setq cua--rectangle-keymap (make-sparse-keymap))
           (setq cua--rectangle-initialized nil)
@@ -987,21 +1001,10 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
                   (cua--rectangle . ,cua--rectangle-keymap)
                   (cua--ena-region-keymap . ,cua--region-keymap)
                   (cua-mode . ,cua-global-keymap))))
-      (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier-orig)
-      (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
-      (setq cua--rectangle-keymap (make-sparse-keymap))
-      (setq cua--rectangle-initialized nil)
-      (cua--init-rectangles)
-      (setq cua--keymap-alist
-            `((cua--ena-prefix-override-keymap . ,cua--prefix-override-keymap)
-              (cua--ena-prefix-repeat-keymap . ,cua--prefix-repeat-keymap)
-              (cua--ena-cua-keys-keymap . ,cua--cua-keys-keymap)
-              (cua--ena-global-mark-keymap . ,cua--global-mark-keymap)
-              (cua--rectangle . ,cua--rectangle-keymap)
-              (cua--ena-region-keymap . ,cua--region-keymap)
-              (cua-mode . ,cua-global-keymap)))))
-  (when ergoemacs-debug
-    (message "CUA rectangle mode modifier changed."))
+        (when ergoemacs-debug
+          (message "CUA rectangle mode modifier changed.")))
+    (error (message "CUA rectangle modifier wasn't changed.")))
+  
   (when ergoemacs-change-smex-M-x
     (if ergoemacs-mode
         (setq smex-prompt-string (concat (ergoemacs-pretty-key "M-x") " "))
