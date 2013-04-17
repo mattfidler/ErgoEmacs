@@ -8,13 +8,13 @@ This is the installation instruction for the ErgoEmacs Package.
 
 The ErgoEmacs Package is a set of elisp files that can be installed on any platform running emacs. (Windows, OS X, Linux) Once installed, you'll have a enhanced version of emacs, with ergonomic keybindings, enhanced user interface, and many elisp packages prepared and loaded for you.
 
-The home page of ErgoEmacs is at http://ErgoEmacs.org/
+The home page of ErgoEmacs is at http://ergoemacs.org/
 
 * Requirement
 
 You need to have a working emacs already installed.
 
-Your emacs should be version 24.1 or later. (To find out what is the version of your emacs, type in terminal 「emacs --version」 or in emacs “M-x version”.)
+Your emacs should be version 24.1 or later. (To find out what is the version of your emacs, type in terminal 「emacs --version」 or in emacs Alt+x version.)
 
 ** Mac
 
@@ -24,12 +24,16 @@ If you are using Aquamacs Emacs ( http://aquamacs.org/ ), the latest version on 
 
 * Installation
 
-** 1. Unzip the package.
+** 1. Unzip the package
 Example:
 
  unzip ergoemacs_1.9.3.1.zip
 
 (The version number is just a example. Yours may be higher.)
+
+You can also get it from git by running:
+
+ git clone https://xahlee@code.google.com/p/ergoemacs/ 
 
 ** 2. Put the package in your emacs library dir.
 
