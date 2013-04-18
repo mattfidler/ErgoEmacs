@@ -222,31 +222,31 @@
 ;; syntax coloring related
 
 (setq xem-font-lock-keywords
-(let (
-(elispWords (regexp-opt xem-elisp-kwds 'words))
-(elispVars (regexp-opt xem-elisp-vars 'words))
-(elispBuiltin (regexp-opt xem-keyword-builtin 'words))
-(elispKeyword (regexp-opt xem-keyword-keyword 'words))
- )
-`(
-(,elispWords . font-lock-function-name-face)
-(,elispVars . font-lock-constant-face)
-(,elispBuiltin . font-lock-builtin-face)
-(,elispKeyword . font-lock-keyword-face)
+      (let (
+            (elispWords (regexp-opt xem-elisp-kwds 'words))
+            (elispVars (regexp-opt xem-elisp-vars 'words))
+            (elispBuiltin (regexp-opt xem-keyword-builtin 'words))
+            (elispKeyword (regexp-opt xem-keyword-keyword 'words))
+            )
+        `(
+          (,elispWords . font-lock-function-name-face)
+          (,elispVars . font-lock-constant-face)
+          (,elispBuiltin . font-lock-builtin-face)
+          (,elispKeyword . font-lock-keyword-face)
 
-;font-lock-comment-delimiter-face
-;font-lock-comment-face
-;font-lock-doc-face
-;font-lock-negation-char-face
-;font-lock-preprocessor-face
-;font-lock-reference-face
-;font-lock-string-face
-;font-lock-syntactic-face-function
-;font-lock-type-face
-;font-lock-variable-name-face
-;font-lock-warning-face
+                                        ;font-lock-comment-delimiter-face
+                                        ;font-lock-comment-face
+                                        ;font-lock-doc-face
+                                        ;font-lock-negation-char-face
+                                        ;font-lock-preprocessor-face
+                                        ;font-lock-reference-face
+                                        ;font-lock-string-face
+                                        ;font-lock-syntactic-face-function
+                                        ;font-lock-type-face
+                                        ;font-lock-variable-name-face
+                                        ;font-lock-warning-face
 
-) ) )
+          ) ) )
 
 
 ;; keybinding
@@ -264,6 +264,11 @@
       (let ((synTable (make-syntax-table)))
         (modify-syntax-entry ?\; "< b" synTable)
         (modify-syntax-entry ?\n "> b" synTable)
+        (modify-syntax-entry ?` "'   " synTable)
+        (modify-syntax-entry ?' "'   " synTable)
+        (modify-syntax-entry ?, "'   " synTable)
+        (modify-syntax-entry ?@ "'   " synTable)
+
         synTable))
 
 
