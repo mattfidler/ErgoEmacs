@@ -33,7 +33,7 @@ Example:
 
 You can also get it from git by running:
 
- git clone https://xahlee@code.google.com/p/ergoemacs/ 
+ git clone https://code.google.com/p/ergoemacs/
 
 ** 2. Put the package in your emacs library dir.
 
