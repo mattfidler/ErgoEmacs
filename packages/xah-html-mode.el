@@ -128,13 +128,19 @@ If there's a text selection, use that region as content."
         (p2 (elt ξxx 2))
         (ξyy (cdr (assoc ξlangCode ξlangNameMap)))
         (ξfileSuffix (elt ξyy 1))
-        (ξtextContent (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" (buffer-substring-no-properties p1 p2))) )
+        (ξtextContent (buffer-substring-no-properties p1 p2) )
         )
-    (delete-region p1 p2 )
-    (split-window-vertically)
-    (find-file (format "xx-testscript-%d.%s" (random 9008000 ) ξfileSuffix) )
-    (insert ξtextContent)
-    ;; (save-buffer )
+
+    (progn
+      (delete-region p1 p2 )
+      (split-window-vertically)
+      (find-file (format "xx-testscript-%d.%s" (random 9008000 ) ξfileSuffix) )
+      (insert ξtextContent)
+      (when (xhm-precode-htmlized-p ξtextContent)
+        (xhm-remove-span-tag-region (point-min) (point-max))
+        )
+;      (save-buffer )
+      )
     )
   )
 
@@ -209,7 +215,7 @@ This command does the reverse of `xhm-htmlize-precode'."
          )
 
     (message "%s" langCode)
-    (if (string-match "<span class=\\|&amp;\\|&lt;\\|&gt;" inputStr)
+    (if (xhm-precode-htmlized-p inputStr)
         (xhm-remove-span-tag-region p1 p2)
       (progn               ;; do htmlize
         (let (
@@ -229,6 +235,13 @@ This command does the reverse of `xhm-htmlize-precode'."
 )
 
                 )) )) )) ))
+
+(defun xhm-precode-htmlized-p (inputStr)
+  "return true if inputStr is htmlized code."
+  (let ()
+    (string-match "<span class=\\|&amp;\\|&lt;\\|&gt;" inputStr)    
+  ))
+
 
 
 ;; syntax coloring related
