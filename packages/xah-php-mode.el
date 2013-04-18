@@ -18,12 +18,12 @@
 (defvar xah-php-mode-hook nil "Standard hook for `xah-php-mode'")
 
 (defvar xpm-php-kwds nil "a list of PHP lang keywords")
-(setq xpm-php-kwds '( "__halt_compiler" "abstract" "and" "array" "as" "break" "callable" "case" "catch" "class" "clone" "const" "continue" "declare" "default" "die" "do" "echo" "else" "elseif" "empty" "enddeclare" "endfor" "endforeach" "endif" "endswitch" "endwhile" "eval" "exit" "extends" "final" "for" "foreach" "function" "global" "goto" "if" "implements" "include" "include_once" "instanceof" "insteadof" "interface" "isset" "list" "namespace" "new" "or" "print" "private" "protected" "public" "require" "require_once" "return" "static" "switch" "throw" "trait" "try" "unset" "use" "var" "while" "xor" ) )
+(setq xpm-php-kwds
+'( "__halt_compiler" "abstract" "and" "array" "as" "break" "callable" "case" "catch" "class" "clone" "const" "continue" "declare" "default" "die" "do" "echo" "else" "elseif" "empty" "enddeclare" "endfor" "endforeach" "endif" "endswitch" "endwhile" "eval" "exit" "extends" "final" "for" "foreach" "function" "global" "goto" "if" "implements" "include" "include_once" "instanceof" "insteadof" "interface" "isset" "list" "namespace" "new" "or" "print" "private" "protected" "public" "require" "require_once" "return" "static" "switch" "throw" "trait" "try" "unset" "use" "var" "while" "xor" ) )
 
 (defvar xpm-constant-kwds nil "a list of PHP lang constants")
 (setq xpm-constant-kwds
-'()
- )
+'("__CLASS__" "__DIR__" "__FILE__" "__FUNCTION__" "__LINE__" "__METHOD__" "__NAMESPACE__" "__TRAIT__") )
 
 
 ;; syntax coloring related
@@ -34,10 +34,12 @@
             (phpConstants (regexp-opt xpm-constant-kwds 'words))
             )
         `(
-          (,phpWords . font-lock-function-name-face)
-          (,phpConstants . font-lock-keyword-face)
+;          (,phpWords . font-lock-function-name-face)
+          (,phpWords . font-lock-keyword-face)
+          (,phpConstants . font-lock-constant-face)
           ("$[A-Za-z]+" . font-lock-variable-name-face)
           ("$_[A-Z]+" . font-lock-constant-face)
+          ("'[^']+'" . font-lock-string-face)
           ) ) )
 
 
@@ -54,8 +56,10 @@
 (defvar xpm-syntax-table nil "Syntax table for `xah-php-mode'.")
 (setq xpm-syntax-table
       (let ((synTable (make-syntax-table)))
-  (modify-syntax-entry ?#   "< b" synTable)
-  (modify-syntax-entry ?\n  "> b" synTable)
+        (modify-syntax-entry ?#   "< b" synTable) ; comment
+        (modify-syntax-entry ?\n  "> b" synTable)
+        (modify-syntax-entry ?\/ ". 12b" synTable) ; double slash comment
+        (modify-syntax-entry ?\n "> b" synTable)
         synTable))
 
 
