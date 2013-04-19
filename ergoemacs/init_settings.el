@@ -6,7 +6,6 @@
 
 ;;; dired, file, related
 
-
 ;; don't create backup~ or #auto-save# files
 (setq backup-by-copying t)
 (setq make-backup-files nil)
@@ -19,7 +18,7 @@
 (setq dired-recursive-copies (quote always))
 (setq dired-recursive-deletes (quote top))
 
-; Save minibuffer history
+;; Save minibuffer history
 (savehist-mode 1)
 
 ;; turn on save place so that when opening a file, the cursor will be at the last position.
@@ -85,16 +84,16 @@ No splash screen. and If the *scratch* buffer is the current one, then create a 
 "
   (interactive)
   (progn
-    (setq inhibit-startup-screen t)            
+    (setq inhibit-startup-screen t)
     (if (string= (buffer-name) "*scratch*")
         (ergoemacs-new-empty-buffer))
     ))
-          
+
 (add-hook 'after-init-hook 'desktop-settings-setup "APPEND")
 (add-hook 'after-init-hook 'hide-init-buffers "APPEND")
 
 
-;; editing related
+;;; editing related
 
 ;; make cursor movement stop in between camelCase words.
 (when (fboundp 'global-subword-mode ) (global-subword-mode 1))
@@ -126,6 +125,7 @@ No splash screen. and If the *scratch* buffer is the current one, then create a 
 (ido-mode 1)
 
 ;; display line numbers at margin
+;; 2013-04-19, as of GNU Emacs 24.3.1, linum-mode will freeze emacs for about 10 minutes when opening a jpg file of 10 megabytes size
 ;(global-linum-mode 1)
 
 
