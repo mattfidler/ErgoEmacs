@@ -66,7 +66,7 @@
 
 ;; define the mode
 (define-derived-mode xah-php-mode fundamental-mode
-  "ξphp "
+  "ξPHP "
   "A major mode for PHP.
 
 PHP keywords are colored. Basically that's it.
