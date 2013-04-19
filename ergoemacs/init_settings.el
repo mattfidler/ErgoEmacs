@@ -6,6 +6,7 @@
 
 ;;; dired, file, related
 
+
 ;; don't create backup~ or #auto-save# files
 (setq backup-by-copying t)
 (setq make-backup-files nil)
@@ -18,7 +19,7 @@
 (setq dired-recursive-copies (quote always))
 (setq dired-recursive-deletes (quote top))
 
-;; Save minibuffer history
+; Save minibuffer history
 (savehist-mode 1)
 
 ;; turn on save place so that when opening a file, the cursor will be at the last position.
@@ -35,6 +36,14 @@
 ;; Some tech detail: set the desktop session file 〔.emacs.desktop〕 at the variable “user-emacs-directory” (default value is “~/.emacs.d/”).  This file is our desktop file. It will be auto created and or over-written.  if a emacs expert has other desktop session files elsewhere, he can still use or manage those.
 
 (require 'desktop)
+
+(defun desktop-file-modtime-reset ()
+  "Reset `desktop-file-modtime' so the user is not bothered."
+  (interactive)
+  (run-with-timer 5 nil
+          (lambda ()
+            (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
+            (desktop-save user-emacs-directory))))
 
 (defun desktop-settings-setup ()
   "Some settings setup for desktop-save-mode."
@@ -57,13 +66,7 @@
 
     ;; Make sure that even if emacs or OS crashed, emacs
     ;; still have last opened files.
-    (add-hook 'find-file-hook
-     (lambda ()
-       (run-with-timer 5 nil
-          (lambda ()
-            ;; Reset desktop modification time so the user is not bothered
-            (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
-            (desktop-save user-emacs-directory)))))
+    (add-hook 'find-file-hook 'desktop-file-modtime-reset)
 
     ;; Read default desktop
     (if (file-exists-p (concat desktop-dirname desktop-base-file-name))
@@ -72,28 +75,26 @@
     ;; Add a hook when emacs is closed to we reset the desktop
     ;; modification time (in this way the user does not get a warning
     ;; message about desktop modifications)
-    (add-hook 'kill-emacs-hook
-              (lambda ()
-                ;; Reset desktop modification time so the user is not bothered
-                (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))))
+    (add-hook 'kill-emacs-hook 'desktop-file-modtime-reset)
     )
   )
 
-(add-hook 'after-init-hook
-          'desktop-settings-setup
-          (lambda ()
-            ;; No splash screen
-            (setq inhibit-startup-screen t)
-
-            ;; If the *scratch* buffer is the current one, then create a new
-            ;; empty untitled buffer to hide *scratch*
-            (if (string= (buffer-name) "*scratch*")
-                (ergoemacs-new-empty-buffer))
-            )
-          t) ;; append this hook to the tail
+(defun hide-init-buffers ()
+  "hide some buffers when emacs starts.
+No splash screen. and If the *scratch* buffer is the current one, then create a new empty untitled buffer to hide *scratch*
+"
+  (interactive)
+  (progn
+    (setq inhibit-startup-screen t)            
+    (if (string= (buffer-name) "*scratch*")
+        (ergoemacs-new-empty-buffer))
+    ))
+          
+(add-hook 'after-init-hook 'desktop-settings-setup "APPEND")
+(add-hook 'after-init-hook 'hide-init-buffers "APPEND")
 
 
-;;; editing related
+;; editing related
 
 ;; make cursor movement stop in between camelCase words.
 (when (fboundp 'global-subword-mode ) (global-subword-mode 1))
@@ -125,7 +126,7 @@
 (ido-mode 1)
 
 ;; display line numbers at margin
-(global-linum-mode 1)
+;(global-linum-mode 1)
 
 
 
