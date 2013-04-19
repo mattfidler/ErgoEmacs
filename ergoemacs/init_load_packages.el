@@ -136,6 +136,7 @@
 ;;; color CSS color code
 (autoload 'rainbow-mode "rainbow-mode" "Colorize strings that represent colors, e.g. #aabbcc." t nil)
 (add-hook 'css-mode-hook 'rainbow-mode)
+(add-hook 'xah-css-mode-hook 'rainbow-mode)
 
 ;;; make the formfeed char (^L) display as a line
 (require 'page-break-lines)
