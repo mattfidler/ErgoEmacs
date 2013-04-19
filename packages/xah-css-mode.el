@@ -100,7 +100,13 @@
 
 ) )
 
-(defvar xcm-value-kwds nil "a list of CSS value keywords")
+(defvar xcm-unit-names nil "a list of CSS unite names.")
+(setq xcm-unit-names
+'(
+"px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%"
+) )
+
+(defvar xcm-value-kwds nil "a list of CSS value names")
 (setq xcm-value-kwds
 '(
 
@@ -117,8 +123,6 @@
 "center"
 "collapse"
 "dashed"
-"em"
-"ex"
 "fixed"
 "hidden"
 "hsl"
@@ -138,7 +142,6 @@
 "normal"
 "nowrap"
 "pointer"
-"px"
 "relative"
 "rgb"
 "rgba"
@@ -172,24 +175,16 @@
             (cssValueNames (regexp-opt xcm-value-kwds ))
             (cssColorNames (regexp-opt xcm-color-names 'words))
             (htmlTagNames (regexp-opt xcm-html-tag-names 'words))
+            (cssUnitNames (regexp-opt xcm-unit-names ))
             )
         `(
           (,cssPropertyNames . font-lock-function-name-face )
           (,cssValueNames . font-lock-keyword-face)
           (,cssColorNames . font-lock-constant-face)
           (,htmlTagNames . font-lock-type-face)
+          (,cssUnitNames . font-lock-builtin-face)
           ("'[^']+'" . font-lock-string-face)
           ) ) )
-
-(defvar xcm-colorfy-hex
-  '(("#[abcdef[:digit:]]\\{6\\}"
-     (0 (put-text-property
-         (match-beginning 0)
-         (match-end 0)
-         'face (list :background
-                     (match-string-no-properties 0)))))))
-
-(font-lock-add-keywords 'xah-css-mode xcm-colorfy-hex)
 
 ;font-lock-builtin-face
 ;font-lock-comment-delimiter-face
@@ -206,6 +201,16 @@
 ;font-lock-type-face
 ;font-lock-variable-name-face
 ;font-lock-warning-face
+
+(defvar xcm-colorfy-hex
+  '(("#[abcdef[:digit:]]\\{6\\}"
+     (0 (put-text-property
+         (match-beginning 0)
+         (match-end 0)
+         'face (list :background
+                     (match-string-no-properties 0)))))))
+
+(font-lock-add-keywords 'xah-css-mode xcm-colorfy-hex)
 
 
 ;; keybinding
