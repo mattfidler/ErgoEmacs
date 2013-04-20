@@ -125,8 +125,7 @@ No splash screen. and If the *scratch* buffer is the current one, then create a 
 (ido-mode 1)
 
 ;; display line numbers at margin
-;; 2013-04-19, as of GNU Emacs 24.3.1, linum-mode will freeze emacs for about 10 minutes when opening a jpg file of 10 megabytes size
-;(global-linum-mode 1)
+(global-linum-mode 1)
 
 
 
