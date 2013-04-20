@@ -1,5 +1,5 @@
 ;; -*-no-byte-compile: t; -*-
-;;; tabbar.el --- Display a tab bar in the header line
+;;; Tabbar.el --- Display a tab bar in the header line
 
 ;; Copyright (C) 2003, 2004, 2005 David Ponce
 
@@ -841,13 +841,21 @@ That is for buttons and separators."
                 tabbar-scroll-left-button-value nil
                 tabbar-scroll-right-button-value nil)))
 
+;; the following cache only provides minor speed benefits
+;; but it may be a workaround for the close-tab/undo.png display issue
+(defvar tabbar-cached-image nil)
+(defvar tabbar-cached-spec nil)
 (defsubst tabbar-find-image (specs)
   "Find an image, choosing one of a list of image specifications.
 SPECS is a list of image specifications.  See also `find-image'."
-  (when (and tabbar-use-images (display-images-p))
-    (condition-case nil
-        (find-image specs)
-      (error nil))))
+  (if (eq tabbar-cached-spec specs)
+      tabbar-cached-image
+    (when (and tabbar-use-images (display-images-p))
+      (condition-case nil
+	  (prog1
+	      (setq tabbar-cached-image (find-image specs))
+	    (setq tabbar-cached-spec specs))
+	(error nil)))))
 
 (defsubst tabbar-disable-image (image)
   "From IMAGE, return a new image which looks disabled."
@@ -1605,7 +1613,8 @@ Returns non-nil if the new state is enabled.
 
 (defun tabbar-mwheel-follow ()
   "Toggle Tabbar-Mwheel following Tabbar and Mouse-Wheel modes."
-  (tabbar-mwheel-mode (if (and mouse-wheel-mode tabbar-mode) 1 -1)))
+  (if (boundp 'mouse-wheel-mode)
+      (tabbar-mwheel-mode (if (and mouse-wheel-mode tabbar-mode) 1 -1))))
 
 (add-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
 (add-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
