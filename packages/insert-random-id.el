@@ -1,4 +1,4 @@
-;;; insert-random-id.el --- A minor mode, a keybinding set based on ergonomics. -*- coding: utf-8 -*-
+;;; insert-random-id.el --- commands to insert random ID. -*- coding: utf-8 -*-
 
 ;; Copyright © 2013 by Xah Lee
 
