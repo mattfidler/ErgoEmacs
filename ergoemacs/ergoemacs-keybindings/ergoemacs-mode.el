@@ -11,6 +11,7 @@
 ;; Created: August 01 2007
 ;; Version: 5.7.4
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
+;; Package-Requires: ((org-cua-dwim "0.5"))
 
 ;; You can redistribute this program and/or modify it under the terms
 ;; of the GNU General Public License as published by the Free Software
@@ -57,6 +58,11 @@
 (require 'easymenu)
 (require 'cua-base)
 (require 'cua-rect)
+
+(require 'org-cua-dwim nil "NOERROR")
+(when (featurep 'org-cua-dwim)
+  (org-cua-dwim-activate))
+
 ;; Ergoemacs-keybindings version
 (defconst ergoemacs-mode-version "5.7.5"
   "Ergoemacs-keybindings minor mode version number.")
