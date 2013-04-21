@@ -132,7 +132,7 @@ shift-selection-mode is available."
 
 (defmacro org-cua-dwim-fix-cua-command (cmd)
   "Defines advice for a CUA-command that will turn on CUA mode
-before runnind ant hen run the `cua--precommand-handler'"
+before runnind and then run the `cua--precommand-handler'"
   `(progn
      (defadvice ,(intern cmd) (around org-cua-dwim)
      "Try to fix the org copy and paste problem."
