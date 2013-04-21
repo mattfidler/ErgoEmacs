@@ -86,8 +86,6 @@
            ("mma" . ["fundamental-mode" "m"])
            ) )
 
-
-
 (defun xhm-get-precode-langCode ()
   "Get the langCode and boundary of current HTML pre block.
 A pre block is text of this form
@@ -239,9 +237,8 @@ This command does the reverse of `xhm-htmlize-precode'."
 (defun xhm-precode-htmlized-p (inputStr)
   "return true if inputStr is htmlized code."
   (let ()
-    (string-match "<span class=\\|&amp;\\|&lt;\\|&gt;" inputStr)    
+    (string-match "<span class=\\|&amp;\\|&lt;\\|&gt;" inputStr)
   ))
-
 
 
 ;; syntax coloring related
@@ -349,65 +346,84 @@ This command does the reverse of `xhm-htmlize-precode'."
 
 
 
+(defun xhm-cursor-in-tag-markup-p (&optional bracketPositions)
+  "Return true if cursor is inside a tag markup.
+For example,
+ <p class=\"…\">…</p>
+ If cursor is between the beginning p or ending p markup.
+ bracketPositions is optional. If nil, then
+ `xhm-get-bracket-positions' is called to get it.
+"
+  (interactive)
+  (let (
+          pl<
+          pl>
+          pr>
+          pr<
+          )
+      (when (not bracketPositions)
+        (progn
+          (setq bracketPositions (xhm-get-bracket-positions) )
+          (setq pl< (elt bracketPositions 0) )
+          (setq pl> (elt bracketPositions 1) )
+          (setq pr< (elt bracketPositions 2) )
+          (setq pr> (elt bracketPositions 3) )
+          )
+        )
+      (if (and (< pl> pl<) (< pr> pr<))
+          (progn (message "%s" "yes") t)
+        (progn (message "%s" "no") nil)
+        ) ) )
+
+(defun xhm-get-bracket-positions ()
+  "Returns html angle bracket positions.
+Returns a vector [ pl< pl> pr< pr> ]
+ pl< is the position of < nearest to cursor on the left side
+ pl> is the position of > nearest to cursor on the left side
+ similar for pr< and pr> for the right side.
+
+this command does not `save-excursion'. You need to call that.
+"
+    ;; search for current tag.
+    ;; find left nearest >, and right nearest <
+    ;; or left nearest <, and right nearest >
+    ;; determine if it's <…> or >…<.
+    (let (
+          (p-current (point))
+          pl< ; position of first < char to the left of cursor
+          pl>
+          pr<
+          pr>
+          )
+      (progn
+        (goto-char p-current)
+        (setq pl< (search-backward "<" nil "NOERROR") )
+        (goto-char p-current)
+        (setq pl> (search-backward ">" nil "NOERROR") )
+        (goto-char p-current)
+        (setq pr< (search-forward "<" nil "NOERROR") )
+        (goto-char p-current)
+        (setq pr> (search-forward ">" nil "NOERROR") )
+        (vector pl< pl> pr< pr>)
+ ) ) )
 
 (defun xhm-delete-tag ()
   "work in progress. do nothing.
 Delete the tag under cursor.
 Also delete the matching beginning/ending tag."
   (interactive)
-(save-excursion
-  ;; search for current tag.
-  ;; find left nearest >, and right nearest <
-  ;; or left nearest <, and right nearest >
-  ;; determine if it's <…> or >…<.
-
-(let (
-(p1-current (point))
-p2-left<
-p3-left>
-p4-right<
-p5-right>
-cursor>…▮…<-p
-cursor<…▮…>-p
- )
-(goto-char p1-current)
-(search-backward "<")
-(setq p2-left< (point) )
-
-(goto-char p1-current)
-(search-backward ">")
-(setq p3-left> (point) )
-
-(goto-char p1-current)
-(search-forward "<")
-(setq p4-right< (point) )
-
-(goto-char p1-current)
-(search-forward ">")
-(setq p5-right> (point) )
-
-(when
-    (and
-     (< p2-left< p3-left>)
-     (< p4-right< p5-right>)
-     )
-    (setq cursor>…▮…<-p  t )
-  )
-
-(when
-    (and
-     (< p3-left> p2-left< )
-     (< p5-right> p4-right< )
-     )
-    (setq cursor<…▮…>-p  t )
-  )
-
-)
-
-)
-;  (sgml-delete-tag 1)
-
-)
+  (save-excursion
+; determine if it's inside the tag. ⁖ <…>
+; if so, good. else abort.
+; now, determine if it's opening tag or closing. ⁖ closing tag start with </
+; if it's opening tag, need to delete the matching one to the right
+; else, need to delete the matching one to the left
+; let's assume it's the opening.
+; now, determine if there's nested element. ⁖ <p>…<b>…</b>…</p>
+;    to do this, first determine the name of the tag. ⁖ the “p” in  <p …>, then search the matching tag.
+; if so, O shit, it's complex. Need to determine if one of the nested has the same tag name. and and …
+; if not, then we can proceed. Just find the closing tag and delete it. Also the beginning.
+    (let ( ) ) ) )
 
 (defun xhm-skip-tag-forward ()
   "Move cursor to the closing tag."
@@ -1466,19 +1482,20 @@ Case shouldn't matter, except when it's emacs's key notation.
 (setq xhm-html5-tag-names '( "a" "abbr" "address" "area" "article" "aside" "audio" "b" "base" "bdi" "bdo" "blockquote" "body" "bq" "br" "button" "canvas" "caption" "cite" "class" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "id" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "mailto" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "src" "strike" "strong" "style" "sub" "summary" "sup" "t" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "track" "u" "ul" "var" "video" "wbr") )
 
 (defun xhm-wrap-html-tag (tagName &optional className)
-  "Insert/wrap a HTML tags to text selection or cursor position.
+  "Insert/wrap a HTML tags to text selection or current word.
 If current line or word is empty, then insert open/end tags and place cursor between them.
 
-The command will also prompt for a “class” and “id”. Empty value means don't add the attribute.
-
-When called in lisp program, if className is nil or empty string, don't add the attribute."
+If `universal-argument' is called first, then also prompt for a “class” attribute. Empty value means don't add the attribute.
+"
   (interactive
-   (let ()
-     (list
+   (list
       (ido-completing-read "HTML tag:" xhm-html5-tag-names "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
       ;; (read-string "Tag (p):" nil nil "p")
-      (read-string "class:" nil xhm-class-input-history "")
-      ) ) )
+      (if current-prefix-arg
+          (read-string "class:" nil xhm-class-input-history "")
+        nil
+        )
+      ) )
   (let (bds p1 p2 inputText outputText
             (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
             )
