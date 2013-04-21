@@ -212,11 +212,6 @@
 (require 'tabbar)
 (tabbar-mode 1)
 (require 'tabbar-ruler)
-;(setq tabbar-ruler-global-tabbar t) ; If you want tabbar
-;(setq tabbar-ruler-global-ruler t) ; if you want a global ruler
-;(setq tabbar-ruler-popup-menu t) ; If you want a popup menu.
-;(setq tabbar-ruler-popup-toolbar t) ; If you want a popup toolbar
-
 ;; 2010-09-30. tabbar problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
 
 ;; display horizontal line for the Form Feed char (ASCII 12, ^L)

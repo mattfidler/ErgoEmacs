@@ -26,7 +26,7 @@
 (setq-default save-place t)
 
 
-;; Make emacs open all files in last emacs session.
+;;; Make emacs open all files in last emacs session.
 
 ;; This functionality is provided by desktop-save-mode (“feature” name: “desktop”). The mode is not on by default in emacs 23.1, and has a lot options. The following is init settings for the mode for ErgoEmacs.
 
