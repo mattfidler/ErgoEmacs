@@ -13,6 +13,7 @@
 
 ;;; HISTORY
 
+;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
 ;; version 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
 ;; version 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
 ;; version 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
@@ -85,6 +86,10 @@
            ("visualbasic" . ["visual-basic-mode" "vbs"])
            ("mma" . ["fundamental-mode" "m"])
            ) )
+
+;(defvar xhm-lang-name-list nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
+; (mapcar (lambda (x) (car x)) xhm-lang-name-map)
+
 
 (defun xhm-get-precode-langCode ()
   "Get the langCode and boundary of current HTML pre block.
@@ -818,7 +823,7 @@ It will become:
   "Transform the string TEXTBLOCK into a HTML marked up table.
 
  “\\n” is used as delimiter of rows. Extra newlines at the end is discarded.
-The argument ΞDELIMITER is a char used as the delimiter for columns.
+The argument ξdelimiter is a char used as the delimiter for columns.
 
  See the parent function `xhm-make-html-table'."
 (let ((txtbk textBlock))
@@ -1481,28 +1486,30 @@ Case shouldn't matter, except when it's emacs's key notation.
 (defvar xhm-html5-tag-names nil "a list of tag names of HTML5")
 (setq xhm-html5-tag-names '( "a" "abbr" "address" "area" "article" "aside" "audio" "b" "base" "bdi" "bdo" "blockquote" "body" "bq" "br" "button" "canvas" "caption" "cite" "class" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "id" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "mailto" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "src" "strike" "strong" "style" "sub" "summary" "sup" "t" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "track" "u" "ul" "var" "video" "wbr") )
 
-(defun xhm-wrap-html-tag (tagName &optional className)
+(defun xhm-wrap-html-tag (tagName &optional className p1 p2)
   "Insert/wrap a HTML tags to text selection or current word.
 If current line or word is empty, then insert open/end tags and place cursor between them.
 
 If `universal-argument' is called first, then also prompt for a “class” attribute. Empty value means don't add the attribute.
 "
   (interactive
-   (list
+   (let (bds x1 x2)
+     (setq bds (get-selection-or-unit 'word))
+     (setq x1 (elt bds 1) )
+     (setq x2 (elt bds 2) )
+     (list
       (ido-completing-read "HTML tag:" xhm-html5-tag-names "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
-      ;; (read-string "Tag (p):" nil nil "p")
       (if current-prefix-arg
           (read-string "class:" nil xhm-class-input-history "")
         nil
         )
-      ) )
-  (let (bds p1 p2 inputText outputText
-            (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
-            )
-    (setq bds (get-selection-or-unit 'word))
-    (setq inputText (elt bds 0) )
-    (setq p1 (elt bds 1) )
-    (setq p2 (elt bds 2) )
+      x1 x2
+      ) ) )
+  (let (
+        (inputText (buffer-substring-no-properties p1 p2) )
+        outputText
+        (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
+        )
 
     (setq outputText (format "<%s%s>%s</%s>" tagName classStr inputText tagName ) )
 
@@ -1513,7 +1520,22 @@ If `universal-argument' is called first, then also prompt for a “class” attr
         (string= inputText "" )
       (progn (search-backward "</" ) )
       )
- ) )
+    ) )
+
+(defun xhm-pre-source-code (&optional langCode p1 p2)
+  "Insert/wrap a <pre class=\"‹langCode›\"> tags to text selection or current text block.
+When called in lisp code, p1 p2 are region boundaries.
+"
+  (interactive
+   (let (bds x1 x2)
+     (setq bds (get-selection-or-unit 'block))
+     (setq x1 (elt bds 1) )
+     (setq x2 (elt bds 2) )
+     (list
+      (ido-completing-read "lang code:" (mapcar (lambda (x) (car x)) xhm-lang-name-map) "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "code")
+      x1 x2
+      ) ) )
+  (xhm-wrap-html-tag "pre" langCode p1 p2) )
 
 (defun xhm-rename-html-inline-image (ξnewFilePath)
   "Replace current HTML inline image's file name.
