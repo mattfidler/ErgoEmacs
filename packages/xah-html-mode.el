@@ -13,6 +13,7 @@
 
 ;;; HISTORY
 
+;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
 ;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
 ;; version 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
 ;; version 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
@@ -269,6 +270,7 @@ This command does the reverse of `xhm-htmlize-precode'."
 ("<!--\\|-->" . font-lock-comment-delimiter-face)
 ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
 ("“\\([^”]+?\\)”" . (1 'xhm-curly-quoted-text-face))
+("‘\\([^’]+?\\)’" . (1 'xhm-curly-quoted-text-face))
 ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
 ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
