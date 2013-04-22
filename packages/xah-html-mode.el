@@ -421,7 +421,7 @@ bracketPositions is optional. If nil, then
 
 (defun xhm-get-tag-name (&optional left<)
   "Return the tag name.
-This function assumes your cursor is inside opening tag, ⁖ <p …▮…>
+This function assumes your cursor is inside a tag, ⁖ <…▮…>
 "
   (let (
         p1 p2
@@ -1317,7 +1317,6 @@ When called in lisp code, if ξstring is non-nil, returns a changed string.  If 
 
 (defun xhm-wrap-p-tag ()
   "Add <p>…</p> tag to current text block or text selection.
-
 If there's a text selection, wrap p around each text block (separated by 2 newline chars.)"
   (interactive)
   (let (bds p1 p2 inputText)
@@ -1561,56 +1560,54 @@ Case shouldn't matter, except when it's emacs's key notation.
 (defvar xhm-html5-tag-names nil "a list of tag names of HTML5")
 (setq xhm-html5-tag-names '( "a" "abbr" "address" "area" "article" "aside" "audio" "b" "base" "bdi" "bdo" "blockquote" "body" "bq" "br" "button" "canvas" "caption" "cite" "class" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "id" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "mailto" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "src" "strike" "strong" "style" "sub" "summary" "sup" "t" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "track" "u" "ul" "var" "video" "wbr") )
 
-(defun xhm-wrap-html-tag (tagName &optional className p1 p2)
+(defun xhm-add-open/close-tag (tagName className p1 p2)
+  "Add HTML open/close tags around region p1 p2.
+This function does not `save-excursion'.
+"
+  (let (
+        (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
+        )
+    (progn
+      (goto-char p2)
+      (insert (format "</%s>" tagName ))
+      (goto-char p1)
+      (insert (format "<%s%s>" tagName classStr) ) ) ) )
+
+(defun xhm-wrap-html-tag (tagName &optional className)
   "Insert/wrap a HTML tags to text selection or current word.
 If current line or word is empty, then insert open/end tags and place cursor between them.
-
 If `universal-argument' is called first, then also prompt for a “class” attribute. Empty value means don't add the attribute.
 "
   (interactive
-   (let (bds x1 x2)
-     (setq bds (get-selection-or-unit 'word))
-     (setq x1 (elt bds 1) )
-     (setq x2 (elt bds 2) )
-     (list
-      (ido-completing-read "HTML tag:" xhm-html5-tag-names "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
-      (if current-prefix-arg
-          (read-string "class:" nil xhm-class-input-history "")
-        nil
-        )
-      x1 x2
-      ) ) )
-  (let (
-        (inputText (buffer-substring-no-properties p1 p2) )
-        outputText
-        (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
-        )
+   (list
+    (ido-completing-read "HTML tag:" xhm-html5-tag-names "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
+    (if current-prefix-arg
+        (read-string "class:" nil xhm-class-input-history "")
+      nil ) ) )
+  (let (bds p1 p2)
+    (setq bds (get-selection-or-unit 'word))
+    (setq p1 (elt bds 1) )
+    (setq p2 (elt bds 2) )
+    (progn
+      (xhm-add-open/close-tag tagName className p1 p2)
+      (when                                ; put cursor between when input text is empty
+          (equal p1 p2)
+        (progn (search-backward "</" ) ) ) ) ) )
 
-    (setq outputText (format "<%s%s>%s</%s>" tagName classStr inputText tagName ) )
-
-    (delete-region p1 p2)
-    (goto-char p1)
-    (insert outputText)
-    (when                               ; put cursor between when input text is empty
-        (string= inputText "" )
-      (progn (search-backward "</" ) )
-      )
-    ) )
-
-(defun xhm-pre-source-code (&optional langCode p1 p2)
+(defun xhm-pre-source-code (&optional langCode)
   "Insert/wrap a <pre class=\"‹langCode›\"> tags to text selection or current text block.
-When called in lisp code, p1 p2 are region boundaries.
 "
   (interactive
-   (let (bds x1 x2)
-     (setq bds (get-selection-or-unit 'block))
-     (setq x1 (elt bds 1) )
-     (setq x2 (elt bds 2) )
-     (list
-      (ido-completing-read "lang code:" (mapcar (lambda (x) (car x)) xhm-lang-name-map) "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "code")
-      x1 x2
-      ) ) )
-  (xhm-wrap-html-tag "pre" langCode p1 p2) )
+   (list
+    (ido-completing-read "lang code:" (mapcar (lambda (x) (car x)) xhm-lang-name-map) "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "code")
+    )
+   )
+  (let (bds p1 p2)
+    (setq bds (get-selection-or-unit 'block))
+    (setq p1 (elt bds 1) )
+    (setq p2 (elt bds 2) )
+    (xhm-add-open/close-tag "pre" langCode p1 p2))   
+  )
 
 (defun xhm-rename-html-inline-image (ξnewFilePath)
   "Replace current HTML inline image's file name.
