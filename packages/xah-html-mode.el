@@ -91,7 +91,6 @@
 ;(defvar xhm-lang-name-list nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
 ; (mapcar (lambda (x) (car x)) xhm-lang-name-map)
 
-
 (defun xhm-get-precode-langCode ()
   "Get the langCode and boundary of current HTML pre block.
 A pre block is text of this form
@@ -249,11 +248,21 @@ This command does the reverse of `xhm-htmlize-precode'."
 
 ;; syntax coloring related
 
-(defface xhm-curly-quoted-text-face
-  '((((class color) (min-colors 88) (background light)) (:foreground "chartreuse4"))
-    (((class color) (min-colors 88) (background dark)) (:foreground "chartreuse2"))
-    (((class color) (min-colors 16) (background light)) (:foreground "chartreuse4"))
-    (((class color) (min-colors 16) (background dark)) (:foreground "chartreuse2"))
+(defface xhm-curly“”-quoted-text-face
+  '((((class color) (min-colors 88) (background light)) (:foreground "#458b00"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "#76ee00"))
+    (((class color) (min-colors 16) (background light)) (:foreground "#458b00"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "#76ee00"))
+    (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
+    (t (:inverse-video t :weight bold)))
+  "Face used for curly quoted text."
+  :group 'languages)
+
+(defface xhm-curly‘’-quoted-text-face
+  '((((class color) (min-colors 88) (background light)) (:foreground "#ffa500"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "#8b5a00"))
+    (((class color) (min-colors 16) (background light)) (:foreground "#ffa500"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "#8b5a00"))
     (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
     (t (:inverse-video t :weight bold)))
   "Face used for curly quoted text."
@@ -269,8 +278,8 @@ This command does the reverse of `xhm-htmlize-precode'."
 ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
 ("<!--\\|-->" . font-lock-comment-delimiter-face)
 ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-("“\\([^”]+?\\)”" . (1 'xhm-curly-quoted-text-face))
-("‘\\([^’]+?\\)’" . (1 'xhm-curly-quoted-text-face))
+("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
+("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
 ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
 ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
@@ -382,6 +391,59 @@ For example,
         (progn (message "%s" "no") nil)
         ) ) )
 
+(defun xhm-end-tag-p (&optional bracketPositions)
+  "Return t if cursor is inside a begin tag, else nil.
+This function assumes your cursor is inside a tag, ⁖ <…▮…>
+ It simply check if the left brack is followed by a slash or not.
+
+bracketPositions is optional. If nil, then
+ `xhm-get-bracket-positions' is called to get it.
+"
+  (let (
+          pl<
+          pl>
+          pr>
+          pr<
+          )
+      (when (not bracketPositions)
+        (progn
+          (setq bracketPositions (xhm-get-bracket-positions) )
+          (setq pl< (elt bracketPositions 0) )
+          (setq pl> (elt bracketPositions 1) )
+          (setq pr< (elt bracketPositions 2) )
+          (setq pr> (elt bracketPositions 3) )
+          )
+        )
+(goto-char pl<)
+(forward-char 1)
+(looking-at "/" )
+       ) )
+
+(defun xhm-get-tag-name (&optional left<)
+  "Return the tag name.
+This function assumes your cursor is inside opening tag, ⁖ <p …▮…>
+"
+  (let (
+        p1 p2
+           )
+    (when (not left<)
+      (setq left< (search-backward "<") )
+      )
+                                        ;(when (not right>)
+                                        ;      (setq right> (search-forward ">") )
+                                        ;      )
+    (goto-char left<)
+    (forward-char 1)
+    (when (looking-at "/" )
+      (forward-char 1)
+      )
+    (setq p1 (point) )
+    (search-forward-regexp " \\|>")
+    (backward-char 1)
+    (setq p2 (point) )
+    (buffer-substring-no-properties p1 p2)
+    ) )
+
 (defun xhm-get-bracket-positions ()
   "Returns html angle bracket positions.
 Returns a vector [ pl< pl> pr< pr> ]
@@ -420,17 +482,28 @@ Delete the tag under cursor.
 Also delete the matching beginning/ending tag."
   (interactive)
   (save-excursion
-; determine if it's inside the tag. ⁖ <…>
-; if so, good. else abort.
-; now, determine if it's opening tag or closing. ⁖ closing tag start with </
-; if it's opening tag, need to delete the matching one to the right
-; else, need to delete the matching one to the left
-; let's assume it's the opening.
-; now, determine if there's nested element. ⁖ <p>…<b>…</b>…</p>
-;    to do this, first determine the name of the tag. ⁖ the “p” in  <p …>, then search the matching tag.
-; if so, O shit, it's complex. Need to determine if one of the nested has the same tag name. and and …
-; if not, then we can proceed. Just find the closing tag and delete it. Also the beginning.
-    (let ( ) ) ) )
+    ;; determine if it's inside the tag. ⁖ <…>
+    ;; if so, good. else abort.
+    ;; now, determine if it's opening tag or closing. ⁖ closing tag start with </
+    ;; if it's opening tag, need to delete the matching one to the right
+    ;; else, need to delete the matching one to the left
+    ;; let's assume it's the opening.
+    ;; now, determine if there's nested element. ⁖ <p>…<b>…</b>…</p>
+    ;;    to do this, first determine the name of the tag. ⁖ the “p” in  <p …>, then search the matching tag.
+    ;; if so, O shit, it's complex. Need to determine if one of the nested has the same tag name. and and …
+    ;; if not, then we can proceed. Just find the closing tag and delete it. Also the beginning.
+    (let ( )
+      (if (xhm-cursor-in-tag-markup-p)
+          (progn
+            (if (xhm-end-tag-p)
+                (progn (message "end %s" (xhm-get-tag-name)))
+              (progn (message "begin %s" (xhm-get-tag-name))
+                     )
+              )
+            )
+        (progn (message "%s" "cursor needs to be inside a tag.") )
+        )
+      ) ) )
 
 (defun xhm-skip-tag-forward ()
   "Move cursor to the closing tag."
