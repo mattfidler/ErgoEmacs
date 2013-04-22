@@ -13,7 +13,11 @@
 
 ;;; HISTORY
 
+;; version 0.2, 2013-04-22 added xcm-compact-css-region
 ;; version 0.1, 2013-04-18 first version
+
+(require 'xfrp_find_replace_pairs)
+(require 'xeu_elisp_util)
 
 (defvar xah-css-mode-hook nil "Standard hook for `xah-css-mode'")
 
@@ -21,9 +25,34 @@
 
 (defun xcm-insert-random-color-hsl ()
   "Insert a random color string of CSS HSL format.
-Example output: hsl(100,24%,82%)"
+Example output: hsl(100,24%,82%);"
   (interactive)
-  (insert (format "hsl(%d,%d%%,%d%%)" (random 360) (random 100) (random 100))) )
+  (insert (format "hsl(%d,%d%%,%d%%);" (random 360) (random 100) (random 100))) )
+
+
+;;; functions
+
+(defun xcm-compact-css-region (p1 p2)
+  "Remove unnecessary whitespaces of CSS source code in region.
+WARNING: not robust."
+  (interactive "r")
+  (progn
+    (save-restriction
+      (narrow-to-region p1 p2)
+      (replace-regexp-pairs-region (point-min) (point-max) '(["  +" " "]))
+      (replace-pairs-region (point-min) (point-max)
+                            '(
+                              ["\n" ""]
+                              [" /* " "/*"]
+                              [" */ " "*/"]
+                              [" {" "{"]
+                              ["{ " "{"]
+                              ["; " ";"]
+                              [": " ":"]
+
+                              [";}" "}"]
+                              ["}" "}\n"]
+                              )) ) ) )
 
 
 (defvar xcm-html-tag-names nil "a list of HTML5 tag names.")
