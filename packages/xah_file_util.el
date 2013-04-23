@@ -130,7 +130,6 @@ Similar to grep, written in elisp.
 Search case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-search' to change.
 Replacement
 "
-
   (interactive
    (list
     (read-string (format "Search regex (default %s): " (current-word)) nil 'query-replace-history (current-word))
@@ -167,13 +166,15 @@ Path Regex 「%s」
            (setq case-fold-search case-fold-search)
            (while (search-forward-regexp searchRegex nil t)
              (setq ξpos-prev-end ξpos2)
-             (setq ξpos1 (- (match-beginning 0) 30))
-             (setq ξpos2 (+ (match-end 0) 30))
+;             (setq ξpos1 (- (match-beginning 0) 30))
+;             (setq ξpos2 (+ (match-end 0) 30))
              (setq ξpos1 (line-beginning-position))
              (setq ξpos2 (line-end-position))
 
              (if xah-printContext-p
-                 (when (> (point) ξpos-prev-end)
+                 (when
+t
+; (> (point) ξpos-prev-end)
                    (princ (format "「%s」\n" (buffer-substring-no-properties ξpos1 ξpos2 ))))
                (princ (format "「%s」\n" (match-string 0)))
                )

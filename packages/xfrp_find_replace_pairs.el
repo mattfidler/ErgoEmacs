@@ -92,7 +92,7 @@ Note: the region's text or any string in pairs is assumed to NOT contain any cha
           (setq ξi (1+ ξi)) ) ) ) ) )
 
 (defun replace-pairs-in-string (ξstr ξpairs)
-  "Replace string ΞSTR by find/replace ΞPAIRS sequence.
+  "Replace string ξstr by find/replace ξpairs sequence.
 
 Returns the new string.
 

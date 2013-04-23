@@ -26,7 +26,7 @@
 (setq-default save-place t)
 
 
-;; Make emacs open all files in last emacs session.
+;;; Make emacs open all files in last emacs session.
 
 ;; This functionality is provided by desktop-save-mode (“feature” name: “desktop”). The mode is not on by default in emacs 23.1, and has a lot options. The following is init settings for the mode for ErgoEmacs.
 
@@ -35,6 +35,14 @@
 ;; Some tech detail: set the desktop session file 〔.emacs.desktop〕 at the variable “user-emacs-directory” (default value is “~/.emacs.d/”).  This file is our desktop file. It will be auto created and or over-written.  if a emacs expert has other desktop session files elsewhere, he can still use or manage those.
 
 (require 'desktop)
+
+(defun desktop-file-modtime-reset ()
+  "Reset `desktop-file-modtime' so the user is not bothered."
+  (interactive)
+  (run-with-timer 5 nil
+          (lambda ()
+            (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
+            (desktop-save user-emacs-directory))))
 
 (defun desktop-settings-setup ()
   "Some settings setup for desktop-save-mode."
@@ -57,13 +65,7 @@
 
     ;; Make sure that even if emacs or OS crashed, emacs
     ;; still have last opened files.
-    (add-hook 'find-file-hook
-     (lambda ()
-       (run-with-timer 5 nil
-          (lambda ()
-            ;; Reset desktop modification time so the user is not bothered
-            (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))
-            (desktop-save user-emacs-directory)))))
+    (add-hook 'find-file-hook 'desktop-file-modtime-reset)
 
     ;; Read default desktop
     (if (file-exists-p (concat desktop-dirname desktop-base-file-name))
@@ -72,25 +74,23 @@
     ;; Add a hook when emacs is closed to we reset the desktop
     ;; modification time (in this way the user does not get a warning
     ;; message about desktop modifications)
-    (add-hook 'kill-emacs-hook
-              (lambda ()
-                ;; Reset desktop modification time so the user is not bothered
-                (setq desktop-file-modtime (nth 5 (file-attributes (desktop-full-file-name))))))
+    (add-hook 'kill-emacs-hook 'desktop-file-modtime-reset)
     )
   )
 
-(add-hook 'after-init-hook
-          'desktop-settings-setup
-          (lambda ()
-            ;; No splash screen
-            (setq inhibit-startup-screen t)
+(defun hide-init-buffers ()
+  "hide some buffers when emacs starts.
+No splash screen. and If the *scratch* buffer is the current one, then create a new empty untitled buffer to hide *scratch*
+"
+  (interactive)
+  (progn
+    (setq inhibit-startup-screen t)
+    (if (string= (buffer-name) "*scratch*")
+        (ergoemacs-new-empty-buffer))
+    ))
 
-            ;; If the *scratch* buffer is the current one, then create a new
-            ;; empty untitled buffer to hide *scratch*
-            (if (string= (buffer-name) "*scratch*")
-                (ergoemacs-new-empty-buffer))
-            )
-          t) ;; append this hook to the tail
+(add-hook 'after-init-hook 'desktop-settings-setup "APPEND")
+(add-hook 'after-init-hook 'hide-init-buffers "APPEND")
 
 
 ;;; editing related

@@ -852,6 +852,10 @@
 )
 
   ;; relations
+ 
+  (puthash "<" "≺" xmsi-abrvs)
+  (puthash ">" "≻" xmsi-abrvs)
+
   (puthash "<=" "≤" xmsi-abrvs)
   (puthash ">=" "≥" xmsi-abrvs)
   (puthash "!el" "∉" xmsi-abrvs)

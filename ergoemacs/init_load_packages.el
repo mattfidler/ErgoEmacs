@@ -1,5 +1,9 @@
 ; -*- coding: utf-8 -*-
 
+;; makes it possible to have some modes not have linum-mode on when global-linum-mode is on
+;; 2013-04-19, as of GNU Emacs 24.3.1, linum-mode will freeze emacs for about 10 minutes when opening a jpg file of 10 megabytes size
+(require 'linum-off)
+
 ;; ; redo mode
 (add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/") )
 (require 'undo-tree)
@@ -60,7 +64,6 @@
 
 ;;;; productivity, enhancement, or minor modes
 
-
 ;;; yasnippet template system
 (add-to-list 'load-path
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/")
@@ -71,7 +74,6 @@
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
-
 
 ;; a user interface library used by auto-complete
 (add-to-list 'load-path
@@ -117,11 +119,12 @@
   )
 
 ;; enhanced text selection, expand-region
+;; 2013-04-19 turned it off. Because, it's slow, and often incorrect. e.g. in js-mode, itone case took it few seconds …
 ;(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/expand-region/"))
 ;(require 'expand-region)
 ;(when
 ;    (member 'expand-region features)
-;  (if 
+;  (if
 ;      (fboundp 'ergoemacs-key )
 ;      (progn (ergoemacs-key "M-8" 'er/expand-region "←region→")
 ;             (ergoemacs-key "M-9" 'er/contract-region "→region←")
@@ -136,6 +139,7 @@
 ;;; color CSS color code
 (autoload 'rainbow-mode "rainbow-mode" "Colorize strings that represent colors, e.g. #aabbcc." t nil)
 (add-hook 'css-mode-hook 'rainbow-mode)
+(add-hook 'xah-css-mode-hook 'rainbow-mode)
 
 ;;; make the formfeed char (^L) display as a line
 (require 'page-break-lines)
@@ -207,7 +211,8 @@
 ;;; add a tab bar widget
 (require 'tabbar)
 (tabbar-mode 1)
-;; 2010-09-30. problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
+(require 'tabbar-ruler)
+;; 2010-09-30. tabbar problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
 
 ;; display horizontal line for the Form Feed char (ASCII 12, ^L)
 ;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.

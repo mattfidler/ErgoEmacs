@@ -69,6 +69,7 @@
            (lisp-mode . ";")
            (perl-mode . "#")
            (php-mode . "#") ;; also 「//」. 「/*…*/」
+           (xah-php-mode . "#") ;; also 「//」. 「/*…*/」
            (pov-mode . "//")
            (powershell-mode . "#")
            (python-mode . "#")

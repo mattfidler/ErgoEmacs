@@ -13,6 +13,10 @@
 
 ;;; HISTORY
 
+;; version 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
+;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
+;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
+;; version 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
 ;; version 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
 ;; version 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
 ;; version 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
@@ -29,17 +33,371 @@
 (require 'ido)
 (require 'xfrp_find_replace_pairs)
 (require 'xeu_elisp_util)
+;; (require 'sgml-mode)
+(require 'htmlize)
 
 (defvar xah-html-mode-hook nil "Standard hook for `xah-html-mode'")
+
+(defcustom xhm-html5-tag-names nil
+  "alist of HTML5 tag names. The value is a vector of one element. w means word, l means line, b means block, others are unknown. They indicate the default ways to wrap the tag around cursor. "
+; todo: need to go the the list and look at the type carefully. Right now it's just quickly done. lots are “z”, for unkown. Also, some are self closing tags, current has mark of “n”.
+)
+(setq xhm-html5-tag-names
+'(
+("a" . ["l"])
+("abbr" . ["w"])
+("address" . ["w"])
+("applet" . ["l"])
+("area" . ["l"])
+("article" . ["b"])
+("aside" . ["b"])
+("audio" . ["l"])
+("b" . ["w"])
+("base" . ["l"])
+("basefont" . ["l"])
+("bdi" . ["w"])
+("bdo" . ["w"])
+("blockquote" . ["b"])
+("body" . ["b"])
+("br" . ["n"])
+("button" . ["w"])
+("canvas" . ["b"])
+("caption" . ["l"])
+("cite" . ["l"])
+("code" . ["l"])
+("col" . ["n"])
+("colgroup" . ["l"])
+("command" . ["z"])
+("datalist" . ["z"])
+("dd" . ["z"])
+("del" . ["z"])
+("details" . ["z"])
+("dfn" . ["z"])
+("div" . ["z"])
+("dl" . ["l"])
+("dt" . ["l"])
+("em" . ["w"])
+("embed" . ["l"])
+("fieldset" . ["z"])
+("figcaption" . ["z"])
+("figure" . ["b"])
+("footer" . ["b"])
+("form" . ["l"])
+("h1" . ["l"])
+("h2" . ["l"])
+("h3" . ["l"])
+("h4" . ["l"])
+("h5" . ["l"])
+("h6" . ["l"])
+("head" . ["b"])
+("header" . ["z"])
+("hgroup" . ["z"])
+("hr" . ["n"])
+("html" . ["b"])
+("i" . ["w"])
+("iframe" . ["z"])
+("img" . ["l"])
+("input" . ["l"])
+("ins" . ["z"])
+("kbd" . ["w"])
+("keygen" . ["z"])
+("label" . ["z"])
+("legend" . ["z"])
+("li" . ["l"])
+("link" . ["z"])
+("map" . ["z"])
+("mark" . ["w"])
+("menu" . ["z"])
+("meta" . ["z"])
+("meter" . ["z"])
+("nav" . ["b"])
+("noscript" . ["l"])
+("object" . ["z"])
+("ol" . ["b"])
+("optgroup" . ["z"])
+("option" . ["z"])
+("output" . ["z"])
+("p" . ["z"])
+("param" . ["z"])
+("pre" . ["z"])
+("progress" . ["z"])
+("q" . ["z"])
+("rp" . ["z"])
+("rt" . ["z"])
+("ruby" . ["z"])
+("s" . ["w"])
+("samp" . ["z"])
+("script" . ["z"])
+("section" . ["b"])
+("select" . ["z"])
+("small" . ["z"])
+("source" . ["z"])
+("span" . ["w"])
+("strong" . ["w"])
+("style" . ["z"])
+("sub" . ["z"])
+("summary" . ["z"])
+("sup" . ["z"])
+("table" . ["z"])
+("tbody" . ["z"])
+("td" . ["z"])
+("textarea" . ["z"])
+("tfoot" . ["z"])
+("th" . ["z"])
+("thead" . ["z"])
+("time" . ["w"])
+("title" . ["z"])
+("tr" . ["z"])
+("u" . ["z"])
+("ul" . ["z"])
+("var" . ["w"])
+("video" . ["z"])
+("wbr" . ["z"])
+("doctype" . ["l"])
+)
+ )
+
+(defvar xhm-html5-tag-list nil "list version of `xhm-html5-tag-names'")
+(setq xhm-html5-tag-list (mapcar (lambda (x) (car x)) xhm-html5-tag-names))
+
+(defcustom xhm-attribute-names nil
+  "HTML5 attribute names."
+)
+(setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ))
+
+
+
+(defun xhm-get-tag-type (tagName)
+  "Return the wrap-type info of tagName in `xhm-html5-tag-names'"
+  (elt
+   (cdr
+    (assoc tagName xhm-html5-tag-names)
+    ) 0))
+
+(defvar xhm-lang-name-map nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
+(setq xhm-lang-name-map
+'(
+           ("ahk" . ["ahk-mode" "ahk"])
+
+           ("code" . ["fundamental-mode" "txt"])
+           ("output" . ["fundamental-mode" "txt"])
+
+           ("bash" . ["sh-mode" "sh"])
+           ("bash-output" . ["sh-mode" "sh"])
+           ("unix-config" . ["conf-space-mode" "conf"])
+           ("cmd" . ["dos-mode" "bat"])
+
+           ("bbcode" . ["xbbcode-mode" "bbcode"])
+           ("c" . ["c-mode" "c"])
+           ("cpp" . ["c++-mode" "cpp"])
+           ("cl" . ["lisp-mode" "lisp"])
+
+           ("org-mode" . ["org-mode" "org"])
+
+           ("clojure" . ["clojure-mode" "clj"])
+           ("css" . ["css-mode" "css"])
+           ("elisp" . ["emacs-lisp-mode" "el"])
+           ("haskell" . ["haskell-mode" "hs"])
+           ("html" . ["html-mode" "html"])
+           ("mysql" . ["sql-mode" "sql"])
+           ("xml" . ["sgml-mode"])
+           ("html6" . ["xah-html6-mode" "html6"])
+           ("java" . ["java-mode" "java"])
+           ("js" . ["js-mode" "js"])
+           ("lsl" . ["xlsl-mode" "lsl"])
+           ("ocaml" . ["tuareg-mode" "ocaml"])
+           ("org" . ["org-mode" "org"])
+           ("perl" . ["cperl-mode" "pl"])
+           ("php" . ["php-mode" "php"])
+           ("povray" . ["pov-mode" "pov"])
+           ("powershell" . ["powershell-mode" "ps1"])
+           ("python" . ["python-mode" "py"])
+           ("python3" . ["python-mode" "py3"])
+           ("qi" . ["shen-mode" "qi"])
+           ("ruby" . ["ruby-mode" "rb"])
+           ("scala" . ["scala-mode" "scala"])
+           ("scheme" . ["scheme-mode" "scm"])
+           ("yasnippet" . ["snippet-mode" "yasnippet"])
+           ("vbs" . ["visual-basic-mode" "vbs"])
+           ("visualbasic" . ["visual-basic-mode" "vbs"])
+           ("mma" . ["fundamental-mode" "m"])
+           ) )
+
+;(defvar xhm-lang-name-list nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
+; (mapcar (lambda (x) (car x)) xhm-lang-name-map)
+
+(defun xhm-get-precode-langCode ()
+  "Get the langCode and boundary of current HTML pre block.
+A pre block is text of this form
+<pre class=\"‹langCode›\">…▮…</pre>.
+
+Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the text content."
+  (interactive)
+  (let (langCode p1 p2)
+    (if (region-active-p)
+        (progn
+          (setq p1 (region-beginning) )
+          (setq p2 (region-end) )
+          (setq langCode (read-string "langcode:"))
+          (vector langCode p1 p2)
+          )
+      (save-excursion
+        (re-search-backward "<pre class=\"\\([-A-Za-z0-9]+\\)\"") ; tag begin position
+        (setq langCode (match-string 1))
+        (setq p1 (search-forward ">"))    ; text content begin
+        (search-forward "</pre>")
+        (setq p2 (search-backward "<"))   ; text content end
+        (vector langCode p1 p2)
+ ) ) ))
+
+(defun xhm-get-precode-make-new-file (ξlangNameMap)
+  "Create a new file on current dir with text inside pre code block.
+For example, if the cursor is somewhere between the tags:
+<pre class=\"…\">…▮…</pre>
+
+after calling, all a new file of name 「xx-‹random›.‹suffix›」 is created in current dir, with content from the block.
+
+If there's a text selection, use that region as content."
+  (interactive (list xhm-lang-name-map))
+  (let* (
+        (ξxx (xhm-get-precode-langCode))
+        (ξlangCode (elt ξxx 0))
+        (p1 (elt ξxx 1))
+        (p2 (elt ξxx 2))
+        (ξyy (cdr (assoc ξlangCode ξlangNameMap)))
+        (ξfileSuffix (elt ξyy 1))
+        (ξtextContent (buffer-substring-no-properties p1 p2) )
+        )
+
+    (progn
+      (delete-region p1 p2 )
+      (split-window-vertically)
+      (find-file (format "xx-testscript-%d.%s" (random 9008000 ) ξfileSuffix) )
+      (insert ξtextContent)
+      (when (xhm-precode-htmlized-p ξtextContent)
+        (xhm-remove-span-tag-region (point-min) (point-max))
+        )
+;      (save-buffer )
+      )
+    )
+  )
+
+(defun xhm-htmlize-string (ξsourceCodeStr ξmajorModeName)
+  "Take ξsourceCodeStr and return a htmlized version using major mode ξmajorModeName.
+The purpose is to syntax color source code in HTML.
+This function requires the `htmlize-buffer' from 〔htmlize.el〕 by Hrvoje Niksic."
+  (interactive)
+  (let (htmlizeOutputBuffer resultStr)
+    ;; put code in a temp buffer, set the mode, fontify
+    (with-temp-buffer
+      (insert ξsourceCodeStr)
+      (funcall (intern ξmajorModeName))
+      (font-lock-fontify-buffer)
+      (setq htmlizeOutputBuffer (htmlize-buffer))
+      )
+    ;; extract the fontified source code in htmlize output
+    (with-current-buffer htmlizeOutputBuffer
+      (let (p1 p2 )
+        (setq p1 (search-forward "<pre>"))
+        (setq p2 (search-forward "</pre>"))
+        (setq resultStr (buffer-substring-no-properties (+ p1 1) (- p2 6))) ) )
+    (kill-buffer htmlizeOutputBuffer)
+    resultStr ) )
+
+(defun xhm-htmlize-precode (ξlangCodeMap)
+  "Replace text enclosed by “pre” tag to htmlized code.
+For example, if the cursor is somewhere between the pre tags <pre class=\"‹langCode›\">…▮…</pre>, then after calling, the text inside the pre tag will be htmlized.  That is, wrapped with many span tags.
+
+The opening tag must be of the form <pre class=\"‹langCode›\">.  The ‹langCode› determines what emacs mode is used to colorize the text. See `xhm-lang-name-map' for possible ‹langCode›.
+
+See also: `xhm-dehtmlize-precode', `xhm-htmlize-or-de-precode'.
+This function requires the `htmlize-buffer' from 〔htmlize.el〕 by Hrvoje Niksic."
+  (interactive (list xhm-lang-name-map))
+  (let (ξlangCode p1 p2 inputStr ξmodeName )
+
+    (save-excursion
+      (let (( ξxx (xhm-get-precode-langCode)))
+        (setq ξlangCode (elt ξxx 0))
+        (setq p1 (elt ξxx 1))
+        (setq p2 (elt ξxx 2))
+        (setq inputStr (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" (buffer-substring-no-properties p1 p2))) )
+        (setq ξmodeName (elt (cdr (assoc ξlangCode ξlangCodeMap)) 0))
+        )
+      (delete-region p1 p2 )
+      (goto-char p1)
+      (insert (xhm-htmlize-string inputStr ξmodeName))
+      )
+    ) )
+
+(defun xhm-dehtmlize-precode ()
+  "Delete span tags between pre tags.
+
+Note: only span tags of the form 「<span class=\"…\">…</span>」 are deleted.
+
+This command does the reverse of `xhm-htmlize-precode'."
+  (interactive)
+  (let (( ξxx (xhm-get-precode-langCode)))
+    (xhm-remove-span-tag-region (elt ξxx 1) (elt ξxx 2))
+    )
+  )
+
+(defun xhm-htmlize-or-de-precode (langCodeMap)
+  "Call `xhm-htmlize-precode' or `xhm-dehtmlize-precode'."
+  (interactive (list xhm-lang-name-map))
+  (let* (
+         (ξxx (xhm-get-precode-langCode))
+         (langCode (elt ξxx 0))
+         (p1 (elt ξxx 1))
+         (p2 (elt ξxx 2))
+         (inputStr (buffer-substring-no-properties p1 p2) )
+         )
+
+    (message "%s" langCode)
+    (if (xhm-precode-htmlized-p inputStr)
+        (xhm-remove-span-tag-region p1 p2)
+      (progn               ;; do htmlize
+        (let (
+              langCodeResult
+              ξmode-name)
+          (setq langCodeResult (assoc langCode langCodeMap))
+          (if (eq langCodeResult nil)
+              (progn (error "Your lang code 「%s」 is not recognized." langCode))
+            (progn
+              (save-excursion
+                (setq ξmode-name (elt (cdr langCodeResult) 0))
+                (delete-region p1 p2)
+(let ((tempstr inputStr))
+ (setq tempstr (replace-regexp-in-string "\\`[ \t\n]*" "\n" tempstr) ) ; trim beginning
+ (setq tempstr (replace-regexp-in-string "[ \t\n]+\\'" "\n" tempstr) ) ; trim trailing
+ (insert (xhm-htmlize-string tempstr ξmode-name))
+)
+
+                )) )) )) ))
+
+(defun xhm-precode-htmlized-p (inputStr)
+  "return true if inputStr is htmlized code."
+  (let ()
+    (string-match "<span class=\\|&amp;\\|&lt;\\|&gt;" inputStr)
+  ))
 
 
 ;; syntax coloring related
 
-(defface xhm-curly-quoted-text-face
-  '((((class color) (min-colors 88) (background light)) (:foreground "chartreuse4"))
-    (((class color) (min-colors 88) (background dark)) (:foreground "chartreuse2"))
-    (((class color) (min-colors 16) (background light)) (:foreground "chartreuse4"))
-    (((class color) (min-colors 16) (background dark)) (:foreground "chartreuse2"))
+(defface xhm-curly“”-quoted-text-face
+  '((((class color) (min-colors 88) (background light)) (:foreground "#458b00"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "#76ee00"))
+    (((class color) (min-colors 16) (background light)) (:foreground "#458b00"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "#76ee00"))
+    (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
+    (t (:inverse-video t :weight bold)))
+  "Face used for curly quoted text."
+  :group 'languages)
+
+(defface xhm-curly‘’-quoted-text-face
+  '((((class color) (min-colors 88) (background light)) (:foreground "#ffa500"))
+    (((class color) (min-colors 88) (background dark)) (:foreground "#8b5a00"))
+    (((class color) (min-colors 16) (background light)) (:foreground "#ffa500"))
+    (((class color) (min-colors 16) (background dark)) (:foreground "#8b5a00"))
     (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
     (t (:inverse-video t :weight bold)))
   "Face used for curly quoted text."
@@ -47,15 +405,16 @@
 
 (setq xhm-font-lock-keywords
 (let (
-(htmlElementNamesRegex (regexp-opt '("a" "abbr" "acronym" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "bgsound" "big" "blockquote" "body" "br" "button" "canvas" "caption" "center" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "dir" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "font" "footer" "form" "frame" "frameset" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noframes" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strike" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "tt" "u" "ul" "var" "video" "wbr" "xmp" "doctype") 'words))
-(AttributeNamesRegexp (regexp-opt '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ) 'words))
+(htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
+(AttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
  )
 `(
 
 ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
 ("<!--\\|-->" . font-lock-comment-delimiter-face)
 ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-("“\\([^”]+?\\)”" . (1 'xhm-curly-quoted-text-face))
+("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
+("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
 ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
 ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
@@ -138,66 +497,148 @@
 
 
 
-;; (require 'sgml-mode)
+(defun xhm-cursor-in-tag-markup-p (&optional bracketPositions)
+  "Return true if cursor is inside a tag markup.
+For example,
+ <p class=\"…\">…</p>
+ If cursor is between the beginning p or ending p markup.
+ bracketPositions is optional. If nil, then
+ `xhm-get-bracket-positions' is called to get it.
+"
+  (interactive)
+  (let (
+          pl<
+          pl>
+          pr>
+          pr<
+          )
+      (when (not bracketPositions)
+        (progn
+          (setq bracketPositions (xhm-get-bracket-positions) )
+          (setq pl< (elt bracketPositions 0) )
+          (setq pl> (elt bracketPositions 1) )
+          (setq pr< (elt bracketPositions 2) )
+          (setq pr> (elt bracketPositions 3) )
+          )
+        )
+      (if (and (< pl> pl<) (< pr> pr<))
+          (progn (message "%s" "yes") t)
+        (progn (message "%s" "no") nil)
+        ) ) )
+
+(defun xhm-end-tag-p (&optional bracketPositions)
+  "Return t if cursor is inside a begin tag, else nil.
+This function assumes your cursor is inside a tag, ⁖ <…▮…>
+ It simply check if the left brack is followed by a slash or not.
+
+bracketPositions is optional. If nil, then
+ `xhm-get-bracket-positions' is called to get it.
+"
+  (let (
+          pl<
+          pl>
+          pr>
+          pr<
+          )
+      (when (not bracketPositions)
+        (progn
+          (setq bracketPositions (xhm-get-bracket-positions) )
+          (setq pl< (elt bracketPositions 0) )
+          (setq pl> (elt bracketPositions 1) )
+          (setq pr< (elt bracketPositions 2) )
+          (setq pr> (elt bracketPositions 3) )
+          )
+        )
+(goto-char pl<)
+(forward-char 1)
+(looking-at "/" )
+       ) )
+
+(defun xhm-get-tag-name (&optional left<)
+  "Return the tag name.
+This function assumes your cursor is inside a tag, ⁖ <…▮…>
+"
+  (let (
+        p1 p2
+           )
+    (when (not left<)
+      (setq left< (search-backward "<") )
+      )
+                                        ;(when (not right>)
+                                        ;      (setq right> (search-forward ">") )
+                                        ;      )
+    (goto-char left<)
+    (forward-char 1)
+    (when (looking-at "/" )
+      (forward-char 1)
+      )
+    (setq p1 (point) )
+    (search-forward-regexp " \\|>")
+    (backward-char 1)
+    (setq p2 (point) )
+    (buffer-substring-no-properties p1 p2)
+    ) )
+
+(defun xhm-get-bracket-positions ()
+  "Returns html angle bracket positions.
+Returns a vector [ pl< pl> pr< pr> ]
+ pl< is the position of < nearest to cursor on the left side
+ pl> is the position of > nearest to cursor on the left side
+ similar for pr< and pr> for the right side.
+
+this command does not `save-excursion'. You need to call that.
+"
+    ;; search for current tag.
+    ;; find left nearest >, and right nearest <
+    ;; or left nearest <, and right nearest >
+    ;; determine if it's <…> or >…<.
+    (let (
+          (p-current (point))
+          pl< ; position of first < char to the left of cursor
+          pl>
+          pr<
+          pr>
+          )
+      (progn
+        (goto-char p-current)
+        (setq pl< (search-backward "<" nil "NOERROR") )
+        (goto-char p-current)
+        (setq pl> (search-backward ">" nil "NOERROR") )
+        (goto-char p-current)
+        (setq pr< (search-forward "<" nil "NOERROR") )
+        (goto-char p-current)
+        (setq pr> (search-forward ">" nil "NOERROR") )
+        (vector pl< pl> pr< pr>)
+ ) ) )
 
 (defun xhm-delete-tag ()
   "work in progress. do nothing.
 Delete the tag under cursor.
 Also delete the matching beginning/ending tag."
   (interactive)
-(save-excursion
-  ;; search for current tag.
-  ;; find left nearest >, and right nearest <
-  ;; or left nearest <, and right nearest >
-  ;; determine if it's <…> or >…<.
-
-(let (
-(p1-current (point))
-p2-left<
-p3-left>
-p4-right<
-p5-right>
-cursor>…▮…<-p
-cursor<…▮…>-p
- )
-(goto-char p1-current)
-(search-backward "<")
-(setq p2-left< (point) )
-
-(goto-char p1-current)
-(search-backward ">")
-(setq p3-left> (point) )
-
-(goto-char p1-current)
-(search-forward "<")
-(setq p4-right< (point) )
-
-(goto-char p1-current)
-(search-forward ">")
-(setq p5-right> (point) )
-
-(when
-    (and
-     (< p2-left< p3-left>)
-     (< p4-right< p5-right>)
-     )
-    (setq cursor>…▮…<-p  t )
-  )
-
-(when
-    (and
-     (< p3-left> p2-left< )
-     (< p5-right> p4-right< )
-     )
-    (setq cursor<…▮…>-p  t )
-  )
-
-)
-
-)
-;  (sgml-delete-tag 1)
-
-)
+  (save-excursion
+    ;; determine if it's inside the tag. ⁖ <…>
+    ;; if so, good. else abort.
+    ;; now, determine if it's opening tag or closing. ⁖ closing tag start with </
+    ;; if it's opening tag, need to delete the matching one to the right
+    ;; else, need to delete the matching one to the left
+    ;; let's assume it's the opening.
+    ;; now, determine if there's nested element. ⁖ <p>…<b>…</b>…</p>
+    ;;    to do this, first determine the name of the tag. ⁖ the “p” in  <p …>, then search the matching tag.
+    ;; if so, O shit, it's complex. Need to determine if one of the nested has the same tag name. and and …
+    ;; if not, then we can proceed. Just find the closing tag and delete it. Also the beginning.
+    (let ( )
+      (if (xhm-cursor-in-tag-markup-p)
+          (progn
+            (if (xhm-end-tag-p)
+                (progn (message "end %s" (xhm-get-tag-name)))
+              (progn (message "begin %s" (xhm-get-tag-name))
+                     )
+              )
+            )
+        (progn (message "%s" "cursor needs to be inside a tag.") )
+        )
+      ) ) )
 
 (defun xhm-skip-tag-forward ()
   "Move cursor to the closing tag."
@@ -592,7 +1033,7 @@ It will become:
   "Transform the string TEXTBLOCK into a HTML marked up table.
 
  “\\n” is used as delimiter of rows. Extra newlines at the end is discarded.
-The argument ΞDELIMITER is a char used as the delimiter for columns.
+The argument ξdelimiter is a char used as the delimiter for columns.
 
  See the parent function `xhm-make-html-table'."
 (let ((txtbk textBlock))
@@ -888,10 +1329,10 @@ The anchor text may be of 4 possibilities, depending on value of `universal-argu
     ;; If latter, you need to get the boundaries for the entire link too.
     (if (string-match "href=\"" inputStr)
         (save-excursion
-          (search-backward "href=" (- (point) 90)) ; search boundary as extra guard for error
+          (search-backward "href=" (- (point) 104)) ; search boundary as extra guard for error
           (forward-char 6)
           (setq p1-url (point))
-          (search-forward "\"" (+ p1-url 90))
+          (search-forward "\"" (+ p1-url 104))
           (setq p2-url (- (point) 1))
 
           (goto-char p1-url)
@@ -1011,7 +1452,6 @@ When called in lisp code, if ξstring is non-nil, returns a changed string.  If 
 
 (defun xhm-wrap-p-tag ()
   "Add <p>…</p> tag to current text block or text selection.
-
 If there's a text selection, wrap p around each text block (separated by 2 newline chars.)"
   (interactive)
   (let (bds p1 p2 inputText)
@@ -1252,41 +1692,67 @@ Case shouldn't matter, except when it's emacs's key notation.
 (defvar xhm-class-input-history nil "for input history of `xhm-wrap-html-tag'")
 (setq xhm-class-input-history (list) )
 
-(defvar xhm-html5-tag-names nil "a list of tag names of HTML5")
-(setq xhm-html5-tag-names '( "a" "abbr" "address" "area" "article" "aside" "audio" "b" "base" "bdi" "bdo" "blockquote" "body" "bq" "br" "button" "canvas" "caption" "cite" "class" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "id" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "mailto" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "src" "strike" "strong" "style" "sub" "summary" "sup" "t" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "track" "u" "ul" "var" "video" "wbr") )
+(defun xhm-add-open/close-tag (tagName className p1 p2)
+  "Add HTML open/close tags around region p1 p2.
+This function does not `save-excursion'.
+"
+  (let (
+        (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
+        )
+    (progn
+      (goto-char p2)
+      (insert (format "</%s>" tagName ))
+      (goto-char p1)
+      (insert (format "<%s%s>" tagName classStr) ) ) ) )
 
 (defun xhm-wrap-html-tag (tagName &optional className)
-  "Insert/wrap a HTML tags to text selection or cursor position.
+  "Insert/wrap a HTML tags to text selection or current word/line/text-block.
+When there's not text selection, the tag will be wrapped around current word/line/text-block, depending on the tag used.
+
 If current line or word is empty, then insert open/end tags and place cursor between them.
 
-The command will also prompt for a “class” and “id”. Empty value means don't add the attribute.
-
-When called in lisp program, if className is nil or empty string, don't add the attribute."
+If `universal-argument' is called first, then also prompt for a “class” attribute. Empty value means don't add the attribute.
+"
   (interactive
-   (let ()
-     (list
-      (ido-completing-read "HTML tag:" xhm-html5-tag-names "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
-      ;; (read-string "Tag (p):" nil nil "p")
-      (read-string "class:" nil xhm-class-input-history "")
-      ) ) )
-  (let (bds p1 p2 inputText outputText
-            (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
+   (list
+    (ido-completing-read "HTML tag:" xhm-html5-tag-list "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
+    (if current-prefix-arg
+        (read-string "class:" nil xhm-class-input-history "")
+      nil ) ) )
+  (let (bds p1 p2
+            lineWordBlock
             )
-    (setq bds (get-selection-or-unit 'word))
-    (setq inputText (elt bds 0) )
+    (progn
+      (setq lineWordBlock (xhm-get-tag-type tagName) )
+      (setq bds
+            (cond
+             ((equal lineWordBlock "w") (get-selection-or-unit 'word))
+             ((equal lineWordBlock "l") (get-selection-or-unit 'line))
+             ((equal lineWordBlock "b") (get-selection-or-unit 'block))
+             (t (get-selection-or-unit 'block))
+             ))
+      (setq p1 (elt bds 1) )
+      (setq p2 (elt bds 2) )
+      (xhm-add-open/close-tag tagName className p1 p2)
+      (if ; put cursor between when input text is empty
+          (equal p1 p2)
+          (progn (search-backward "</" ) )
+        (progn (search-forward ">" ) ) ) ) ) )
+
+(defun xhm-pre-source-code (&optional langCode)
+  "Insert/wrap a <pre class=\"‹langCode›\"> tags to text selection or current text block.
+"
+  (interactive
+   (list
+    (ido-completing-read "lang code:" (mapcar (lambda (x) (car x)) xhm-lang-name-map) "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "code")
+    )
+   )
+  (let (bds p1 p2)
+    (setq bds (get-selection-or-unit 'block))
     (setq p1 (elt bds 1) )
     (setq p2 (elt bds 2) )
-
-    (setq outputText (format "<%s%s>%s</%s>" tagName classStr inputText tagName ) )
-
-    (delete-region p1 p2)
-    (goto-char p1)
-    (insert outputText)
-    (when                               ; put cursor between when input text is empty
-        (string= inputText "" )
-      (progn (search-backward "</" ) )
-      )
- ) )
+    (xhm-add-open/close-tag "pre" langCode p1 p2))
+  )
 
 (defun xhm-rename-html-inline-image (ξnewFilePath)
   "Replace current HTML inline image's file name.

@@ -19,7 +19,7 @@
 ;; lookup-word-definition
 ;; lookup-answers.com
 ;; lookup-wiktionary
-;; lookup-php-ref
+
 
 ;;; REQUIREMENT
 
@@ -44,7 +44,6 @@
 ;; (autoload 'lookup-word-dict-org "lookup-word-on-internet" "Lookup in browser" t)
 ;; (autoload 'lookup-word-definition "lookup-word-on-internet" "Lookup in browser" t)
 ;; (autoload 'lookup-wiktionary "lookup-word-on-internet" "Lookup word in browser" t)
-;; (autoload 'lookup-php-ref "lookup-word-on-internet" "Lookup word in browser" t)
 
 ;; ;; Suggested keys
 ;; (global-set-key (kbd "<f1> 1") 'lookup-google)
@@ -61,6 +60,7 @@
 
 ;;; HISTORY
 
+;; version 1.5, 2013-04-21 removed lookup-php-ref. Doesn't belong here.
 ;; version 1.4, 2013-03-23 added 2 more dict to the all-dictionaries. Good for vocabulary researchers
 ;; version 1.3, 2012-05-11 added “lookup-all-dictionaries”.
 ;; version 1.2, 2012-05-10 added “lookup-answers.com”. Improved inline docs.
@@ -174,14 +174,6 @@ See also `lookup-word-on-internet'."
   (interactive)
   (mapc (lambda (dictUrl) (lookup-word-on-internet input-word dictUrl)) all-dictionaries) )
 
-(defun lookup-php-ref ()
-  "Look up current word in PHP's reference doc.
-If a there is a text selection (a phrase), lookup that phrase.
-Launches default browser and opens the doc's url."
-  (interactive)
-  (let (inputStr myUrl)
-    (setq inputStr (elt (get-selection-or-unit 'word) 0) )
-    (setq myUrl (concat "http://us.php.net/" inputStr))
-    (browse-url myUrl)))
+
 
 (provide 'lookup-word-on-internet)
