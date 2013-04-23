@@ -56,8 +56,9 @@
   (interactive)
   (let ((ret t)
         (test))
-    (message "Updating for the current version of emacs")
-    (ergoemacs-warn-globally-changed-keys t)
+    (when nil
+      (message "Updating for the current version of emacs")
+      (ergoemacs-warn-globally-changed-keys t))
     (setq test (ergoemacs-test-shifted-move-keep-mark))
     (setq ret (and ret test))
     (message "Shifted Move, Keep Mark: %s" test)
@@ -67,6 +68,15 @@
     (setq test (ergoemacs-test-119))
     (setq ret (and ret test))
     (message "Test repeated C-f: %s" test)
+
+    (setq test (ergoemacs-test-global-key-set-before))
+    (setq ret (and ret test))
+    (message "Global-set-key before ergoemacs-mode loads: %s" test)
+    
+    (setq test (ergoemacs-test-global-key-set-before 'after))
+    (setq ret (and ret test))
+    (message "Global-set-key after ergoemacs-mode loads: %s" test)
+    
     (message "Overall test: %s" ret)))
 
 (defun ergoemacs-test-119 ()
@@ -146,6 +156,43 @@
     (setq ergoemacs-variant old-ergoemacs-variant)
     (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
     (ergoemacs-mode 1)
+    (symbol-value 'ret)))
+
+(defun ergoemacs-test-emacs-exe ()
+  "Get the emacs executable for testing purposes."
+  (let ((emacs-exe (invocation-name))
+        (emacs-dir (invocation-directory))
+        (full-exe nil))
+    (setq full-exe (expand-file-name emacs-exe emacs-dir))
+    (symbol-value 'full-exe)))
+
+(defun ergoemacs-test-global-key-set-before (&optional after)
+  "Test the global key set before ergoemacs-mode is loaded."
+  (let ((emacs-exe (ergoemacs-test-emacs-exe))
+        (ret nil)
+        (sk nil)
+        (w-file (expand-file-name "global-test" ergoemacs-dir))
+        (temp-file (make-temp-file "ergoemacs-test" nil ".el")))
+    (setq sk (format "(global-set-key (kbd \"M-k\") (lambda() (interactive) (with-temp-file \"%s\" (insert \"Ok\"))))"
+                     w-file))
+    (with-temp-file temp-file
+      (unless after
+        (insert sk)) 
+      (insert (format "(add-to-list 'load-path \"%s\")" ergoemacs-dir))
+      (insert "(setq ergoemacs-variant nil)")
+      (insert "(setq ergoemacs-keyboard-layout \"us\")")
+      (insert "(require 'ergoemacs-mode)(ergoemacs-mode 1)")
+      (insert "(setq ergoemacs-test-macro (edmacro-parse-keys \"M-k\" t))")
+      (when after
+        (insert sk))
+      (insert "(execute-kbd-macro ergoemacs-test-macro)(kill-emacs)"))
+    (message "%s"
+             (shell-command-to-string
+              (format "%s -Q -l %s" emacs-exe temp-file)))
+    (delete-file temp-file)
+    (when (file-exists-p w-file)
+      (setq ret 't)
+      (delete-file w-file))
     (symbol-value 'ret)))
 
 
