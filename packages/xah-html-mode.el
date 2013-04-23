@@ -13,6 +13,7 @@
 
 ;;; HISTORY
 
+;; version 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
 ;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
 ;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
 ;; version 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
@@ -37,7 +38,141 @@
 
 (defvar xah-html-mode-hook nil "Standard hook for `xah-html-mode'")
 
+(defcustom xhm-html5-tag-names nil
+  "alist of HTML5 tag names. The value is a vector of one element. w means word, l means line, b means block, others are unknown. They indicate the default ways to wrap the tag around cursor. "
+; todo: need to go the the list and look at the type carefully. Right now it's just quickly done. lots are “z”, for unkown. Also, some are self closing tags, current has mark of “n”.
+)
+(setq xhm-html5-tag-names
+'(
+("a" . ["l"])
+("abbr" . ["w"])
+("address" . ["w"])
+("applet" . ["l"])
+("area" . ["l"])
+("article" . ["b"])
+("aside" . ["b"])
+("audio" . ["l"])
+("b" . ["w"])
+("base" . ["l"])
+("basefont" . ["l"])
+("bdi" . ["w"])
+("bdo" . ["w"])
+("blockquote" . ["b"])
+("body" . ["b"])
+("br" . ["n"])
+("button" . ["w"])
+("canvas" . ["b"])
+("caption" . ["l"])
+("cite" . ["l"])
+("code" . ["l"])
+("col" . ["n"])
+("colgroup" . ["l"])
+("command" . ["z"])
+("datalist" . ["z"])
+("dd" . ["z"])
+("del" . ["z"])
+("details" . ["z"])
+("dfn" . ["z"])
+("div" . ["z"])
+("dl" . ["l"])
+("dt" . ["l"])
+("em" . ["w"])
+("embed" . ["l"])
+("fieldset" . ["z"])
+("figcaption" . ["z"])
+("figure" . ["b"])
+("footer" . ["b"])
+("form" . ["l"])
+("h1" . ["l"])
+("h2" . ["l"])
+("h3" . ["l"])
+("h4" . ["l"])
+("h5" . ["l"])
+("h6" . ["l"])
+("head" . ["b"])
+("header" . ["z"])
+("hgroup" . ["z"])
+("hr" . ["n"])
+("html" . ["b"])
+("i" . ["w"])
+("iframe" . ["z"])
+("img" . ["l"])
+("input" . ["l"])
+("ins" . ["z"])
+("kbd" . ["w"])
+("keygen" . ["z"])
+("label" . ["z"])
+("legend" . ["z"])
+("li" . ["l"])
+("link" . ["z"])
+("map" . ["z"])
+("mark" . ["w"])
+("menu" . ["z"])
+("meta" . ["z"])
+("meter" . ["z"])
+("nav" . ["b"])
+("noscript" . ["l"])
+("object" . ["z"])
+("ol" . ["b"])
+("optgroup" . ["z"])
+("option" . ["z"])
+("output" . ["z"])
+("p" . ["z"])
+("param" . ["z"])
+("pre" . ["z"])
+("progress" . ["z"])
+("q" . ["z"])
+("rp" . ["z"])
+("rt" . ["z"])
+("ruby" . ["z"])
+("s" . ["w"])
+("samp" . ["z"])
+("script" . ["z"])
+("section" . ["b"])
+("select" . ["z"])
+("small" . ["z"])
+("source" . ["z"])
+("span" . ["w"])
+("strong" . ["w"])
+("style" . ["z"])
+("sub" . ["z"])
+("summary" . ["z"])
+("sup" . ["z"])
+("table" . ["z"])
+("tbody" . ["z"])
+("td" . ["z"])
+("textarea" . ["z"])
+("tfoot" . ["z"])
+("th" . ["z"])
+("thead" . ["z"])
+("time" . ["w"])
+("title" . ["z"])
+("tr" . ["z"])
+("u" . ["z"])
+("ul" . ["z"])
+("var" . ["w"])
+("video" . ["z"])
+("wbr" . ["z"])
+("doctype" . ["l"])
+)
+ )
+
+(defvar xhm-html5-tag-list nil "list version of `xhm-html5-tag-names'")
+(setq xhm-html5-tag-list (mapcar (lambda (x) (car x)) xhm-html5-tag-names))
+
+(defcustom xhm-attribute-names nil
+  "HTML5 attribute names."
+)
+(setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ))
+
 
+
+(defun xhm-get-tag-type (tagName)
+  "Return the wrap-type info of tagName in `xhm-html5-tag-names'"
+  (elt
+   (cdr
+    (assoc tagName xhm-html5-tag-names)
+    ) 0))
 
 (defvar xhm-lang-name-map nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
 (setq xhm-lang-name-map
@@ -270,8 +405,8 @@ This command does the reverse of `xhm-htmlize-precode'."
 
 (setq xhm-font-lock-keywords
 (let (
-(htmlElementNamesRegex (regexp-opt '("a" "abbr" "acronym" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "bgsound" "big" "blockquote" "body" "br" "button" "canvas" "caption" "center" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "dir" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "font" "footer" "form" "frame" "frameset" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noframes" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strike" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "tt" "u" "ul" "var" "video" "wbr" "xmp" "doctype") 'words))
-(AttributeNamesRegexp (regexp-opt '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ) 'words))
+(htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
+(AttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
  )
 `(
 
@@ -1557,9 +1692,6 @@ Case shouldn't matter, except when it's emacs's key notation.
 (defvar xhm-class-input-history nil "for input history of `xhm-wrap-html-tag'")
 (setq xhm-class-input-history (list) )
 
-(defvar xhm-html5-tag-names nil "a list of tag names of HTML5")
-(setq xhm-html5-tag-names '( "a" "abbr" "address" "area" "article" "aside" "audio" "b" "base" "bdi" "bdo" "blockquote" "body" "bq" "br" "button" "canvas" "caption" "cite" "class" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "id" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "mailto" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "src" "strike" "strong" "style" "sub" "summary" "sup" "t" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "track" "u" "ul" "var" "video" "wbr") )
-
 (defun xhm-add-open/close-tag (tagName className p1 p2)
   "Add HTML open/close tags around region p1 p2.
 This function does not `save-excursion'.
@@ -1574,25 +1706,38 @@ This function does not `save-excursion'.
       (insert (format "<%s%s>" tagName classStr) ) ) ) )
 
 (defun xhm-wrap-html-tag (tagName &optional className)
-  "Insert/wrap a HTML tags to text selection or current word.
+  "Insert/wrap a HTML tags to text selection or current word/line/text-block.
+When there's not text selection, the tag will be wrapped around current word/line/text-block, depending on the tag used.
+
 If current line or word is empty, then insert open/end tags and place cursor between them.
+
 If `universal-argument' is called first, then also prompt for a “class” attribute. Empty value means don't add the attribute.
 "
   (interactive
    (list
-    (ido-completing-read "HTML tag:" xhm-html5-tag-names "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
+    (ido-completing-read "HTML tag:" xhm-html5-tag-list "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span")
     (if current-prefix-arg
         (read-string "class:" nil xhm-class-input-history "")
       nil ) ) )
-  (let (bds p1 p2)
-    (setq bds (get-selection-or-unit 'word))
-    (setq p1 (elt bds 1) )
-    (setq p2 (elt bds 2) )
+  (let (bds p1 p2
+            lineWordBlock
+            )
     (progn
+      (setq lineWordBlock (xhm-get-tag-type tagName) )
+      (setq bds
+            (cond
+             ((equal lineWordBlock "w") (get-selection-or-unit 'word))
+             ((equal lineWordBlock "l") (get-selection-or-unit 'line))
+             ((equal lineWordBlock "b") (get-selection-or-unit 'block))
+             (t (get-selection-or-unit 'block))
+             ))
+      (setq p1 (elt bds 1) )
+      (setq p2 (elt bds 2) )
       (xhm-add-open/close-tag tagName className p1 p2)
-      (when                                ; put cursor between when input text is empty
+      (if ; put cursor between when input text is empty
           (equal p1 p2)
-        (progn (search-backward "</" ) ) ) ) ) )
+          (progn (search-backward "</" ) )
+        (progn (search-forward ">" ) ) ) ) ) )
 
 (defun xhm-pre-source-code (&optional langCode)
   "Insert/wrap a <pre class=\"‹langCode›\"> tags to text selection or current text block.
@@ -1606,7 +1751,7 @@ If `universal-argument' is called first, then also prompt for a “class” attr
     (setq bds (get-selection-or-unit 'block))
     (setq p1 (elt bds 1) )
     (setq p2 (elt bds 2) )
-    (xhm-add-open/close-tag "pre" langCode p1 p2))   
+    (xhm-add-open/close-tag "pre" langCode p1 p2))
   )
 
 (defun xhm-rename-html-inline-image (ξnewFilePath)
