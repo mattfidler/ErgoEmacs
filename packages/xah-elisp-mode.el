@@ -17,20 +17,20 @@
 
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
-(defvar xem-elisp-kwds nil "a list of elisp function names")
-(setq xem-elisp-kwds '( "add-hook"
-"append"
-"apply"
+(defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
+(setq xem-emacs-words '(
+
+"add-hook"
 "autoload"
 "backward-char"
 "beginning-of-line"
 "bounds-of-thing-at-point"
 "buffer-file-name"
 "buffer-modified-p"
-"buffer-substring-no-properties"
 "buffer-substring"
+"buffer-substring-no-properties"
 "called-interactively-p"
-"consp"
+"completing-read"
 "copy-directory"
 "copy-file"
 "current-buffer"
@@ -66,13 +66,13 @@
 "generate-new-buffer"
 "global-set-key"
 "global-unset-key"
-"local-set-key"
 "goto-char"  "insert-file-contents"
 "insert"
 "kbd"
 "kill-buffer"
 "line-beginning-position"
 "line-end-position"
+"local-set-key"
 "looking-at"
 "make-directory"
 "make-local-variable"
@@ -85,11 +85,14 @@
 "nth"
 "null"
 "number-to-string"
+"point"
 "point-max"
 "point-min"
-"point"
+"re-search-backward"
+"re-search-forward"
 "read-directory-name"
 "read-file-name"
+"read-from-minibuffer"
 "read-regexp"
 "read-string"
 "regexp-opt"
@@ -100,19 +103,16 @@
 "rename-file"
 "repeat"
 "replace-match"
-"replace-regexp-in-string"
 "replace-regexp"
-"require"
-"re-search-backward"
-"re-search-forward"
+"replace-regexp-in-string"
 "reverse"
 "save-buffer"
 "save-excursion"
 "save-restriction"
-"search-backward-regexp"
 "search-backward"
-"search-forward-regexp"
+"search-backward-regexp"
 "search-forward"
+"search-forward-regexp"
 "set-buffer"
 "set-file-modes"
 "set-mark"
@@ -120,12 +120,12 @@
 "skip-chars-backward"
 "skip-chars-forward"
 "split-string"
-"string-match-p"
 "string-match"
-"stringp"
+"string-match-p"
 "string-to-number"
-"substring-no-properties"
+"stringp"
 "substring"
+"substring-no-properties"
 "thing-at-point"
 "widget-get"
 "with-current-buffer"
@@ -133,25 +133,19 @@
 "with-temp-file"
 "write-file"
 "write-region"
+"y-or-n-p"
 "yes-or-no-p"
-"y-or-n-p") )
 
-(defvar xem-keyword-builtin nil "a list of elisp  names")
-(setq xem-keyword-builtin '(
+
 ) )
 
-(defvar xem-keyword-keyword nil "a list of elisp keyword names")
-(setq xem-keyword-keyword '(
-"prin1"
-"push"
-"put"
+(defvar xem-elisp-lang-words nil "a list of elisp keyword more or less related to elisp the language.")
+(setq xem-elisp-lang-words '(
+
 "add-to-list"
-"random"
-"rassoc"
-"princ"
-"print"
-"progn"
 "and"
+"append"
+"apply"
 "aref"
 "aset"
 "assoc"
@@ -160,10 +154,13 @@
 "car"
 "catch"
 "cdr"
+"commandp"
 "concat"
 "cond"
 "condition-case"
 "cons"
+"consp"
+"defmacro"
 "defun"
 "elt"
 "eq"
@@ -174,7 +171,6 @@
 "function"
 "get"
 "if"
-"defmacro"
 "interactive"
 "lambda"
 "length"
@@ -188,6 +184,15 @@
 "message"
 "not"
 "or"
+"prin1"
+"princ"
+"print"
+"progn"
+"push"
+"put"
+"random"
+"rassoc"
+"require"
 "set"
 "setq"
 "string"
@@ -197,7 +202,12 @@
 "vector"
 "when"
 "while"
+
+
 ) )
+
+(defvar xem-keyword-builtin nil "a list of elisp  names")
+(setq xem-keyword-builtin '( "&optional") )
 
 (defvar xem-elisp-vars nil "a list elisp variables names")
 (setq xem-elisp-vars '(
@@ -223,16 +233,16 @@
 
 (setq xem-font-lock-keywords
       (let (
-            (elispWords (regexp-opt xem-elisp-kwds 'words))
-            (elispVars (regexp-opt xem-elisp-vars 'words))
-            (elispBuiltin (regexp-opt xem-keyword-builtin 'words))
-            (elispKeyword (regexp-opt xem-keyword-keyword 'words))
+            (emacsWords (regexp-opt xem-emacs-words 'symbols))
+            (elispVars (regexp-opt xem-elisp-vars 'symbols))
+            (elispBuiltin (regexp-opt xem-keyword-builtin 'symbols))
+            (elispLangWords (regexp-opt xem-elisp-lang-words 'symbols))
             )
         `(
-          (,elispWords . font-lock-function-name-face)
+          (,emacsWords . font-lock-function-name-face)
           (,elispVars . font-lock-constant-face)
-          (,elispBuiltin . font-lock-builtin-face)
-          (,elispKeyword . font-lock-keyword-face)
+          (,elispBuiltin . font-lock-type-face)
+          (,elispLangWords . font-lock-keyword-face)
 
                                         ;font-lock-comment-delimiter-face
                                         ;font-lock-comment-face
