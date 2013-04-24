@@ -57,7 +57,7 @@ WARNING: not robust."
 
 (defvar xcm-html-tag-names nil "a list of HTML5 tag names.")
 (setq xcm-html-tag-names
-'("a" "abbr" "acronym" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "bgsound" "big" "blockquote" "body" "br" "button" "canvas" "caption" "center" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "dir" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "font" "footer" "form" "frame" "frameset" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noframes" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strike" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "tt" "u" "ul" "var" "video" "wbr" "xmp" "doctype")
+'("a" "abbr" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "blockquote" "body" "br" "button" "canvas" "caption" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "doctype" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "u" "ul" "var" "video" "wbr")
  )
 
 (defvar xcm-color-names nil "a list of CSS color names.")
@@ -76,65 +76,7 @@ WARNING: not robust."
 ;:link
 ;@media
 
-"background"
-"background-color"
-"background-image"
-"background-position"
-"background-repeat"
-"border"
-"border-bottom"
-"border-collapse"
-"border-color"
-"border-left"
-"border-radius"
-"border-top"
-"box-shadow"
-"clear"
-"color"
-"content"
-"cursor"
-"direction"
-"display"
-"filter"
-"float"
-"font-family"
-"font-size"
-"font-style"
-"font-weight"
-"height"
-"line-height"
-"list-style"
-"list-style-image"
-"list-style-type"
-"margin"
-"margin-bottom"
-"margin-left"
-"margin-right"
-"margin-top"
-"max-width"
-"min-width"
-"opacity"
-"orphans"
-"overflow"
-"padding"
-"padding-left"
-"padding-right"
-"padding-top"
-"page-break-after"
-"page-break-inside"
-"position"
-"pre-wrap"
-"table"
-"table-cell"
-"text-align"
-"text-decoration"
-"unicode-bidi"
-"vertical-align"
-"white-space"
-"widows"
-"width"
-"word-wrap"
-"z-index"
+"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-top" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font-family" "font-size" "font-style" "font-weight" "height" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
 
 ) )
 
@@ -148,59 +90,7 @@ WARNING: not robust."
 (setq xcm-value-kwds
 '(
 
-"!important"
-"absolute"
-"alpha"
-"auto"
-"avoid"
-"block"
-"bold"
-"both"
-"bottom"
-"break-word"
-"center"
-"collapse"
-"dashed"
-"fixed"
-"hidden"
-"hsl"
-"hsla"
-"inherit"
-"inline"
-"inline-block"
-"italic"
-"large"
-"left"
-"ltr"
-"rtl"
-"middle"
-"monospace"
-"no-repeat"
-"none"
-"normal"
-"nowrap"
-"pointer"
-"relative"
-"rgb"
-"rgba"
-"right"
-"sans-serif"
-"serif"
-"small"
-"smaller"
-"solid"
-"square"
-"static"
-"thin"
-"top"
-"transparent"
-"underline"
-"url"
-"x-large"
-"xx-large"
-"help"
-"dotted"
-"embed"
+"!important" "absolute" "alpha" "auto" "avoid" "block" "bold" "both" "bottom" "break-word" "center" "collapse" "dashed" "dotted" "embed" "fixed" "help" "hidden" "hsl" "hsla" "inherit" "inline" "inline-block" "italic" "large" "left" "ltr" "middle" "monospace" "no-repeat" "none" "normal" "nowrap" "pointer" "relative" "rgb" "rgba" "right" "rtl" "sans-serif" "serif" "small" "smaller" "solid" "square" "static" "thin" "top" "transparent" "underline" "url" "x-large" "xx-large"
 
 ) )
 
@@ -208,19 +98,13 @@ WARNING: not robust."
 ;; syntax coloring related
 
 (setq xcm-font-lock-keywords
-      (let (
-            (cssPropertyNames (regexp-opt xcm-property-names ))
-            (cssValueNames (regexp-opt xcm-value-kwds ))
-            (cssColorNames (regexp-opt xcm-color-names 'words))
-            (htmlTagNames (regexp-opt xcm-html-tag-names 'words))
-            (cssUnitNames (regexp-opt xcm-unit-names ))
-            )
+      (let ( )
         `(
-          (,cssPropertyNames . font-lock-function-name-face )
-          (,cssValueNames . font-lock-keyword-face)
-          (,cssColorNames . font-lock-constant-face)
-          (,htmlTagNames . font-lock-type-face)
-          (,cssUnitNames . font-lock-builtin-face)
+          (,(regexp-opt xcm-property-names ) . font-lock-type-face)
+          (,(regexp-opt xcm-value-kwds ) . font-lock-keyword-face)
+          (,(regexp-opt xcm-color-names 'words) . font-lock-constant-face)
+          (,(regexp-opt xcm-html-tag-names 'words) . font-lock-function-name-face)
+          (,(regexp-opt xcm-unit-names ) . font-lock-builtin-face)
           ("'[^']+'" . font-lock-string-face)
           ) ) )
 

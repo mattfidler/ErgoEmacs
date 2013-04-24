@@ -44,6 +44,7 @@
 )
 (setq xhm-html5-tag-names
 '(
+
 ("a" . ["l"])
 ("abbr" . ["w"])
 ("address" . ["w"])
@@ -75,6 +76,7 @@
 ("dfn" . ["z"])
 ("div" . ["z"])
 ("dl" . ["l"])
+("doctype" . ["l"])
 ("dt" . ["l"])
 ("em" . ["w"])
 ("embed" . ["l"])
@@ -153,7 +155,7 @@
 ("var" . ["w"])
 ("video" . ["z"])
 ("wbr" . ["z"])
-("doctype" . ["l"])
+
 )
  )
 
@@ -164,6 +166,40 @@
   "HTML5 attribute names."
 )
 (setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ))
+
+(defvar xhm-css-color-names nil "a list of CSS color names.")
+(setq xhm-css-color-names
+'("aliceblue" "antiquewhite" "aqua" "aquamarine" "azure" "beige" "bisque" "black" "blanchedalmond" "blue" "blueviolet" "brown" "burlywood" "cadetblue" "chartreuse" "chocolate" "coral" "cornflowerblue" "cornsilk" "crimson" "cyan" "darkblue" "darkcyan" "darkgoldenrod" "darkgray" "darkgreen" "darkgrey" "darkkhaki" "darkmagenta" "darkolivegreen" "darkorange" "darkorchid" "darkred" "darksalmon" "darkseagreen" "darkslateblue" "darkslategray" "darkslategrey" "darkturquoise" "darkviolet" "deeppink" "deepskyblue" "dimgray" "dimgrey" "dodgerblue" "firebrick" "floralwhite" "forestgreen" "fuchsia" "gainsboro" "ghostwhite" "gold" "goldenrod" "gray" "green" "greenyellow" "grey" "honeydew" "hotpink" "indianred" "indigo" "ivory" "khaki" "lavender" "lavenderblush" "lawngreen" "lemonchiffon" "lightblue" "lightcoral" "lightcyan" "lightgoldenrodyellow" "lightgray" "lightgreen" "lightgrey" "lightpink" "lightsalmon" "lightseagreen" "lightskyblue" "lightslategray" "lightslategrey" "lightsteelblue" "lightyellow" "lime" "limegreen" "linen" "magenta" "maroon" "mediumaquamarine" "mediumblue" "mediumorchid" "mediumpurple" "mediumseagreen" "mediumslateblue" "mediumspringgreen" "mediumturquoise" "mediumvioletred" "midnightblue" "mintcream" "mistyrose" "moccasin" "navajowhite" "navy" "oldlace" "olive" "olivedrab" "orange" "orangered" "orchid" "palegoldenrod" "palegreen" "paleturquoise" "palevioletred" "papayawhip" "peachpuff" "peru" "pink" "plum" "powderblue" "purple" "red" "rosybrown" "royalblue" "saddlebrown" "salmon" "sandybrown" "seagreen" "seashell" "sienna" "silver" "skyblue" "slateblue" "slategray" "slategrey" "snow" "springgreen" "steelblue" "tan" "teal" "thistle" "tomato" "turquoise" "violet" "wheat" "white" "whitesmoke" "yellow" "yellowgreen")
+ )
+
+(defvar xhm-css-property-names nil "a list of CSS property names.")
+(setq xhm-css-property-names
+'(
+
+;:hover
+;:after
+;:before
+;:visited
+;:link
+;@media
+
+"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-top" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font-family" "font-size" "font-style" "font-weight" "height" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
+
+) )
+
+(defvar xhm-css-unit-names nil "a list of CSS unite names.")
+(setq xhm-css-unit-names
+'(
+"px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%"
+) )
+
+(defvar xhm-css-value-kwds nil "a list of CSS value names")
+(setq xhm-css-value-kwds
+'(
+
+"!important" "absolute" "alpha" "auto" "avoid" "block" "bold" "both" "bottom" "break-word" "center" "collapse" "dashed" "dotted" "embed" "fixed" "help" "hidden" "hsl" "hsla" "inherit" "inline" "inline-block" "italic" "large" "left" "ltr" "middle" "monospace" "no-repeat" "none" "normal" "nowrap" "pointer" "relative" "rgb" "rgba" "right" "rtl" "sans-serif" "serif" "small" "smaller" "solid" "square" "static" "thin" "top" "transparent" "underline" "url" "x-large" "xx-large"
+
+) )
 
 
 
@@ -404,10 +440,7 @@ This command does the reverse of `xhm-htmlize-precode'."
   :group 'languages)
 
 (setq xhm-font-lock-keywords
-(let (
-(htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
-(AttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
- )
+(let ( )
 `(
 
 ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
@@ -420,10 +453,25 @@ This command does the reverse of `xhm-htmlize-precode'."
 ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
 ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
 ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
-(,htmlElementNamesRegex . font-lock-function-name-face)
-(,AttributeNamesRegexp . font-lock-keyword-face)
-
+(,(regexp-opt xhm-html5-tag-list 'words) . font-lock-function-name-face)
+(,(regexp-opt xhm-attribute-names 'words) . font-lock-variable-name-face)
+(,(regexp-opt xhm-css-property-names 'words) . font-lock-type-face)
+(,(regexp-opt xhm-css-value-kwds 'words) . font-lock-keyword-face)
+(,(regexp-opt xhm-css-color-names 'words) . font-lock-preprocessor-face)
+(,(regexp-opt xhm-css-unit-names 'words) . font-lock-syntactic-face-function)
 ) ) )
+
+;;font-lock-comment-delimiter-face
+;;font-lock-comment-face
+;;font-lock-doc-face
+;;font-lock-negation-char-face
+;;font-lock-preprocessor-face
+;;font-lock-reference-face
+;;font-lock-string-face
+;;font-lock-syntactic-face-function
+;;font-lock-type-face
+;;font-lock-variable-name-face
+;;font-lock-warning-face
 
 
 ;; keybinding
@@ -713,257 +761,11 @@ The following HTML Entities are not replaced:
           (let ((case-fold-search nil))
             (replace-pairs-in-string inputStr
  [
-  ["&nbsp;" " "]
-  ["&ensp;" " "]
-  ["&emsp;" " "]
-  ["&thinsp;" " "]
+  ["&nbsp;" " "] ["&ensp;" " "] ["&emsp;" " "] ["&thinsp;" " "]
 
-  ["&rlm;" "‏"]
-  ["&lrm;" "‎"]
-  ["&zwj;" "‍"]
-  ["&zwnj;" "‌"]
+  ["&rlm;" "‏"] ["&lrm;" "‎"] ["&zwj;" "‍"] ["&zwnj;" "‌"]
 
-  ["&iexcl;" "¡"]
-  ["&cent;" "¢"]
-  ["&pound;" "£"]
-  ["&curren;" "¤"]
-  ["&yen;" "¥"]
-  ["&brvbar;" "¦"]
-  ["&sect;" "§"]
-  ["&uml;" "¨"]
-  ["&copy;" "©"]
-  ["&ordf;" "ª"]
-  ["&laquo;" "«"]
-  ["&not;" "¬"]
-  ["&shy;" "­"]
-  ["&reg;" "®"]
-  ["&macr;" "¯"]
-  ["&deg;" "°"]
-  ["&plusmn;" "±"]
-  ["&sup2;" "²"]
-  ["&sup3;" "³"]
-  ["&acute;" "´"]
-  ["&micro;" "µ"]
-  ["&para;" "¶"]
-  ["&middot;" "·"]
-  ["&cedil;" "¸"]
-  ["&sup1;" "¹"]
-  ["&ordm;" "º"]
-  ["&raquo;" "»"]
-  ["&frac14;" "¼"]
-  ["&frac12;" "½"]
-  ["&frac34;" "¾"]
-  ["&iquest;" "¿"]
-  ["&Agrave;" "À"]
-  ["&Aacute;" "Á"]
-  ["&Acirc;" "Â"]
-  ["&Atilde;" "Ã"]
-  ["&Auml;" "Ä"]
-  ["&Aring;" "Å"]
-  ["&AElig;" "Æ"]
-  ["&Ccedil;" "Ç"]
-  ["&Egrave;" "È"]
-  ["&Eacute;" "É"]
-  ["&Ecirc;" "Ê"]
-  ["&Euml;" "Ë"]
-  ["&Igrave;" "Ì"]
-  ["&Iacute;" "Í"]
-  ["&Icirc;" "Î"]
-  ["&Iuml;" "Ï"]
-  ["&ETH;" "Ð"]
-  ["&Ntilde;" "Ñ"]
-  ["&Ograve;" "Ò"]
-  ["&Oacute;" "Ó"]
-  ["&Ocirc;" "Ô"]
-  ["&Otilde;" "Õ"]
-  ["&Ouml;" "Ö"]
-  ["&times;" "×"]
-  ["&Oslash;" "Ø"]
-  ["&Ugrave;" "Ù"]
-  ["&Uacute;" "Ú"]
-  ["&Ucirc;" "Û"]
-  ["&Uuml;" "Ü"]
-  ["&Yacute;" "Ý"]
-  ["&THORN;" "Þ"]
-  ["&szlig;" "ß"]
-  ["&agrave;" "à"]
-  ["&aacute;" "á"]
-  ["&acirc;" "â"]
-  ["&atilde;" "ã"]
-  ["&auml;" "ä"]
-  ["&aring;" "å"]
-  ["&aelig;" "æ"]
-  ["&ccedil;" "ç"]
-  ["&egrave;" "è"]
-  ["&eacute;" "é"]
-  ["&ecirc;" "ê"]
-  ["&euml;" "ë"]
-  ["&igrave;" "ì"]
-  ["&iacute;" "í"]
-  ["&icirc;" "î"]
-  ["&iuml;" "ï"]
-  ["&eth;" "ð"]
-  ["&ntilde;" "ñ"]
-  ["&ograve;" "ò"]
-  ["&oacute;" "ó"]
-  ["&ocirc;" "ô"]
-  ["&otilde;" "õ"]
-  ["&ouml;" "ö"]
-  ["&divide;" "÷"]
-  ["&oslash;" "ø"]
-  ["&ugrave;" "ù"]
-  ["&uacute;" "ú"]
-  ["&ucirc;" "û"]
-  ["&uuml;" "ü"]
-  ["&yacute;" "ý"]
-  ["&thorn;" "þ"]
-  ["&yuml;" "ÿ"]
-  ["&fnof;" "ƒ"]
-  ["&Alpha;" "Α"]
-  ["&Beta;" "Β"]
-  ["&Gamma;" "Γ"]
-  ["&Delta;" "Δ"]
-  ["&Epsilon;" "Ε"]
-  ["&Zeta;" "Ζ"]
-  ["&Eta;" "Η"]
-  ["&Theta;" "Θ"]
-  ["&Iota;" "Ι"]
-  ["&Kappa;" "Κ"]
-  ["&Lambda;" "Λ"]
-  ["&Mu;" "Μ"]
-  ["&Nu;" "Ν"]
-  ["&Xi;" "Ξ"]
-  ["&Omicron;" "Ο"]
-  ["&Pi;" "Π"]
-  ["&Rho;" "Ρ"]
-  ["&Sigma;" "Σ"]
-  ["&Tau;" "Τ"]
-  ["&Upsilon;" "Υ"]
-  ["&Phi;" "Φ"]
-  ["&Chi;" "Χ"]
-  ["&Psi;" "Ψ"]
-  ["&Omega;" "Ω"]
-  ["&alpha;" "α"]
-  ["&beta;" "β"]
-  ["&gamma;" "γ"]
-  ["&delta;" "δ"]
-  ["&epsilon;" "ε"]
-  ["&zeta;" "ζ"]
-  ["&eta;" "η"]
-  ["&theta;" "θ"]
-  ["&iota;" "ι"]
-  ["&kappa;" "κ"]
-  ["&lambda;" "λ"]
-  ["&mu;" "μ"]
-  ["&nu;" "ν"]
-  ["&xi;" "ξ"]
-  ["&omicron;" "ο"]
-  ["&pi;" "π"]
-  ["&rho;" "ρ"]
-  ["&sigmaf;" "ς"]
-  ["&sigma;" "σ"]
-  ["&tau;" "τ"]
-  ["&upsilon;" "υ"]
-  ["&phi;" "φ"]
-  ["&chi;" "χ"]
-  ["&psi;" "ψ"]
-  ["&omega;" "ω"]
-  ["&thetasym;" "ϑ"]
-  ["&upsih;" "ϒ"]
-  ["&piv;" "ϖ"]
-  ["&bull;" "•"]
-  ["&hellip;" "…"]
-  ["&prime;" "′"]
-  ["&Prime;" "″"]
-  ["&oline;" "‾"]
-  ["&frasl;" "⁄"]
-  ["&weierp;" "℘"]
-  ["&image;" "ℑ"]
-  ["&real;" "ℜ"]
-  ["&trade;" "™"]
-  ["&alefsym;" "ℵ"]
-  ["&larr;" "←"]
-  ["&uarr;" "↑"]
-  ["&rarr;" "→"]
-  ["&darr;" "↓"]
-  ["&harr;" "↔"]
-  ["&crarr;" "↵"]
-  ["&lArr;" "⇐"]
-  ["&uArr;" "⇑"]
-  ["&rArr;" "⇒"]
-  ["&dArr;" "⇓"]
-  ["&hArr;" "⇔"]
-  ["&forall;" "∀"]
-  ["&part;" "∂"]
-  ["&exist;" "∃"]
-  ["&empty;" "∅"]
-  ["&nabla;" "∇"]
-  ["&isin;" "∈"]
-  ["&notin;" "∉"]
-  ["&ni;" "∋"]
-  ["&prod;" "∏"]
-  ["&sum;" "∑"]
-  ["&minus;" "−"]
-  ["&lowast;" "∗"]
-  ["&radic;" "√"]
-  ["&prop;" "∝"]
-  ["&infin;" "∞"]
-  ["&ang;" "∠"]
-  ["&and;" "∧"]
-  ["&or;" "∨"]
-  ["&cap;" "∩"]
-  ["&cup;" "∪"]
-  ["&int;" "∫"]
-  ["&there4;" "∴"]
-  ["&sim;" "∼"]
-  ["&cong;" "≅"]
-  ["&asymp;" "≈"]
-  ["&ne;" "≠"]
-  ["&equiv;" "≡"]
-  ["&le;" "≤"]
-  ["&ge;" "≥"]
-  ["&sub;" "⊂"]
-  ["&sup;" "⊃"]
-  ["&nsub;" "⊄"]
-  ["&sube;" "⊆"]
-  ["&supe;" "⊇"]
-  ["&oplus;" "⊕"]
-  ["&otimes;" "⊗"]
-  ["&perp;" "⊥"]
-  ["&sdot;" "⋅"]
-  ["&lceil;" "⌈"]
-  ["&rceil;" "⌉"]
-  ["&lfloor;" "⌊"]
-  ["&rfloor;" "⌋"]
-  ["&lang;" "〈"]
-  ["&rang;" "〉"]
-  ["&loz;" "◊"]
-  ["&spades;" "♠"]
-  ["&clubs;" "♣"]
-  ["&hearts;" "♥"]
-  ["&diams;" "♦"]
-  ["&quot;" "\""]
-  ["&OElig;" "Œ"]
-  ["&oelig;" "œ"]
-  ["&Scaron;" "Š"]
-  ["&scaron;" "š"]
-  ["&Yuml;" "Ÿ"]
-  ["&circ;" "ˆ"]
-  ["&tilde;" "˜"]
-  ["&ndash;" "–"]
-  ["&mdash;" "—"]
-  ["&lsquo;" "‘"]
-  ["&rsquo;" "’"]
-  ["&sbquo;" "‚"]
-  ["&ldquo;" "“"]
-  ["&rdquo;" "”"]
-  ["&bdquo;" "„"]
-  ["&dagger;" "†"]
-  ["&Dagger;" "‡"]
-  ["&permil;" "‰"]
-  ["&lsaquo;" "‹"]
-  ["&rsaquo;" "›"]
-  ["&euro;" "€"]
+  ["&iexcl;" "¡"] ["&cent;" "¢"] ["&pound;" "£"] ["&curren;" "¤"] ["&yen;" "¥"] ["&brvbar;" "¦"] ["&sect;" "§"] ["&uml;" "¨"] ["&copy;" "©"] ["&ordf;" "ª"] ["&laquo;" "«"] ["&not;" "¬"] ["&shy;" "­"] ["&reg;" "®"] ["&macr;" "¯"] ["&deg;" "°"] ["&plusmn;" "±"] ["&sup2;" "²"] ["&sup3;" "³"] ["&acute;" "´"] ["&micro;" "µ"] ["&para;" "¶"] ["&middot;" "·"] ["&cedil;" "¸"] ["&sup1;" "¹"] ["&ordm;" "º"] ["&raquo;" "»"] ["&frac14;" "¼"] ["&frac12;" "½"] ["&frac34;" "¾"] ["&iquest;" "¿"] ["&Agrave;" "À"] ["&Aacute;" "Á"] ["&Acirc;" "Â"] ["&Atilde;" "Ã"] ["&Auml;" "Ä"] ["&Aring;" "Å"] ["&AElig;" "Æ"] ["&Ccedil;" "Ç"] ["&Egrave;" "È"] ["&Eacute;" "É"] ["&Ecirc;" "Ê"] ["&Euml;" "Ë"] ["&Igrave;" "Ì"] ["&Iacute;" "Í"] ["&Icirc;" "Î"] ["&Iuml;" "Ï"] ["&ETH;" "Ð"] ["&Ntilde;" "Ñ"] ["&Ograve;" "Ò"] ["&Oacute;" "Ó"] ["&Ocirc;" "Ô"] ["&Otilde;" "Õ"] ["&Ouml;" "Ö"] ["&times;" "×"] ["&Oslash;" "Ø"] ["&Ugrave;" "Ù"] ["&Uacute;" "Ú"] ["&Ucirc;" "Û"] ["&Uuml;" "Ü"] ["&Yacute;" "Ý"] ["&THORN;" "Þ"] ["&szlig;" "ß"] ["&agrave;" "à"] ["&aacute;" "á"] ["&acirc;" "â"] ["&atilde;" "ã"] ["&auml;" "ä"] ["&aring;" "å"] ["&aelig;" "æ"] ["&ccedil;" "ç"] ["&egrave;" "è"] ["&eacute;" "é"] ["&ecirc;" "ê"] ["&euml;" "ë"] ["&igrave;" "ì"] ["&iacute;" "í"] ["&icirc;" "î"] ["&iuml;" "ï"] ["&eth;" "ð"] ["&ntilde;" "ñ"] ["&ograve;" "ò"] ["&oacute;" "ó"] ["&ocirc;" "ô"] ["&otilde;" "õ"] ["&ouml;" "ö"] ["&divide;" "÷"] ["&oslash;" "ø"] ["&ugrave;" "ù"] ["&uacute;" "ú"] ["&ucirc;" "û"] ["&uuml;" "ü"] ["&yacute;" "ý"] ["&thorn;" "þ"] ["&yuml;" "ÿ"] ["&fnof;" "ƒ"] ["&Alpha;" "Α"] ["&Beta;" "Β"] ["&Gamma;" "Γ"] ["&Delta;" "Δ"] ["&Epsilon;" "Ε"] ["&Zeta;" "Ζ"] ["&Eta;" "Η"] ["&Theta;" "Θ"] ["&Iota;" "Ι"] ["&Kappa;" "Κ"] ["&Lambda;" "Λ"] ["&Mu;" "Μ"] ["&Nu;" "Ν"] ["&Xi;" "Ξ"] ["&Omicron;" "Ο"] ["&Pi;" "Π"] ["&Rho;" "Ρ"] ["&Sigma;" "Σ"] ["&Tau;" "Τ"] ["&Upsilon;" "Υ"] ["&Phi;" "Φ"] ["&Chi;" "Χ"] ["&Psi;" "Ψ"] ["&Omega;" "Ω"] ["&alpha;" "α"] ["&beta;" "β"] ["&gamma;" "γ"] ["&delta;" "δ"] ["&epsilon;" "ε"] ["&zeta;" "ζ"] ["&eta;" "η"] ["&theta;" "θ"] ["&iota;" "ι"] ["&kappa;" "κ"] ["&lambda;" "λ"] ["&mu;" "μ"] ["&nu;" "ν"] ["&xi;" "ξ"] ["&omicron;" "ο"] ["&pi;" "π"] ["&rho;" "ρ"] ["&sigmaf;" "ς"] ["&sigma;" "σ"] ["&tau;" "τ"] ["&upsilon;" "υ"] ["&phi;" "φ"] ["&chi;" "χ"] ["&psi;" "ψ"] ["&omega;" "ω"] ["&thetasym;" "ϑ"] ["&upsih;" "ϒ"] ["&piv;" "ϖ"] ["&bull;" "•"] ["&hellip;" "…"] ["&prime;" "′"] ["&Prime;" "″"] ["&oline;" "‾"] ["&frasl;" "⁄"] ["&weierp;" "℘"] ["&image;" "ℑ"] ["&real;" "ℜ"] ["&trade;" "™"] ["&alefsym;" "ℵ"] ["&larr;" "←"] ["&uarr;" "↑"] ["&rarr;" "→"] ["&darr;" "↓"] ["&harr;" "↔"] ["&crarr;" "↵"] ["&lArr;" "⇐"] ["&uArr;" "⇑"] ["&rArr;" "⇒"] ["&dArr;" "⇓"] ["&hArr;" "⇔"] ["&forall;" "∀"] ["&part;" "∂"] ["&exist;" "∃"] ["&empty;" "∅"] ["&nabla;" "∇"] ["&isin;" "∈"] ["&notin;" "∉"] ["&ni;" "∋"] ["&prod;" "∏"] ["&sum;" "∑"] ["&minus;" "−"] ["&lowast;" "∗"] ["&radic;" "√"] ["&prop;" "∝"] ["&infin;" "∞"] ["&ang;" "∠"] ["&and;" "∧"] ["&or;" "∨"] ["&cap;" "∩"] ["&cup;" "∪"] ["&int;" "∫"] ["&there4;" "∴"] ["&sim;" "∼"] ["&cong;" "≅"] ["&asymp;" "≈"] ["&ne;" "≠"] ["&equiv;" "≡"] ["&le;" "≤"] ["&ge;" "≥"] ["&sub;" "⊂"] ["&sup;" "⊃"] ["&nsub;" "⊄"] ["&sube;" "⊆"] ["&supe;" "⊇"] ["&oplus;" "⊕"] ["&otimes;" "⊗"] ["&perp;" "⊥"] ["&sdot;" "⋅"] ["&lceil;" "⌈"] ["&rceil;" "⌉"] ["&lfloor;" "⌊"] ["&rfloor;" "⌋"] ["&lang;" "〈"] ["&rang;" "〉"] ["&loz;" "◊"] ["&spades;" "♠"] ["&clubs;" "♣"] ["&hearts;" "♥"] ["&diams;" "♦"] ["&quot;" "\""] ["&OElig;" "Œ"] ["&oelig;" "œ"] ["&Scaron;" "Š"] ["&scaron;" "š"] ["&Yuml;" "Ÿ"] ["&circ;" "ˆ"] ["&tilde;" "˜"] ["&ndash;" "–"] ["&mdash;" "—"] ["&lsquo;" "‘"] ["&rsquo;" "’"] ["&sbquo;" "‚"] ["&ldquo;" "“"] ["&rdquo;" "”"] ["&bdquo;" "„"] ["&dagger;" "†"] ["&Dagger;" "‡"] ["&permil;" "‰"] ["&lsaquo;" "‹"] ["&rsaquo;" "›"] ["&euro;" "€"]
   ]
  )
             )  )
@@ -1729,7 +1531,7 @@ If `universal-argument' is called first, then also prompt for a “class” attr
              ((equal lineWordBlock "w") (get-selection-or-unit 'word))
              ((equal lineWordBlock "l") (get-selection-or-unit 'line))
              ((equal lineWordBlock "b") (get-selection-or-unit 'block))
-             (t (get-selection-or-unit 'block))
+             (t (get-selection-or-unit 'word))
              ))
       (setq p1 (elt bds 1) )
       (setq p2 (elt bds 2) )

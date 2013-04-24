@@ -182,6 +182,7 @@
 "lambda"
 "length"
 "let"
+"let*"
 "list"
 "mapc"
 "mapcar"
@@ -994,17 +995,17 @@
           (,(regexp-opt xem-elisp-vars-1 'symbols) . font-lock-variable-name-face)
           (,(regexp-opt xem-elisp-vars-2 'symbols) . font-lock-variable-name-face)
 
-                                        ;font-lock-comment-delimiter-face
-                                        ;font-lock-comment-face
-                                        ;font-lock-doc-face
-                                        ;font-lock-negation-char-face
-                                        ;font-lock-preprocessor-face
-                                        ;font-lock-reference-face
-                                        ;font-lock-string-face
-                                        ;font-lock-syntactic-face-function
-                                        ;font-lock-type-face
-                                        ;font-lock-variable-name-face
-                                        ;font-lock-warning-face
+;;font-lock-comment-delimiter-face
+;;font-lock-comment-face
+;;font-lock-doc-face
+;;font-lock-negation-char-face
+;;font-lock-preprocessor-face
+;;font-lock-reference-face
+;;font-lock-string-face
+;;font-lock-syntactic-face-function
+;;font-lock-type-face
+;;font-lock-variable-name-face
+;;font-lock-warning-face
 
           ) ) )
 
@@ -1035,14 +1036,14 @@
 
 ;; define the mode
 (define-derived-mode xah-elisp-mode fundamental-mode
-  "εlisp"
+  "ξlisp"
   "A simple major mode for emacs lisp.
 
 elisp keywords are colored. Basically that's it.
 
 \\{xem-keymap}"
-
   (emacs-lisp-mode)
+  (setq mode-name "ξlisp")
   (setq font-lock-defaults '((xem-font-lock-keywords)))
 
   (set-syntax-table xem-syntax-table)
