@@ -98,31 +98,21 @@ WARNING: not robust."
 ;; syntax coloring related
 
 (setq xcm-font-lock-keywords
-      (let ( )
+      (let (
+          (cssPropertieNames (regexp-opt xcm-property-names ) )
+          (cssValueNames (regexp-opt xcm-value-kwds ) )
+          (cssColorNames (regexp-opt xcm-color-names 'words) )
+          (htmlTagNames (regexp-opt xcm-html-tag-names 'words) )
+          (cssUnitNames (regexp-opt xcm-unit-names ) )
+          )
         `(
-          (,(regexp-opt xcm-property-names ) . font-lock-type-face)
-          (,(regexp-opt xcm-value-kwds ) . font-lock-keyword-face)
-          (,(regexp-opt xcm-color-names 'words) . font-lock-constant-face)
-          (,(regexp-opt xcm-html-tag-names 'words) . font-lock-function-name-face)
-          (,(regexp-opt xcm-unit-names ) . font-lock-builtin-face)
+          (,cssPropertieNames . font-lock-type-face)
+          (,cssValueNames . font-lock-keyword-face)
+          (,cssColorNames . font-lock-constant-face)
+          (,htmlTagNames . font-lock-function-name-face)
+          (,cssUnitNames . font-lock-builtin-face)
           ("'[^']+'" . font-lock-string-face)
           ) ) )
-
-;font-lock-builtin-face
-;font-lock-comment-delimiter-face
-;font-lock-comment-face
-;font-lock-constant-face
-;font-lock-doc-face
-;font-lock-function-name-face
-;font-lock-keyword-face
-;font-lock-negation-char-face
-;font-lock-preprocessor-face
-;font-lock-reference-face
-;font-lock-string-face
-;font-lock-syntactic-face-function
-;font-lock-type-face
-;font-lock-variable-name-face
-;font-lock-warning-face
 
 (defvar xcm-colorfy-hex
   '(("#[abcdef[:digit:]]\\{6\\}"

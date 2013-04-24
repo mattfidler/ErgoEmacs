@@ -2111,22 +2111,6 @@ Launches default browser and opens the doc's url."
 
           ) ) )
 
-;font-lock-builtin-face
-;font-lock-comment-delimiter-face
-;font-lock-comment-face
-;font-lock-constant-face
-;font-lock-doc-face
-;font-lock-function-name-face
-;font-lock-keyword-face
-;font-lock-negation-char-face
-;font-lock-preprocessor-face
-;font-lock-reference-face
-;font-lock-string-face
-;font-lock-syntactic-face-function
-;font-lock-type-face
-;font-lock-variable-name-face
-;font-lock-warning-face
-
 
 ;; keybinding
 

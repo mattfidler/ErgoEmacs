@@ -175,23 +175,12 @@
 (defvar xhm-css-property-names nil "a list of CSS property names.")
 (setq xhm-css-property-names
 '(
-
-;:hover
-;:after
-;:before
-;:visited
-;:link
-;@media
-
 "background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-top" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font-family" "font-size" "font-style" "font-weight" "height" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
-
 ) )
 
 (defvar xhm-css-unit-names nil "a list of CSS unite names.")
 (setq xhm-css-unit-names
-'(
-"px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%"
-) )
+'("px" "pt" "pc" "cm" "mm" "in" "em" "ex") )
 
 (defvar xhm-css-value-kwds nil "a list of CSS value names")
 (setq xhm-css-value-kwds
@@ -440,26 +429,32 @@ This command does the reverse of `xhm-htmlize-precode'."
   :group 'languages)
 
 (setq xhm-font-lock-keywords
-(let ( )
-`(
+      (let (
+            (htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
+            (htmlAttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
+            (cssPropertieNames (regexp-opt xhm-css-property-names 'words) )
+            (cssValueNames (regexp-opt xhm-css-value-kwds 'words) )
+            (cssColorNames (regexp-opt xhm-css-color-names 'words) )
+            (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
+            )
+        `(
+          ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
+          ("<!--\\|-->" . font-lock-comment-delimiter-face)
+          ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
+          ("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
+          ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
+          ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
-;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
-("<!--\\|-->" . font-lock-comment-delimiter-face)
-("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
-("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
-("「\\([^」]+\\)」" . (1 font-lock-string-face))
-
-("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
-("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
-("<title>\\([^<]+?\\)</title>" . (1 "bold"))
-(,(regexp-opt xhm-html5-tag-list 'words) . font-lock-function-name-face)
-(,(regexp-opt xhm-attribute-names 'words) . font-lock-variable-name-face)
-(,(regexp-opt xhm-css-property-names 'words) . font-lock-type-face)
-(,(regexp-opt xhm-css-value-kwds 'words) . font-lock-keyword-face)
-(,(regexp-opt xhm-css-color-names 'words) . font-lock-preprocessor-face)
-(,(regexp-opt xhm-css-unit-names 'words) . font-lock-syntactic-face-function)
-) ) )
+          ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
+          ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
+          ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
+          (,htmlElementNamesRegex . font-lock-function-name-face)
+          (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
+          (,cssPropertieNames . font-lock-type-face)
+          (,cssValueNames . font-lock-keyword-face)
+          (,cssColorNames . font-lock-preprocessor-face)
+          (,cssUnitNames . font-lock-reference-face)
+          ) ) )
 
 ;;font-lock-comment-delimiter-face
 ;;font-lock-comment-face
@@ -468,7 +463,6 @@ This command does the reverse of `xhm-htmlize-precode'."
 ;;font-lock-preprocessor-face
 ;;font-lock-reference-face
 ;;font-lock-string-face
-;;font-lock-syntactic-face-function
 ;;font-lock-type-face
 ;;font-lock-variable-name-face
 ;;font-lock-warning-face
