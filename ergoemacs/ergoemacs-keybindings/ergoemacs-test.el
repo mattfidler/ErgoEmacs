@@ -68,7 +68,7 @@
     (setq test (ergoemacs-test-119))
     (setq ret (and ret test))
     (message "Test repeated C-f: %s" test)
-
+    
     (setq test (ergoemacs-test-global-key-set-before))
     (setq ret (and ret test))
     (message "Global-set-key before ergoemacs-mode loads: %s" test)
@@ -76,6 +76,14 @@
     (setq test (ergoemacs-test-global-key-set-before 'after))
     (setq ret (and ret test))
     (message "Global-set-key after ergoemacs-mode loads: %s" test)
+    
+    (setq test (ergoemacs-test-global-key-set-before 'after "<menu> m"))
+    (setq ret (and ret test))
+    (message "Test Issue #128: %s" test)
+    
+    (setq test (ergoemacs-test-global-key-set-before nil "<menu> m"))
+    (setq ret (and ret test))
+    (message "Test Issue #128a: %s" test)
     
     (message "Overall test: %s" ret)))
 
@@ -166,26 +174,32 @@
     (setq full-exe (expand-file-name emacs-exe emacs-dir))
     (symbol-value 'full-exe)))
 
-(defun ergoemacs-test-global-key-set-before (&optional after)
+(defun ergoemacs-test-global-key-set-before (&optional after key)
   "Test the global key set before ergoemacs-mode is loaded."
-  (let ((emacs-exe (ergoemacs-test-emacs-exe))
+  (let* ((emacs-exe (ergoemacs-test-emacs-exe))
         (ret nil)
         (sk nil)
+        (test-key (or key "M-k"))
         (w-file (expand-file-name "global-test" ergoemacs-dir))
         (temp-file (make-temp-file "ergoemacs-test" nil ".el")))
-    (setq sk (format "(global-set-key (kbd \"M-k\") (lambda() (interactive) (with-temp-file \"%s\" (insert \"Ok\"))))"
+    (setq sk (format "(global-set-key (kbd \"%s\") (lambda() (interactive) (with-temp-file \"%s\" (insert \"Ok\"))))" test-key
                      w-file))
     (with-temp-file temp-file
+      (insert "(condition-case err (progn")
       (unless after
-        (insert sk)) 
+        (insert sk))
       (insert (format "(add-to-list 'load-path \"%s\")" ergoemacs-dir))
       (insert "(setq ergoemacs-variant nil)")
       (insert "(setq ergoemacs-keyboard-layout \"us\")")
       (insert "(require 'ergoemacs-mode)(ergoemacs-mode 1)")
-      (insert "(setq ergoemacs-test-macro (edmacro-parse-keys \"M-k\" t))")
+      (insert (format
+               "(setq ergoemacs-test-macro (edmacro-parse-keys \"%s\" t))"
+               test-key))
       (when after
         (insert sk))
-      (insert "(execute-kbd-macro ergoemacs-test-macro)(kill-emacs)"))
+      (insert "(execute-kbd-macro ergoemacs-test-macro)")
+      (insert ") (error nil))")
+      (insert "(kill-emacs)"))
     (message "%s"
              (shell-command-to-string
               (format "%s -Q -l %s" emacs-exe temp-file)))
