@@ -1019,7 +1019,7 @@
 (defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xem-keymap (make-sparse-keymap))
-  (define-key xem-keymap [remap comment-dwim] 'xem-comment-dwim)
+;  (define-key xem-keymap [remap comment-dwim] 'xem-comment-dwim)
 )
 
 

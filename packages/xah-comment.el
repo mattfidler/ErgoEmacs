@@ -81,6 +81,7 @@
            (visual-basic-mode . "'")
            (xlsl-mode . "//")
            (org-mode . "# ")
+           (conf-unix-mode . "# ")
 
 ;; following is todo
  ;; (* Applescript, Mathematica, Pascal, OCaml *)

@@ -167,6 +167,30 @@
 )
 (setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ))
 
+(defcustom xhm-html5-self-close-tags nil
+  "a list of HTML5 self-closing tag name. "
+)
+(setq xhm-html5-self-close-tags
+'(
+"area"
+"base"
+"br"
+"col"
+"command"
+"embed"
+"hr"
+"img"
+"input"
+"keygen"
+"link"
+"meta"
+"param"
+"source"
+"track"
+"wbr"
+)
+ )
+
 (defvar xhm-css-color-names nil "a list of CSS color names.")
 (setq xhm-css-color-names
 '("aliceblue" "antiquewhite" "aqua" "aquamarine" "azure" "beige" "bisque" "black" "blanchedalmond" "blue" "blueviolet" "brown" "burlywood" "cadetblue" "chartreuse" "chocolate" "coral" "cornflowerblue" "cornsilk" "crimson" "cyan" "darkblue" "darkcyan" "darkgoldenrod" "darkgray" "darkgreen" "darkgrey" "darkkhaki" "darkmagenta" "darkolivegreen" "darkorange" "darkorchid" "darkred" "darksalmon" "darkseagreen" "darkslateblue" "darkslategray" "darkslategrey" "darkturquoise" "darkviolet" "deeppink" "deepskyblue" "dimgray" "dimgrey" "dodgerblue" "firebrick" "floralwhite" "forestgreen" "fuchsia" "gainsboro" "ghostwhite" "gold" "goldenrod" "gray" "green" "greenyellow" "grey" "honeydew" "hotpink" "indianred" "indigo" "ivory" "khaki" "lavender" "lavenderblush" "lawngreen" "lemonchiffon" "lightblue" "lightcoral" "lightcyan" "lightgoldenrodyellow" "lightgray" "lightgreen" "lightgrey" "lightpink" "lightsalmon" "lightseagreen" "lightskyblue" "lightslategray" "lightslategrey" "lightsteelblue" "lightyellow" "lime" "limegreen" "linen" "magenta" "maroon" "mediumaquamarine" "mediumblue" "mediumorchid" "mediumpurple" "mediumseagreen" "mediumslateblue" "mediumspringgreen" "mediumturquoise" "mediumvioletred" "midnightblue" "mintcream" "mistyrose" "moccasin" "navajowhite" "navy" "oldlace" "olive" "olivedrab" "orange" "orangered" "orchid" "palegoldenrod" "palegreen" "paleturquoise" "palevioletred" "papayawhip" "peachpuff" "peru" "pink" "plum" "powderblue" "purple" "red" "rosybrown" "royalblue" "saddlebrown" "salmon" "sandybrown" "seagreen" "seashell" "sienna" "silver" "skyblue" "slateblue" "slategray" "slategrey" "snow" "springgreen" "steelblue" "tan" "teal" "thistle" "tomato" "turquoise" "violet" "wheat" "white" "whitesmoke" "yellow" "yellowgreen")
@@ -179,15 +203,12 @@
 ) )
 
 (defvar xhm-css-unit-names nil "a list of CSS unite names.")
-(setq xhm-css-unit-names
-'("px" "pt" "pc" "cm" "mm" "in" "em" "ex") )
+(setq xhm-css-unit-names '("px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%") )
 
 (defvar xhm-css-value-kwds nil "a list of CSS value names")
 (setq xhm-css-value-kwds
 '(
-
 "!important" "absolute" "alpha" "auto" "avoid" "block" "bold" "both" "bottom" "break-word" "center" "collapse" "dashed" "dotted" "embed" "fixed" "help" "hidden" "hsl" "hsla" "inherit" "inline" "inline-block" "italic" "large" "left" "ltr" "middle" "monospace" "no-repeat" "none" "normal" "nowrap" "pointer" "relative" "rgb" "rgba" "right" "rtl" "sans-serif" "serif" "small" "smaller" "solid" "square" "static" "thin" "top" "transparent" "underline" "url" "x-large" "xx-large"
-
 ) )
 
 
@@ -539,6 +560,11 @@ This command does the reverse of `xhm-htmlize-precode'."
 
 
 
+(defun xhm-tag-selfclosing-p (tagName)
+  "Return true if the tag is a self-closing tag, ⁖ br."
+  (interactive)
+  (member tagName  xhm-html5-self-close-tags) )
+
 (defun xhm-cursor-in-tag-markup-p (&optional bracketPositions)
   "Return true if cursor is inside a tag markup.
 For example,
@@ -548,12 +574,7 @@ For example,
  `xhm-get-bracket-positions' is called to get it.
 "
   (interactive)
-  (let (
-          pl<
-          pl>
-          pr>
-          pr<
-          )
+  (let ( pl< pl> pr> pr< )
       (when (not bracketPositions)
         (progn
           (setq bracketPositions (xhm-get-bracket-positions) )
@@ -576,12 +597,7 @@ This function assumes your cursor is inside a tag, ⁖ <…▮…>
 bracketPositions is optional. If nil, then
  `xhm-get-bracket-positions' is called to get it.
 "
-  (let (
-          pl<
-          pl>
-          pr>
-          pr<
-          )
+  (let ( pl< pl> pr> pr< )
       (when (not bracketPositions)
         (progn
           (setq bracketPositions (xhm-get-bracket-positions) )
@@ -600,15 +616,10 @@ bracketPositions is optional. If nil, then
   "Return the tag name.
 This function assumes your cursor is inside a tag, ⁖ <…▮…>
 "
-  (let (
-        p1 p2
-           )
+  (let ( p1 p2 )
     (when (not left<)
       (setq left< (search-backward "<") )
       )
-                                        ;(when (not right>)
-                                        ;      (setq right> (search-forward ">") )
-                                        ;      )
     (goto-char left<)
     (forward-char 1)
     (when (looking-at "/" )
@@ -870,6 +881,29 @@ with “*” as separator, becomes
     (setq p2 (elt bds 2) )
     (delete-region p1 p2)
     (insert (xhm-make-html-table-string myStr sep) "\n")
+  ))
+
+(defun xhm-make-html-table-undo ()
+  "reverse `xhm-make-html-table'."
+  (interactive)
+  (let ( p1 p2 myStr)
+(search-backward "<table")
+    (setq p1 (point) )
+(search-forward "</table>")
+    (setq p2 (point) )
+;(replace-pairs-region p1 p2 [
+;])
+
+(replace-regexp-pairs-region p1 p2 [
+["<table \\([^>]+?\\)>" ""]
+["</th><th>" "•"]
+["</td><td>" "•"]
+["<tr>" ""]
+["</tr>" ""]
+["</table>" ""]
+]
+ "FIXEDCASE" "LITERAL"
+)
   ))
 
 (defun xhm-wikipedia-linkify ()
@@ -1585,7 +1619,7 @@ When cursor is in HTML link file path, e.g.  <img src=\"gki/macosxlogo.png\" > a
 
 ;; define the mode
 (define-derived-mode xah-html-mode fundamental-mode
-  "xah-html"
+  "ξhtml"
   "A simple major mode for HTML5.
 HTML5 keywords are colored.
 Basically that's it.

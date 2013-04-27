@@ -81,10 +81,7 @@ WARNING: not robust."
 ) )
 
 (defvar xcm-unit-names nil "a list of CSS unite names.")
-(setq xcm-unit-names
-'(
-"px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%"
-) )
+(setq xcm-unit-names '("px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%") )
 
 (defvar xcm-value-kwds nil "a list of CSS value names")
 (setq xcm-value-kwds
