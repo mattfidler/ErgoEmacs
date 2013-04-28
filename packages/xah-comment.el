@@ -34,10 +34,14 @@
 
 ;;; HISTORY
 
+
+;; v1.1, 2013-04-27 improved xc-comment-smart. When a region is selected, ignore blank lines in the beginning when determining whether to comment or uncomment
 ;; v1.0, 2013-01-24 First working prototype. Currently only works for language that has a line syntax.
 
 ;;; TODO
-;; in xc-comment-smart, when a region is selected, ignore blank lines in the beginning when determining whether to comment or uncomment
+; • need to add dealing with block comments 
+; • need smart behavior when adding/removing line comment, whether to add space as padding
+; • need smart behavior when you have a region of commented out lines. Whether to remove just one comment char (as in one level) or all. Need to find the minimum level to remove.
 
 
 (require 'newcomment )
@@ -109,6 +113,35 @@ e.g. “#”, “//”, “;”."
     xc-line-comment-marker
     ))
 
+
+   
+(defun xc-whole-line-is-line-comment-p ()
+"Return true if entire line is a commented out as line comment
+This command may move `point'."
+    (beginning-of-line 1)
+    (looking-at (concat "[ \t]*" xc-line-comment-marker))
+    )
+
+(defun xc-is-blank-line-p ()
+  "Returns true if current line is blank line.
+Blank line is line that's just spaces/tabs.
+This command may move `point' and `match-data' etc is changed.
+"
+  (beginning-of-line 1)
+  (looking-at "[ \t]*\n")
+  )
+
+(defun xc-first-non-blank-line ()
+  "Return the position of beginning of first non-blank line after `point'.
+This command may move `point'."
+(interactive)
+  (progn
+    (while (and (xc-is-blank-line-p) (<= (point) (point-max)))
+      (forward-line 1) )
+    (point) ))
+
+
+
 (defun xc-comment-smart ()
   "Comment or uncomment the current line or text selection.
 
@@ -118,27 +151,27 @@ e.g. “#”, “//”, “;”."
   (interactive)
   (let (p1 p2)
     (xc-set-line-comment-syntax)
-    (if (region-active-p)
-        (save-excursion
-          (setq p1 (region-beginning) p2 (region-end))
-          (goto-char p1)
-          (if (xc-whole-line-is-comment-p)
-              (xc-uncomment-region p1 p2)
-            (xc-comment-region p1 p2)
-            ))
-      (progn
-        (if (xc-whole-line-is-comment-p)
-            (progn (xc-uncomment-line))
+    (save-excursion
+      (if (region-active-p)
 
-          (progn (let ()
-                   (if (equal (point) (line-end-position)) ; if cursor is at end of line, comment at the end.
+          ;; there is text selection
+          (progn
+            (setq p1 (region-beginning) p2 (region-end))
+            (goto-char p1)
+            (goto-char (xc-first-non-blank-line))
+            (if (xc-whole-line-is-line-comment-p)
+                (xc-uncomment-region p1 p2)
+              (xc-comment-region p1 p2)
+              ))
+
+        ;; there is no text selection
+        (progn
+          (if (xc-whole-line-is-line-comment-p)
+              (progn (xc-uncomment-line))
+
+            (progn (if (equal (point) (line-end-position)) ; if cursor is at end of line, comment at the end.
                        (progn (xc-comment-line "end"))
-                     (progn (xc-comment-line)) ) )) )) )))
-
-(defun xc-whole-line-is-comment-p ()
-  (save-excursion
-    (beginning-of-line 1)
-    (looking-at (concat "[ \t]*" xc-line-comment-marker))
+                     (progn (xc-comment-line)) )) )) ))
     ))
 
 (defun xc-comment-line ( &optional at-end-p)
@@ -172,17 +205,17 @@ If at-end-p is true, then add comment at end."
 (defun xc-uncomment-line ()
   "Remove line comment string (if any) in the beginning of current line."
   (interactive)
-  (when (xc-whole-line-is-comment-p)
-(if xc-use-comment-dwim-p
+  (when (xc-whole-line-is-line-comment-p)
+    (if xc-use-comment-dwim-p
+        (progn
+          (uncomment-region (line-beginning-position) (line-end-position) )
+          )
       (progn
-        (uncomment-region (line-beginning-position) (line-end-position) )
-        )
-    (progn
-  (xc-set-line-comment-syntax)
-    (beginning-of-line 1)
-    (search-forward xc-line-comment-marker)
-    (delete-char (- (length xc-line-comment-marker)) )
-       ) )
+        (xc-set-line-comment-syntax)
+        (beginning-of-line 1)
+        (search-forward xc-line-comment-marker)
+        (delete-char (- (length xc-line-comment-marker)) )
+        ) )
     ))
 
 (defun xc-comment-region (p1 p2)
@@ -219,4 +252,3 @@ If at-end-p is true, then add comment at end."
     ))
 
 (provide 'xah-comment)
-
