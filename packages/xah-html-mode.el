@@ -74,7 +74,7 @@
 ("del" . ["z"])
 ("details" . ["z"])
 ("dfn" . ["z"])
-("div" . ["z"])
+("div" . ["b"])
 ("dl" . ["l"])
 ("doctype" . ["l"])
 ("dt" . ["l"])
@@ -1305,6 +1305,7 @@ For example:
 
 This command will do most emacs syntax correctly, but not 100% correct.
 "
+(let ((case-fold-search nil))
 (replace-regexp-pairs-in-string inputStr
 [
                             ["C-\\(.\\)" "Ctrl+\\1"]
@@ -1318,18 +1319,7 @@ This command will do most emacs syntax correctly, but not 100% correct.
                             ["<home>" "Home"]
                             ["<end>" "End"]
 
-                            ["<f1>" "F1"]
-                            ["<f2>" "F2"]
-                            ["<f3>" "F3"]
-                            ["<f4>" "F4"]
-                            ["<f5>" "F5"]
-                            ["<f6>" "F6"]
-                            ["<f7>" "F7"]
-                            ["<f8>" "F8"]
-                            ["<f9>" "F9"]
-                            ["<f10>" "F10"]
-                            ["<f11>" "F11"]
-                            ["<f12>" "F12"]
+                            ["<f1>" "F1"] ["<f2>" "F2"] ["<f3>" "F3"] ["<f4>" "F4"] ["<f5>" "F5"] ["<f6>" "F6"] ["<f7>" "F7"] ["<f8>" "F8"] ["<f9>" "F9"] ["<f10>" "F10"] ["<f11>" "F11"] ["<f12>" "F12"]
 
                             ["RET" "Enter"]
                             ["<return>" "Return"]
@@ -1347,8 +1337,8 @@ This command will do most emacs syntax correctly, but not 100% correct.
                             ["<backspace>" "Backspace"]
                             ["DEL" "Delete"]
                             ]
- "FIXEDCASE")
-  )
+ "FIXEDCASE"))
+ )
 
 (defun xhm-emacs-to-windows-kbd-notation (p1 p2)
   "Change emacs key notation to Windows's notation.

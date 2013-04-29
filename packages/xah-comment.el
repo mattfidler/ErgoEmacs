@@ -151,7 +151,7 @@ This command may move `point'."
   (interactive)
   (let (p1 p2)
     (xc-set-line-comment-syntax)
-    (save-excursion
+    (progn
       (if (region-active-p)
 
           ;; there is text selection
@@ -166,7 +166,7 @@ This command may move `point'."
 
         ;; there is no text selection
         (progn
-          (if (xc-whole-line-is-line-comment-p)
+          (if (save-excursion (xc-whole-line-is-line-comment-p))
               (progn (xc-uncomment-line))
 
             (progn (if (equal (point) (line-end-position)) ; if cursor is at end of line, comment at the end.
@@ -175,8 +175,9 @@ This command may move `point'."
     ))
 
 (defun xc-comment-line ( &optional at-end-p)
-  "Add line comment string to the beginning of current line.
-If at-end-p is true, then add comment at end."
+  "Add line comment string to current line.
+If `universal-argument' is called, add to the end of line.
+"
   (interactive "P")
   (if xc-use-comment-dwim-p
       (progn
