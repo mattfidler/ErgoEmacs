@@ -116,6 +116,9 @@
     ("M-*" ergoemacs-select-text-in-quote "←quote→")
     ("M-6" ergoemacs-select-current-block "Sel. Block")
     ("M-7" ergoemacs-select-current-line "Sel. Line")
+
+    ("<C-home>" beginning-of-buffer "Top")
+    ("<C-end>" end-of-buffer "Bottom")
     ("<menu> j" ergoemacs-ctl-c "Ctl-c")
     ("<menu> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
     ("<menu> f" ergoemacs-ctl-x "Ctl-x")
