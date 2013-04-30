@@ -13,11 +13,13 @@
 
 ;;; HISTORY
 
+;; version 0.3, 2013-04-30 added xcm-hex-color-to-hsl, and other improvements
 ;; version 0.2, 2013-04-22 added xcm-compact-css-region
 ;; version 0.1, 2013-04-18 first version
 
 (require 'xfrp_find_replace_pairs)
-(require 'xeu_elisp_util)
+;(require 'xeu_elisp_util)
+(require 'color) ; part of emacs 24.3
 
 (defvar xah-css-mode-hook nil "Standard hook for `xah-css-mode'")
 
@@ -28,6 +30,57 @@
 Example output: hsl(100,24%,82%);"
   (interactive)
   (insert (format "hsl(%d,%d%%,%d%%);" (random 360) (random 100) (random 100))) )
+
+(defun xcm-hex-color-to-hsl ()
+  "Convert color spec under cursor from “#rrggbb” to CSS HSL format.
+ ⁖ #ffefd5 → hsl(37,100%,91%)
+"
+  (interactive)
+  (let* (
+         (bds (bounds-of-thing-at-point 'word))
+         (p1 (car bds))
+         (p2 (cdr bds))
+         (currentWord (buffer-substring-no-properties p1 p2)))
+
+    (if (string-match "[a-fA-F0-9]\\{6\\}" currentWord)
+        (progn 
+          (delete-region p1 p2 )
+          (if (looking-back "#") (delete-char -1))
+          (insert (xcm-hex-to-hsl-color currentWord )))
+      (progn
+        (error "The current word 「%s」 is not of the form #rrggbb." currentWord)
+        )
+      )))
+
+(defun xcm-hex-to-hsl-color (hexStr)
+  "Convert hexStr color to CSS HSL format.
+Return a string.
+ ⁖ #ffefd5 → hsl(37,100%,91%)
+"
+  (let* (
+         (colorVec (xcm-convert-color-hex-to-vec hexStr))
+         (xR (elt colorVec 0))
+         (xG (elt colorVec 1))
+         (xB (elt colorVec 2))
+         (hsl (color-rgb-to-hsl xR xG xB) )
+         (xH (elt hsl 0))
+         (xS (elt hsl 1))
+         (xL (elt hsl 2))
+         )
+    (format "hsl(%d,%d%%,%d%%)" (* xH 360) (* xS 100) (* xL 100) )
+    ))
+
+;(xcm-convert-color-hex-to-vec "aabbcc")
+
+(defun xcm-convert-color-hex-to-vec (hexcolor)
+  "Convert HEXCOLOR from “\"rrggbb\"” string to a elisp vector [r g b], where the values are from 0 to 1.
+Example: \"00ffcc\" ⇒ [0.0 1.0 0.8]
+
+Note: The input string must not start with “#”. If so, the return value is nil."
+(when (= 6 (length hexcolor))
+  (vector (/ (float (string-to-number (substring hexcolor 0 2) 16)) 255.0)
+          (/ (float (string-to-number (substring hexcolor 2 4) 16)) 255.0)
+          (/ (float (string-to-number (substring hexcolor 4) 16)) 255.0))))
 
 
 ;;; functions
@@ -127,7 +180,7 @@ WARNING: not robust."
 (defvar xcm-keymap nil "Keybinding for `xah-css-mode'")
 (progn
   (setq xcm-keymap (make-sparse-keymap))
-  (define-key xcm-keymap [remap comment-dwim] 'xcm-comment-dwim)
+;  (define-key xcm-keymap [remap comment-dwim] 'xcm-comment-dwim)
 )
 
 
@@ -152,6 +205,12 @@ CSS keywords are colored. Basically that's it.
   (setq font-lock-defaults '((xcm-font-lock-keywords)))
 
   (set-syntax-table xcm-syntax-table)
+
+  (set (make-local-variable 'comment-start) "/*")
+  (set (make-local-variable 'comment-start-skip) "/\\*+[ \t]*")
+  (set (make-local-variable 'comment-end) "*/")
+  (set (make-local-variable 'comment-end-skip) "[ \t]*\\*+/")
+
   (use-local-map xcm-keymap)
   (run-mode-hooks 'xah-css-mode-hook)
 )

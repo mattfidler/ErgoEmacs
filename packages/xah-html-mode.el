@@ -13,6 +13,7 @@
 
 ;;; HISTORY
 
+; 2013-04-29 added xhm-change-current-tag
 ;; version 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
 ;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
 ;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
@@ -466,7 +467,11 @@ This command does the reverse of `xhm-htmlize-precode'."
           ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
           ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
-          ("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
+
+          ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
+;          ("<b>\\([^<]+?\\)</b>" . (1 "bold"))
+          ("<mark\\( *[^>]+?\\)*>\\([^<]+?\\)</mark>" . (2 "hi-yellow"))
+          ("<b\\( *[^>]+?\\)*>\\([^<]+?\\)</b>" . (2 "bold"))
           ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
           ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
           (,htmlElementNamesRegex . font-lock-function-name-face)
@@ -494,7 +499,7 @@ This command does the reverse of `xhm-htmlize-precode'."
 (defvar xhm-keymap nil "Keybinding for `xah-html-mode'")
 (progn
   (setq xhm-keymap (make-sparse-keymap))
-  (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
+;  (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
   ;; (define-key xhm-keymap (kbd "C-c /") 'sgml-close-tag)
   (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
   ;; (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
@@ -704,6 +709,48 @@ Also delete the matching beginning/ending tag."
   (interactive)
   ;; (sgml-skip-tag-backward 1)
   )
+
+(defun xhm-change-current-tag ()
+  "change the tag name of current tag, and class name if there's one. WARNING:
+this is a quick 1 min hackjob, works only when there's no nesting."
+  (interactive)
+  (let (p1 p2 oldTagName newTagName oldClassName newClassName)
+    (search-backward "<" )
+    (forward-char 1)
+    (setq p1 (point) )
+    (setq oldTagName (xhm-get-tag-name) )
+    (setq newTagName (ido-completing-read "HTML tag:" xhm-html5-tag-list "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span") )
+    (goto-char p1)
+    (delete-char (length oldTagName))
+    (insert newTagName)
+    (search-forward (concat "</" oldTagName))
+    (delete-char (- (length oldTagName)))
+    (insert newTagName)
+
+    (progn 
+      (goto-char p1)
+      (search-forward ">")
+      (setq p2  (point) )
+      (goto-char p1)
+      (when
+(search-forward-regexp "class[ \n]*=[ \n]*\"" p2 "NOERROR")
+;(string-match "class[ \n]*=[ \n]*\"" (buffer-substring-no-properties p1 p2))
+        (progn
+               (setq p1 (point) )
+               (search-forward "\"")
+               (setq p2 (- (point) 1) )
+               (setq oldClassName (buffer-substring-no-properties p1 p2) )
+               (setq newClassName (read-string "new class name:") )
+               (if (string-equal newClassName "")
+                   (progn ; todo need to clean this up. don't use bunch of user functions
+                     (delete-region p1 p2 )
+                          (backward-kill-word 1)
+                          (delete-char -1)
+                          )
+                 (progn (delete-region p1 p2 )
+                      (goto-char p1)
+                      (insert newClassName) ) ) ) ) ) ))
+
 
 (defun xhm-comment-dwim (arg)
 "Comment or uncomment current line or region in a smart way.
@@ -1516,14 +1563,18 @@ Case shouldn't matter, except when it's emacs's key notation.
   "Add HTML open/close tags around region p1 p2.
 This function does not `save-excursion'.
 "
-  (let (
+  (let* (
         (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
+        (insStrLeft (format "<%s%s>" tagName classStr) )
+        (insStrRight (format "</%s>" tagName ) )
         )
     (progn
-      (goto-char p2)
-      (insert (format "</%s>" tagName ))
+;      (setq myText (buffer-substring-no-properties p1 p2)
       (goto-char p1)
-      (insert (format "<%s%s>" tagName classStr) ) ) ) )
+      (insert insStrLeft )
+      (goto-char (+ p2 (length insStrLeft)))
+      (insert insStrRight )
+ ) ) )
 
 (defun xhm-wrap-html-tag (tagName &optional className)
   "Insert/wrap a HTML tags to text selection or current word/line/text-block.
@@ -1554,10 +1605,12 @@ If `universal-argument' is called first, then also prompt for a “class” attr
       (setq p1 (elt bds 1) )
       (setq p2 (elt bds 2) )
       (xhm-add-open/close-tag tagName className p1 p2)
-      (if ; put cursor between when input text is empty
+      
+      (when ; put cursor between when input text is empty
           (equal p1 p2)
           (progn (search-backward "</" ) )
-        (progn (search-forward ">" ) ) ) ) ) )
+         )
+ ) ) )
 
 (defun xhm-pre-source-code (&optional langCode)
   "Insert/wrap a <pre class=\"‹langCode›\"> tags to text selection or current text block.
@@ -1622,6 +1675,10 @@ beta stage. Mostly just used by me. There are about 20 functions that act on HTM
 
   (set-syntax-table xhm-syntax-table)
   (use-local-map xhm-keymap)
+
+
+  (set (make-local-variable 'comment-start) "<!-- ")
+  (set (make-local-variable 'comment-end) " -->")
 
 ;;  (setq mode-name "xah-html")
   (run-mode-hooks 'xah-html-mode-hook)
