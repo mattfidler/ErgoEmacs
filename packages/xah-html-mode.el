@@ -13,6 +13,7 @@
 
 ;;; HISTORY
 
+; 2013-04-29 added xhm-change-current-tag
 ;; version 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
 ;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
 ;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
@@ -44,6 +45,7 @@
 )
 (setq xhm-html5-tag-names
 '(
+
 ("a" . ["l"])
 ("abbr" . ["w"])
 ("address" . ["w"])
@@ -73,8 +75,9 @@
 ("del" . ["z"])
 ("details" . ["z"])
 ("dfn" . ["z"])
-("div" . ["z"])
+("div" . ["b"])
 ("dl" . ["l"])
+("doctype" . ["l"])
 ("dt" . ["l"])
 ("em" . ["w"])
 ("embed" . ["l"])
@@ -153,7 +156,7 @@
 ("var" . ["w"])
 ("video" . ["z"])
 ("wbr" . ["z"])
-("doctype" . ["l"])
+
 )
  )
 
@@ -164,6 +167,50 @@
   "HTML5 attribute names."
 )
 (setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ))
+
+(defcustom xhm-html5-self-close-tags nil
+  "a list of HTML5 self-closing tag name. "
+)
+(setq xhm-html5-self-close-tags
+'(
+"area"
+"base"
+"br"
+"col"
+"command"
+"embed"
+"hr"
+"img"
+"input"
+"keygen"
+"link"
+"meta"
+"param"
+"source"
+"track"
+"wbr"
+)
+ )
+
+(defvar xhm-css-color-names nil "a list of CSS color names.")
+(setq xhm-css-color-names
+'("aliceblue" "antiquewhite" "aqua" "aquamarine" "azure" "beige" "bisque" "black" "blanchedalmond" "blue" "blueviolet" "brown" "burlywood" "cadetblue" "chartreuse" "chocolate" "coral" "cornflowerblue" "cornsilk" "crimson" "cyan" "darkblue" "darkcyan" "darkgoldenrod" "darkgray" "darkgreen" "darkgrey" "darkkhaki" "darkmagenta" "darkolivegreen" "darkorange" "darkorchid" "darkred" "darksalmon" "darkseagreen" "darkslateblue" "darkslategray" "darkslategrey" "darkturquoise" "darkviolet" "deeppink" "deepskyblue" "dimgray" "dimgrey" "dodgerblue" "firebrick" "floralwhite" "forestgreen" "fuchsia" "gainsboro" "ghostwhite" "gold" "goldenrod" "gray" "green" "greenyellow" "grey" "honeydew" "hotpink" "indianred" "indigo" "ivory" "khaki" "lavender" "lavenderblush" "lawngreen" "lemonchiffon" "lightblue" "lightcoral" "lightcyan" "lightgoldenrodyellow" "lightgray" "lightgreen" "lightgrey" "lightpink" "lightsalmon" "lightseagreen" "lightskyblue" "lightslategray" "lightslategrey" "lightsteelblue" "lightyellow" "lime" "limegreen" "linen" "magenta" "maroon" "mediumaquamarine" "mediumblue" "mediumorchid" "mediumpurple" "mediumseagreen" "mediumslateblue" "mediumspringgreen" "mediumturquoise" "mediumvioletred" "midnightblue" "mintcream" "mistyrose" "moccasin" "navajowhite" "navy" "oldlace" "olive" "olivedrab" "orange" "orangered" "orchid" "palegoldenrod" "palegreen" "paleturquoise" "palevioletred" "papayawhip" "peachpuff" "peru" "pink" "plum" "powderblue" "purple" "red" "rosybrown" "royalblue" "saddlebrown" "salmon" "sandybrown" "seagreen" "seashell" "sienna" "silver" "skyblue" "slateblue" "slategray" "slategrey" "snow" "springgreen" "steelblue" "tan" "teal" "thistle" "tomato" "turquoise" "violet" "wheat" "white" "whitesmoke" "yellow" "yellowgreen")
+ )
+
+(defvar xhm-css-property-names nil "a list of CSS property names.")
+(setq xhm-css-property-names
+'(
+"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-top" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font-family" "font-size" "font-style" "font-weight" "height" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
+) )
+
+(defvar xhm-css-unit-names nil "a list of CSS unite names.")
+(setq xhm-css-unit-names '("px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%") )
+
+(defvar xhm-css-value-kwds nil "a list of CSS value names")
+(setq xhm-css-value-kwds
+'(
+"!important" "absolute" "alpha" "auto" "avoid" "block" "bold" "both" "bottom" "break-word" "center" "collapse" "dashed" "dotted" "embed" "fixed" "help" "hidden" "hsl" "hsla" "inherit" "inline" "inline-block" "italic" "large" "left" "ltr" "middle" "monospace" "no-repeat" "none" "normal" "nowrap" "pointer" "relative" "rgb" "rgba" "right" "rtl" "sans-serif" "serif" "small" "smaller" "solid" "square" "static" "thin" "top" "transparent" "underline" "url" "x-large" "xx-large"
+) )
 
 
 
@@ -404,26 +451,47 @@ This command does the reverse of `xhm-htmlize-precode'."
   :group 'languages)
 
 (setq xhm-font-lock-keywords
-(let (
-(htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
-(AttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
- )
-`(
+      (let (
+            (htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
+            (htmlAttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
+            (cssPropertieNames (regexp-opt xhm-css-property-names 'words) )
+            (cssValueNames (regexp-opt xhm-css-value-kwds 'words) )
+            (cssColorNames (regexp-opt xhm-css-color-names 'words) )
+            (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
+            )
+        `(
+          ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
+          ("<!--\\|-->" . font-lock-comment-delimiter-face)
+          ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
+          ("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
+          ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
+          ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
-;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
-("<!--\\|-->" . font-lock-comment-delimiter-face)
-("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
-("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
-("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
-("<b>\\([- A-Za-z]+?\\)</b>" . (1 "bold"))
-("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
-("<title>\\([^<]+?\\)</title>" . (1 "bold"))
-(,htmlElementNamesRegex . font-lock-function-name-face)
-(,AttributeNamesRegexp . font-lock-keyword-face)
+          ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
+;          ("<b>\\([^<]+?\\)</b>" . (1 "bold"))
+          ("<mark\\( *[^>]+?\\)*>\\([^<]+?\\)</mark>" . (2 "hi-yellow"))
+          ("<b\\( *[^>]+?\\)*>\\([^<]+?\\)</b>" . (2 "bold"))
+          ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
+          ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
+          (,htmlElementNamesRegex . font-lock-function-name-face)
+          (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
+          (,cssPropertieNames . font-lock-type-face)
+          (,cssValueNames . font-lock-keyword-face)
+          (,cssColorNames . font-lock-preprocessor-face)
+          (,cssUnitNames . font-lock-reference-face)
+          ) ) )
 
-) ) )
+;;font-lock-comment-delimiter-face
+;;font-lock-comment-face
+;;font-lock-doc-face
+;;font-lock-negation-char-face
+;;font-lock-preprocessor-face
+;;font-lock-reference-face
+;;font-lock-string-face
+;;font-lock-type-face
+;;font-lock-variable-name-face
+;;font-lock-warning-face
 
 
 ;; keybinding
@@ -431,7 +499,7 @@ This command does the reverse of `xhm-htmlize-precode'."
 (defvar xhm-keymap nil "Keybinding for `xah-html-mode'")
 (progn
   (setq xhm-keymap (make-sparse-keymap))
-  (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
+;  (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
   ;; (define-key xhm-keymap (kbd "C-c /") 'sgml-close-tag)
   (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
   ;; (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
@@ -497,6 +565,11 @@ This command does the reverse of `xhm-htmlize-precode'."
 
 
 
+(defun xhm-tag-selfclosing-p (tagName)
+  "Return true if the tag is a self-closing tag, ⁖ br."
+  (interactive)
+  (member tagName  xhm-html5-self-close-tags) )
+
 (defun xhm-cursor-in-tag-markup-p (&optional bracketPositions)
   "Return true if cursor is inside a tag markup.
 For example,
@@ -506,12 +579,7 @@ For example,
  `xhm-get-bracket-positions' is called to get it.
 "
   (interactive)
-  (let (
-          pl<
-          pl>
-          pr>
-          pr<
-          )
+  (let ( pl< pl> pr> pr< )
       (when (not bracketPositions)
         (progn
           (setq bracketPositions (xhm-get-bracket-positions) )
@@ -534,12 +602,7 @@ This function assumes your cursor is inside a tag, ⁖ <…▮…>
 bracketPositions is optional. If nil, then
  `xhm-get-bracket-positions' is called to get it.
 "
-  (let (
-          pl<
-          pl>
-          pr>
-          pr<
-          )
+  (let ( pl< pl> pr> pr< )
       (when (not bracketPositions)
         (progn
           (setq bracketPositions (xhm-get-bracket-positions) )
@@ -558,15 +621,10 @@ bracketPositions is optional. If nil, then
   "Return the tag name.
 This function assumes your cursor is inside a tag, ⁖ <…▮…>
 "
-  (let (
-        p1 p2
-           )
+  (let ( p1 p2 )
     (when (not left<)
       (setq left< (search-backward "<") )
       )
-                                        ;(when (not right>)
-                                        ;      (setq right> (search-forward ">") )
-                                        ;      )
     (goto-char left<)
     (forward-char 1)
     (when (looking-at "/" )
@@ -652,6 +710,48 @@ Also delete the matching beginning/ending tag."
   ;; (sgml-skip-tag-backward 1)
   )
 
+(defun xhm-change-current-tag ()
+  "change the tag name of current tag, and class name if there's one. WARNING:
+this is a quick 1 min hackjob, works only when there's no nesting."
+  (interactive)
+  (let (p1 p2 oldTagName newTagName oldClassName newClassName)
+    (search-backward "<" )
+    (forward-char 1)
+    (setq p1 (point) )
+    (setq oldTagName (xhm-get-tag-name) )
+    (setq newTagName (ido-completing-read "HTML tag:" xhm-html5-tag-list "PREDICATE" "REQUIRE-MATCH" nil xhm-html-tag-input-history "span") )
+    (goto-char p1)
+    (delete-char (length oldTagName))
+    (insert newTagName)
+    (search-forward (concat "</" oldTagName))
+    (delete-char (- (length oldTagName)))
+    (insert newTagName)
+
+    (progn 
+      (goto-char p1)
+      (search-forward ">")
+      (setq p2  (point) )
+      (goto-char p1)
+      (when
+(search-forward-regexp "class[ \n]*=[ \n]*\"" p2 "NOERROR")
+;(string-match "class[ \n]*=[ \n]*\"" (buffer-substring-no-properties p1 p2))
+        (progn
+               (setq p1 (point) )
+               (search-forward "\"")
+               (setq p2 (- (point) 1) )
+               (setq oldClassName (buffer-substring-no-properties p1 p2) )
+               (setq newClassName (read-string "new class name:") )
+               (if (string-equal newClassName "")
+                   (progn ; todo need to clean this up. don't use bunch of user functions
+                     (delete-region p1 p2 )
+                          (backward-kill-word 1)
+                          (delete-char -1)
+                          )
+                 (progn (delete-region p1 p2 )
+                      (goto-char p1)
+                      (insert newClassName) ) ) ) ) ) ))
+
+
 (defun xhm-comment-dwim (arg)
 "Comment or uncomment current line or region in a smart way.
 For detail, see `comment-dwim'."
@@ -713,257 +813,11 @@ The following HTML Entities are not replaced:
           (let ((case-fold-search nil))
             (replace-pairs-in-string inputStr
  [
-  ["&nbsp;" " "]
-  ["&ensp;" " "]
-  ["&emsp;" " "]
-  ["&thinsp;" " "]
+  ["&nbsp;" " "] ["&ensp;" " "] ["&emsp;" " "] ["&thinsp;" " "]
 
-  ["&rlm;" "‏"]
-  ["&lrm;" "‎"]
-  ["&zwj;" "‍"]
-  ["&zwnj;" "‌"]
+  ["&rlm;" "‏"] ["&lrm;" "‎"] ["&zwj;" "‍"] ["&zwnj;" "‌"]
 
-  ["&iexcl;" "¡"]
-  ["&cent;" "¢"]
-  ["&pound;" "£"]
-  ["&curren;" "¤"]
-  ["&yen;" "¥"]
-  ["&brvbar;" "¦"]
-  ["&sect;" "§"]
-  ["&uml;" "¨"]
-  ["&copy;" "©"]
-  ["&ordf;" "ª"]
-  ["&laquo;" "«"]
-  ["&not;" "¬"]
-  ["&shy;" "­"]
-  ["&reg;" "®"]
-  ["&macr;" "¯"]
-  ["&deg;" "°"]
-  ["&plusmn;" "±"]
-  ["&sup2;" "²"]
-  ["&sup3;" "³"]
-  ["&acute;" "´"]
-  ["&micro;" "µ"]
-  ["&para;" "¶"]
-  ["&middot;" "·"]
-  ["&cedil;" "¸"]
-  ["&sup1;" "¹"]
-  ["&ordm;" "º"]
-  ["&raquo;" "»"]
-  ["&frac14;" "¼"]
-  ["&frac12;" "½"]
-  ["&frac34;" "¾"]
-  ["&iquest;" "¿"]
-  ["&Agrave;" "À"]
-  ["&Aacute;" "Á"]
-  ["&Acirc;" "Â"]
-  ["&Atilde;" "Ã"]
-  ["&Auml;" "Ä"]
-  ["&Aring;" "Å"]
-  ["&AElig;" "Æ"]
-  ["&Ccedil;" "Ç"]
-  ["&Egrave;" "È"]
-  ["&Eacute;" "É"]
-  ["&Ecirc;" "Ê"]
-  ["&Euml;" "Ë"]
-  ["&Igrave;" "Ì"]
-  ["&Iacute;" "Í"]
-  ["&Icirc;" "Î"]
-  ["&Iuml;" "Ï"]
-  ["&ETH;" "Ð"]
-  ["&Ntilde;" "Ñ"]
-  ["&Ograve;" "Ò"]
-  ["&Oacute;" "Ó"]
-  ["&Ocirc;" "Ô"]
-  ["&Otilde;" "Õ"]
-  ["&Ouml;" "Ö"]
-  ["&times;" "×"]
-  ["&Oslash;" "Ø"]
-  ["&Ugrave;" "Ù"]
-  ["&Uacute;" "Ú"]
-  ["&Ucirc;" "Û"]
-  ["&Uuml;" "Ü"]
-  ["&Yacute;" "Ý"]
-  ["&THORN;" "Þ"]
-  ["&szlig;" "ß"]
-  ["&agrave;" "à"]
-  ["&aacute;" "á"]
-  ["&acirc;" "â"]
-  ["&atilde;" "ã"]
-  ["&auml;" "ä"]
-  ["&aring;" "å"]
-  ["&aelig;" "æ"]
-  ["&ccedil;" "ç"]
-  ["&egrave;" "è"]
-  ["&eacute;" "é"]
-  ["&ecirc;" "ê"]
-  ["&euml;" "ë"]
-  ["&igrave;" "ì"]
-  ["&iacute;" "í"]
-  ["&icirc;" "î"]
-  ["&iuml;" "ï"]
-  ["&eth;" "ð"]
-  ["&ntilde;" "ñ"]
-  ["&ograve;" "ò"]
-  ["&oacute;" "ó"]
-  ["&ocirc;" "ô"]
-  ["&otilde;" "õ"]
-  ["&ouml;" "ö"]
-  ["&divide;" "÷"]
-  ["&oslash;" "ø"]
-  ["&ugrave;" "ù"]
-  ["&uacute;" "ú"]
-  ["&ucirc;" "û"]
-  ["&uuml;" "ü"]
-  ["&yacute;" "ý"]
-  ["&thorn;" "þ"]
-  ["&yuml;" "ÿ"]
-  ["&fnof;" "ƒ"]
-  ["&Alpha;" "Α"]
-  ["&Beta;" "Β"]
-  ["&Gamma;" "Γ"]
-  ["&Delta;" "Δ"]
-  ["&Epsilon;" "Ε"]
-  ["&Zeta;" "Ζ"]
-  ["&Eta;" "Η"]
-  ["&Theta;" "Θ"]
-  ["&Iota;" "Ι"]
-  ["&Kappa;" "Κ"]
-  ["&Lambda;" "Λ"]
-  ["&Mu;" "Μ"]
-  ["&Nu;" "Ν"]
-  ["&Xi;" "Ξ"]
-  ["&Omicron;" "Ο"]
-  ["&Pi;" "Π"]
-  ["&Rho;" "Ρ"]
-  ["&Sigma;" "Σ"]
-  ["&Tau;" "Τ"]
-  ["&Upsilon;" "Υ"]
-  ["&Phi;" "Φ"]
-  ["&Chi;" "Χ"]
-  ["&Psi;" "Ψ"]
-  ["&Omega;" "Ω"]
-  ["&alpha;" "α"]
-  ["&beta;" "β"]
-  ["&gamma;" "γ"]
-  ["&delta;" "δ"]
-  ["&epsilon;" "ε"]
-  ["&zeta;" "ζ"]
-  ["&eta;" "η"]
-  ["&theta;" "θ"]
-  ["&iota;" "ι"]
-  ["&kappa;" "κ"]
-  ["&lambda;" "λ"]
-  ["&mu;" "μ"]
-  ["&nu;" "ν"]
-  ["&xi;" "ξ"]
-  ["&omicron;" "ο"]
-  ["&pi;" "π"]
-  ["&rho;" "ρ"]
-  ["&sigmaf;" "ς"]
-  ["&sigma;" "σ"]
-  ["&tau;" "τ"]
-  ["&upsilon;" "υ"]
-  ["&phi;" "φ"]
-  ["&chi;" "χ"]
-  ["&psi;" "ψ"]
-  ["&omega;" "ω"]
-  ["&thetasym;" "ϑ"]
-  ["&upsih;" "ϒ"]
-  ["&piv;" "ϖ"]
-  ["&bull;" "•"]
-  ["&hellip;" "…"]
-  ["&prime;" "′"]
-  ["&Prime;" "″"]
-  ["&oline;" "‾"]
-  ["&frasl;" "⁄"]
-  ["&weierp;" "℘"]
-  ["&image;" "ℑ"]
-  ["&real;" "ℜ"]
-  ["&trade;" "™"]
-  ["&alefsym;" "ℵ"]
-  ["&larr;" "←"]
-  ["&uarr;" "↑"]
-  ["&rarr;" "→"]
-  ["&darr;" "↓"]
-  ["&harr;" "↔"]
-  ["&crarr;" "↵"]
-  ["&lArr;" "⇐"]
-  ["&uArr;" "⇑"]
-  ["&rArr;" "⇒"]
-  ["&dArr;" "⇓"]
-  ["&hArr;" "⇔"]
-  ["&forall;" "∀"]
-  ["&part;" "∂"]
-  ["&exist;" "∃"]
-  ["&empty;" "∅"]
-  ["&nabla;" "∇"]
-  ["&isin;" "∈"]
-  ["&notin;" "∉"]
-  ["&ni;" "∋"]
-  ["&prod;" "∏"]
-  ["&sum;" "∑"]
-  ["&minus;" "−"]
-  ["&lowast;" "∗"]
-  ["&radic;" "√"]
-  ["&prop;" "∝"]
-  ["&infin;" "∞"]
-  ["&ang;" "∠"]
-  ["&and;" "∧"]
-  ["&or;" "∨"]
-  ["&cap;" "∩"]
-  ["&cup;" "∪"]
-  ["&int;" "∫"]
-  ["&there4;" "∴"]
-  ["&sim;" "∼"]
-  ["&cong;" "≅"]
-  ["&asymp;" "≈"]
-  ["&ne;" "≠"]
-  ["&equiv;" "≡"]
-  ["&le;" "≤"]
-  ["&ge;" "≥"]
-  ["&sub;" "⊂"]
-  ["&sup;" "⊃"]
-  ["&nsub;" "⊄"]
-  ["&sube;" "⊆"]
-  ["&supe;" "⊇"]
-  ["&oplus;" "⊕"]
-  ["&otimes;" "⊗"]
-  ["&perp;" "⊥"]
-  ["&sdot;" "⋅"]
-  ["&lceil;" "⌈"]
-  ["&rceil;" "⌉"]
-  ["&lfloor;" "⌊"]
-  ["&rfloor;" "⌋"]
-  ["&lang;" "〈"]
-  ["&rang;" "〉"]
-  ["&loz;" "◊"]
-  ["&spades;" "♠"]
-  ["&clubs;" "♣"]
-  ["&hearts;" "♥"]
-  ["&diams;" "♦"]
-  ["&quot;" "\""]
-  ["&OElig;" "Œ"]
-  ["&oelig;" "œ"]
-  ["&Scaron;" "Š"]
-  ["&scaron;" "š"]
-  ["&Yuml;" "Ÿ"]
-  ["&circ;" "ˆ"]
-  ["&tilde;" "˜"]
-  ["&ndash;" "–"]
-  ["&mdash;" "—"]
-  ["&lsquo;" "‘"]
-  ["&rsquo;" "’"]
-  ["&sbquo;" "‚"]
-  ["&ldquo;" "“"]
-  ["&rdquo;" "”"]
-  ["&bdquo;" "„"]
-  ["&dagger;" "†"]
-  ["&Dagger;" "‡"]
-  ["&permil;" "‰"]
-  ["&lsaquo;" "‹"]
-  ["&rsaquo;" "›"]
-  ["&euro;" "€"]
+  ["&iexcl;" "¡"] ["&cent;" "¢"] ["&pound;" "£"] ["&curren;" "¤"] ["&yen;" "¥"] ["&brvbar;" "¦"] ["&sect;" "§"] ["&uml;" "¨"] ["&copy;" "©"] ["&ordf;" "ª"] ["&laquo;" "«"] ["&not;" "¬"] ["&shy;" "­"] ["&reg;" "®"] ["&macr;" "¯"] ["&deg;" "°"] ["&plusmn;" "±"] ["&sup2;" "²"] ["&sup3;" "³"] ["&acute;" "´"] ["&micro;" "µ"] ["&para;" "¶"] ["&middot;" "·"] ["&cedil;" "¸"] ["&sup1;" "¹"] ["&ordm;" "º"] ["&raquo;" "»"] ["&frac14;" "¼"] ["&frac12;" "½"] ["&frac34;" "¾"] ["&iquest;" "¿"] ["&Agrave;" "À"] ["&Aacute;" "Á"] ["&Acirc;" "Â"] ["&Atilde;" "Ã"] ["&Auml;" "Ä"] ["&Aring;" "Å"] ["&AElig;" "Æ"] ["&Ccedil;" "Ç"] ["&Egrave;" "È"] ["&Eacute;" "É"] ["&Ecirc;" "Ê"] ["&Euml;" "Ë"] ["&Igrave;" "Ì"] ["&Iacute;" "Í"] ["&Icirc;" "Î"] ["&Iuml;" "Ï"] ["&ETH;" "Ð"] ["&Ntilde;" "Ñ"] ["&Ograve;" "Ò"] ["&Oacute;" "Ó"] ["&Ocirc;" "Ô"] ["&Otilde;" "Õ"] ["&Ouml;" "Ö"] ["&times;" "×"] ["&Oslash;" "Ø"] ["&Ugrave;" "Ù"] ["&Uacute;" "Ú"] ["&Ucirc;" "Û"] ["&Uuml;" "Ü"] ["&Yacute;" "Ý"] ["&THORN;" "Þ"] ["&szlig;" "ß"] ["&agrave;" "à"] ["&aacute;" "á"] ["&acirc;" "â"] ["&atilde;" "ã"] ["&auml;" "ä"] ["&aring;" "å"] ["&aelig;" "æ"] ["&ccedil;" "ç"] ["&egrave;" "è"] ["&eacute;" "é"] ["&ecirc;" "ê"] ["&euml;" "ë"] ["&igrave;" "ì"] ["&iacute;" "í"] ["&icirc;" "î"] ["&iuml;" "ï"] ["&eth;" "ð"] ["&ntilde;" "ñ"] ["&ograve;" "ò"] ["&oacute;" "ó"] ["&ocirc;" "ô"] ["&otilde;" "õ"] ["&ouml;" "ö"] ["&divide;" "÷"] ["&oslash;" "ø"] ["&ugrave;" "ù"] ["&uacute;" "ú"] ["&ucirc;" "û"] ["&uuml;" "ü"] ["&yacute;" "ý"] ["&thorn;" "þ"] ["&yuml;" "ÿ"] ["&fnof;" "ƒ"] ["&Alpha;" "Α"] ["&Beta;" "Β"] ["&Gamma;" "Γ"] ["&Delta;" "Δ"] ["&Epsilon;" "Ε"] ["&Zeta;" "Ζ"] ["&Eta;" "Η"] ["&Theta;" "Θ"] ["&Iota;" "Ι"] ["&Kappa;" "Κ"] ["&Lambda;" "Λ"] ["&Mu;" "Μ"] ["&Nu;" "Ν"] ["&Xi;" "Ξ"] ["&Omicron;" "Ο"] ["&Pi;" "Π"] ["&Rho;" "Ρ"] ["&Sigma;" "Σ"] ["&Tau;" "Τ"] ["&Upsilon;" "Υ"] ["&Phi;" "Φ"] ["&Chi;" "Χ"] ["&Psi;" "Ψ"] ["&Omega;" "Ω"] ["&alpha;" "α"] ["&beta;" "β"] ["&gamma;" "γ"] ["&delta;" "δ"] ["&epsilon;" "ε"] ["&zeta;" "ζ"] ["&eta;" "η"] ["&theta;" "θ"] ["&iota;" "ι"] ["&kappa;" "κ"] ["&lambda;" "λ"] ["&mu;" "μ"] ["&nu;" "ν"] ["&xi;" "ξ"] ["&omicron;" "ο"] ["&pi;" "π"] ["&rho;" "ρ"] ["&sigmaf;" "ς"] ["&sigma;" "σ"] ["&tau;" "τ"] ["&upsilon;" "υ"] ["&phi;" "φ"] ["&chi;" "χ"] ["&psi;" "ψ"] ["&omega;" "ω"] ["&thetasym;" "ϑ"] ["&upsih;" "ϒ"] ["&piv;" "ϖ"] ["&bull;" "•"] ["&hellip;" "…"] ["&prime;" "′"] ["&Prime;" "″"] ["&oline;" "‾"] ["&frasl;" "⁄"] ["&weierp;" "℘"] ["&image;" "ℑ"] ["&real;" "ℜ"] ["&trade;" "™"] ["&alefsym;" "ℵ"] ["&larr;" "←"] ["&uarr;" "↑"] ["&rarr;" "→"] ["&darr;" "↓"] ["&harr;" "↔"] ["&crarr;" "↵"] ["&lArr;" "⇐"] ["&uArr;" "⇑"] ["&rArr;" "⇒"] ["&dArr;" "⇓"] ["&hArr;" "⇔"] ["&forall;" "∀"] ["&part;" "∂"] ["&exist;" "∃"] ["&empty;" "∅"] ["&nabla;" "∇"] ["&isin;" "∈"] ["&notin;" "∉"] ["&ni;" "∋"] ["&prod;" "∏"] ["&sum;" "∑"] ["&minus;" "−"] ["&lowast;" "∗"] ["&radic;" "√"] ["&prop;" "∝"] ["&infin;" "∞"] ["&ang;" "∠"] ["&and;" "∧"] ["&or;" "∨"] ["&cap;" "∩"] ["&cup;" "∪"] ["&int;" "∫"] ["&there4;" "∴"] ["&sim;" "∼"] ["&cong;" "≅"] ["&asymp;" "≈"] ["&ne;" "≠"] ["&equiv;" "≡"] ["&le;" "≤"] ["&ge;" "≥"] ["&sub;" "⊂"] ["&sup;" "⊃"] ["&nsub;" "⊄"] ["&sube;" "⊆"] ["&supe;" "⊇"] ["&oplus;" "⊕"] ["&otimes;" "⊗"] ["&perp;" "⊥"] ["&sdot;" "⋅"] ["&lceil;" "⌈"] ["&rceil;" "⌉"] ["&lfloor;" "⌊"] ["&rfloor;" "⌋"] ["&lang;" "〈"] ["&rang;" "〉"] ["&loz;" "◊"] ["&spades;" "♠"] ["&clubs;" "♣"] ["&hearts;" "♥"] ["&diams;" "♦"] ["&quot;" "\""] ["&OElig;" "Œ"] ["&oelig;" "œ"] ["&Scaron;" "Š"] ["&scaron;" "š"] ["&Yuml;" "Ÿ"] ["&circ;" "ˆ"] ["&tilde;" "˜"] ["&ndash;" "–"] ["&mdash;" "—"] ["&lsquo;" "‘"] ["&rsquo;" "’"] ["&sbquo;" "‚"] ["&ldquo;" "“"] ["&rdquo;" "”"] ["&bdquo;" "„"] ["&dagger;" "†"] ["&Dagger;" "‡"] ["&permil;" "‰"] ["&lsaquo;" "‹"] ["&rsaquo;" "›"] ["&euro;" "€"]
   ]
  )
             )  )
@@ -1074,6 +928,29 @@ with “*” as separator, becomes
     (setq p2 (elt bds 2) )
     (delete-region p1 p2)
     (insert (xhm-make-html-table-string myStr sep) "\n")
+  ))
+
+(defun xhm-make-html-table-undo ()
+  "reverse `xhm-make-html-table'."
+  (interactive)
+  (let ( p1 p2 myStr)
+(search-backward "<table")
+    (setq p1 (point) )
+(search-forward "</table>")
+    (setq p2 (point) )
+;(replace-pairs-region p1 p2 [
+;])
+
+(replace-regexp-pairs-region p1 p2 [
+["<table \\([^>]+?\\)>" ""]
+["</th><th>" "•"]
+["</td><td>" "•"]
+["<tr>" ""]
+["</tr>" ""]
+["</table>" ""]
+]
+ "FIXEDCASE" "LITERAL"
+)
   ))
 
 (defun xhm-wikipedia-linkify ()
@@ -1475,6 +1352,7 @@ For example:
 
 This command will do most emacs syntax correctly, but not 100% correct.
 "
+(let ((case-fold-search nil))
 (replace-regexp-pairs-in-string inputStr
 [
                             ["C-\\(.\\)" "Ctrl+\\1"]
@@ -1488,18 +1366,7 @@ This command will do most emacs syntax correctly, but not 100% correct.
                             ["<home>" "Home"]
                             ["<end>" "End"]
 
-                            ["<f1>" "F1"]
-                            ["<f2>" "F2"]
-                            ["<f3>" "F3"]
-                            ["<f4>" "F4"]
-                            ["<f5>" "F5"]
-                            ["<f6>" "F6"]
-                            ["<f7>" "F7"]
-                            ["<f8>" "F8"]
-                            ["<f9>" "F9"]
-                            ["<f10>" "F10"]
-                            ["<f11>" "F11"]
-                            ["<f12>" "F12"]
+                            ["<f1>" "F1"] ["<f2>" "F2"] ["<f3>" "F3"] ["<f4>" "F4"] ["<f5>" "F5"] ["<f6>" "F6"] ["<f7>" "F7"] ["<f8>" "F8"] ["<f9>" "F9"] ["<f10>" "F10"] ["<f11>" "F11"] ["<f12>" "F12"]
 
                             ["RET" "Enter"]
                             ["<return>" "Return"]
@@ -1517,8 +1384,8 @@ This command will do most emacs syntax correctly, but not 100% correct.
                             ["<backspace>" "Backspace"]
                             ["DEL" "Delete"]
                             ]
- "FIXEDCASE")
-  )
+ "FIXEDCASE"))
+ )
 
 (defun xhm-emacs-to-windows-kbd-notation (p1 p2)
   "Change emacs key notation to Windows's notation.
@@ -1696,14 +1563,18 @@ Case shouldn't matter, except when it's emacs's key notation.
   "Add HTML open/close tags around region p1 p2.
 This function does not `save-excursion'.
 "
-  (let (
+  (let* (
         (classStr (if (or (equal className nil) (string= className "") ) "" (format " class=\"%s\"" className)))
+        (insStrLeft (format "<%s%s>" tagName classStr) )
+        (insStrRight (format "</%s>" tagName ) )
         )
     (progn
-      (goto-char p2)
-      (insert (format "</%s>" tagName ))
+;      (setq myText (buffer-substring-no-properties p1 p2)
       (goto-char p1)
-      (insert (format "<%s%s>" tagName classStr) ) ) ) )
+      (insert insStrLeft )
+      (goto-char (+ p2 (length insStrLeft)))
+      (insert insStrRight )
+ ) ) )
 
 (defun xhm-wrap-html-tag (tagName &optional className)
   "Insert/wrap a HTML tags to text selection or current word/line/text-block.
@@ -1729,15 +1600,17 @@ If `universal-argument' is called first, then also prompt for a “class” attr
              ((equal lineWordBlock "w") (get-selection-or-unit 'word))
              ((equal lineWordBlock "l") (get-selection-or-unit 'line))
              ((equal lineWordBlock "b") (get-selection-or-unit 'block))
-             (t (get-selection-or-unit 'block))
+             (t (get-selection-or-unit 'word))
              ))
       (setq p1 (elt bds 1) )
       (setq p2 (elt bds 2) )
       (xhm-add-open/close-tag tagName className p1 p2)
-      (if ; put cursor between when input text is empty
+      
+      (when ; put cursor between when input text is empty
           (equal p1 p2)
           (progn (search-backward "</" ) )
-        (progn (search-forward ">" ) ) ) ) ) )
+         )
+ ) ) )
 
 (defun xhm-pre-source-code (&optional langCode)
   "Insert/wrap a <pre class=\"‹langCode›\"> tags to text selection or current text block.
@@ -1789,7 +1662,7 @@ When cursor is in HTML link file path, e.g.  <img src=\"gki/macosxlogo.png\" > a
 
 ;; define the mode
 (define-derived-mode xah-html-mode fundamental-mode
-  "xah-html"
+  "ξhtml"
   "A simple major mode for HTML5.
 HTML5 keywords are colored.
 Basically that's it.
@@ -1802,6 +1675,10 @@ beta stage. Mostly just used by me. There are about 20 functions that act on HTM
 
   (set-syntax-table xhm-syntax-table)
   (use-local-map xhm-keymap)
+
+
+  (set (make-local-variable 'comment-start) "<!-- ")
+  (set (make-local-variable 'comment-end) " -->")
 
 ;;  (setq mode-name "xah-html")
   (run-mode-hooks 'xah-html-mode-hook)

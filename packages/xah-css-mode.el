@@ -13,11 +13,13 @@
 
 ;;; HISTORY
 
+;; version 0.3, 2013-04-30 added xcm-hex-color-to-hsl, and other improvements
 ;; version 0.2, 2013-04-22 added xcm-compact-css-region
 ;; version 0.1, 2013-04-18 first version
 
 (require 'xfrp_find_replace_pairs)
-(require 'xeu_elisp_util)
+;(require 'xeu_elisp_util)
+(require 'color) ; part of emacs 24.3
 
 (defvar xah-css-mode-hook nil "Standard hook for `xah-css-mode'")
 
@@ -28,6 +30,57 @@
 Example output: hsl(100,24%,82%);"
   (interactive)
   (insert (format "hsl(%d,%d%%,%d%%);" (random 360) (random 100) (random 100))) )
+
+(defun xcm-hex-color-to-hsl ()
+  "Convert color spec under cursor from “#rrggbb” to CSS HSL format.
+ ⁖ #ffefd5 → hsl(37,100%,91%)
+"
+  (interactive)
+  (let* (
+         (bds (bounds-of-thing-at-point 'word))
+         (p1 (car bds))
+         (p2 (cdr bds))
+         (currentWord (buffer-substring-no-properties p1 p2)))
+
+    (if (string-match "[a-fA-F0-9]\\{6\\}" currentWord)
+        (progn 
+          (delete-region p1 p2 )
+          (if (looking-back "#") (delete-char -1))
+          (insert (xcm-hex-to-hsl-color currentWord )))
+      (progn
+        (error "The current word 「%s」 is not of the form #rrggbb." currentWord)
+        )
+      )))
+
+(defun xcm-hex-to-hsl-color (hexStr)
+  "Convert hexStr color to CSS HSL format.
+Return a string.
+ ⁖ #ffefd5 → hsl(37,100%,91%)
+"
+  (let* (
+         (colorVec (xcm-convert-color-hex-to-vec hexStr))
+         (xR (elt colorVec 0))
+         (xG (elt colorVec 1))
+         (xB (elt colorVec 2))
+         (hsl (color-rgb-to-hsl xR xG xB) )
+         (xH (elt hsl 0))
+         (xS (elt hsl 1))
+         (xL (elt hsl 2))
+         )
+    (format "hsl(%d,%d%%,%d%%)" (* xH 360) (* xS 100) (* xL 100) )
+    ))
+
+;(xcm-convert-color-hex-to-vec "aabbcc")
+
+(defun xcm-convert-color-hex-to-vec (hexcolor)
+  "Convert HEXCOLOR from “\"rrggbb\"” string to a elisp vector [r g b], where the values are from 0 to 1.
+Example: \"00ffcc\" ⇒ [0.0 1.0 0.8]
+
+Note: The input string must not start with “#”. If so, the return value is nil."
+(when (= 6 (length hexcolor))
+  (vector (/ (float (string-to-number (substring hexcolor 0 2) 16)) 255.0)
+          (/ (float (string-to-number (substring hexcolor 2 4) 16)) 255.0)
+          (/ (float (string-to-number (substring hexcolor 4) 16)) 255.0))))
 
 
 ;;; functions
@@ -57,7 +110,7 @@ WARNING: not robust."
 
 (defvar xcm-html-tag-names nil "a list of HTML5 tag names.")
 (setq xcm-html-tag-names
-'("a" "abbr" "acronym" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "bgsound" "big" "blockquote" "body" "br" "button" "canvas" "caption" "center" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "dir" "div" "dl" "dt" "em" "embed" "fieldset" "figcaption" "figure" "font" "footer" "form" "frame" "frameset" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noframes" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strike" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "tt" "u" "ul" "var" "video" "wbr" "xmp" "doctype")
+'("a" "abbr" "address" "applet" "area" "article" "aside" "audio" "b" "base" "basefont" "bdi" "bdo" "blockquote" "body" "br" "button" "canvas" "caption" "cite" "code" "col" "colgroup" "command" "datalist" "dd" "del" "details" "dfn" "div" "dl" "doctype" "dt" "em" "embed" "fieldset" "figcaption" "figure" "footer" "form" "h1" "h2" "h3" "h4" "h5" "h6" "head" "header" "hgroup" "hr" "html" "i" "iframe" "img" "input" "ins" "kbd" "keygen" "label" "legend" "li" "link" "map" "mark" "menu" "meta" "meter" "nav" "noscript" "object" "ol" "optgroup" "option" "output" "p" "param" "pre" "progress" "q" "rp" "rt" "ruby" "s" "samp" "script" "section" "select" "small" "source" "span" "strong" "style" "sub" "summary" "sup" "table" "tbody" "td" "textarea" "tfoot" "th" "thead" "time" "title" "tr" "u" "ul" "var" "video" "wbr")
  )
 
 (defvar xcm-color-names nil "a list of CSS color names.")
@@ -76,131 +129,18 @@ WARNING: not robust."
 ;:link
 ;@media
 
-"background"
-"background-color"
-"background-image"
-"background-position"
-"background-repeat"
-"border"
-"border-bottom"
-"border-collapse"
-"border-color"
-"border-left"
-"border-radius"
-"border-top"
-"box-shadow"
-"clear"
-"color"
-"content"
-"cursor"
-"direction"
-"display"
-"filter"
-"float"
-"font-family"
-"font-size"
-"font-style"
-"font-weight"
-"height"
-"line-height"
-"list-style"
-"list-style-image"
-"list-style-type"
-"margin"
-"margin-bottom"
-"margin-left"
-"margin-right"
-"margin-top"
-"max-width"
-"min-width"
-"opacity"
-"orphans"
-"overflow"
-"padding"
-"padding-left"
-"padding-right"
-"padding-top"
-"page-break-after"
-"page-break-inside"
-"position"
-"pre-wrap"
-"table"
-"table-cell"
-"text-align"
-"text-decoration"
-"unicode-bidi"
-"vertical-align"
-"white-space"
-"widows"
-"width"
-"word-wrap"
-"z-index"
+"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-top" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font-family" "font-size" "font-style" "font-weight" "height" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
 
 ) )
 
 (defvar xcm-unit-names nil "a list of CSS unite names.")
-(setq xcm-unit-names
-'(
-"px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%"
-) )
+(setq xcm-unit-names '("px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%") )
 
 (defvar xcm-value-kwds nil "a list of CSS value names")
 (setq xcm-value-kwds
 '(
 
-"!important"
-"absolute"
-"alpha"
-"auto"
-"avoid"
-"block"
-"bold"
-"both"
-"bottom"
-"break-word"
-"center"
-"collapse"
-"dashed"
-"fixed"
-"hidden"
-"hsl"
-"hsla"
-"inherit"
-"inline"
-"inline-block"
-"italic"
-"large"
-"left"
-"ltr"
-"rtl"
-"middle"
-"monospace"
-"no-repeat"
-"none"
-"normal"
-"nowrap"
-"pointer"
-"relative"
-"rgb"
-"rgba"
-"right"
-"sans-serif"
-"serif"
-"small"
-"smaller"
-"solid"
-"square"
-"static"
-"thin"
-"top"
-"transparent"
-"underline"
-"url"
-"x-large"
-"xx-large"
-"help"
-"dotted"
-"embed"
+"!important" "absolute" "alpha" "auto" "avoid" "block" "bold" "both" "bottom" "break-word" "center" "collapse" "dashed" "dotted" "embed" "fixed" "help" "hidden" "hsl" "hsla" "inherit" "inline" "inline-block" "italic" "large" "left" "ltr" "middle" "monospace" "no-repeat" "none" "normal" "nowrap" "pointer" "relative" "rgb" "rgba" "right" "rtl" "sans-serif" "serif" "small" "smaller" "solid" "square" "static" "thin" "top" "transparent" "underline" "url" "x-large" "xx-large"
 
 ) )
 
@@ -209,36 +149,20 @@ WARNING: not robust."
 
 (setq xcm-font-lock-keywords
       (let (
-            (cssPropertyNames (regexp-opt xcm-property-names ))
-            (cssValueNames (regexp-opt xcm-value-kwds ))
-            (cssColorNames (regexp-opt xcm-color-names 'words))
-            (htmlTagNames (regexp-opt xcm-html-tag-names 'words))
-            (cssUnitNames (regexp-opt xcm-unit-names ))
-            )
+          (cssPropertieNames (regexp-opt xcm-property-names ) )
+          (cssValueNames (regexp-opt xcm-value-kwds ) )
+          (cssColorNames (regexp-opt xcm-color-names 'words) )
+          (htmlTagNames (regexp-opt xcm-html-tag-names 'words) )
+          (cssUnitNames (regexp-opt xcm-unit-names ) )
+          )
         `(
-          (,cssPropertyNames . font-lock-function-name-face )
+          (,cssPropertieNames . font-lock-type-face)
           (,cssValueNames . font-lock-keyword-face)
           (,cssColorNames . font-lock-constant-face)
-          (,htmlTagNames . font-lock-type-face)
+          (,htmlTagNames . font-lock-function-name-face)
           (,cssUnitNames . font-lock-builtin-face)
           ("'[^']+'" . font-lock-string-face)
           ) ) )
-
-;font-lock-builtin-face
-;font-lock-comment-delimiter-face
-;font-lock-comment-face
-;font-lock-constant-face
-;font-lock-doc-face
-;font-lock-function-name-face
-;font-lock-keyword-face
-;font-lock-negation-char-face
-;font-lock-preprocessor-face
-;font-lock-reference-face
-;font-lock-string-face
-;font-lock-syntactic-face-function
-;font-lock-type-face
-;font-lock-variable-name-face
-;font-lock-warning-face
 
 (defvar xcm-colorfy-hex
   '(("#[abcdef[:digit:]]\\{6\\}"
@@ -256,7 +180,7 @@ WARNING: not robust."
 (defvar xcm-keymap nil "Keybinding for `xah-css-mode'")
 (progn
   (setq xcm-keymap (make-sparse-keymap))
-  (define-key xcm-keymap [remap comment-dwim] 'xcm-comment-dwim)
+;  (define-key xcm-keymap [remap comment-dwim] 'xcm-comment-dwim)
 )
 
 
@@ -281,6 +205,12 @@ CSS keywords are colored. Basically that's it.
   (setq font-lock-defaults '((xcm-font-lock-keywords)))
 
   (set-syntax-table xcm-syntax-table)
+
+  (set (make-local-variable 'comment-start) "/*")
+  (set (make-local-variable 'comment-start-skip) "/\\*+[ \t]*")
+  (set (make-local-variable 'comment-end) "*/")
+  (set (make-local-variable 'comment-end-skip) "[ \t]*\\*+/")
+
   (use-local-map xcm-keymap)
   (run-mode-hooks 'xah-css-mode-hook)
 )

@@ -142,6 +142,7 @@
 "run-mode-hooks"
 "set-syntax-table"
 "use-local-map"
+"defface"
 
 ) )
 
@@ -182,6 +183,7 @@
 "lambda"
 "length"
 "let"
+"let*"
 "list"
 "mapc"
 "mapcar"
@@ -976,7 +978,6 @@
 "font-lock-preprocessor-face"
 "font-lock-reference-face"
 "font-lock-string-face"
-"font-lock-syntactic-face-function"
 "font-lock-type-face"
 "font-lock-variable-name-face"
 "font-lock-warning-face"
@@ -986,27 +987,31 @@
 ;; syntax coloring related
 
 (setq xem-font-lock-keywords
-      (let ( )
+      (let (
+          (emacsWords (regexp-opt xem-emacs-words 'symbols) )
+          (emacsBuiltins (regexp-opt xem-keyword-builtin 'symbols) )
+          (elispLangWords (regexp-opt xem-elisp-lang-words 'symbols) )
+          (elispVars1 (regexp-opt xem-elisp-vars-1 'symbols) )
+          (elispVars2 (regexp-opt xem-elisp-vars-2 'symbols) )
+)
         `(
-          (,(regexp-opt xem-emacs-words 'symbols) . font-lock-function-name-face)
-          (,(regexp-opt xem-keyword-builtin 'symbols) . font-lock-type-face)
-          (,(regexp-opt xem-elisp-lang-words 'symbols) . font-lock-keyword-face)
-          (,(regexp-opt xem-elisp-vars-1 'symbols) . font-lock-variable-name-face)
-          (,(regexp-opt xem-elisp-vars-2 'symbols) . font-lock-variable-name-face)
-
-                                        ;font-lock-comment-delimiter-face
-                                        ;font-lock-comment-face
-                                        ;font-lock-doc-face
-                                        ;font-lock-negation-char-face
-                                        ;font-lock-preprocessor-face
-                                        ;font-lock-reference-face
-                                        ;font-lock-string-face
-                                        ;font-lock-syntactic-face-function
-                                        ;font-lock-type-face
-                                        ;font-lock-variable-name-face
-                                        ;font-lock-warning-face
-
+          (,emacsWords . font-lock-function-name-face)
+          (,emacsBuiltins . font-lock-type-face)
+          (,elispLangWords . font-lock-keyword-face)
+          (,elispVars1 . font-lock-variable-name-face)
+          (,elispVars2 . font-lock-variable-name-face)
           ) ) )
+
+;;font-lock-comment-delimiter-face
+;;font-lock-comment-face
+;;font-lock-doc-face
+;;font-lock-negation-char-face
+;;font-lock-preprocessor-face
+;;font-lock-reference-face
+;;font-lock-string-face
+;;font-lock-type-face
+;;font-lock-variable-name-face
+;;font-lock-warning-face
 
 
 ;; keybinding
@@ -1014,7 +1019,7 @@
 (defvar xem-keymap nil "Keybinding for `xah-elisp-mode'")
 (progn
   (setq xem-keymap (make-sparse-keymap))
-  (define-key xem-keymap [remap comment-dwim] 'xem-comment-dwim)
+;  (define-key xem-keymap [remap comment-dwim] 'xem-comment-dwim)
 )
 
 
@@ -1035,14 +1040,14 @@
 
 ;; define the mode
 (define-derived-mode xah-elisp-mode fundamental-mode
-  "εlisp"
+  "ξlisp"
   "A simple major mode for emacs lisp.
 
 elisp keywords are colored. Basically that's it.
 
 \\{xem-keymap}"
-
   (emacs-lisp-mode)
+  (setq mode-name "ξlisp")
   (setq font-lock-defaults '((xem-font-lock-keywords)))
 
   (set-syntax-table xem-syntax-table)
