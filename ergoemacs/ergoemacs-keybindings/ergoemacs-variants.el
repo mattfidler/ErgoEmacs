@@ -2,8 +2,6 @@
 ;;; Code:
 ;; Ergoemacs keys
 
-(define-key key-translation-map (kbd "<apps>") (kbd "<menu>"))
-(define-key key-translation-map (kbd "<f6>") (kbd "<menu>"))
 ;; F6 is fall back
 
 (defgroup ergoemacs-standard-layout nil
@@ -116,20 +114,21 @@
     ("M-*" ergoemacs-select-text-in-quote "←quote→")
     ("M-6" ergoemacs-select-current-block "Sel. Block")
     ("M-7" ergoemacs-select-current-line "Sel. Line")
-
+    
     ("<C-home>" beginning-of-buffer "Top")
     ("<C-end>" end-of-buffer "Bottom")
-    ("<menu> j" ergoemacs-ctl-c "Ctl-c")
-    ("<menu> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
-    ("<menu> f" ergoemacs-ctl-x "Ctl-x")
-    ("<menu> r" ergoemacs-ctl-x-unchorded "Ctl-x*")
-    ("<menu> h" ergoemacs-ctl-h "Ctl-h")
-    ("<menu> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
-    ("<menu> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
-    ("<menu> SPC" set-mark-command "Set Mark")
-    ("<menu> k" ergoemacs-alt-keys "Repeat Alt")
-    ("<menu> i" ergoemacs-alt-shift-keys "Repeat Alt+Shift")
-    ("<menu> <return>" ergoemacs-smex-if-exists "M-x"))
+    
+    ("<apps> j" ergoemacs-ctl-c "Ctl-c")
+    ("<apps> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
+    ("<apps> f" ergoemacs-ctl-x "Ctl-x")
+    ("<apps> r" ergoemacs-ctl-x-unchorded "Ctl-x*")
+    ("<apps> h" ergoemacs-ctl-h "Ctl-h")
+    ("<apps> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
+    ("<apps> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
+    ("<apps> SPC" set-mark-command "Set Mark")
+    ("<apps> k" ergoemacs-alt-keys "Repeat Alt")
+    ("<apps> i" ergoemacs-alt-shift-keys "Repeat Alt+Shift")
+    ("<apps> <return>" ergoemacs-smex-if-exists "M-x"))
   
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
@@ -825,10 +824,10 @@ Some exceptions we don't want to unset.
 
 
 (ergoemacs-defvariant lvl3
-  "Level 3 Ergoemacs -- ALL key except <menu> keys."
+  "Level 3 Ergoemacs -- ALL key except <apps> keys."
   nil
   (setq ergoemacs-variable-layout-tmp
-        (remove-if (lambda (x) (string-match "<menu>" (car x))) ergoemacs-variable-layout)))
+        (remove-if (lambda (x) (string-match "<apps>" (car x))) ergoemacs-variable-layout)))
 
 (ergoemacs-defvariant guru
   "Unbind some commonly used keys such as <left> and <right> to get in the habit of using ergoemacs keybindings."
