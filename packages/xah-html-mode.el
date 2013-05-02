@@ -34,7 +34,7 @@
 (require 'ido)
 (require 'xfrp_find_replace_pairs)
 (require 'xeu_elisp_util)
-;; (require 'sgml-mode)
+(require 'sgml-mode)
 (require 'htmlize)
 
 (defvar xah-html-mode-hook nil "Standard hook for `xah-html-mode'")
@@ -398,8 +398,6 @@ This command does the reverse of `xhm-htmlize-precode'."
          (p2 (elt ξxx 2))
          (inputStr (buffer-substring-no-properties p1 p2) )
          )
-
-    (message "%s" langCode)
     (if (xhm-precode-htmlized-p inputStr)
         (xhm-remove-span-tag-region p1 p2)
       (progn               ;; do htmlize
@@ -412,14 +410,15 @@ This command does the reverse of `xhm-htmlize-precode'."
             (progn
               (save-excursion
                 (setq ξmode-name (elt (cdr langCodeResult) 0))
-                (delete-region p1 p2)
-(let ((tempstr inputStr))
- (setq tempstr (replace-regexp-in-string "\\`[ \t\n]*" "\n" tempstr) ) ; trim beginning
- (setq tempstr (replace-regexp-in-string "[ \t\n]+\\'" "\n" tempstr) ) ; trim trailing
- (insert (xhm-htmlize-string tempstr ξmode-name))
-)
-
-                )) )) )) ))
+                (let ((newInStr inputStr) resultStr)
+                  (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "\n" newInStr) ) ; trim beginning
+                  (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "\n" newInStr) ) ; trim trailing
+                  (setq resultStr (xhm-htmlize-string newInStr ξmode-name))
+                  (if (equal (length inputStr) (length resultStr))
+                      (message "%s" "htmlize done, but no change necessary.")
+                    (progn
+                      (delete-region p1 p2)
+                      (insert resultStr) ) ) ) )) )) )) ))
 
 (defun xhm-precode-htmlized-p (inputStr)
   "return true if inputStr is htmlized code."
@@ -428,7 +427,63 @@ This command does the reverse of `xhm-htmlize-precode'."
   ))
 
 
-;; syntax coloring related
+;; syntax table
+(defvar xhm-syntax-table nil "Syntax table for `xah-html-mode'.")
+(setq xhm-syntax-table
+      (let ((synTable (make-syntax-table)))
+
+ (progn                                  ; all on US keyboard
+
+ ;; (modify-syntax-entry ?\" "\"" synTable)
+   (modify-syntax-entry ?' "w" synTable)
+
+ ;; (modify-syntax-entry ?, "." synTable)
+ ;; (modify-syntax-entry ?. "." synTable)
+ ;; (modify-syntax-entry ?: "." synTable)
+ ;; (modify-syntax-entry ?? "." synTable)
+ ;; (modify-syntax-entry ?\; "." synTable)
+
+ ;; (modify-syntax-entry ?! "." synTable)
+ ;; (modify-syntax-entry ?@ "." synTable)
+ ;; (modify-syntax-entry ?# "." synTable)
+ ;; (modify-syntax-entry ?$ "." synTable)
+ ;; (modify-syntax-entry ?% "." synTable)
+ ;; (modify-syntax-entry ?^ "." synTable)
+ ;; (modify-syntax-entry ?& "." synTable)
+ ;; (modify-syntax-entry ?* "." synTable)
+ ;; (modify-syntax-entry ?+ "." synTable)
+ ;; (modify-syntax-entry ?= "." synTable)
+ ;; (modify-syntax-entry ?/ "." synTable)
+ ;; (modify-syntax-entry ?\ "/" synTable)
+
+ ;; (modify-syntax-entry ?_ "_" synTable)
+ ;; (modify-syntax-entry ?- "w" synTable)
+
+ ;; (modify-syntax-entry ?( "(" synTable)
+ ;; (modify-syntax-entry ?) ")" synTable)
+ ;; (modify-syntax-entry ?[ "(" synTable)
+ ;; (modify-syntax-entry ?] ")" synTable)
+ ;; (modify-syntax-entry ?{ "(" synTable)
+ ;; (modify-syntax-entry ?} ")" synTable)
+        (modify-syntax-entry ?< "." synTable)
+        (modify-syntax-entry ?> "." synTable)
+
+ ;; (modify-syntax-entry ?| "." synTable)
+ ;; (modify-syntax-entry ?` "." synTable)
+ ;; (modify-syntax-entry ?~ "." synTable)
+ )
+
+        (modify-syntax-entry ?“ "(" synTable)
+        (modify-syntax-entry ?” ")" synTable)
+        (modify-syntax-entry ?‘ "(" synTable)
+        (modify-syntax-entry ?’ ")" synTable)
+
+;; (modify-syntax-entry ?“ "\"" synTable)
+;; (modify-syntax-entry ?” "\"" synTable)
+
+        synTable))
+
+
 
 (defface xhm-curly“”-quoted-text-face
   '((((class color) (min-colors 88) (background light)) (:foreground "#458b00"))
@@ -450,49 +505,6 @@ This command does the reverse of `xhm-htmlize-precode'."
   "Face used for curly quoted text."
   :group 'languages)
 
-(setq xhm-font-lock-keywords
-      (let (
-            (htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
-            (htmlAttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
-            (cssPropertieNames (regexp-opt xhm-css-property-names 'words) )
-            (cssValueNames (regexp-opt xhm-css-value-kwds 'words) )
-            (cssColorNames (regexp-opt xhm-css-color-names 'words) )
-            (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
-            )
-        `(
-          ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
-          ("<!--\\|-->" . font-lock-comment-delimiter-face)
-          ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-          ("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
-          ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
-          ("「\\([^」]+\\)」" . (1 font-lock-string-face))
-
-
-          ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
-;          ("<b>\\([^<]+?\\)</b>" . (1 "bold"))
-          ("<mark\\( *[^>]+?\\)*>\\([^<]+?\\)</mark>" . (2 "hi-yellow"))
-          ("<b\\( *[^>]+?\\)*>\\([^<]+?\\)</b>" . (2 "bold"))
-          ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
-          ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
-          (,htmlElementNamesRegex . font-lock-function-name-face)
-          (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
-          (,cssPropertieNames . font-lock-type-face)
-          (,cssValueNames . font-lock-keyword-face)
-          (,cssColorNames . font-lock-preprocessor-face)
-          (,cssUnitNames . font-lock-reference-face)
-          ) ) )
-
-;;font-lock-comment-delimiter-face
-;;font-lock-comment-face
-;;font-lock-doc-face
-;;font-lock-negation-char-face
-;;font-lock-preprocessor-face
-;;font-lock-reference-face
-;;font-lock-string-face
-;;font-lock-type-face
-;;font-lock-variable-name-face
-;;font-lock-warning-face
-
 
 ;; keybinding
 
@@ -500,68 +512,11 @@ This command does the reverse of `xhm-htmlize-precode'."
 (progn
   (setq xhm-keymap (make-sparse-keymap))
 ;  (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
-  ;; (define-key xhm-keymap (kbd "C-c /") 'sgml-close-tag)
-  (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
-  ;; (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
-  (define-key xhm-keymap (kbd "C-c C-r") 'xhm-skip-tag-forward)
-  (define-key xhm-keymap (kbd "C-c C-g") 'xhm-skip-tag-backward)
+;  (define-key xhm-keymap (kbd "C-c /") 'xhm-sgml-close-tag)
+;  (define-key xhm-keymap (kbd "C-c <delete>") 'xhm-delete-tag)
+  (define-key xhm-keymap (kbd "<C-right>") 'xhm-skip-tag-forward)
+  (define-key xhm-keymap (kbd "<C-left>") 'xhm-skip-tag-backward)
 )
-
-
-;; syntax table
-(defvar xhm-syntax-table nil "Syntax table for `xah-html-mode'.")
-(setq xhm-syntax-table
-      (let ((synTable (make-syntax-table)))
-
-;; (progn                                  ; all on US keyboard
-
-;; (modify-syntax-entry ?\" "\"" synTable)
-;; (modify-syntax-entry ?' "w" synTable)
-
-;; (modify-syntax-entry ?, "." synTable)
-;; (modify-syntax-entry ?. "." synTable)
-;; (modify-syntax-entry ?: "." synTable)
-;; (modify-syntax-entry ?? "." synTable)
-;; (modify-syntax-entry ?\; "." synTable)
-
-;; (modify-syntax-entry ?! "." synTable)
-;; (modify-syntax-entry ?@ "." synTable)
-;; (modify-syntax-entry ?# "." synTable)
-;; (modify-syntax-entry ?$ "." synTable)
-;; (modify-syntax-entry ?% "." synTable)
-;; (modify-syntax-entry ?^ "." synTable)
-;; (modify-syntax-entry ?& "." synTable)
-;; (modify-syntax-entry ?* "." synTable)
-;; (modify-syntax-entry ?+ "." synTable)
-;; (modify-syntax-entry ?= "." synTable)
-;; (modify-syntax-entry ?/ "." synTable)
-;; (modify-syntax-entry ?\ "/" synTable)
-
-;; (modify-syntax-entry ?_ "_" synTable)
-;; (modify-syntax-entry ?- "w" synTable)
-
-;; (modify-syntax-entry ?( "(" synTable)
-;; (modify-syntax-entry ?) ")" synTable)
-;; (modify-syntax-entry ?[ "(" synTable)
-;; (modify-syntax-entry ?] ")" synTable)
-;; (modify-syntax-entry ?{ "(" synTable)
-;; (modify-syntax-entry ?} ")" synTable)
-;; (modify-syntax-entry ?< "(" synTable)
-;; (modify-syntax-entry ?> ")" synTable)
-
-;; (modify-syntax-entry ?| "." synTable)
-;; (modify-syntax-entry ?` "." synTable)
-;; (modify-syntax-entry ?~ "." synTable)
-;; )
-
-        (modify-syntax-entry ?< "." synTable)
-        (modify-syntax-entry ?> "." synTable)
-        (modify-syntax-entry ?' "w" synTable)
-
-;; (modify-syntax-entry ?“ "\"" synTable)
-;; (modify-syntax-entry ?” "\"" synTable)
-
-        synTable))
 
 
 
@@ -701,13 +656,13 @@ Also delete the matching beginning/ending tag."
 (defun xhm-skip-tag-forward ()
   "Move cursor to the closing tag."
   (interactive)
-  ;; (sgml-skip-tag-forward 1)
+  (sgml-skip-tag-forward 1)
   )
 
 (defun xhm-skip-tag-backward ()
   "Move cursor to the beginning tag."
   (interactive)
-  ;; (sgml-skip-tag-backward 1)
+  (sgml-skip-tag-backward 1)
   )
 
 (defun xhm-change-current-tag ()
@@ -727,7 +682,7 @@ this is a quick 1 min hackjob, works only when there's no nesting."
     (delete-char (- (length oldTagName)))
     (insert newTagName)
 
-    (progn 
+    (progn
       (goto-char p1)
       (search-forward ">")
       (setq p2  (point) )
@@ -750,7 +705,6 @@ this is a quick 1 min hackjob, works only when there's no nesting."
                  (progn (delete-region p1 p2 )
                       (goto-char p1)
                       (insert newClassName) ) ) ) ) ) ))
-
 
 (defun xhm-comment-dwim (arg)
 "Comment or uncomment current line or region in a smart way.
@@ -1605,7 +1559,7 @@ If `universal-argument' is called first, then also prompt for a “class” attr
       (setq p1 (elt bds 1) )
       (setq p2 (elt bds 2) )
       (xhm-add-open/close-tag tagName className p1 p2)
-      
+
       (when ; put cursor between when input text is empty
           (equal p1 p2)
           (progn (search-backward "</" ) )
@@ -1671,17 +1625,46 @@ beta stage. Mostly just used by me. There are about 20 functions that act on HTM
 
 \\{xhm-keymap}"
 
+  (setq xhm-font-lock-keywords
+        (let (
+              (htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
+              (htmlAttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
+              (cssPropertieNames (regexp-opt xhm-css-property-names 'words) )
+              (cssValueNames (regexp-opt xhm-css-value-kwds 'words) )
+              (cssColorNames (regexp-opt xhm-css-color-names 'words) )
+              (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
+              )
+          `(
+            ("<!--\\|-->" . font-lock-comment-delimiter-face)
+            ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
+            ("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
+            ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
+            ("「\\([^」]+\\)」" . (1 font-lock-string-face))
+
+            ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
+            ("<b>\\([^<]+?\\)</b>" . (1 "bold"))
+            ("<mark\\( *[^>]+?\\)*>\\([^<]+?\\)</mark>" . (2 "hi-yellow"))
+            ("<b\\( *[^>]+?\\)*>\\([^<]+?\\)</b>" . (2 "bold"))
+            ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
+            ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
+            (,htmlElementNamesRegex . font-lock-function-name-face)
+            (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
+            (,cssPropertieNames . font-lock-type-face)
+            (,cssValueNames . font-lock-keyword-face)
+            (,cssColorNames . font-lock-preprocessor-face)
+            (,cssUnitNames . font-lock-reference-face)
+            ) ) )
+
   (setq font-lock-defaults '((xhm-font-lock-keywords)))
 
   (set-syntax-table xhm-syntax-table)
   (use-local-map xhm-keymap)
 
-
   (set (make-local-variable 'comment-start) "<!-- ")
   (set (make-local-variable 'comment-end) " -->")
 
-;;  (setq mode-name "xah-html")
+  ;;  (setq mode-name "xah-html")
   (run-mode-hooks 'xah-html-mode-hook)
-)
+  )
 
 (provide 'xah-html-mode)
