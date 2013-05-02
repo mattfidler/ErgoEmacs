@@ -77,11 +77,11 @@
     (setq ret (and ret test))
     (message "Global-set-key after ergoemacs-mode loads: %s" test)
     
-    (setq test (ergoemacs-test-global-key-set-before 'after "<menu> m"))
+    (setq test (ergoemacs-test-global-key-set-before 'after "<apps> m"))
     (setq ret (and ret test))
     (message "Test Issue #128: %s" test)
     
-    (setq test (ergoemacs-test-global-key-set-before nil "<menu> m"))
+    (setq test (ergoemacs-test-global-key-set-before nil "<apps> m"))
     (setq ret (and ret test))
     (message "Test Issue #128a: %s" test)
     
