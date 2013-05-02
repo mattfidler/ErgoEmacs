@@ -9,11 +9,12 @@
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; Commentary:
-;; Major mode for editing CSS code. Alpha stage.
+;; Major mode for editing CSS code. Beta stage.
+;; home page http://ergoemacs.org/emacs/xah-css-mode.html
 
 ;;; HISTORY
 
-;; version 0.3, 2013-04-30 added xcm-hex-color-to-hsl, and other improvements
+;; version 0.3, 2013-05-02 added xcm-hex-color-to-hsl, and other improvements.
 ;; version 0.2, 2013-04-22 added xcm-compact-css-region
 ;; version 0.1, 2013-04-18 first version
 

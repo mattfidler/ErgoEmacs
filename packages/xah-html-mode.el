@@ -9,7 +9,9 @@
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; Commentary:
-;; Major mode for editing pure HTML5 files. Beta stage.
+;; Major mode for editing pure HTML5 files.
+;; home page: http://ergoemacs.org/emacs/xah-html-mode.html
+;; beta stage. Mostly just used by me. There are about 20 functions that act on HTML. They have inline doc. But don't have keys. No over-all doc.
 
 ;;; HISTORY
 
@@ -1619,9 +1621,8 @@ When cursor is in HTML link file path, e.g.  <img src=\"gki/macosxlogo.png\" > a
   "ξhtml"
   "A simple major mode for HTML5.
 HTML5 keywords are colored.
-Basically that's it.
 
-beta stage. Mostly just used by me. There are about 20 functions that act on HTML. They have inline doc. But don't have keys. No over-all doc.
+see file header for currrent status.
 
 \\{xhm-keymap}"
 
