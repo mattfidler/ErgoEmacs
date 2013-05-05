@@ -246,6 +246,7 @@
            ("clojure" . ["clojure-mode" "clj"])
            ("css" . ["css-mode" "css"])
            ("elisp" . ["emacs-lisp-mode" "el"])
+           ("elisp-xah-elisp-mode" . ["xah-elisp-mode" "el"])
            ("haskell" . ["haskell-mode" "hs"])
            ("html" . ["html-mode" "html"])
            ("mysql" . ["sql-mode" "sql"])
@@ -1642,7 +1643,6 @@ see file header for currrent status.
             ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
             ("「\\([^」]+\\)」" . (1 font-lock-string-face))
 
-            ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
             ("<b>\\([^<]+?\\)</b>" . (1 "bold"))
             ("<mark\\( *[^>]+?\\)*>\\([^<]+?\\)</mark>" . (2 "hi-yellow"))
             ("<b\\( *[^>]+?\\)*>\\([^<]+?\\)</b>" . (2 "bold"))
@@ -1654,6 +1654,7 @@ see file header for currrent status.
             (,cssValueNames . font-lock-keyword-face)
             (,cssColorNames . font-lock-preprocessor-face)
             (,cssUnitNames . font-lock-reference-face)
+;            ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
             ) ) )
 
   (setq font-lock-defaults '((xhm-font-lock-keywords)))
