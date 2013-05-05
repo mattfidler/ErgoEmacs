@@ -1366,6 +1366,83 @@ For detail on exactly which string are changed, see `xhm-emacs-to-windows-kbd-no
     (insert
      (xhm-emacs-to-windows-kbd-notation-string inputStr) ) ) )
 
+(defun xhm-htmlize-elisp-keywords (p1 p2)
+  "Replace curly quoted “elisp function” names to HTML markup.
+
+For example, the text:
+ Call “sort-lines” to sort.
+    ⇓
+ Call <code class=\"elisp-ƒ\">sort-lines</code> to sort.
+
+For example, the text:
+ Set “fill-column”
+    ⇓
+ Set <var class=\"elisp\">fill-column</var>
+
+Works on text selection or current text block.
+
+When call in lisp program, the arguments p1 p2 are region positions.
+
+Note: a word is changed only if all of the following are true:
+
+• The function name is tightly enclosed in double curly quotes, e.g. “sort-lines” but not “use sort-lines”.
+• `fboundp' on the function name returns true.
+
+This command also makes a report of changed items.
+
+Some issues:
+
+• Only words that are alphanumeric and hyphen, are checked, even though elisp identifier allows many other chars. e.g. “yas/reload-all”.
+
+• Some words are common in other lang, e.g. “while”, “print”, “string”, unix “find”, “grep”, HTML's “kbd” tag, etc. But they are also built-in elisp symbols. This command will tag them, but you may not want that.
+
+• Some function/variable are from 3rd party libs, and some are not bundled with GNU emacs , e.g. 「'cl」, 「'htmlize」. They may or may not be tagged depending whether they've been loaded."
+  ;; (interactive (let ((bds (get-selection-or-unit 'block))) (list (elt bds 1) (elt bds 2) ) ) )
+  (interactive
+   (cond
+    ((equal current-prefix-arg nil)    ; universal-argument not called
+     (let ((bds (get-selection-or-unit 'block))) (list (elt bds 1) (elt bds 2) ) ))
+    (t                                  ; all other cases
+     (list (point-min) (point-max) )) ) )
+  (let*
+      (inputStr 
+       resultStr
+       (changedItems nil)
+       (elispIdentifierRegex "\\([-A-Za-z0-9]+\\)")
+       (wantedRegex (concat "“" elispIdentifierRegex "”") )
+       )
+    (setq inputStr (buffer-substring-no-properties p1 p2) )
+    (setq resultStr
+            (let ( mStr (case-fold-search nil) (ξsomeStr inputStr) )
+              (with-temp-buffer
+                (insert ξsomeStr)
+                (goto-char 1)
+                (while (search-forward-regexp wantedRegex (point-max) t)
+                  (setq mStr (match-string 1) )
+                  (cond
+                   ((fboundp (intern mStr))
+                    (progn
+                      (setq changedItems (cons (format "ƒ %s" mStr) changedItems ) )
+                      (replace-match (concat "<code class=\"elisp-ƒ\">" mStr "</code>") t t)
+                      ))
+                   ((boundp (intern mStr))
+                    (progn
+                      (setq changedItems (cons (format "υ %s" mStr) changedItems ) )
+                      (replace-match (concat "<var class=\"elisp\">" mStr "</var>") t t)
+                       ))
+                   (t "do nothing")
+                   ) )
+                (buffer-string)
+                ) ))    
+    (if (equal (length changedItems) 0)
+        (progn (message "%s" "No change needed."))
+      (progn
+            (delete-region p1 p2)
+            (insert resultStr)
+            (with-output-to-temp-buffer "*changed items*"
+              (mapcar (lambda (x) (princ x) (princ "\n") ) (reverse changedItems)) )
+         ) ) ))
+
 (defun xhm-htmlize-keyboard-shortcut-notation ()
   "Wrap a “kbd” tag around keyboard keys on text selection or current text inside 【】.
 Example: 【ctrl+w】 ⇒ 【<kbd>Ctrl</kbd>+<kbd>w</kbd>】
