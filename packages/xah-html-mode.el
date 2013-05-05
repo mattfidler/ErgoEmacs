@@ -1367,32 +1367,30 @@ For detail on exactly which string are changed, see `xhm-emacs-to-windows-kbd-no
      (xhm-emacs-to-windows-kbd-notation-string inputStr) ) ) )
 
 (defun xhm-htmlize-elisp-keywords (p1 p2)
-  "Replace curly quoted “elisp function” names to HTML markup.
+  "Replace curly quoted elisp function/variable names to HTML markup.
 
-For example, the text:
+Example:
  Call “sort-lines” to sort.
     ⇓
  Call <code class=\"elisp-ƒ\">sort-lines</code> to sort.
 
-For example, the text:
  Set “fill-column”
     ⇓
  Set <var class=\"elisp\">fill-column</var>
 
 Works on text selection or current text block.
 
-When call in lisp program, the arguments p1 p2 are region positions.
+When called in lisp program, the arguments p1 p2 are region positions.
 
 Note: a word is changed only if all of the following are true:
 
-• The function name is tightly enclosed in double curly quotes, e.g. “sort-lines” but not “use sort-lines”.
-• `fboundp' on the function name returns true.
+• The symbol string is tightly enclosed in double curly quotes, e.g. “sort-lines” but not “use sort-lines”.
+• `fboundp' or `boundp' returns true (for function and variable.).
+• symbol string's char contains only alphanumeric or hyphen, even though elisp identifier allows many other chars. e.g. `yas/reload-all', `color-cie-ε'.
 
 This command also makes a report of changed items.
 
 Some issues:
-
-• Only words that are alphanumeric and hyphen, are checked, even though elisp identifier allows many other chars. e.g. “yas/reload-all”.
 
 • Some words are common in other lang, e.g. “while”, “print”, “string”, unix “find”, “grep”, HTML's “kbd” tag, etc. But they are also built-in elisp symbols. This command will tag them, but you may not want that.
 
@@ -1712,26 +1710,30 @@ see file header for currrent status.
               (cssValueNames (regexp-opt xhm-css-value-kwds 'words) )
               (cssColorNames (regexp-opt xhm-css-color-names 'words) )
               (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
+
+              (attriRegex " *\\([ =\"-_a-z]*?\\)")
+              (textNodeRegex "\\([ -_A-Za-z]+?\\)")
               )
           `(
+
+            ;; todo these multiline regex are bad. see elisp manual
             ("<!--\\|-->" . font-lock-comment-delimiter-face)
             ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
             ("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
             ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
             ("「\\([^」]+\\)」" . (1 font-lock-string-face))
+            (,(format "<span%s>%s</span>" attriRegex textNodeRegex) . (2 "hi-pink"))
+            (,(format "<mark%s>%s</mark>" attriRegex textNodeRegex) . (2 "hi-yellow"))
+            (,(format "<b%s>%s</b>" attriRegex textNodeRegex) . (2 "bold"))
+            (,(format "<h1[1-6]>%s</b\1>" textNodeRegex) . (1 "bold"))
+            (,(format "<title>%s</title>" textNodeRegex) . (1 "bold"))
 
-            ("<b>\\([^<]+?\\)</b>" . (1 "bold"))
-            ("<mark\\( *[^>]+?\\)*>\\([^<]+?\\)</mark>" . (2 "hi-yellow"))
-            ("<b\\( *[^>]+?\\)*>\\([^<]+?\\)</b>" . (2 "bold"))
-            ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
-            ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
             (,htmlElementNamesRegex . font-lock-function-name-face)
             (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
             (,cssPropertieNames . font-lock-type-face)
             (,cssValueNames . font-lock-keyword-face)
             (,cssColorNames . font-lock-preprocessor-face)
             (,cssUnitNames . font-lock-reference-face)
-;            ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
             ) ) )
 
   (setq font-lock-defaults '((xhm-font-lock-keywords)))
