@@ -36,14 +36,16 @@
 (require 'ido)
 (require 'xfrp_find_replace_pairs)
 (require 'xeu_elisp_util)
-(require 'sgml-mode)
+;(require 'sgml-mode)
 (require 'htmlize)
+(require 'hi-lock) ; uses its face definitions
 
 (defvar xah-html-mode-hook nil "Standard hook for `xah-html-mode'")
 
 (defcustom xhm-html5-tag-names nil
   "alist of HTML5 tag names. The value is a vector of one element. w means word, l means line, b means block, others are unknown. They indicate the default ways to wrap the tag around cursor. "
 ; todo: need to go the the list and look at the type carefully. Right now it's just quickly done. lots are “z”, for unkown. Also, some are self closing tags, current has mark of “n”.
+:group 'xah-html-mode
 )
 (setq xhm-html5-tag-names
 '(
@@ -167,12 +169,12 @@
 
 (defcustom xhm-attribute-names nil
   "HTML5 attribute names."
-)
-(setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ))
+:group 'xah-html-mode)
+(setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" "name" "value" "size" ))
 
 (defcustom xhm-html5-self-close-tags nil
   "a list of HTML5 self-closing tag name. "
-)
+:group 'xah-html-mode )
 (setq xhm-html5-self-close-tags
 '(
 "area"
@@ -246,7 +248,6 @@
            ("clojure" . ["clojure-mode" "clj"])
            ("css" . ["css-mode" "css"])
            ("elisp" . ["emacs-lisp-mode" "el"])
-           ("elisp-xah-elisp-mode" . ["xah-elisp-mode" "el"])
            ("haskell" . ["haskell-mode" "hs"])
            ("html" . ["html-mode" "html"])
            ("mysql" . ["sql-mode" "sql"])
@@ -496,7 +497,7 @@ This command does the reverse of `xhm-htmlize-precode'."
     (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
     (t (:inverse-video t :weight bold)))
   "Face used for curly quoted text."
-  :group 'languages)
+  :group 'xah-html-mode)
 
 (defface xhm-curly‘’-quoted-text-face
   '((((class color) (min-colors 88) (background light)) (:foreground "#ffa500"))
@@ -506,7 +507,7 @@ This command does the reverse of `xhm-htmlize-precode'."
     (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
     (t (:inverse-video t :weight bold)))
   "Face used for curly quoted text."
-  :group 'languages)
+  :group 'xah-html-mode)
 
 
 ;; keybinding
@@ -1712,20 +1713,21 @@ see file header for currrent status.
               (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
 
               (attriRegex " *\\([ =\"-_a-z]*?\\)")
-              (textNodeRegex "\\([ -_A-Za-z]+?\\)")
+;              (textNodeRegex "\\([ -_A-Za-z]+?\\)")
+              (textNodeRegex "\\([ [:graph:]]+?\\)")
               )
           `(
 
             ;; todo these multiline regex are bad. see elisp manual
             ("<!--\\|-->" . font-lock-comment-delimiter-face)
-            ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-            ("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
-            ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
-            ("「\\([^」]+\\)」" . (1 font-lock-string-face))
+            (,(format "<!--%s-->" textNodeRegex) . (1 font-lock-comment-face))
+            (,(format "“%s”" textNodeRegex) . (1 'xhm-curly“”-quoted-text-face))
+            (,(format "‘%s’" textNodeRegex) . (1 'xhm-curly‘’-quoted-text-face))
+
             (,(format "<span%s>%s</span>" attriRegex textNodeRegex) . (2 "hi-pink"))
             (,(format "<mark%s>%s</mark>" attriRegex textNodeRegex) . (2 "hi-yellow"))
             (,(format "<b%s>%s</b>" attriRegex textNodeRegex) . (2 "bold"))
-            (,(format "<h1[1-6]>%s</b\1>" textNodeRegex) . (1 "bold"))
+            (,(format "<h\\([1-6]\\)>%s</h\\1>" textNodeRegex) . (2 "bold"))
             (,(format "<title>%s</title>" textNodeRegex) . (1 "bold"))
 
             (,htmlElementNamesRegex . font-lock-function-name-face)
