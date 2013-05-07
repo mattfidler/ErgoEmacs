@@ -10,6 +10,7 @@
 
 ;;; Commentary:
 ;; Major mode for editing emacs lisp. Beta stage.
+;; home page: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
 ;;; HISTORY
 
@@ -20,6 +21,7 @@
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
 
+"forward-sexp"
 "add-hook"
 "autoload"
 "backward-char"
@@ -135,6 +137,11 @@
 "write-region"
 "y-or-n-p"
 "yes-or-no-p"
+"user-error"
+"mark"
+"push-mark"
+"pop-mark"
+"prefix-numeric-value"
 
 "modify-syntax-entry"
 "make-sparse-keymap"
@@ -149,7 +156,6 @@
 (defvar xem-elisp-lang-words nil "a list of elisp keyword more or less related to elisp the language.")
 (setq xem-elisp-lang-words '(
 
-"nil"
 "add-to-list"
 "and"
 "append"
@@ -191,12 +197,14 @@
 "member"
 "memq"
 "message"
+"nil"
 "not"
 "or"
 "prin1"
 "princ"
 "print"
 "progn"
+"provide"
 "push"
 "put"
 "random"
@@ -206,12 +214,12 @@
 "setq"
 "string"
 "string="
+"t"
 "throw"
 "unless"
 "vector"
 "when"
 "while"
-"provide"
 
 ) )
 
@@ -616,12 +624,15 @@
 "list-matching-lines-buffer-name-face"
 "list-matching-lines-default-context-lines"
 "list-matching-lines-face"
+"last-command"
+
 
 ))
 
 (defvar xem-elisp-vars-2 nil "a list elisp variables names")
 (setq xem-elisp-vars-2 '(
 
+"this-command"
 "local-holidays"
 "locate-ls-subdir-switches"
 "lpr-command"
@@ -966,6 +977,7 @@
 "yank-handled-properties"
 "yank-menu-length"
 "yank-pop-change-selection"
+"mark-active"
 
 "font-lock-builtin-face"
 "font-lock-comment-delimiter-face"

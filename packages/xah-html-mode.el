@@ -9,7 +9,9 @@
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; Commentary:
-;; Major mode for editing pure HTML5 files. Beta stage.
+;; Major mode for editing pure HTML5 files.
+;; home page: http://ergoemacs.org/emacs/xah-html-mode.html
+;; beta stage. Mostly just used by me. There are about 20 functions that act on HTML. They have inline doc. But don't have keys. No over-all doc.
 
 ;;; HISTORY
 
@@ -34,14 +36,16 @@
 (require 'ido)
 (require 'xfrp_find_replace_pairs)
 (require 'xeu_elisp_util)
-;; (require 'sgml-mode)
+;(require 'sgml-mode)
 (require 'htmlize)
+(require 'hi-lock) ; uses its face definitions
 
 (defvar xah-html-mode-hook nil "Standard hook for `xah-html-mode'")
 
 (defcustom xhm-html5-tag-names nil
   "alist of HTML5 tag names. The value is a vector of one element. w means word, l means line, b means block, others are unknown. They indicate the default ways to wrap the tag around cursor. "
 ; todo: need to go the the list and look at the type carefully. Right now it's just quickly done. lots are “z”, for unkown. Also, some are self closing tags, current has mark of “n”.
+:group 'xah-html-mode
 )
 (setq xhm-html5-tag-names
 '(
@@ -165,12 +169,12 @@
 
 (defcustom xhm-attribute-names nil
   "HTML5 attribute names."
-)
-(setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" ))
+:group 'xah-html-mode)
+(setq xhm-attribute-names '( "id" "class" "style" "title" "href" "type" "rel" "http-equiv" "content" "charset" "alt" "src" "width" "height" "controls" "autoplay" "preload" "name" "value" "size" ))
 
 (defcustom xhm-html5-self-close-tags nil
   "a list of HTML5 self-closing tag name. "
-)
+:group 'xah-html-mode )
 (setq xhm-html5-self-close-tags
 '(
 "area"
@@ -398,8 +402,6 @@ This command does the reverse of `xhm-htmlize-precode'."
          (p2 (elt ξxx 2))
          (inputStr (buffer-substring-no-properties p1 p2) )
          )
-
-    (message "%s" langCode)
     (if (xhm-precode-htmlized-p inputStr)
         (xhm-remove-span-tag-region p1 p2)
       (progn               ;; do htmlize
@@ -412,14 +414,15 @@ This command does the reverse of `xhm-htmlize-precode'."
             (progn
               (save-excursion
                 (setq ξmode-name (elt (cdr langCodeResult) 0))
-                (delete-region p1 p2)
-(let ((tempstr inputStr))
- (setq tempstr (replace-regexp-in-string "\\`[ \t\n]*" "\n" tempstr) ) ; trim beginning
- (setq tempstr (replace-regexp-in-string "[ \t\n]+\\'" "\n" tempstr) ) ; trim trailing
- (insert (xhm-htmlize-string tempstr ξmode-name))
-)
-
-                )) )) )) ))
+                (let ((newInStr inputStr) resultStr)
+                  (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "\n" newInStr) ) ; trim beginning
+                  (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "\n" newInStr) ) ; trim trailing
+                  (setq resultStr (xhm-htmlize-string newInStr ξmode-name))
+                  (if (equal (length inputStr) (length resultStr))
+                      (message "%s" "htmlize done, but no change necessary.")
+                    (progn
+                      (delete-region p1 p2)
+                      (insert resultStr) ) ) ) )) )) )) ))
 
 (defun xhm-precode-htmlized-p (inputStr)
   "return true if inputStr is htmlized code."
@@ -428,7 +431,63 @@ This command does the reverse of `xhm-htmlize-precode'."
   ))
 
 
-;; syntax coloring related
+;; syntax table
+(defvar xhm-syntax-table nil "Syntax table for `xah-html-mode'.")
+(setq xhm-syntax-table
+      (let ((synTable (make-syntax-table)))
+
+ (progn                                  ; all on US keyboard
+
+ ;; (modify-syntax-entry ?\" "\"" synTable)
+   (modify-syntax-entry ?' "w" synTable)
+
+ ;; (modify-syntax-entry ?, "." synTable)
+ ;; (modify-syntax-entry ?. "." synTable)
+ ;; (modify-syntax-entry ?: "." synTable)
+ ;; (modify-syntax-entry ?? "." synTable)
+ ;; (modify-syntax-entry ?\; "." synTable)
+
+ ;; (modify-syntax-entry ?! "." synTable)
+ ;; (modify-syntax-entry ?@ "." synTable)
+ ;; (modify-syntax-entry ?# "." synTable)
+ ;; (modify-syntax-entry ?$ "." synTable)
+ ;; (modify-syntax-entry ?% "." synTable)
+ ;; (modify-syntax-entry ?^ "." synTable)
+ ;; (modify-syntax-entry ?& "." synTable)
+ ;; (modify-syntax-entry ?* "." synTable)
+ ;; (modify-syntax-entry ?+ "." synTable)
+ ;; (modify-syntax-entry ?= "." synTable)
+ ;; (modify-syntax-entry ?/ "." synTable)
+ ;; (modify-syntax-entry ?\ "/" synTable)
+
+ ;; (modify-syntax-entry ?_ "_" synTable)
+ ;; (modify-syntax-entry ?- "w" synTable)
+
+ ;; (modify-syntax-entry ?( "(" synTable)
+ ;; (modify-syntax-entry ?) ")" synTable)
+ ;; (modify-syntax-entry ?[ "(" synTable)
+ ;; (modify-syntax-entry ?] ")" synTable)
+ ;; (modify-syntax-entry ?{ "(" synTable)
+ ;; (modify-syntax-entry ?} ")" synTable)
+        (modify-syntax-entry ?< "." synTable)
+        (modify-syntax-entry ?> "." synTable)
+
+ ;; (modify-syntax-entry ?| "." synTable)
+ ;; (modify-syntax-entry ?` "." synTable)
+ ;; (modify-syntax-entry ?~ "." synTable)
+ )
+
+        (modify-syntax-entry ?“ "(" synTable)
+        (modify-syntax-entry ?” ")" synTable)
+        (modify-syntax-entry ?‘ "(" synTable)
+        (modify-syntax-entry ?’ ")" synTable)
+
+;; (modify-syntax-entry ?“ "\"" synTable)
+;; (modify-syntax-entry ?” "\"" synTable)
+
+        synTable))
+
+
 
 (defface xhm-curly“”-quoted-text-face
   '((((class color) (min-colors 88) (background light)) (:foreground "#458b00"))
@@ -438,7 +497,7 @@ This command does the reverse of `xhm-htmlize-precode'."
     (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
     (t (:inverse-video t :weight bold)))
   "Face used for curly quoted text."
-  :group 'languages)
+  :group 'xah-html-mode)
 
 (defface xhm-curly‘’-quoted-text-face
   '((((class color) (min-colors 88) (background light)) (:foreground "#ffa500"))
@@ -448,50 +507,7 @@ This command does the reverse of `xhm-htmlize-precode'."
     (((class color) (min-colors 8)) (:foreground "blue" :weight bold))
     (t (:inverse-video t :weight bold)))
   "Face used for curly quoted text."
-  :group 'languages)
-
-(setq xhm-font-lock-keywords
-      (let (
-            (htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
-            (htmlAttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
-            (cssPropertieNames (regexp-opt xhm-css-property-names 'words) )
-            (cssValueNames (regexp-opt xhm-css-value-kwds 'words) )
-            (cssColorNames (regexp-opt xhm-css-color-names 'words) )
-            (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
-            )
-        `(
-          ;; ("\"\\([^\"]+?\\)\"" . (1 font-lock-string-face))
-          ("<!--\\|-->" . font-lock-comment-delimiter-face)
-          ("<!--\\([^-]+?\\)-->" . (1 font-lock-comment-face))
-          ("“\\([^”]+?\\)”" . (1 'xhm-curly“”-quoted-text-face))
-          ("‘\\([^’]+?\\)’" . (1 'xhm-curly‘’-quoted-text-face))
-          ("「\\([^」]+\\)」" . (1 font-lock-string-face))
-
-
-          ("<span class=\"xnt\">\\([^<]+?\\)</span>" . (1 "hi-pink"))
-;          ("<b>\\([^<]+?\\)</b>" . (1 "bold"))
-          ("<mark\\( *[^>]+?\\)*>\\([^<]+?\\)</mark>" . (2 "hi-yellow"))
-          ("<b\\( *[^>]+?\\)*>\\([^<]+?\\)</b>" . (2 "bold"))
-          ("<h[1-6]>\\([^<]+?\\)</h[1-6]>" . (1 "bold"))
-          ("<title>\\([^<]+?\\)</title>" . (1 "bold"))
-          (,htmlElementNamesRegex . font-lock-function-name-face)
-          (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
-          (,cssPropertieNames . font-lock-type-face)
-          (,cssValueNames . font-lock-keyword-face)
-          (,cssColorNames . font-lock-preprocessor-face)
-          (,cssUnitNames . font-lock-reference-face)
-          ) ) )
-
-;;font-lock-comment-delimiter-face
-;;font-lock-comment-face
-;;font-lock-doc-face
-;;font-lock-negation-char-face
-;;font-lock-preprocessor-face
-;;font-lock-reference-face
-;;font-lock-string-face
-;;font-lock-type-face
-;;font-lock-variable-name-face
-;;font-lock-warning-face
+  :group 'xah-html-mode)
 
 
 ;; keybinding
@@ -500,68 +516,11 @@ This command does the reverse of `xhm-htmlize-precode'."
 (progn
   (setq xhm-keymap (make-sparse-keymap))
 ;  (define-key xhm-keymap [remap comment-dwim] 'xhm-comment-dwim)
-  ;; (define-key xhm-keymap (kbd "C-c /") 'sgml-close-tag)
-  (define-key xhm-keymap (kbd "C-c C-d") 'xhm-delete-tag)
-  ;; (define-key xhm-keymap (kbd "C-c <delete>") 'sgml-delete-tag)
-  (define-key xhm-keymap (kbd "C-c C-r") 'xhm-skip-tag-forward)
-  (define-key xhm-keymap (kbd "C-c C-g") 'xhm-skip-tag-backward)
+;  (define-key xhm-keymap (kbd "C-c /") 'xhm-sgml-close-tag)
+;  (define-key xhm-keymap (kbd "C-c <delete>") 'xhm-delete-tag)
+  (define-key xhm-keymap (kbd "<C-right>") 'xhm-skip-tag-forward)
+  (define-key xhm-keymap (kbd "<C-left>") 'xhm-skip-tag-backward)
 )
-
-
-;; syntax table
-(defvar xhm-syntax-table nil "Syntax table for `xah-html-mode'.")
-(setq xhm-syntax-table
-      (let ((synTable (make-syntax-table)))
-
-;; (progn                                  ; all on US keyboard
-
-;; (modify-syntax-entry ?\" "\"" synTable)
-;; (modify-syntax-entry ?' "w" synTable)
-
-;; (modify-syntax-entry ?, "." synTable)
-;; (modify-syntax-entry ?. "." synTable)
-;; (modify-syntax-entry ?: "." synTable)
-;; (modify-syntax-entry ?? "." synTable)
-;; (modify-syntax-entry ?\; "." synTable)
-
-;; (modify-syntax-entry ?! "." synTable)
-;; (modify-syntax-entry ?@ "." synTable)
-;; (modify-syntax-entry ?# "." synTable)
-;; (modify-syntax-entry ?$ "." synTable)
-;; (modify-syntax-entry ?% "." synTable)
-;; (modify-syntax-entry ?^ "." synTable)
-;; (modify-syntax-entry ?& "." synTable)
-;; (modify-syntax-entry ?* "." synTable)
-;; (modify-syntax-entry ?+ "." synTable)
-;; (modify-syntax-entry ?= "." synTable)
-;; (modify-syntax-entry ?/ "." synTable)
-;; (modify-syntax-entry ?\ "/" synTable)
-
-;; (modify-syntax-entry ?_ "_" synTable)
-;; (modify-syntax-entry ?- "w" synTable)
-
-;; (modify-syntax-entry ?( "(" synTable)
-;; (modify-syntax-entry ?) ")" synTable)
-;; (modify-syntax-entry ?[ "(" synTable)
-;; (modify-syntax-entry ?] ")" synTable)
-;; (modify-syntax-entry ?{ "(" synTable)
-;; (modify-syntax-entry ?} ")" synTable)
-;; (modify-syntax-entry ?< "(" synTable)
-;; (modify-syntax-entry ?> ")" synTable)
-
-;; (modify-syntax-entry ?| "." synTable)
-;; (modify-syntax-entry ?` "." synTable)
-;; (modify-syntax-entry ?~ "." synTable)
-;; )
-
-        (modify-syntax-entry ?< "." synTable)
-        (modify-syntax-entry ?> "." synTable)
-        (modify-syntax-entry ?' "w" synTable)
-
-;; (modify-syntax-entry ?“ "\"" synTable)
-;; (modify-syntax-entry ?” "\"" synTable)
-
-        synTable))
 
 
 
@@ -701,13 +660,13 @@ Also delete the matching beginning/ending tag."
 (defun xhm-skip-tag-forward ()
   "Move cursor to the closing tag."
   (interactive)
-  ;; (sgml-skip-tag-forward 1)
+  (sgml-skip-tag-forward 1)
   )
 
 (defun xhm-skip-tag-backward ()
   "Move cursor to the beginning tag."
   (interactive)
-  ;; (sgml-skip-tag-backward 1)
+  (sgml-skip-tag-backward 1)
   )
 
 (defun xhm-change-current-tag ()
@@ -727,7 +686,7 @@ this is a quick 1 min hackjob, works only when there's no nesting."
     (delete-char (- (length oldTagName)))
     (insert newTagName)
 
-    (progn 
+    (progn
       (goto-char p1)
       (search-forward ">")
       (setq p2  (point) )
@@ -750,7 +709,6 @@ this is a quick 1 min hackjob, works only when there's no nesting."
                  (progn (delete-region p1 p2 )
                       (goto-char p1)
                       (insert newClassName) ) ) ) ) ) ))
-
 
 (defun xhm-comment-dwim (arg)
 "Comment or uncomment current line or region in a smart way.
@@ -1409,6 +1367,81 @@ For detail on exactly which string are changed, see `xhm-emacs-to-windows-kbd-no
     (insert
      (xhm-emacs-to-windows-kbd-notation-string inputStr) ) ) )
 
+(defun xhm-htmlize-elisp-keywords (p1 p2)
+  "Replace curly quoted elisp function/variable names to HTML markup.
+
+Example:
+ Call “sort-lines” to sort.
+    ⇓
+ Call <code class=\"elisp-ƒ\">sort-lines</code> to sort.
+
+ Set “fill-column”
+    ⇓
+ Set <var class=\"elisp\">fill-column</var>
+
+Works on text selection or current text block.
+
+When called in lisp program, the arguments p1 p2 are region positions.
+
+Note: a word is changed only if all of the following are true:
+
+• The symbol string is tightly enclosed in double curly quotes, e.g. “sort-lines” but not “use sort-lines”.
+• `fboundp' or `boundp' returns true (for function and variable.).
+• symbol string's char contains only alphanumeric or hyphen, even though elisp identifier allows many other chars. e.g. `yas/reload-all', `color-cie-ε'.
+
+This command also makes a report of changed items.
+
+Some issues:
+
+• Some words are common in other lang, e.g. “while”, “print”, “string”, unix “find”, “grep”, HTML's “kbd” tag, etc. But they are also built-in elisp symbols. This command will tag them, but you may not want that.
+
+• Some function/variable are from 3rd party libs, and some are not bundled with GNU emacs , e.g. 「'cl」, 「'htmlize」. They may or may not be tagged depending whether they've been loaded."
+  ;; (interactive (let ((bds (get-selection-or-unit 'block))) (list (elt bds 1) (elt bds 2) ) ) )
+  (interactive
+   (cond
+    ((equal current-prefix-arg nil)    ; universal-argument not called
+     (let ((bds (get-selection-or-unit 'block))) (list (elt bds 1) (elt bds 2) ) ))
+    (t                                  ; all other cases
+     (list (point-min) (point-max) )) ) )
+  (let*
+      (inputStr 
+       resultStr
+       (changedItems nil)
+       (elispIdentifierRegex "\\([-A-Za-z0-9]+\\)")
+       (wantedRegex (concat "“" elispIdentifierRegex "”") )
+       )
+    (setq inputStr (buffer-substring-no-properties p1 p2) )
+    (setq resultStr
+            (let ( mStr (case-fold-search nil) (ξsomeStr inputStr) )
+              (with-temp-buffer
+                (insert ξsomeStr)
+                (goto-char 1)
+                (while (search-forward-regexp wantedRegex (point-max) t)
+                  (setq mStr (match-string 1) )
+                  (cond
+                   ((fboundp (intern mStr))
+                    (progn
+                      (setq changedItems (cons (format "ƒ %s" mStr) changedItems ) )
+                      (replace-match (concat "<code class=\"elisp-ƒ\">" mStr "</code>") t t)
+                      ))
+                   ((boundp (intern mStr))
+                    (progn
+                      (setq changedItems (cons (format "υ %s" mStr) changedItems ) )
+                      (replace-match (concat "<var class=\"elisp\">" mStr "</var>") t t)
+                       ))
+                   (t "do nothing")
+                   ) )
+                (buffer-string)
+                ) ))    
+    (if (equal (length changedItems) 0)
+        (progn (message "%s" "No change needed."))
+      (progn
+            (delete-region p1 p2)
+            (insert resultStr)
+            (with-output-to-temp-buffer "*changed items*"
+              (mapcar (lambda (x) (princ x) (princ "\n") ) (reverse changedItems)) )
+         ) ) ))
+
 (defun xhm-htmlize-keyboard-shortcut-notation ()
   "Wrap a “kbd” tag around keyboard keys on text selection or current text inside 【】.
 Example: 【ctrl+w】 ⇒ 【<kbd>Ctrl</kbd>+<kbd>w</kbd>】
@@ -1605,7 +1638,7 @@ If `universal-argument' is called first, then also prompt for a “class” attr
       (setq p1 (elt bds 1) )
       (setq p2 (elt bds 2) )
       (xhm-add-open/close-tag tagName className p1 p2)
-      
+
       (when ; put cursor between when input text is empty
           (equal p1 p2)
           (progn (search-backward "</" ) )
@@ -1665,23 +1698,56 @@ When cursor is in HTML link file path, e.g.  <img src=\"gki/macosxlogo.png\" > a
   "ξhtml"
   "A simple major mode for HTML5.
 HTML5 keywords are colored.
-Basically that's it.
 
-beta stage. Mostly just used by me. There are about 20 functions that act on HTML. They have inline doc. But don't have keys. No over-all doc.
+see file header for currrent status.
 
 \\{xhm-keymap}"
+
+  (setq xhm-font-lock-keywords
+        (let (
+              (htmlElementNamesRegex (regexp-opt xhm-html5-tag-list 'words))
+              (htmlAttributeNamesRegexp (regexp-opt xhm-attribute-names 'words))
+              (cssPropertieNames (regexp-opt xhm-css-property-names 'words) )
+              (cssValueNames (regexp-opt xhm-css-value-kwds 'words) )
+              (cssColorNames (regexp-opt xhm-css-color-names 'words) )
+              (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
+
+              (attriRegex " *\\([ =\"-_a-z]*?\\)")
+;              (textNodeRegex "\\([ -_A-Za-z]+?\\)")
+              (textNodeRegex "\\([ [:graph:]]+?\\)")
+              )
+          `(
+
+            ;; todo these multiline regex are bad. see elisp manual
+            ("<!--\\|-->" . font-lock-comment-delimiter-face)
+            (,(format "<!--%s-->" textNodeRegex) . (1 font-lock-comment-face))
+            (,(format "“%s”" textNodeRegex) . (1 'xhm-curly“”-quoted-text-face))
+            (,(format "‘%s’" textNodeRegex) . (1 'xhm-curly‘’-quoted-text-face))
+
+            (,(format "<span%s>%s</span>" attriRegex textNodeRegex) . (2 "hi-pink"))
+            (,(format "<mark%s>%s</mark>" attriRegex textNodeRegex) . (2 "hi-yellow"))
+            (,(format "<b%s>%s</b>" attriRegex textNodeRegex) . (2 "bold"))
+            (,(format "<h\\([1-6]\\)>%s</h\\1>" textNodeRegex) . (2 "bold"))
+            (,(format "<title>%s</title>" textNodeRegex) . (1 "bold"))
+
+            (,htmlElementNamesRegex . font-lock-function-name-face)
+            (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
+            (,cssPropertieNames . font-lock-type-face)
+            (,cssValueNames . font-lock-keyword-face)
+            (,cssColorNames . font-lock-preprocessor-face)
+            (,cssUnitNames . font-lock-reference-face)
+            ) ) )
 
   (setq font-lock-defaults '((xhm-font-lock-keywords)))
 
   (set-syntax-table xhm-syntax-table)
   (use-local-map xhm-keymap)
 
-
   (set (make-local-variable 'comment-start) "<!-- ")
   (set (make-local-variable 'comment-end) " -->")
 
-;;  (setq mode-name "xah-html")
+  ;;  (setq mode-name "xah-html")
   (run-mode-hooks 'xah-html-mode-hook)
-)
+  )
 
 (provide 'xah-html-mode)

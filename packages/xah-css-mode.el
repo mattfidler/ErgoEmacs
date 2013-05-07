@@ -9,11 +9,12 @@
 ;; You can redistribute this program and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either GPL version 2 or 3.
 
 ;;; Commentary:
-;; Major mode for editing CSS code. Alpha stage.
+;; Major mode for editing CSS code. Beta stage.
+;; home page http://ergoemacs.org/emacs/xah-css-mode.html
 
 ;;; HISTORY
 
-;; version 0.3, 2013-04-30 added xcm-hex-color-to-hsl, and other improvements
+;; version 0.3, 2013-05-02 added xcm-hex-color-to-hsl, and other improvements.
 ;; version 0.2, 2013-04-22 added xcm-compact-css-region
 ;; version 0.1, 2013-04-18 first version
 
@@ -43,7 +44,7 @@ Example output: hsl(100,24%,82%);"
          (currentWord (buffer-substring-no-properties p1 p2)))
 
     (if (string-match "[a-fA-F0-9]\\{6\\}" currentWord)
-        (progn 
+        (progn
           (delete-region p1 p2 )
           (if (looking-back "#") (delete-char -1))
           (insert (xcm-hex-to-hsl-color currentWord )))
@@ -122,16 +123,21 @@ WARNING: not robust."
 (setq xcm-property-names
 '(
 
-;:hover
-;:after
-;:before
-;:visited
-;:link
-;@media
-
-"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-top" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font-family" "font-size" "font-style" "font-weight" "height" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
+"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-right" "border-style" "border-top" "border-width" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font" "font-family" "font-size" "font-style" "font-weight" "height" "letter-spacing" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
 
 ) )
+
+(defvar xcm-pseudo-selector-names nil "a list of CSS pseudo selector names.")
+(setq xcm-pseudo-selector-names '(
+"::after" "::before" "::choices" "::first-letter" "::first-line" "::repeat-index" "::repeat-item" "::selection" "::value" ":active" ":after" ":before" ":checked" ":default" ":dir" ":disabled" ":empty" ":enabled" ":first" ":first-child" ":first-letter" ":first-line" ":first-of-type" ":focus" ":fullscreen" ":hover" ":in-range" ":indeterminate" ":invalid" ":lang" ":last-child" ":last-of-type" ":left" ":link" ":not" ":nth-child" ":nth-last-child" ":nth-last-of-type" ":nth-of-type" ":only-child" ":only-of-type" ":optional" ":out-of-range" ":read-only" ":read-write" ":required" ":right" ":root" ":scope" ":target" ":valid" ":visited"
+
+) )
+
+(defvar xcm-media-xxx nil "a list of CSS xxxxx todo.")
+(setq xcm-media-xxx '(
+"@charset" "@document" "@font-face" "@import" "@keyframes" "@media" "@namespace" "@page" "@supports" "@viewport"
+"print" "screen"
+) ) ; todo
 
 (defvar xcm-unit-names nil "a list of CSS unite names.")
 (setq xcm-unit-names '("px" "pt" "pc" "cm" "mm" "in" "em" "ex" "%") )
@@ -140,27 +146,57 @@ WARNING: not robust."
 (setq xcm-value-kwds
 '(
 
-"!important" "absolute" "alpha" "auto" "avoid" "block" "bold" "both" "bottom" "break-word" "center" "collapse" "dashed" "dotted" "embed" "fixed" "help" "hidden" "hsl" "hsla" "inherit" "inline" "inline-block" "italic" "large" "left" "ltr" "middle" "monospace" "no-repeat" "none" "normal" "nowrap" "pointer" "relative" "rgb" "rgba" "right" "rtl" "sans-serif" "serif" "small" "smaller" "solid" "square" "static" "thin" "top" "transparent" "underline" "url" "x-large" "xx-large"
+"!important" "absolute" "alpha" "auto" "avoid" "block" "bold" "both" "bottom" "break-word" "center" "collapse" "dashed" "dotted" "embed" "fixed" "help" "hidden" "hsl" "hsla" "inherit" "inline" "inline-block" "italic" "large" "left" "line-through" "ltr" "middle" "monospace" "no-repeat" "none" "normal" "nowrap" "pointer" "relative" "rgb" "rgba" "right" "rtl" "sans-serif" "serif" "small" "smaller" "solid" "square" "static" "thin" "top" "transparent" "underline" "url" "x-large" "xx-large"
 
 ) )
+
+
+;; syntax table
+(defvar xcm-syntax-table nil "Syntax table for `xah-css-mode'.")
+(setq xcm-syntax-table
+      (let ((synTable (make-syntax-table)))
+
+;        (modify-syntax-entry ?0  "." synTable)
+;        (modify-syntax-entry ?1  "." synTable)
+;        (modify-syntax-entry ?2  "." synTable)
+;        (modify-syntax-entry ?3  "." synTable)
+;        (modify-syntax-entry ?4  "." synTable)
+;        (modify-syntax-entry ?5  "." synTable)
+;        (modify-syntax-entry ?6  "." synTable)
+;        (modify-syntax-entry ?7  "." synTable)
+;        (modify-syntax-entry ?8  "." synTable)
+;        (modify-syntax-entry ?9  "." synTable)
+
+        (modify-syntax-entry ?_ "." synTable)
+        (modify-syntax-entry ?: "." synTable)
+
+        (modify-syntax-entry ?- "_" synTable)
+        (modify-syntax-entry ?\/ ". 14" synTable) ; /* java style comment*/
+        (modify-syntax-entry ?* ". 23" synTable)
+        synTable))
 
 
 ;; syntax coloring related
 
 (setq xcm-font-lock-keywords
       (let (
-          (cssPropertieNames (regexp-opt xcm-property-names ) )
-          (cssValueNames (regexp-opt xcm-value-kwds ) )
-          (cssColorNames (regexp-opt xcm-color-names 'words) )
           (htmlTagNames (regexp-opt xcm-html-tag-names 'words) )
-          (cssUnitNames (regexp-opt xcm-unit-names ) )
+          (cssPropertieNames (regexp-opt xcm-property-names 'symbols ) )
+          (cssValueNames (regexp-opt xcm-value-kwds 'symbols ) )
+          (cssColorNames (regexp-opt xcm-color-names 'symbols) )
+          (cssUnitNames (regexp-opt xcm-unit-names 'symbols ) )
+          (cssPseudoSelectorNames (regexp-opt xcm-pseudo-selector-names ) )
+          (cssxxxtodo (regexp-opt xcm-media-xxx 'symbols) )
           )
         `(
           (,cssPropertieNames . font-lock-type-face)
           (,cssValueNames . font-lock-keyword-face)
           (,cssColorNames . font-lock-constant-face)
-          (,htmlTagNames . font-lock-function-name-face)
           (,cssUnitNames . font-lock-builtin-face)
+          (,cssPseudoSelectorNames . font-lock-preprocessor-face)
+          (,cssxxxtodo . font-lock-reference-face)
+          (,htmlTagNames . font-lock-function-name-face)
+
           ("'[^']+'" . font-lock-string-face)
           ) ) )
 
@@ -182,15 +218,6 @@ WARNING: not robust."
   (setq xcm-keymap (make-sparse-keymap))
 ;  (define-key xcm-keymap [remap comment-dwim] 'xcm-comment-dwim)
 )
-
-
-;; syntax table
-(defvar xcm-syntax-table nil "Syntax table for `xah-css-mode'.")
-(setq xcm-syntax-table
-      (let ((synTable (make-syntax-table)))
-        (modify-syntax-entry ?\/ ". 14" synTable) ; /* java style comment*/
-        (modify-syntax-entry ?* ". 23" synTable)
-        synTable))
 
 
 
