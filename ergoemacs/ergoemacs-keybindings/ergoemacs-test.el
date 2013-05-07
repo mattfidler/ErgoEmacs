@@ -81,9 +81,14 @@
     (setq ret (and ret test))
     (message "Test Issue #128: %s" test)
     
-    (setq test (ergoemacs-test-global-key-set-before nil "<apps> m"))
+    ;; (setq test (ergoemacs-test-global-key-set-before nil "<apps> m"))
+    ;; (setq ret (and ret test))
+    ;; (message "Test Issue #128a: %s" test)
+    
+    (setq test (ergoemacs-test-global-key-set-before
+                'after "<apps> m" 'ergoemacs-key))
     (setq ret (and ret test))
-    (message "Test Issue #128a: %s" test)
+    (message "Test Issue #128b: %s" test)
     
     (message "Overall test: %s" ret)))
 
@@ -166,6 +171,19 @@
     (ergoemacs-mode 1)
     (symbol-value 'ret)))
 
+(defun ergoemacs-issue-130 ()
+  "Tries to test ergoemacs Issue #130"
+  (interactive)
+  (let ((emacs-exe (ergoemacs-test-emacs-exe))
+        (temp-file (make-temp-file "ergoemacs-test" nil ".el"))
+        (temp-elpa (make-temp-file "ergoemacs-test" t)))
+    (make-directory temp-elpa t)
+    (with-temp-file temp-file
+      (insert (format "(when (>= emacs-major-version 24) (require 'package)\n(add-to-list 'package-archives '(\"melpa\" . \"http://melpa.milkbox.net/packages/\") t)(setq package-user-dir \"%s\")(package-initialize)(package-refresh-contents)(package-install 'ergoemacs-mode) (ergoemacs-mode 1))" temp-elpa)))
+    (message "%s"
+             (shell-command-to-string
+              (format "%s -Q -l %s" emacs-exe temp-file)))))
+
 (defun ergoemacs-test-emacs-exe ()
   "Get the emacs executable for testing purposes."
   (let ((emacs-exe (invocation-name))
@@ -174,7 +192,7 @@
     (setq full-exe (expand-file-name emacs-exe emacs-dir))
     (symbol-value 'full-exe)))
 
-(defun ergoemacs-test-global-key-set-before (&optional after key)
+(defun ergoemacs-test-global-key-set-before (&optional after key ergoemacs)
   "Test the global key set before ergoemacs-mode is loaded."
   (let* ((emacs-exe (ergoemacs-test-emacs-exe))
         (ret nil)
@@ -182,7 +200,10 @@
         (test-key (or key "M-k"))
         (w-file (expand-file-name "global-test" ergoemacs-dir))
         (temp-file (make-temp-file "ergoemacs-test" nil ".el")))
-    (setq sk (format "(global-set-key (kbd \"%s\") (lambda() (interactive) (with-temp-file \"%s\" (insert \"Ok\"))))" test-key
+    (setq sk (format "(%s (lambda() (interactive) (with-temp-file \"%s\" (insert \"Ok\"))))"
+                     (if ergoemacs
+                         (format "ergoemacs-key \"%s\" " test-key)
+                       (format "global-set-key (kbd \"%s\") " test-key))
                      w-file))
     (with-temp-file temp-file
       (insert "(condition-case err (progn")
@@ -208,7 +229,6 @@
       (setq ret 't)
       (delete-file w-file))
     (symbol-value 'ret)))
-
 
 (provide 'ergoemacs-test)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
