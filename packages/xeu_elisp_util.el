@@ -19,7 +19,6 @@
 ;; get-image-dimensions-imk
 ;; get-string-from-file
 ;; read-lines
-;; get-html-file-title
 ;; delete-subdirs-by-regex
 ;; delete-files-by-regex
 ;; trim-string
@@ -45,6 +44,7 @@
 
 ;;; HISTORY
 
+;; version 1.4.19, 2013-05-10 “get-html-file-title” moved to xah-html-mode.el and name is now “xhm-get-html-file-title”
 ;; version 1.4.18, 2013-02-22 removed delete-subdirs-by-regex and delete-files-by-regex . These are either buggy or very inefficient. Pending work.
 ;; version 1.4.17, 2013-01-27 for unit-at-cursor for arg 'filepath, added no-break space as delimiter.
 ;; version 1.4.16, 2012-12-29 changed implementation for unit-at-cursor for arg 'filepath
@@ -61,7 +61,7 @@
 ;; version 1.4.5, 2011-11-14 corrected a critical error in “asciify-text”.
 ;; version 1.4.4, 2011-11-14 added function “asciify-text”.
 ;; version 1.4.3, 2011-11-06 unit-at-cursor with 「'block」 argument will work when the text block is at beginning/end of buffer. Also, lines with just space or tab is also considered a empty line.
-;; version 1.4.2, 2011-10-30 trivial implementation change on “get-html-file-title”. No user visible effect.
+;; version 1.4.2, 2011-10-30 trivial implementation change on “xhm-get-html-file-title”. No user visible effect.
 ;; version 1.4.1, 2011-09-29 fixed a error in “trim-string”.
 ;; version 1.4, 2011-09-16 added “trim-string”.
 ;; version 1.3, 2011-08-27 fixed a bug in “unit-at-cursor” when argument is 「'block」. Now it doesn't grab a extra line ending.
@@ -279,14 +279,14 @@ See also: `get-image-dimensions'."
 
 
 
-;; 2013-02-21 INCORRECT behavior. 
+;; 2013-02-21 INCORRECT behavior.
 ;(defun delete-subdirs-by-regex (ξdir regex-pattern)
 ;  "Delete sub-directories in ξdir whose path matches REGEX-PATTERN."
 ;  (require 'find-lisp)
 ;  (mapc
 ;   (lambda (ξx) (when (file-directory-p ξx)
 ;;;(delete-directory ξx t)
-;                  (print ξx)                     
+;                  (print ξx)
 ;                  ))
 ;   (find-lisp-find-files ξdir regex-pattern)) )
 
@@ -301,18 +301,6 @@ See also: `get-image-dimensions'."
                     (delete-file ξx)
                   ) )
    (find-lisp-find-files ξdir regex-pattern)) )
-
-
-(defun get-html-file-title (fName)
-  "Return FNAME <title> tag's text.
-Assumes that the file contains the string
-“<title>…</title>”."
-  (with-temp-buffer
-      (insert-file-contents fName nil nil nil t)
-      (goto-char 1)
-      (buffer-substring-no-properties
-       (search-forward "<title>") (- (search-forward "</title>") 8))
-      ))
 
 
 (defun trim-string (string)
@@ -431,16 +419,6 @@ list."
             (replace-regexp-pairs-region (point-min) (point-max) strPairs t t)
             ) ) ) ) ) )
 
-(defun current-date-time-string ()
-  "Returns current date-time string in full ISO 8601 format.
-Example: 「2012-04-05T21:08:24-07:00」.
-
-Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are valid ISO 8601. However, Atom Webfeed spec seems to require 「hh:mm」."
-  (concat
-   (format-time-string "%Y-%m-%dT%T")
-   ((lambda (ξx) (format "%s:%s" (substring ξx 0 3) (substring ξx 3 5))) (format-time-string "%z")) )
-  )
-
 (defun hash-to-list (hashtable)
   "Return a list that represent the hashtable.
 Each element is a list: (list key value)."
@@ -457,5 +435,151 @@ GNU Emacs 24.1.1 (i386-mingw-nt6.1.7601) of 2012-06-10 on MARVIN
 "
   (file-relative-name
      (replace-regexp-in-string "\\`C:/" "c:/" ξfilePath  "FIXEDCASE" "LITERAL") ξdirPath ) )
+
+
+
+(defvar month-full-names '("January" "February" "March" "April" "May" "June" "July" "August" "September" "October" "November" "December") "list of English month full names.")
+
+(defvar month-abbrev-names (mapcar (lambda (x) (substring x 0 3)) month-full-names) "list of English month 3-letter abbrev names.")
+
+(defvar weekday-names '("Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday" "Sunday") "list of English weekday full names.")
+
+(defun current-date-time-string ()
+  "Returns current date-time string in full ISO 8601 format.
+Example: 「2012-04-05T21:08:24-07:00」.
+
+Note, for the time zone offset, both the formats 「hhmm」 and 「hh:mm」 are valid ISO 8601. However, Atom Webfeed spec seems to require 「hh:mm」."
+  (concat
+   (format-time-string "%Y-%m-%dT%T")
+   ((lambda (ξx) (format "%s:%s" (substring ξx 0 3) (substring ξx 3 5))) (format-time-string "%z")) )
+  )
+
+(defun is-datetimestamp-p (inputString)
+  "Return t if inputString is a date/time stamp, else nil.
+This is based on heuristic, so it's not 100% correct.
+If the string contains any month names, weekday names, or of the form dddd-dd-dd, dddd-dd-dddd, dddd-dd-dd, or using slash, then it's considered a date.
+"
+  (cond
+         ((string-match (regexp-opt (append month-full-names month-abbrev-names weekday-names) 'words) inputString) t)
+         ;; mm/dd/yyyy
+         ((string-match "\\b[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]\\b" inputString) t)
+         ;; yyyy/mm/dd
+         ((string-match "\\b[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]\\b" inputString) t)
+         ;; mm/dd/yy
+         ((string-match "\\b[0-9][0-9]/[0-9][0-9]/[0-9][0-9]\\b" inputString) t)
+         ;; mm-dd-yyyy
+         ((string-match "\\b[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]\\b" inputString) t)
+         ;; yyyy-mm-dd
+         ((string-match "\\b[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\b" inputString) t)
+         ;; mm-dd-yy
+         ((string-match "\\b[0-9][0-9]-[0-9][0-9]-[0-9][0-9]\\b" inputString) t)
+         (t nil) ))
+
+(defun fix-datetimestamp (ξinput-string &optional ξfrom-to)
+  "Change timestamp under cursor into a yyyy-mm-dd format.
+If there's a text selection, use that as input, else use current line.
+
+Any “day of week”, or “time” info, or any other parts of the string, are discarded.
+For example:
+ 「TUESDAY, FEB 15, 2011 05:16 ET」 ⇒ 「2011-02-15」
+ 「November 28, 1994」              ⇒ 「1994-11-28」
+ 「Nov. 28, 1994」                  ⇒ 「1994-11-28」
+ 「11/28/1994」                     ⇒ 「1994-11-28」
+ 「1994/11/28」                     ⇒ 「1994-11-28」
+
+When called in lisp program, the optional second argument “ξfrom-to” is a vector [from to] of region boundary. (it can also be a list)
+If “ξfrom-to” is non-nil, the region is taken as input (and “ξinput-string” is ignored).
+
+Code detail: URL `http://ergoemacs.org/emacs/elisp_parse_time.html'"
+  (interactive
+   (progn
+     (require 'xeu_elisp_util)
+     (let ((bds (get-selection-or-unit 'line)))
+       (list nil (vector (elt bds 1) (elt bds 2))) )
+     )
+   )
+  (let (
+        (ξstr (if ξfrom-to (buffer-substring-no-properties (elt ξfrom-to 0) (elt ξfrom-to 1) ) ξinput-string))
+        (workOnRegionP (if ξfrom-to t nil)))
+    (require 'parse-time)
+
+    (setq ξstr (replace-regexp-in-string "^ *\\(.+\\) *$" "\\1" ξstr)) ; remove white spaces
+
+    (setq ξstr
+          (cond
+           ;; USA convention of mm/dd/yyyy
+           ((string-match "\\([0-9][0-9]\\)/\\([0-9][0-9]\\)/\\([0-9][0-9][0-9][0-9]\\)" ξstr)
+            (concat (match-string 3 ξstr) "-" (match-string 1 ξstr) "-" (match-string 2 ξstr))
+            )
+           ;; USA convention of m/dd/yyyy
+           ((string-match "\\([0-9]\\)/\\([0-9][0-9]\\)/\\([0-9][0-9][0-9][0-9]\\)" ξstr)
+            (concat (match-string 3 ξstr) "-0" (match-string 1 ξstr) "-" (match-string 2 ξstr))
+            )
+
+           ;; USA convention of mm/dd/yy
+           ((string-match "\\([0-9][0-9]\\)/\\([0-9][0-9]\\)/\\([0-9][0-9]\\)" ξstr)
+            (concat (format-time-string "%C") (match-string 3 ξstr) "-" (match-string 1 ξstr) "-" (match-string 2 ξstr))
+            )
+           ;; USA convention of m/dd/yy
+           ((string-match "\\([0-9]\\)/\\([0-9][0-9]\\)/\\([0-9][0-9]\\)" ξstr)
+            (concat (format-time-string "%C") (match-string 3 ξstr) "-0" (match-string 1 ξstr) "-" (match-string 2 ξstr))
+            )
+
+           ;; yyyy/mm/dd
+           ((string-match "\\([0-9][0-9][0-9][0-9]\\)/\\([0-9][0-9]\\)/\\([0-9][0-9]\\)" ξstr)
+            (concat (match-string 1 ξstr) "-" (match-string 2 ξstr) "-" (match-string 3 ξstr))
+            )
+
+           ;; some ISO 8601. yyyy-mm-ddThh:mm
+           ((string-match "\\([0-9][0-9][0-9][0-9]\\)-\\([0-9][0-9]\\)-\\([0-9][0-9]\\)T[0-9][0-9]:[0-9][0-9]" ξstr)
+            (concat (match-string 1 ξstr) "-" (match-string 2 ξstr) "-" (match-string 3 ξstr))
+            )
+           ;; some ISO 8601. yyyy-mm-dd
+           ((string-match "\\([0-9][0-9][0-9][0-9]\\)-\\([0-9][0-9]\\)-\\([0-9][0-9]\\)" ξstr)
+            (concat (match-string 1 ξstr) "-" (match-string 2 ξstr) "-" (match-string 3 ξstr))
+            )
+           ;; some ISO 8601. yyyy-mm
+           ((string-match "\\([0-9][0-9][0-9][0-9]\\)-\\([0-9][0-9]\\)" ξstr)
+            (concat (match-string 1 ξstr) "-" (match-string 2 ξstr))
+            )
+
+           ;; else
+           (t
+            (progn
+              (setq ξstr (replace-regexp-in-string "January " "Jan. " ξstr))
+              (setq ξstr (replace-regexp-in-string "February " "Feb. " ξstr))
+              (setq ξstr (replace-regexp-in-string "March " "Mar. " ξstr))
+              (setq ξstr (replace-regexp-in-string "April " "Apr. " ξstr))
+              (setq ξstr (replace-regexp-in-string "May " "May. " ξstr))
+              (setq ξstr (replace-regexp-in-string "June " "Jun. " ξstr))
+              (setq ξstr (replace-regexp-in-string "July " "Jul. " ξstr))
+              (setq ξstr (replace-regexp-in-string "August " "Aug. " ξstr))
+              (setq ξstr (replace-regexp-in-string "September " "Sep. " ξstr))
+              (setq ξstr (replace-regexp-in-string "October " "Oct. " ξstr))
+              (setq ξstr (replace-regexp-in-string "November " "Nov. " ξstr))
+              (setq ξstr (replace-regexp-in-string "December " "Dec. " ξstr))
+
+              (setq ξstr (replace-regexp-in-string "\\([0-9]+\\)st" "\\1" ξstr))
+              (setq ξstr (replace-regexp-in-string "\\([0-9]+\\)nd" "\\1" ξstr))
+              (setq ξstr (replace-regexp-in-string "\\([0-9]+\\)rd" "\\1" ξstr))
+              (setq ξstr (replace-regexp-in-string "\\([0-9]\\)th" "\\1" ξstr))
+
+              (let (dateList ξyear ξmonth ξdate ξyyyy ξmm ξdd )
+                (setq dateList (parse-time-string ξstr))
+                (setq ξyear (nth 5 dateList))
+                (setq ξmonth (nth 4 dateList))
+                (setq ξdate (nth 3 dateList))
+
+                (setq ξyyyy (number-to-string ξyear))
+                (setq ξmm (if ξmonth (format "%02d" ξmonth) "" ) )
+                (setq ξdd (if ξdate (format "%02d" ξdate) "" ) )
+                (concat ξyyyy "-" ξmm "-" ξdd) ) ) ) ) )
+
+    (if workOnRegionP
+        (progn (delete-region  (elt ξfrom-to 0) (elt ξfrom-to 1) )
+               (insert ξstr) )
+      ξstr ) ))
+
+
 
 (provide 'xeu_elisp_util)

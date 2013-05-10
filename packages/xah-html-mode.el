@@ -15,6 +15,7 @@
 
 ;;; HISTORY
 
+; 2013-05-10 improved on “xhm-make-citation”
 ; 2013-04-29 added xhm-change-current-tag
 ;; version 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
 ;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
@@ -36,7 +37,7 @@
 (require 'ido)
 (require 'xfrp_find_replace_pairs)
 (require 'xeu_elisp_util)
-;(require 'sgml-mode)
+(require 'sgml-mode)
 (require 'htmlize)
 (require 'hi-lock) ; uses its face definitions
 
@@ -248,6 +249,7 @@
            ("clojure" . ["clojure-mode" "clj"])
            ("css" . ["css-mode" "css"])
            ("elisp" . ["emacs-lisp-mode" "el"])
+           ("emacs-lisp" . ["xah-elisp-mode" "el"])
            ("haskell" . ["haskell-mode" "hs"])
            ("html" . ["html-mode" "html"])
            ("mysql" . ["sql-mode" "sql"])
@@ -787,6 +789,17 @@ The following HTML Entities are not replaced:
         (goto-char ξfrom)
         (insert outputStr) )) ) )
 
+(defun xhm-get-html-file-title (fName)
+  "Return FNAME <title> tag's text.
+Assumes that the file contains the string
+“<title>…</title>”."
+  (with-temp-buffer
+      (insert-file-contents fName nil nil nil t)
+      (goto-char 1)
+      (buffer-substring-no-properties
+       (search-forward "<title>") (- (search-forward "</title>") 8))
+      ))
+
 (defun xhm-lines-to-html-list ()
   "Make the current block of lines into a HTML list.
 Any URL in the line will be turned into links.
@@ -1017,6 +1030,7 @@ WARNING: this function extract all text of the form 「<a … href=\"…\" …>�
         (let ((printedResult (mapconcat 'identity urlList "\n")))
           (princ printedResult)
           (kill-new (mapconcat 'identity urlList "\n"))
+          (message "URLs placed in kill-ring.")
           ) ) )
     urlList ))
 
@@ -1066,32 +1080,54 @@ After execution, the lines will become
 
 <cite>Circus Maximalist</cite> <time>1994-09-12</time> By Paul Gray. @ <a href=\"http://www.time.com/time/magazine/article/0,9171,981408,00.html\">Source www.time.com</a>
 
-If there's a text selection, use it for input, otherwise the input is a text block between empty lines."
-  (interactive)
-  (let (bds p1 p2 inputText myList ξtitle ξauthor ξdate ξurl )
+If there's a text selection, use it for input, otherwise the input is a text block between empty lines.
 
-    (setq bds (get-selection-or-unit 'block))
-    (setq inputText (elt bds 0) )
-    (setq p1 (elt bds 1) )
-    (setq p2 (elt bds 2) )
+The order of lines for {title, author, date/time, url} needs not be in that order. Author should start with “by”.
+"
+  (interactive)
+  (let* (
+    (bds (get-selection-or-unit 'block))
+    (inputText (elt bds 0) )
+    (p1 (elt bds 1) )
+    (p2 (elt bds 2) )
+ myList ξtitle ξauthor ξdate ξurl )
 
     (setq inputText (replace-regexp-in-string "^[[:space:]]*" "" inputText)) ; remove white space in front
 
     (setq myList (split-string inputText "[[:space:]]*\n[[:space:]]*" t) )
 
-    (setq ξtitle (trim-string (elt myList 0)))
+    (let (x)
+      (while (> (length myList) 0)
+        (setq x (pop myList) )
+        (cond
+         ((string-match "^https?://" x ) (setq ξurl x))
+         ((string-match "^ *by " x ) (setq ξauthor x))
+         ((is-datetimestamp-p x) (setq ξdate x))
+         (t (setq ξtitle x))
+         )
+        )
+      )
+
+(message "title %s\n author %s\n date %s\n url %s" ξtitle ξauthor ξdate ξurl)
+
+    (when (null ξtitle) (error "I can't find “title”"))
+    (when (null ξauthor) (error "I can't find “author”"))
+    (when (null ξdate) (error "I can't find “date”"))
+    (when (null ξurl) (error "I can't find “url”"))
+
+    (setq ξtitle (trim-string ξtitle))
     (setq ξtitle (replace-regexp-in-string "^\"\\(.+\\)\"$" "\\1" ξtitle))
     (setq ξtitle (replace-pairs-in-string ξtitle '(["’" "'"] ["&" "＆"] )))
 
-    (setq ξauthor (trim-string (elt myList 1)))
-    (setq ξdate (trim-string (elt myList 2)))
-    (setq ξurl (trim-string (elt myList 3)))
-
+    (setq ξauthor (trim-string ξauthor))
     (setq ξauthor (replace-regexp-in-string "\\. " " " ξauthor)) ; remove period in Initals
     (setq ξauthor (replace-regexp-in-string "By +" "" ξauthor))
     (setq ξauthor (upcase-initials (downcase ξauthor)))
-    (setq ξdate (fix-timestamp ξdate))
 
+    (setq ξdate (trim-string ξdate))
+    (setq ξdate (fix-datetimestamp ξdate))
+
+    (setq ξurl (trim-string ξurl))
     (setq ξurl (with-temp-buffer (insert ξurl) (xhm-source-url-linkify 2) (buffer-string)))
 
     (delete-region p1 p2 )
@@ -1404,7 +1440,7 @@ Some issues:
     (t                                  ; all other cases
      (list (point-min) (point-max) )) ) )
   (let*
-      (inputStr 
+      (inputStr
        resultStr
        (changedItems nil)
        (elispIdentifierRegex "\\([-A-Za-z0-9]+\\)")
@@ -1432,7 +1468,7 @@ Some issues:
                    (t "do nothing")
                    ) )
                 (buffer-string)
-                ) ))    
+                ) ))
     (if (equal (length changedItems) 0)
         (progn (message "%s" "No change needed."))
       (progn
@@ -1712,9 +1748,12 @@ see file header for currrent status.
               (cssColorNames (regexp-opt xhm-css-color-names 'words) )
               (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
 
-              (attriRegex " *\\([ =\"-_a-z]*?\\)")
+;              (attriRegex " *= *\"\\([ -_a-z]*?\\)\"")
+              (attriRegex " +\\(?:[ =\"-_a-z]*?\\)") ; one or more attributes
+;              (attriRegex " *= *\\([^\n<]+?\\)")
 ;              (textNodeRegex "\\([ -_A-Za-z]+?\\)")
-              (textNodeRegex "\\([ [:graph:]]+?\\)")
+;              (textNodeRegex "\\([ [:graph:]]+?\\)")
+              (textNodeRegex "\\([^\n<]+?\\)") ; ← hack, to avoid multi-line
               )
           `(
 
@@ -1724,9 +1763,9 @@ see file header for currrent status.
             (,(format "“%s”" textNodeRegex) . (1 'xhm-curly“”-quoted-text-face))
             (,(format "‘%s’" textNodeRegex) . (1 'xhm-curly‘’-quoted-text-face))
 
-            (,(format "<span%s>%s</span>" attriRegex textNodeRegex) . (2 "hi-pink"))
-            (,(format "<mark%s>%s</mark>" attriRegex textNodeRegex) . (2 "hi-yellow"))
-            (,(format "<b%s>%s</b>" attriRegex textNodeRegex) . (2 "bold"))
+            (,(format "<span%s>%s</span>" attriRegex textNodeRegex) . (1 "hi-pink"))
+            (,(format "<mark%s>%s</mark>" attriRegex textNodeRegex) . (1 "hi-yellow"))
+            (,(format "<b%s>%s</b>" attriRegex textNodeRegex) . (1 "bold"))
             (,(format "<h\\([1-6]\\)>%s</h\\1>" textNodeRegex) . (2 "bold"))
             (,(format "<title>%s</title>" textNodeRegex) . (1 "bold"))
 
@@ -1736,6 +1775,7 @@ see file header for currrent status.
             (,cssValueNames . font-lock-keyword-face)
             (,cssColorNames . font-lock-preprocessor-face)
             (,cssUnitNames . font-lock-reference-face)
+
             ) ) )
 
   (setq font-lock-defaults '((xhm-font-lock-keywords)))
