@@ -444,6 +444,20 @@ GNU Emacs 24.1.1 (i386-mingw-nt6.1.7601) of 2012-06-10 on MARVIN
 
 (defvar weekday-names '("Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday" "Sunday") "list of English weekday full names.")
 
+(defun insert-date (&optional addTimeStamp-p)
+  "Insert current date and or time.
+
+• In this format yyyy-mm-dd.
+• When called with `universal-argument', insert date and time, e.g. 2012-05-28T07:06:23-07:00
+• Replaces text selection.
+
+See also `current-date-time-string'."
+  (interactive "P")
+  (when (region-active-p) (delete-region (region-beginning) (region-end) ) )
+  (cond
+   ((equal addTimeStamp-p nil ) (insert (format-time-string "%Y-%m-%d")))
+   (t (insert (current-date-time-string))) ) )
+
 (defun current-date-time-string ()
   "Returns current date-time string in full ISO 8601 format.
 Example: 「2012-04-05T21:08:24-07:00」.
