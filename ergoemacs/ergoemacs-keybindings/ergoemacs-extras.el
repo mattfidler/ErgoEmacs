@@ -204,26 +204,37 @@ Currently only supports two modifier plus key."
 
 (defun ergoemacs-get-layouts-ahk-ini ()
   "Gets the easymenu entry for ergoemacs-layouts."
-  (with-temp-buffer
-    (insert "[Layouts]\n")
-    (mapc
-     (lambda(lay)
-       (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
-              (alias (condition-case nil
-                         (indirect-variable variable)
-                       (error variable)))
-              (is-alias nil)
-              (doc nil))
-         (setq doc (or (documentation-property variable 'variable-documentation)
-                       (progn
-                         (setq is-alias t)
-                         (documentation-property alias 'variable-documentation))))
-         (insert lay)
-         (insert "=")
-         (insert doc)
-         (insert "\n")))
-     (ergoemacs-get-layouts))
-    (buffer-string)))
+  (let ((lay-ini "")
+        (i 0))
+    (with-temp-buffer
+      (insert "[Layouts]\n")
+      (mapc
+       (lambda(lay)
+         (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
+                (alias (condition-case nil
+                           (indirect-variable variable)
+                         (error variable)))
+                (is-alias nil)
+                (doc nil))
+           (setq doc (or (documentation-property variable 'variable-documentation)
+                         (progn
+                           (setq is-alias t)
+                           (documentation-property alias 'variable-documentation))))
+           (insert lay)
+           (insert "=")
+           (insert doc)
+           (insert "\n")
+           (setq i 0)
+           (setq lay-ini (format "%s\n[%s]" lay-ini lay))
+           (mapc
+            (lambda(x)
+              (setq lay-ini (format "%s\n%s=%s" lay-ini i x))
+              (setq i (+ i 1)))
+            (symbol-value variable))))
+       (ergoemacs-get-layouts))
+      (goto-char (point-max))
+      (insert lay-ini)
+      (buffer-string))))
 
 (defun ergoemacs-get-variants-ahk-ini ()
   "Gets the list of all known variants and the documentation associated with the variants."
