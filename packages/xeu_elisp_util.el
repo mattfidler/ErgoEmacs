@@ -13,27 +13,28 @@
 ;; this package is some misc emacs lisp utility.
 ;; It provides the following functions:
 
-;; unit-at-cursor
-;; get-selection-or-unit
-;; get-image-dimensions
-;; get-image-dimensions-imk
-;; get-string-from-file
-;; read-lines
-;; delete-subdirs-by-regex
-;; delete-files-by-regex
-;; trim-string
-;; substract-path
-;; asciify-text
-;; title-case-string-region-or-line
-;; current-date-time-string
-;; hash-to-list
-;; file-relative-name-emacs24.1.1-fix
+;; unit-at-cursor (unit)
+;; get-selection-or-unit (unit)
+;; get-image-dimensions (ξfile-path)
+;; get-image-dimensions-imk (img-file-path)
+;; get-string-from-file (filePath)
+;; read-lines (filePath)
+;; delete-files-by-regex (ξdir regex-pattern)
+;; file-relative-name-emacs24.1.1-fix (ξfilePath ξdirPath)
+;; trim-string (string)
+;; substract-path (path1 path2)
+;; hash-to-list (hashtable)
+;; asciify-text (ξstring &optional ξfrom ξto)
+;; title-case-string-region-or-line (ξstring &optional ξregion-boundary)
+;; insert-date (&optional addTimeStamp-p)
+;; current-date-time-string ()
+;; is-datetimestamp-p (inputString)
+;; fix-datetimestamp (ξinput-string &optional ξfrom-to)
+
 
 ;; The most used two are “unit-at-cursor” and “get-selection-or-unit”. They are intended as improvemnt of “thing-at-point”. For detailed discussion, see:〈Emacs Lisp: get-selection-or-unit〉 @ http://ergoemacs.org/emacs/elisp_get-selection-or-unit.html
 
-;; This package requires 〔xfrp_find_replace_pairs.el〕, available at
-;; http://code.google.com/p/ergoemacs/source/browse/trunk/packages/xfrp_find_replace_pairs.el
-
+;; This package requires 〔xfrp_find_replace_pairs.el〕
 ;; Donation of $3 is appreciated. Paypal to 〔xah@xahlee.org〕
 
 ;;; INSTALL
@@ -302,6 +303,16 @@ See also: `get-image-dimensions'."
                   ) )
    (find-lisp-find-files ξdir regex-pattern)) )
 
+(defun file-relative-name-emacs24.1.1-fix (ξfilePath ξdirPath)
+  "fix for `file-relative-name'. If path start with cap C: (Windows file path), it won't work.
+e.g.
+ (file-relative-name \"c:/Users/h3/.emacs.d/test.el\" \"c:/Users/h3/.emacs.d/\" )
+ (file-relative-name \"C:/Users/h3/.emacs.d/test.el\" \"C:/Users/h3/.emacs.d/\" ) ⇒ \"C:/Users/h3/.emacs.d/test.el\"
+GNU Emacs 24.1.1 (i386-mingw-nt6.1.7601) of 2012-06-10 on MARVIN
+"
+  (file-relative-name
+     (replace-regexp-in-string "\\`C:/" "c:/" ξfilePath  "FIXEDCASE" "LITERAL") ξdirPath ) )
+
 
 (defun trim-string (string)
   "Remove white spaces in beginning and ending of STRING.
@@ -319,13 +330,22 @@ e.g. 「c:/Users/lisa/web/a/b」 -  「c:/Users/lisa/web/」 ⇒ 「a/b」"
         (substring path1 p2length)
       (error "error code 2gabc: beginning doesn't match: 「%s」 「%s」" path1 path2) ) ) )
 
+(defun hash-to-list (hashtable)
+  "Return a list that represent the hashtable.
+Each element is a list: (list key value)."
+  (let (mylist)
+    (maphash (lambda (kk vv) (setq mylist (cons (list kk vv) mylist))) hashtable)
+    mylist))
+
+
+
 (defun asciify-text (ξstring &optional ξfrom ξto)
 "Change some Unicode characters into equivalent ASCII ones.
 For example, “passé” becomes “passe”.
 
-This function works on chars in European languages, and does not transcode arbitrary unicode chars (such as Greek).  Un-transformed unicode char remains in the string.
+This function works on chars in European languages, and does not transcode arbitrary Unicode chars (such as Greek, math symbols).  Un-transformed unicode char remains in the string.
 
-When called interactively, work on current text block or text selection. (a “text block” is text between empty lines)
+When called interactively, work on text selection or current block.
 
 When called in lisp code, if ξfrom is nil, returns a changed string, else, change text in the region between positions ξfrom ξto."
   (interactive
@@ -336,45 +356,35 @@ When called in lisp code, if ξfrom is nil, returns a changed string, else, chan
 
   (require 'xfrp_find_replace_pairs)
 
-  (let (workOnStringP inputStr outputStr)
+  (let (workOnStringP
+        inputStr 
+        (charChangeMap [
+                        ["á\\|à\\|â\\|ä\\|ã\\|å" "a"]
+                        ["é\\|è\\|ê\\|ë" "e"]
+                        ["í\\|ì\\|î\\|ï" "i"]
+                        ["ó\\|ò\\|ô\\|ö\\|õ\\|ø" "o"]
+                        ["ú\\|ù\\|û\\|ü"     "u"]
+                        ["Ý\\|ý\\|ÿ"     "y"]
+                        ["ñ" "n"]
+                        ["ç" "c"]
+                        ["ð" "d"]
+                        ["þ" "th"]
+                        ["ß" "ss"]
+                        ["æ" "ae"]
+                        ])
+        )
     (setq workOnStringP (if ξfrom nil t))
     (setq inputStr (if workOnStringP ξstring (buffer-substring-no-properties ξfrom ξto)))
-    (setq outputStr
-          (let ((case-fold-search t))
-            (replace-regexp-pairs-in-string inputStr
-     [
- ["á\\|à\\|â\\|ä\\|ã\\|å" "a"]
- ["é\\|è\\|ê\\|ë" "e"]
- ["í\\|ì\\|î\\|ï" "i"]
- ["ó\\|ò\\|ô\\|ö\\|õ\\|ø" "o"]
- ["ú\\|ù\\|û\\|ü" "u"]
- ["ñ" "n"]
- ["ç" "c"]
- ["ð" "d"]
- ["þ" "th"]
- ["ß" "ss"]
- ["æ" "ae"]
-      ]
-     ) )  )
-
     (if workOnStringP
-        outputStr
-      (save-excursion
-        (delete-region ξfrom ξto)
-        (goto-char ξfrom)
-        (insert outputStr) )) ) )
+        (let ((case-fold-search t)) (replace-regexp-pairs-in-string inputStr charChangeMap) )
+      (let ((case-fold-search t)) (replace-regexp-pairs-region ξfrom ξto charChangeMap) )) ) )
 
 (defun title-case-string-region-or-line (ξstring &optional ξregion-boundary)
   "Capitalize the current line or text selection, following title conventions.
 
-Capitalize first letter of each word, except words like {to, of,
-the, a, in, or, and, …}. If a word already contains cap letters
-such as HTTP, URL, they are left as is.
+Capitalize first letter of each word, except words like {to, of, the, a, in, or, and, …}. If a word already contains cap letters such as HTTP, URL, they are left as is.
 
-When called in a elisp program, if ξregion-boundary is nil,
-returns the changed ξstring, else, work on the region.
-ξregion-boundary is a pair [from to], it can be a vector or
-list."
+When called in a elisp program, if ξregion-boundary is nil, returns the changed ξstring, else, work on the region. ξregion-boundary is a pair [from to], it can be a vector or list."
   (interactive
    (let ((bds (get-selection-or-unit 'line)))
      (list nil (vector (elt bds 1) (elt bds 2)) ) ) )
@@ -418,23 +428,6 @@ list."
             (upcase-initials-region (point-min) (point-max) )
             (replace-regexp-pairs-region (point-min) (point-max) strPairs t t)
             ) ) ) ) ) )
-
-(defun hash-to-list (hashtable)
-  "Return a list that represent the hashtable.
-Each element is a list: (list key value)."
-  (let (mylist)
-    (maphash (lambda (kk vv) (setq mylist (cons (list kk vv) mylist))) hashtable)
-    mylist))
-
-(defun file-relative-name-emacs24.1.1-fix (ξfilePath ξdirPath)
-  "file-relative-name has a bug. If path start with cap C: (Windows file path), it won't work.
-e.g.
- (file-relative-name \"c:/Users/h3/.emacs.d/test.el\" \"c:/Users/h3/.emacs.d/\" )
- (file-relative-name \"C:/Users/h3/.emacs.d/test.el\" \"C:/Users/h3/.emacs.d/\" ) ⇒ \"C:/Users/h3/.emacs.d/test.el\"
-GNU Emacs 24.1.1 (i386-mingw-nt6.1.7601) of 2012-06-10 on MARVIN
-"
-  (file-relative-name
-     (replace-regexp-in-string "\\`C:/" "c:/" ξfilePath  "FIXEDCASE" "LITERAL") ξdirPath ) )
 
 
 
