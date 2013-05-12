@@ -108,6 +108,7 @@
 "number-to-string"
 "expt"
 "string-equal"
+"quote"
 
 ) )
 
@@ -231,6 +232,17 @@
 "use-local-map"
 "defface"
 
+"shell-command-to-string"
+
+"start-process"
+
+"next-buffer"
+"previous-buffer"
+"buffer-name"
+"insert-buffer-substring-no-properties"
+"erase-buffer"
+"append-to-file"
+"buffer-string"
 ) )
 
 (defvar xem-keyword-builtin nil "a list of elisp  names")
@@ -372,6 +384,7 @@
 "debug-on-event"
 "debug-on-quit"
 "debug-on-signal"
+"default-directory"
 "default-frame-alist"
 "default-input-method"
 "default-justification"
@@ -752,6 +765,7 @@
 "pop-up-windows"
 "pre-abbrev-expand-hook"
 "printer-name"
+"process-connection-type"
 "ps-page-dimensions-database"
 "ps-paper-type"
 "ps-print-color-p"

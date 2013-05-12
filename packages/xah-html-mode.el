@@ -282,7 +282,8 @@
 (defun xhm-get-precode-langCode ()
   "Get the langCode and boundary of current HTML pre block.
 A pre block is text of this form
-<pre class=\"‹langCode›\">…▮…</pre>.
+ <pre class=\"‹langCode›\">…▮…</pre>.
+Your cursor must be between the tags.
 
 Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the text content."
   (interactive)
@@ -294,14 +295,29 @@ Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the t
           (setq langCode (read-string "langcode:"))
           (vector langCode p1 p2)
           )
-      (save-excursion
-        (re-search-backward "<pre class=\"\\([-A-Za-z0-9]+\\)\"") ; tag begin position
-        (setq langCode (match-string 1))
-        (setq p1 (search-forward ">"))    ; text content begin
-        (search-forward "</pre>")
-        (setq p2 (search-backward "<"))   ; text content end
-        (vector langCode p1 p2)
- ) ) ))
+
+;;       (progn 
+;; (save-excursion
+;;         (re-search-backward "<pre class=\"\\([-A-Za-z0-9]+\\)\"") ; tag begin position
+;;         (setq langCode (match-string 1))
+;;         (setq p1 (search-forward ">"))    ; text content begin
+;;         (search-forward "</pre>")
+;;         (setq p2 (search-backward "<"))   ; text content end
+;;         (vector langCode p1 p2)
+;;  ))
+
+      (progn 
+        (save-excursion
+          (re-search-backward "<pre class=\"\\([-A-Za-z0-9]+\\)\"") ; tag begin position
+          (setq langCode (match-string 1))
+          (setq p1 (search-forward ">"))    ; text content begin
+          (backward-char 1)
+          (xhm-skip-tag-forward)
+          (setq p2 (search-backward "<"))   ; text content end
+          (vector langCode p1 p2)
+          ))
+
+ ) ))
 
 (defun xhm-get-precode-make-new-file (ξlangNameMap)
   "Create a new file on current dir with text inside pre code block.
@@ -411,14 +427,14 @@ This command does the reverse of `xhm-htmlize-precode'."
               langCodeResult
               ξmode-name)
           (setq langCodeResult (assoc langCode langCodeMap))
-          (if (eq langCodeResult nil)
+          (if (null langCodeResult)
               (progn (error "Your lang code 「%s」 is not recognized." langCode))
             (progn
               (save-excursion
                 (setq ξmode-name (elt (cdr langCodeResult) 0))
                 (let ((newInStr inputStr) resultStr)
-                  (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "\n" newInStr) ) ; trim beginning
-                  (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "\n" newInStr) ) ; trim trailing
+                  (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "" newInStr) ) ; trim beginning
+                  (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "" newInStr) ) ; trim trailing
                   (setq resultStr (xhm-htmlize-string newInStr ξmode-name))
                   (if (equal (length inputStr) (length resultStr))
                       (message "%s" "htmlize done, but no change necessary.")
@@ -1749,13 +1765,20 @@ see file header for currrent status.
               (cssUnitNames (regexp-opt xhm-css-unit-names 'words) )
 
 ;              (attriRegex " *= *\"\\([ -_a-z]*?\\)\"")
-              (attriRegex " +\\(?:[ =\"-_a-z]*?\\)") ; one or more attributes
-;              (attriRegex " *= *\\([^\n<]+?\\)")
+;              (attriRegex " +\\(?:[ =\"-_a-z]*?\\)") ; one or more attributes
+              (attriRegex " +\\(?:[^\n<>]*?\\)") ; one or more attributes
 ;              (textNodeRegex "\\([ -_A-Za-z]+?\\)")
 ;              (textNodeRegex "\\([ [:graph:]]+?\\)")
               (textNodeRegex "\\([^\n<]+?\\)") ; ← hack, to avoid multi-line
               )
           `(
+
+            (,htmlElementNamesRegex . font-lock-function-name-face)
+            (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
+            (,cssPropertieNames . font-lock-type-face)
+            (,cssValueNames . font-lock-keyword-face)
+            (,cssColorNames . font-lock-preprocessor-face)
+            (,cssUnitNames . font-lock-reference-face)
 
             ;; todo these multiline regex are bad. see elisp manual
             ("<!--\\|-->" . font-lock-comment-delimiter-face)
@@ -1768,13 +1791,6 @@ see file header for currrent status.
             (,(format "<b%s>%s</b>" attriRegex textNodeRegex) . (1 "bold"))
             (,(format "<h\\([1-6]\\)>%s</h\\1>" textNodeRegex) . (2 "bold"))
             (,(format "<title>%s</title>" textNodeRegex) . (1 "bold"))
-
-            (,htmlElementNamesRegex . font-lock-function-name-face)
-            (,htmlAttributeNamesRegexp . font-lock-variable-name-face)
-            (,cssPropertieNames . font-lock-type-face)
-            (,cssValueNames . font-lock-keyword-face)
-            (,cssColorNames . font-lock-preprocessor-face)
-            (,cssUnitNames . font-lock-reference-face)
 
             ) ) )
 
