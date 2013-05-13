@@ -6,6 +6,9 @@
 
 ;;; dired, file, related
 
+;; for ergoemacs-new-empty-buffer
+(setq initial-major-mode (quote text-mode))
+
 ;; don't create backup~ or #auto-save# files
 (setq backup-by-copying t)
 (setq make-backup-files nil)
