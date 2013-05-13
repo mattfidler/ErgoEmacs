@@ -1628,7 +1628,7 @@ Case shouldn't matter, except when it's emacs's key notation.
 (setq xhm-class-input-history (list) )
 
 (defun xhm-add-open/close-tag (tagName className p1 p2)
-  "Add HTML open/close tags around region boundary p1 p2.
+  "Add HTML open/close tags around region p1 p2.
 This function does not `save-excursion'.
 "
   (let* (
@@ -1636,19 +1636,13 @@ This function does not `save-excursion'.
         (insStrLeft (format "<%s%s>" tagName classStr) )
         (insStrRight (format "</%s>" tagName ) )
         )
-
+    (progn
+;      (setq myText (buffer-substring-no-properties p1 p2)
       (goto-char p1)
-
-      (if (xhm-tag-self-closing-p tagName)
-          (progn (insert (format "<%s%s />" tagName classStr) ))
-        (progn
-          ;; (setq myText (buffer-substring-no-properties p1 p2)
-          (insert insStrLeft )
-          (goto-char (+ p2 (length insStrLeft)))
-          (insert insStrRight )
-          )
-        )
-      ) )
+      (insert insStrLeft )
+      (goto-char (+ p2 (length insStrLeft)))
+      (insert insStrRight )
+ ) ) )
 
 (defun xhm-wrap-html-tag (tagName &optional className)
   "Insert/wrap a HTML tags to text selection or current word/line/text-block.
@@ -1667,7 +1661,11 @@ If `universal-argument' is called first, then also prompt for a “class” attr
   (let (bds p1 p2
             lineWordBlock
             )
-    (progn
+
+(if (xhm-tag-self-closing-p tagName )
+    (setq p1 (point) p2 (point) )
+  (progn
+
       (setq lineWordBlock (xhm-get-tag-type tagName) )
       (setq bds
             (cond
@@ -1678,13 +1676,17 @@ If `universal-argument' is called first, then also prompt for a “class” attr
              ))
       (setq p1 (elt bds 1) )
       (setq p2 (elt bds 2) )
+ )
+)
+
       (xhm-add-open/close-tag tagName className p1 p2)
 
       (when ; put cursor between when input text is empty
-          (and (equal p1 p2) (not (xhm-tag-selfclosing-p tagName)))
+          (equal p1 p2)
           (progn (search-backward "</" ) )
          )
- ) ) )
+
+     ) )
 
 (defun xhm-pre-source-code (&optional langCode)
   "Insert/wrap a <pre class=\"‹langCode›\"> tags to text selection or current text block.
