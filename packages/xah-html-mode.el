@@ -296,7 +296,7 @@ Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the t
           (vector langCode p1 p2)
           )
 
-;;       (progn 
+;;       (progn
 ;; (save-excursion
 ;;         (re-search-backward "<pre class=\"\\([-A-Za-z0-9]+\\)\"") ; tag begin position
 ;;         (setq langCode (match-string 1))
@@ -306,7 +306,7 @@ Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the t
 ;;         (vector langCode p1 p2)
 ;;  ))
 
-      (progn 
+      (progn
         (save-excursion
           (re-search-backward "<pre class=\"\\([-A-Za-z0-9]+\\)\"") ; tag begin position
           (setq langCode (match-string 1))
@@ -375,7 +375,7 @@ This function requires the `htmlize-buffer' from 〔htmlize.el〕 by Hrvoje Niks
 
 (defun xhm-htmlize-precode (ξlangCodeMap)
   "Replace text enclosed by “pre” tag to htmlized code.
-For example, if the cursor is somewhere between the pre tags <pre class=\"‹langCode›\">…▮…</pre>, then after calling, the text inside the pre tag will be htmlized.  That is, wrapped with many span tags.
+For example, if the cursor is somewhere between the pre tags <pre class=\"‹langCode›\">…▮…</pre>, then after calling, the text inside the pre tag will be htmlized.  That is, wrapped with many span tags for syntax coloring.
 
 The opening tag must be of the form <pre class=\"‹langCode›\">.  The ‹langCode› determines what emacs mode is used to colorize the text. See `xhm-lang-name-map' for possible ‹langCode›.
 
@@ -392,9 +392,11 @@ This function requires the `htmlize-buffer' from 〔htmlize.el〕 by Hrvoje Niks
         (setq inputStr (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" (buffer-substring-no-properties p1 p2))) )
         (setq ξmodeName (elt (cdr (assoc ξlangCode ξlangCodeMap)) 0))
         )
-      (delete-region p1 p2 )
-      (goto-char p1)
-      (insert (xhm-htmlize-string inputStr ξmodeName))
+      (progn
+        (delete-region p1 p2 )
+        (goto-char p1)
+        (insert (xhm-htmlize-string inputStr ξmodeName))
+        )
       )
     ) )
 
@@ -1495,139 +1497,122 @@ Some issues:
          ) ) ))
 
 (defun xhm-htmlize-keyboard-shortcut-notation ()
-  "Wrap a “kbd” tag around keyboard keys on text selection or current text inside 【】.
+  "Wrap a “kbd” tag around keyboard keys on text selection or current line.
 Example: 【ctrl+w】 ⇒ 【<kbd>Ctrl</kbd>+<kbd>w</kbd>】
 Emacs's key notation also supported. Example: 【C-x t】 ⇒ 【<kbd>Ctrl</kbd>+<kbd>x</kbd> <kbd>t</kbd>】
 Same for Alt, Shift, Cmd, Win, Enter, Return, Home… and other strings.
 Case shouldn't matter, except when it's emacs's key notation.
 "
   (interactive)
-  (let (p1 p2 inputStr resultStr replaceList)
-    (if (region-active-p)
-        (progn
-          (setq p1 (region-beginning))
-          (setq p2 (region-end))
-          )
-      (save-excursion
-        (progn
-          (if (search-backward "【" nil t)
-              (progn (forward-char)
-                     (setq p1 (point) ) )
-            (setq p1 (line-beginning-position) )
-            )
+  (let* (
+         (bds (get-selection-or-unit 'line))
+         (p1 (elt bds 1))
+         (p2 (elt bds 2))
+         (replaceList [
+                       ;; case in find string shouldn't matter.
+                       ["control" "<kbd>Ctrl</kbd>"]
+                       ["ctrl" "<kbd>Ctrl</kbd>"]
+                       ["altgr" "<kbd>AltGr</kbd>"]
+                       ["alt" "<kbd>Alt</kbd>"]
+                       ["shift" "<kbd>⇧ Shift</kbd>"]
+                       ["command" "<kbd>⌘ Cmd</kbd>"]
+                       ["cmd" "<kbd>⌘ Cmd</kbd>"]
+                       ["option" "<kbd>⌥ Opt</kbd>"]
+                       ["opt" "<kbd>⌥ Opt</kbd>"]
+                       ["win" "<kbd>❖ Win</kbd>"]
+                       ["app" "<kbd>▤ Menu</kbd>"]
+                       ["menu" "<kbd>▤ Menu</kbd>"]
+                       ["meta" "<kbd>Meta</kbd>"]
+                       ["super" "<kbd>Super</kbd>"]
+                       ["hyper" "<kbd>Hyper</kbd>"]
 
-          (if (search-forward "】" nil t)
-              (progn (backward-char)
-                     (setq p2 (point) ))
-            (setq p2 (line-end-position) ) ) )) )
-    (setq inputStr (buffer-substring-no-properties p1 p2))
+                       ["return" "<kbd>Return ↩</kbd>"]
+                       ["enter" "<kbd>Enter ↵</kbd>"]
+                       ["backspace" "<kbd>⌫ Backspace</kbd>"]
+                       ["delete" "<kbd>⌦ Delete</kbd>"]
+                       ["del" "<kbd>⌦ Delete</kbd>"]
+                       ["space" "<kbd>Space</kbd>"]
+                       ["capslock" "<kbd>Caps Lock</kbd>"]
+                       ["f-lock" "<kbd>F Lock</kbd>"]
+                       ["numlock" "<kbd>Num Lock</kbd>"]
+                       ["scrolllock" "<kbd>Scroll Lock</kbd>"]
+                       ["tab" "<kbd>Tab ↹</kbd>"]
+                       ["esc" "<kbd>Esc</kbd>"]
 
-    (setq replaceList [
- ;; case in find string shouldn't matter.
-["control" "<kbd>Ctrl</kbd>"]
-["ctrl" "<kbd>Ctrl</kbd>"]
-["altgr" "<kbd>AltGr</kbd>"]
-["alt" "<kbd>Alt</kbd>"]
-["shift" "<kbd>⇧ Shift</kbd>"]
-["command" "<kbd>⌘ Cmd</kbd>"]
-["cmd" "<kbd>⌘ Cmd</kbd>"]
-["option" "<kbd>⌥ Opt</kbd>"]
-["opt" "<kbd>⌥ Opt</kbd>"]
-["win" "<kbd>❖ Win</kbd>"]
-["app" "<kbd>▤ Menu</kbd>"]
-["menu" "<kbd>▤ Menu</kbd>"]
-["meta" "<kbd>Meta</kbd>"]
-["super" "<kbd>Super</kbd>"]
-["hyper" "<kbd>Hyper</kbd>"]
+                       ["copy" "<kbd>Copy</kbd>"]
+                       ["cut" "<kbd>✂ Cut</kbd>"]
+                       ["paste" "<kbd>Paste</kbd>"]
+                       ["undo" "<kbd>⎌</kbd>"]
+                       ["redo" "<kbd>↷</kbd>"]
 
-["return" "<kbd>Return ↩</kbd>"]
-["enter" "<kbd>Enter ↵</kbd>"]
-["backspace" "<kbd>⌫ Backspace</kbd>"]
-["delete" "<kbd>⌦ Delete</kbd>"]
-["del" "<kbd>⌦ Delete</kbd>"]
-["space" "<kbd>Space</kbd>"]
-["capslock" "<kbd>Caps Lock</kbd>"]
-["flock" "<kbd>F Lock</kbd>"]
-["numlock" "<kbd>Num Lock</kbd>"]
-["scrolllock" "<kbd>Scroll Lock</kbd>"]
-["tab" "<kbd>Tab ↹</kbd>"]
-["esc" "<kbd>Esc</kbd>"]
+                       ["F10" "<kbd>F10</kbd>"]
+                       ["F11" "<kbd>F11</kbd>"]
+                       ["F12" "<kbd>F12</kbd>"]
+                       ["F13" "<kbd>F13</kbd>"]
+                       ["F14" "<kbd>F14</kbd>"]
+                       ["F15" "<kbd>F15</kbd>"]
+                       ["F16" "<kbd>F16</kbd>"]
+                       ["F1" "<kbd>F1</kbd>"]
+                       ["F2" "<kbd>F2</kbd>"]
+                       ["F3" "<kbd>F3</kbd>"]
+                       ["F4" "<kbd>F4</kbd>"]
+                       ["F5" "<kbd>F5</kbd>"]
+                       ["F6" "<kbd>F6</kbd>"]
+                       ["F7" "<kbd>F7</kbd>"]
+                       ["F8" "<kbd>F8</kbd>"]
+                       ["F9" "<kbd>F9</kbd>"]
+                       ["Fn" "<kbd>Fn</kbd>"]
 
-["copy" "<kbd>Copy</kbd>"]
-["cut" "<kbd>✂ Cut</kbd>"]
-["paste" "<kbd>Paste</kbd>"]
-["undo" "<kbd>⎌</kbd>"]
-["redo" "<kbd>↷</kbd>"]
+                       ["kp0" "<kbd>Keypad 0</kbd>"]
+                       ["kp1" "<kbd>Keypad 1</kbd>"]
+                       ["kp2" "<kbd>Keypad 2</kbd>"]
+                       ["kp3" "<kbd>Keypad 3</kbd>"]
+                       ["kp4" "<kbd>Keypad 4</kbd>"]
+                       ["kp5" "<kbd>Keypad 5</kbd>"]
+                       ["kp6" "<kbd>Keypad 6</kbd>"]
+                       ["kp7" "<kbd>Keypad 7</kbd>"]
+                       ["kp8" "<kbd>Keypad 8</kbd>"]
+                       ["kp9" "<kbd>Keypad 9</kbd>"]
 
-["F10" "<kbd>F10</kbd>"]
-["F11" "<kbd>F11</kbd>"]
-["F12" "<kbd>F12</kbd>"]
-["F13" "<kbd>F13</kbd>"]
-["F14" "<kbd>F14</kbd>"]
-["F15" "<kbd>F15</kbd>"]
-["F16" "<kbd>F16</kbd>"]
-["F1" "<kbd>F1</kbd>"]
-["F2" "<kbd>F2</kbd>"]
-["F3" "<kbd>F3</kbd>"]
-["F4" "<kbd>F4</kbd>"]
-["F5" "<kbd>F5</kbd>"]
-["F6" "<kbd>F6</kbd>"]
-["F7" "<kbd>F7</kbd>"]
-["F8" "<kbd>F8</kbd>"]
-["F9" "<kbd>F9</kbd>"]
-["Fn" "<kbd>Fn</kbd>"]
+                       ["kp+" "<kbd>Keypad +</kbd>"]
+                       ["kp-" "<kbd>Keypad -</kbd>"]
+                       ["kp*" "<kbd>Keypad *</kbd>"]
+                       ["kp/" "<kbd>Keypad /</kbd>"]
 
-["kp0" "<kbd>Keypad 0</kbd>"]
-["kp1" "<kbd>Keypad 1</kbd>"]
-["kp2" "<kbd>Keypad 2</kbd>"]
-["kp3" "<kbd>Keypad 3</kbd>"]
-["kp4" "<kbd>Keypad 4</kbd>"]
-["kp5" "<kbd>Keypad 5</kbd>"]
-["kp6" "<kbd>Keypad 6</kbd>"]
-["kp7" "<kbd>Keypad 7</kbd>"]
-["kp8" "<kbd>Keypad 8</kbd>"]
-["kp9" "<kbd>Keypad 9</kbd>"]
+                       ["←" "<kbd>←</kbd>"]
+                       ["→" "<kbd>→</kbd>"]
+                       ["↑" "<kbd>↑</kbd>"]
+                       ["↓" "<kbd>↓</kbd>"]
+                       ["Home" "<kbd>↖ Home</kbd>"]
+                       ["End" "<kbd>↘ End</kbd>"]
+                       ["PageUp" "<kbd>⇞ Page △</kbd>"]
+                       ["Page Up" "<kbd>⇞ Page △</kbd>"]
+                       ["PgUp" "<kbd>⇞ Page △</kbd>"]
+                       ["PageDown" "<kbd>⇟ Page ▽</kbd>"]
+                       ["Page Down" "<kbd>⇟ Page ▽</kbd>"]
+                       ["PgDn" "<kbd>⇟ Page ▽</kbd>"]
+                       ["insert" "<kbd>Insert</kbd>"]
+                       ["ins" "<kbd>Insert</kbd>"]
+                       ["pause" "<kbd>Pause</kbd>"]
+                       ["break" "<kbd>Break</kbd>"]
 
-["kp+" "<kbd>Keypad +</kbd>"]
-["kp-" "<kbd>Keypad -</kbd>"]
-["kp*" "<kbd>Keypad *</kbd>"]
-["kp/" "<kbd>Keypad /</kbd>"]
-
-["←" "<kbd>←</kbd>"]
-["→" "<kbd>→</kbd>"]
-["↑" "<kbd>↑</kbd>"]
-["↓" "<kbd>↓</kbd>"]
-["Home" "<kbd>↖ Home</kbd>"]
-["End" "<kbd>↘ End</kbd>"]
-["PageUp" "<kbd>⇞ Page △</kbd>"]
-["Page Up" "<kbd>⇞ Page △</kbd>"]
-["PgUp" "<kbd>⇞ Page △</kbd>"]
-["PageDown" "<kbd>⇟ Page ▽</kbd>"]
-["Page Down" "<kbd>⇟ Page ▽</kbd>"]
-["PgDn" "<kbd>⇟ Page ▽</kbd>"]
-["insert" "<kbd>Insert</kbd>"]
-["ins" "<kbd>Insert</kbd>"]
-["pause" "<kbd>Pause</kbd>"]
-["break" "<kbd>Break</kbd>"]
-
-["‹key›" "<kbd>‹key›</kbd>"]
+                       ["‹key›" "<kbd>‹key›</kbd>"]
                        ])
+         )
 
-    (let ((case-fold-search t) (case-replace nil)
-          )
-      (setq resultStr (replace-pairs-in-string (xhm-emacs-to-windows-kbd-notation-string inputStr) replaceList))
-      )
-
-    (setq resultStr (replace-regexp-pairs-in-string resultStr
- [
- ["\+\\([^<]\\) \\(.\\) \\(.\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd> <kbd>\\3</kbd>"]
- ["\+\\([^<]\\) \\([A-Za-z0-0]\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd>"]
- ["\+\\([^<]\\)" "+<kbd>\\1</kbd>"]
- ]))
-
-    (delete-region p1 p2)
-    (insert resultStr)
-    )
+    (let ((case-fold-search t) (case-replace nil) )
+      (save-restriction
+        (narrow-to-region p1 p2)
+        (xhm-emacs-to-windows-kbd-notation (point-min) (point-max) )
+        (replace-pairs-region (point-min) (point-max) replaceList)
+        ;; (replace-regexp-pairs-region
+        ;;  (point-min) (point-max)
+        ;;  [
+        ;;   ["\+\\([^<]\\) \\(.\\) \\(.\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd> <kbd>\\3</kbd>"]
+        ;;   ["\+\\([^<]\\) \\([A-Za-z0-0]\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd>"]
+        ;;   ["\+\\([^<]\\)" "+<kbd>\\1</kbd>"]
+        ;;   ])
+        ) ) )
 
   ;; test cases
   ;; 【Ctrl+x a】

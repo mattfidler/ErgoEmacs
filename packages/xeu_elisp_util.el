@@ -379,6 +379,25 @@ When called in lisp code, if ξfrom is nil, returns a changed string, else, chan
         (let ((case-fold-search t)) (replace-regexp-pairs-in-string inputStr charChangeMap) )
       (let ((case-fold-search t)) (replace-regexp-pairs-region ξfrom ξto charChangeMap) )) ) )
 
+;; (defun asciify-text-iconv ()
+;; "Convert STRING to ASCII string.
+;; For example:
+;;  passé ⇒ passe
+;;  -> ⇒ →
+;; this command calls the Unix iconv program.
+;; Code originally by Teemu Likonen."
+;; (interactive
+;;    (let ((bds (get-selection-or-unit 'block)))
+;;      (list 
+;; str (elt bds 0)
+;; p1 (elt bds 1)
+;; p2 (elt bds 2)
+;;   ) ) )
+;;   (with-temp-buffer
+;;     (insert string)
+;;     (call-process-region (point-min) (point-max) "iconv" t t nil "--to-code=ASCII//TRANSLIT")
+;;     (buffer-substring-no-properties (point-min) (point-max))))
+
 (defun title-case-string-region-or-line (ξstring &optional ξregion-boundary)
   "Capitalize the current line or text selection, following title conventions.
 
