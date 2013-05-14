@@ -3,6 +3,7 @@
 ;; A AutopairHotkey script for system-wide ErgoEmacs keybinding
 ;;
 ;;   Copyright © 2009 Milan Santosi
+;;   Copyright © 2012 Benjamin Hansen
 ;;   Copyright © 2013 Matthew Fidler
 ;;   This program is free software: you can redistribute it and/or modify
 ;;   it under the terms of the GNU General Public License as published by
@@ -22,6 +23,8 @@
 ;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
+;; Version 0.8:
+;; - Added BigCtl, key translation and SetMark
 ;; Version 0.7:
 ;; - Added Caps lock to Menu in emacs.
 ;; Version 0.6:
@@ -39,49 +42,79 @@
 ;; - Replaced occurences of DEL with C-x to 'kill' to the clipboard
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; don't run multiple instance of this script
-#SingleInstance force
-;; Don't activate when in ErgoEmacs (because ErgoEmacs already defines them)
-#Persistent  ; Keep the script running until the user exits it.
-IniRead CurrCaps, ergoemacs.ini, Caps, App
+; Copyright (c) 2012 Benjamin Hansen
+;
+; Permission is hereby granted, free of charge, to any person
+; obtaining a copy of this software and associated documentation files
+; (the "Software"), to deal in the Software without restriction,
+; including without limitation the rights to use,i copy, modify, merge,
+; publish, distribute, sublicense, and/or sell copies of the Software,
+; and to permit persons to whom the Software is furnished to do so,
+; subject to the following conditions:
+; 
+; The above copyright notice and this permission notice shall be
+; included in all copies or substantial portions of the Software.
+; 
+; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+; BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+; ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+; SOFTWARE.
+;
+; Allows the spacebar key to mimic the Ctrl key while retaining most
+; of its normal functionality. Holding down the spacebar key down acts
+; like holding down the ctrl key. This allows for easier use of
+; keyboard shortcuts (such as Ctrl+C for copy). If the spacebar key is
+; pressed and released quickly (less than the specified timeout) and
+; no other key was pressed then a normal space is sent.
+;
+; Author:         Ben Hansen <benhansenslc@gmail.com> 
 
+#SingleInstance force
+#NoEnv
+SendMode Input
+SetStoreCapslockMode, Off
+Process, priority, , High
+
+IniRead CurrCaps, ergoemacs.ini, Caps, App
 LayLst=
 VarLst=
 CareL = 0
 CareV = 0
 CareLV = 0
-MarkSet = 0
-
-SendNonEmacs(key,IsMovement = 0){
- If WinActive("ahk_class Emacs") {
-   pressedKey := SubStr(A_ThisHotkey,0)
-   modifiers := GetModifiers()
-   Suspend On
-   SendInput % modifiers pressedKey
-   Suspend Off 
- } Else {
-  If (IsMovement == 0){
-    MarkSet = 0
-    SendInput %key%
-  } Else {
-    If (MarkSet == 0){
-      SendInput %key%
-    } Else {
-      SendInput {Shift down}%key%{Shift up}
-    }
-  }
- }   
-}
+g_MarkSet=
+modifiers=
+skipUpDown=
 
 IniRead CurrLayout, ergoemacs.ini, Curr, Layout
 If (CurrLayout == "ERROR"){
   CurrLayout=us
 }
+
 IniRead CurrVariant, ergoemacs.ini, Curr, Variant
 If (CurrVariant == "ERROR"){
   CurrVariant=Standard
 } 
 
+IniRead CurrTrans, ergoemacs.ini, Curr, Trans
+If (CurrTrans == "ERROR"){
+  CurrTrans=No Translation
+}
+;; Add Translation
+Loop, 120 {
+  IniRead CurrKey, ergoemacs.ini, %CurrLayout%, %A_Index%
+  If (CurrTrans == "No Translation"){
+     objTrans%CurrKey% := CurrKey
+  } else {
+      If (CurrKey != ""){
+       IniRead TransKey, ergoemacs.ini, %CurrTrans%, %A_Index%
+       objTrans%CurrKey% := TransKey
+      }
+  }
+}
 
 CurrLayVar= % "[" . CurrLayout . "-" . CurrVariant . "]"
 Loop, Read, ergoemacs.ini
@@ -121,7 +154,8 @@ Loop, Read, ergoemacs.ini
       If (NextSec != 0){
         fn := SubStr(tmp,1,NextSec - 1)
         NextSec := SubStr(tmp,NextSec + 1)
-        HotKey, %NextSec%, %fn%
+        objTrans%NextSec% := fn
+        ;;HotKey, %NextSec%, %fn%
       }
     }
   }
@@ -136,12 +170,25 @@ HotKey,Capslock,capslock-handle
 
 Loop, parse, LayLst, `n 
 {
+        Menu, TranslateKey, add, No Translation, TranslateKeyHandler
+        If (CurrTrans == "No Translation"){
+          Menu, TranslateKey, Check,No Translation
+        } else {
+          Menu, TranslateKey, UnCheck,No Translation 
+        }
         If (A_LoopField != ""){
            Menu, MenuKey, add, %A_LoopField%, MenuKeyHandler
+           Menu, TranslateKey, add, %A_LoopField%, TranslateKeyHandler
            If (A_LoopField == CurrLayout){
               Menu, MenuKey, Check, %A_LoopField%
            } else {
              Menu, MenuKey, UnCheck, %A_LoopField%
+           }
+
+           If (A_LoopField == CurrTrans){
+              Menu, TranslateKey, Check, %A_LoopField%
+           } else {
+              Menu, TranslateKey, UnCheck, %A_LoopField%
            }
         }
 }
@@ -156,20 +203,182 @@ Loop, parse, VarLst, `n
            } else {
              Menu, VariantKey, UnCheck, %A_LoopField%
            }
-
+           
         }
 }
 
 Menu, Tray, DeleteAll
 Menu, Tray, NoStandard
 Menu, tray, add, Keyboard Layouts, :MenuKey
+Menu, tray, add, Translated Layout, :TranslateKey
 Menu, tray, add, Variants, :VariantKey
 Menu, Tray, add, Caps to Menu in Emacs, ToggleCaps
 If (CurrCaps == "1"){
   Menu, Tray, Check, Caps to Menu in Emacs
 }
 Menu, tray, add, Exit, Exit
-return
+
+; The amount of milliseconds of holding the spacebar after which a
+; space key is no longer returned.
+g_TimeOut := 300
+
+; The amount of milliseconds to delay returning a Ctrl key sequence
+; that are potentially accidentally hit with the space bar. If the
+; space bar comes up during this delay the regular keys will be
+; returned instead. Probably rounds to the nearest 10 milliseconds by
+; the OS.
+g_Delay := 70
+
+g_SpacePressDownTime := false
+g_OtherKeyPressed := false
+g_MovementKeyPressed := false
+g_SkipNextSpace := false
+
+Hotkey Up, previous-line
+Hotkey Down, next-line
+Hotkey Left, backward-char
+Hotkey Right, forward-char
+Hotkey Home, move-beginning-of-line
+Hotkey End, move-end-of-line
+Hotkey PgUp, scroll-down
+Hotkey PgDn, scroll-up
+Hotkey ^Left, backward-word
+Hotkey ^Right, forward-word
+
+allKeysStr := "LButton*RButton*MButton*WheelDown*WheelUp*WheelLeft*WheelRight*XButton1*XButton2*Tab*Enter*Escape*Backspace*Delete*Insert*ScrollLock*CapsLock*NumLock*Numpad0*Numpad1*Numpad2*Numpad3*Numpad4*Numpad5*Numpad6*Numpad7*Numpad8*Numpad9*NumpadDot*NumpadDiv*NumpadMult*NumpadAdd*NumpadSub*NumpadEnter*F1*F2*F3*F4*F5*F6*F7*F8*F9*F10*F11*F12*F13*F14*F15*F16*F17*F18*F19*F20*F21*F22*F23*F24*AppsKey*Browser_Back*Browser_Forward*Browser_Refresh*Browser_Stop*Browser_Search*Browser_Favorites*Browser_Home*Volume_Mute*Volume_Down*Volume_Up*Media_Next*Media_Prev*Media_Stop*Media_Play_Pause*Launch_Mail*Launch_Media*Launch_App1*Launch_App2*Help*Sleep*PrintScreen*CtrlBreak*Pause*Break"
+StringSplit, allKeysArray, allKeysStr, *
+Loop %allKeysArray0%
+{
+   key := allKeysArray%A_Index%
+   Hotkey, % "~*"key, ListenForKey
+}
+
+; Keys that are possible to accidentally press with the space key
+; while typing fast.
+keysToDelayStr := "1*2*3*4*5*6*7*8*9*0*q*w*e*r*t*y*u*i*o*p*[*]*\*a*s*d*f*g*h*j*k*l*;*'*z*x*c*v*b*n*m*,*.*/"
+StringSplit, keysToDelayArray, keysToDelayStr, *
+Loop %keysToDelayArray0%
+{
+  key := keysToDelayArray%A_Index% 
+  Hotkey, % "*"key, DelayKeyOutput
+}
+
+capslock-handle:
+  If (WinActive("ahk_class Emacs") && CurrCaps == "1") {
+    SendInput {AppsKey}
+  } else {
+    SendInput {Capslock}
+  }
+  return
+
+
+ListenForKey:
+  g_MarkSet=
+  g_OtherKeyPressed := true
+  Return
+
+  
+DelayKeyOutput:
+  Critical
+  origKey := SubStr(A_ThisHotkey,0)
+  ;; Get Modifiers
+  modifiers := GetModifiers()
+  modifiers2 := GetModifiers2()
+  if (modifiers2 < 9){
+     timesf := 10
+  } else {
+    timesf := 100
+  }
+  pressedKey := origKey
+  ;; Translate to the correct layout
+  transKey := Asc(pressedKey)
+  transKey := Chr(objTrans%transKey%)
+  if (transKey != ""){
+    pressedKey := transKey
+  }
+  ;; get goto subroutine.
+  transKey := Asc(origKey)*timesf+modifiers2
+  transKey := objTrans%transKey%
+  
+  ; Only wait to see if the space comes up if 1) the space bar key is
+  ; down in the first place and 2) it has been held down for less than
+  ; the timeout and 3) another Ctrl key combo hasn't already been
+  ; pressed.
+  if((g_SpacePressDownTime != false) 
+    && (GetSpaceBarHoldTime() < g_TimeOut) && !g_OtherKeyPressed)
+  {
+    ; Do the sleeping of timeout in small increments, that way if the
+    ; the space key is released in the middle we can quit early.
+    wait_start_time := A_TickCount
+    while A_TickCount - wait_start_time + 10 < g_Delay
+    {
+      Sleep, 10
+      if(!getKeyState("Space", "P"))
+      {
+	; Since space bar was released, remove the Ctrl modifier.
+	StringReplace, modifiers, modifiers, ^,
+        ; Force space to fire, because its being released could not
+        ; fire during this routine because this thread is critical.
+	Gosub *Space up
+        ; Stop the space in the event queue from firing since we
+        ; have already fired it manually.
+	g_SkipNextSpace := True 
+        Break
+      }
+    }
+  }
+  if (IsLabel(transKey) & !WinActive("ahk_class Emacs")){
+    Goto %transKey%
+  } Else {
+    SendInput % modifiers pressedKey
+    g_MarkSet=
+  }
+  g_OtherKeyPressed := true
+  Return
+  
+*Space::
+  Critical
+  ; Don't update on OS simulated repeats but only when the user
+  ; actually pressed the key down for the first time
+  if(g_SpacePressDownTime == false)
+  {
+    g_SpacePressDownTime := A_TickCount
+    g_OtherKeyPressed := false
+  }
+  SendInput {RCtrl down}
+  Return
+  
+*Space up::
+  Critical
+  if(g_SkipNextSpace)
+  {
+    g_SkipNextSpace := false
+  }
+  SendInput {RCtrl up}
+  if(g_OtherKeyPressed == true)
+  {
+    g_SpacePressDownTime := false
+    Return
+  }
+  if (GetSpaceBarHoldTime() <= g_TimeOut)
+  {
+    modifiers := GetModifiers()
+    if (WinActive("ahk_class Emacs")) {
+       SendInput % modifiers "{Space}"
+    } else {
+       If (modifiers == "!"){
+          If (g_MarkSet == ""){
+            g_MarkSet=1
+          } Else {
+            g_MarkSet=
+          }
+       } else {
+          SendInput % modifiers "{Space}"
+       }
+    } 
+  }
+  g_SpacePressDownTime := false
+  Return
 
 ToggleCaps:
 If (CurrCaps == "1"){
@@ -185,6 +394,11 @@ IniWrite,%A_ThisMenuItem%,ergoemacs.ini,Curr,Variant
 Reload
 return
 
+TranslateKeyHandler:
+IniWrite, %A_ThisMenuItem%,ergoemacs.ini,Curr,Trans
+Reload
+return
+
 MenuKeyHandler:
 IniWrite,%A_ThisMenuItem%,ergoemacs.ini,Curr,Layout
 Reload
@@ -194,158 +408,153 @@ Exit:
 ExitApp
 return
 
-ahk-set-mark:
-  If (MarkSet == 0){
-    MarkSet = 1
-  } Else {
-    MarkSet = 0
-  }
-  return
-
-autopair-paren:
-  ClipSave := ClipboardAll
-  Clipboard := ; Clear the Clipboard
-  SendInput {Ctrl down}{c}{Ctrl up}
-  ClipWait
-  if (Clipboard = "") {
-     ;; Nothing copied
-     SendInput (){Left}
-  } else {
-    SendInput {Ctrl down}{x}{Ctrl up}({Ctrl down}{v}{Control up}){Left}
-    Clipboard := ClipSave
-  }
-  ClipSaved = ; Free memory in case the clipboard was large
-  return 
-
-
-capslock-handle:
-  If (WinActive("ahk_class Emacs") && CurrCaps == "1") {
-     SendInput {AppsKey}
-  } else {
-    Suspend On
-    SendInput {Capslock}
-    Suspend Off
-  }
-  return
-
-
 
 previous-line:
-  SendNonEmacs("{Up}", 1)
+  SendKey("{Up}",1)
   return
 
 
 next-line:
-  SendNonEmacs("{Down}", 1)
+  SendKey("{Down}",1)
   return
 
 
 backward-char:
- SendNonEmacs("{Left}", 1)
+ SendKey("{Left}",1)
  return
 
 
 forward-char:
- SendNonEmacs("{Right}", 1)
+ SendKey("{Right}",1)
  return
 
 
 backward-word:
- SendNonEmacs("{Ctrl down}{Left}{Ctrl up}", 1)
+ SendKey("{Ctrl down}{Left}{Ctrl up}",1)
  return
 
 
 forward-word:
-  SendNonEmacs("{Ctrl down}{Right}{Ctrl up}", 1)
+  SendKey("{Ctrl down}{Right}{Ctrl up}",1)
   return
 
 
 move-beginning-of-line:
-  SendNonEmacs("{Home}", 1)
+  SendKey("{Home}",1)
   return
 
 
 move-end-of-line:
- SendNonEmacs("{End}", 1)
+ SendKey("{End}",1)
  return
 
 
 delete-backward-char:
-  SendNonEmacs("{Backspace}")
+  SendKey("{Backspace}",0)
   return
 
 
 delete-char:
- SendNonEmacs("{Delete}")
+ SendKey("{Delete}",0)
  return
 
 
 scroll-down:
- SendNonEmacs("{PgUp}", 1)
+ SendKey("{PgUp}",0)
  return
 
 
 scroll-up:
- SendNonEmacs("{PgDn}", 1)
+ SendKey("{PgDn}",0)
  return
 
 
 isearch-forward:
- SendNonEmacs("{Ctrl down}{f}{Ctrl Up}")
+ SendKey("{Ctrl down}{f}{Ctrl Up}",0)
  return
 
 
 query-replace:
- SendNonEmacs("{Ctrl down}{h}{Ctrl Up}")
+ SendKey("{Ctrl down}{h}{Ctrl Up}",0)
  return
 
 
 backward-kill-word:
- SendNonEmacs("{Shift down}{Ctrl down}{Left}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}")
+ SendKey("{Shift down}{Ctrl down}{Left}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}",0)
  return
 
 
 kill-word:
-  SendNonEmacs("{Ctrl down}{Shift down}{Right}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  SendKey("{Ctrl down}{Shift down}{Right}{Ctrl up}{Shift up}{Ctrl down}{x}{Ctrl up}",0)
   return
 
 
 kill-line:
-  SendNonEmacs("{Shift down}{End}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  SendKey("{Shift down}{End}{Shift up}{Ctrl down}{x}{Ctrl up}",0)
   return
 
 
 ergoemacs-kill-line-backward:
-  SendNonEmacs("{Shift down}{Home}{Shift up}{Ctrl down}{x}{Ctrl up}")
+  SendKey("{Shift down}{Home}{Shift up}{Ctrl down}{x}{Ctrl up}",0)
   return
 
 
 ergoemacs-cut-line-or-region:
- SendNonEmacs("{Ctrl down}{x}{Ctrl up}")
+ SendKey("{Ctrl down}{x}{Ctrl up}",0)
  return
 
 
 ergoemacs-copy-line-or-region:
- SendNonEmacs("{Ctrl down}{c}{Ctrl up}")
+ SendKey("{Ctrl down}{c}{Ctrl up}",0)
  return
 
 
 yank:
- SendNonEmacs("{Ctrl down}{v}{Ctrl up}")
+ SendKey("{Ctrl down}{v}{Ctrl up}",0)
  return
 
 
 undo:
-  SendNonEmacs("{Ctrl down}{z}{Ctrl up}")
+  SendKey("{Ctrl down}{z}{Ctrl up}",0)
   return
 
 
 redo:
- SendNonEmacs("{Ctrl down}{y}{Ctrl up}")
+ SendKey("{Ctrl down}{y}{Ctrl up}",0)
  return
 
 
-;; Get Modifiers taken from https://github.com/benhansenslc/BigCtrl/blob/master/BigCtrl.ahk
+  
+GetSpaceBarHoldTime()
+{
+  global g_SpacePressDownTime
+  time_elapsed := A_TickCount - g_SpacePressDownTime
+  Return time_elapsed
+}
+
+GetModifiers2(){
+  ;; Return the hotkey modifiers that are defined in the ergoemacs.ini
+  Modifiers = 0
+  GetKeyState, state1, LWin
+  GetKeyState, state2, RWin
+  state = %state1%%state2%
+  if state <> UU  ; At least one Windows key is down.
+    Modifiers := Modifiers + 1
+  GetKeyState, state1, Alt
+  if state1 = D
+    Modifiers := Modifiers + 2
+  GetKeyState, state1, Control
+  if state1 = D
+    Modifiers := Modifiers + 4
+  ;;GetKeyState, state1, Alt
+  GetKeyState, state1, LShift
+  GetKeyState, state2, RShift
+  state=%state1%%state2%
+  if state <> UU
+    Modifiers := Modifiers + 8
+  Return Modifiers
+}
+  
 ; Return the hotkey symbols (ie !, #, ^ and +) for the modifiers that
 ; are currently activated
 GetModifiers()
@@ -362,33 +571,27 @@ GetModifiers()
   GetKeyState, state1, Control
   if state1 = D
     Modifiers = %Modifiers%^
-  GetKeyState, state1, Alt
-  GetKeyState, state1, Shift
-  if state1 = D
+  ;;GetKeyState, state1, Alt
+  GetKeyState, state1, LShift
+  GetKeyState, state2, RShift 
+  state = %state1%%state2%
+  if state <> UU ; At least one shift key is down
     Modifiers = %Modifiers%+
   Return Modifiers
 }
 
-;; Copyright information for BiGCtl
-
-; Copyright (c) 2012 Benjamin Hansen
-;
-; Permission is hereby granted, free of charge, to any person
-; obtaining a copy of this software and associated documentation files
-; (the "Software"), to deal in the Software without restriction,
-; including without limitation the rights to use, copy, modify, merge,
-; publish, distribute, sublicense, and/or sell copies of the Software,
-; and to permit persons to whom the Software is furnished to do so,
-; subject to the following conditions:
-; 
-; The above copyright notice and this permission notice shall be
-; included in all copies or substantial portions of the Software.
-; 
-; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-; BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-; ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-; SOFTWARE.
+SendKey(key,Movement = 0){
+  global g_MarkSet
+  global g_OtherKeyPressed
+  g_OtherKeyPressed := true
+  If (Movement == 0){
+    g_MarkSet=
+    SendInput % key
+  } Else {
+    If (g_MarkSet == ""){
+      SendInput % key
+    } Else {
+      SendInput % "{Shift down}" key "{Shift up}"
+    }
+  }
+} 
