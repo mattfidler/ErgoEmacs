@@ -272,7 +272,7 @@ Currently only supports two modifier plus key."
 
 (defun ergoemacs-get-ahk-keys-ini ()
   "Get ahk keys for all variants/ahk combinations and put into INI file."
-  (cl-flet ((ergoemacs-unset-redundant-global-keys ()))
+  (flet ((ergoemacs-unset-redundant-global-keys ()))
     (let ((re "")
           lst)
       (with-temp-buffer

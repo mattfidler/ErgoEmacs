@@ -54,6 +54,7 @@
 ;; Italian QWERTY layout “it”. Contributor: David Capello, Francesco Biccari
 
 
+; (eval-when-compile (require 'cl))
 (require 'cl)
 (require 'easymenu)
 (require 'cua-base)
