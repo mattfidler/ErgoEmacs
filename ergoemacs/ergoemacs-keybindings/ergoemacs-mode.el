@@ -186,7 +186,7 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 " (symbol-name command) (symbol-name command))
        ad-do-it
        (when (and ergoemacs-mode ergoemacs-repeat-movement-commands
-                  (interactive-p) (not cua--rectangle-overlays)) ;; Don't add overlays to rectangles
+                  (called-interactively-p 'interactive) (not cua--rectangle-overlays)) ;; Don't add overlays to rectangles
          (set-temporary-overlay-map (cond
                                      ((eq ergoemacs-repeat-movement-commands 'single)
                                       ,(intern (concat "ergoemacs-fast-" (symbol-name command) "-keymap")))
@@ -900,7 +900,7 @@ C-k S-a     -> k S-a           not defined
       (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-unchorded)
                      ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))
       ;; On first run, the unchorded ctl-c map is a temporary-keymap.
-      (when (interactive-p)
+      (when (called-interactively-p 'interactive)
         (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))))))
 
 (defun ergoemacs-ctl-c ()
@@ -915,7 +915,7 @@ C-k S-a     -> k S-a           not defined
       (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c)
                      ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))
       ;; On first run, the unchorded ctl-c map is a temporary-keymap.
-      (when (interactive-p)
+      (when (called-interactively-p 'interactive)
         (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))))))
 
 (defun ergoemacs-ctl-c-ctl-c ()
@@ -927,10 +927,10 @@ C-k S-a     -> k S-a           not defined
               (intern
                (format "ergoemacs-ctl-c-unchorded-%s" major-mode))) (kbd "c"))))
     (if (not fn)
-        (when (interactive-p)
+        (when (called-interactively-p 'interactive)
           (message "[Ctl+c] [Ctl+c] is not defined."))
       (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
-      (when (interactive-p)
+      (when (called-interactively-p 'interactive)
         (call-interactively fn t)))))
 
 (defun ergoemacs-setup-ctl-c-maps ()

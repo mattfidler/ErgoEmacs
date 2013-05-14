@@ -221,7 +221,7 @@ Subsequent calls expands the selection to larger semantic unit."
         (forward-sexp)
         (mark-sexp -1))
     (if (> arg 1)
-        (extend-selection (1- arg) t)
+        (ergoemacs-extend-selection (1- arg) t)
       (if (looking-at "\\=\\(\\s_\\|\\sw\\)*\\_>")
           (goto-char (match-end 0))
         (unless (memq (char-before) '(?\) ?\"))
@@ -673,7 +673,7 @@ Else it is a user buffer."
     (when (file-exists-p png)
       (setq file png))
     
-    (when (interactive-p)
+    (when (called-interactively-p 'interactive)
       (condition-case err
           (browse-url-of-file file)
         (error

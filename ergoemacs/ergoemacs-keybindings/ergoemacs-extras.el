@@ -272,7 +272,7 @@ Currently only supports two modifier plus key."
 
 (defun ergoemacs-get-ahk-keys-ini ()
   "Get ahk keys for all variants/ahk combinations and put into INI file."
-  (flet ((ergoemacs-unset-redundant-global-keys ()))
+  (cl-flet ((ergoemacs-unset-redundant-global-keys ()))
     (let ((re "")
           lst)
       (with-temp-buffer
@@ -580,7 +580,7 @@ EXTRA represents an extra file representation."
         (require 'ergoemacs-extras))
       (ergoemacs-gen-svg layout "kbd-ergo.svg" extra)
       (message "Generated!"))
-    (when (interactive-p)
+    (when (called-interactively-p 'interactive)
       (browse-url (concat "file://" file)))
     (symbol-value 'file)))
 
