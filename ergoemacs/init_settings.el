@@ -6,6 +6,9 @@
 
 ;;; dired, file, related
 
+;; for ergoemacs-new-empty-buffer
+(setq initial-major-mode (quote text-mode))
+
 ;; don't create backup~ or #auto-save# files
 (setq backup-by-copying t)
 (setq make-backup-files nil)
@@ -23,7 +26,16 @@
 
 ;; turn on save place so that when opening a file, the cursor will be at the last position.
 (require 'saveplace)
+(setq save-place-file (concat user-emacs-directory "saveplace.el") ) ; use standard emacs dir
 (setq-default save-place t)
+
+(setq enable-recursive-minibuffers t )
+
+;; used standard emacs dir
+(setq bookmark-default-file (concat user-emacs-directory "bookmarks.el") )
+
+;; apache per dir config file
+(add-to-list 'auto-mode-alist '("\\.htaccess\\'" . conf-unix-mode))
 
 
 ;;; Make emacs open all files in last emacs session.
@@ -124,6 +136,9 @@ No splash screen. and If the *scratch* buffer is the current one, then create a 
 ;; make buffer switch command do suggestions
 (ido-mode 1)
 
+;; interactive name completion for describe-function, describe-variable, etc.
+(icomplete-mode 1)
+
 ;; display line numbers at margin
 (global-linum-mode 1)
 
@@ -223,13 +238,17 @@ No splash screen. and If the *scratch* buffer is the current one, then create a 
 (setq htmlize-html-charset "utf-8") ; make the output html use utf-8 charset
 
 
-;; use cperl-mode instead of perl-mode
-(setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
-(add-to-list 'auto-mode-alist '("\\.\\(p\\([lm]\\)\\)\\'" . cperl-mode))
-(setq interpreter-mode-alist (rassq-delete-all 'perl-mode interpreter-mode-alist))
-(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
-(add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
-(add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+
+;; (progn
+;; ;; use cperl-mode instead of perl-mode
+;; ;; 2013-05-13 turn off for now. seems too hairy, colorin is better but doesn't color some simple variable 「$xxxx」.
+;;   (setq auto-mode-alist (rassq-delete-all 'perl-mode auto-mode-alist))
+;;   (add-to-list 'auto-mode-alist '("\\.\\(p\\([lm]\\)\\)\\'" . cperl-mode))
+;;   (setq interpreter-mode-alist (rassq-delete-all 'perl-mode interpreter-mode-alist))
+;;   (add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+;;   (add-to-list 'interpreter-mode-alist '("perl5" . cperl-mode))
+;;   (add-to-list 'interpreter-mode-alist '("miniperl" . cperl-mode))
+;;   )
 
 
 ;; some syntax color setup
