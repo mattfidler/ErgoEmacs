@@ -78,8 +78,8 @@
 SendMode Input
 SetStoreCapslockMode, Off
 Process, priority, , High
-
-IniRead CurrCaps, ergoemacs.ini, Caps, App
+IniRead ToggleCtrl, ergoemacs-settings.ini,BigCtl, App
+IniRead CurrCaps, ergoemacs-settings.ini, Caps, App
 LayLst=
 VarLst=
 CareL = 0
@@ -89,17 +89,17 @@ g_MarkSet=
 modifiers=
 skipUpDown=
 
-IniRead CurrLayout, ergoemacs.ini, Curr, Layout
+IniRead CurrLayout, ergoemacs-settings.ini, Curr, Layout
 If (CurrLayout == "ERROR"){
   CurrLayout=us
 }
 
-IniRead CurrVariant, ergoemacs.ini, Curr, Variant
+IniRead CurrVariant, ergoemacs-settings.ini, Curr, Variant
 If (CurrVariant == "ERROR"){
   CurrVariant=Standard
 } 
 
-IniRead CurrTrans, ergoemacs.ini, Curr, Trans
+IniRead CurrTrans, ergoemacs-settings.ini, Curr, Trans
 If (CurrTrans == "ERROR"){
   CurrTrans=No Translation
 }
@@ -215,6 +215,10 @@ Menu, tray, add, Variants, :VariantKey
 Menu, Tray, add, Caps to Menu in Emacs, ToggleCaps
 If (CurrCaps == "1"){
   Menu, Tray, Check, Caps to Menu in Emacs
+}
+Menu, Tray, add, Space->Control, ToggleCtrl
+If (ToggleCtrl == "1"){
+  Menu, Tray, Check, Space->Control
 }
 Menu, tray, add, Exit, Exit
 
@@ -345,7 +349,9 @@ DelayKeyOutput:
     g_SpacePressDownTime := A_TickCount
     g_OtherKeyPressed := false
   }
-  SendInput {RCtrl down}
+  if (ToggleCtrl == "1"){
+    SendInput {RCtrl down}  
+  }
   Return
   
 *Space up::
@@ -354,7 +360,9 @@ DelayKeyOutput:
   {
     g_SkipNextSpace := false
   }
-  SendInput {RCtrl up}
+  if (ToggleCtrl == "1"){
+    SendInput {RCtrl up}
+  }
   if(g_OtherKeyPressed == true)
   {
     g_SpacePressDownTime := false
@@ -380,27 +388,36 @@ DelayKeyOutput:
   g_SpacePressDownTime := false
   Return
 
+ToggleCtrl:
+If (ToggleCtrl == "1"){
+  IniWrite,0,ergoemacs-settings.ini,BigCtl,App
+} Else {
+  IniWrite,1,ergoemacs-settings.ini,BigCtl,App
+}
+Reload
+return
+
 ToggleCaps:
 If (CurrCaps == "1"){
-   IniWrite,0,ergoemacs.ini,Caps,App
+   IniWrite,0,ergoemacs-settings.ini,Caps,App
 } Else {
-   IniWrite,1,ergoemacs.ini,Caps,App
+   IniWrite,1,ergoemacs-settings.ini,Caps,App
 }
 Reload
 return
 
 VariantKeyHandler:
-IniWrite,%A_ThisMenuItem%,ergoemacs.ini,Curr,Variant
+IniWrite,%A_ThisMenuItem%,ergoemacs-settings.ini,Curr,Variant
 Reload
 return
 
 TranslateKeyHandler:
-IniWrite, %A_ThisMenuItem%,ergoemacs.ini,Curr,Trans
+IniWrite, %A_ThisMenuItem%,ergoemacs-settings.ini,Curr,Trans
 Reload
 return
 
 MenuKeyHandler:
-IniWrite,%A_ThisMenuItem%,ergoemacs.ini,Curr,Layout
+IniWrite,%A_ThisMenuItem%,ergoemacs-settings.ini,Curr,Layout
 Reload
 return
 
