@@ -65,8 +65,12 @@
   (org-cua-dwim-activate))
 
 ;; Ergoemacs-keybindings version
-(defconst ergoemacs-mode-version "5.7.5"
+(defconst ergoemacs-mode-version "5.8.0"
   "Ergoemacs-keybindings minor mode version number.")
+
+(defconst ergoemacs-mode-changes "Delete window Alt+0 changed to Alt+2.
+Added beginning-of-line (QWERTY) Alt+n and end-of-line Alt+Shift+n")
+
 
 ;; Include extra files
 (defvar ergoemacs-dir
@@ -83,6 +87,12 @@
   :group 'editing-basics
   :group 'convenience
   :group 'emulations)
+
+(defcustom ergoemacs-mode-used nil
+  "Ergoemacs-keybindings minor mode version number used."
+  :type 'string
+  :group 'ergoemacs-mode)
+
 
 (require 'ergoemacs-layouts)
 
@@ -944,7 +954,17 @@ C-k S-a     -> k S-a           not defined
 (add-hook 'after-change-major-mode-hook
           'ergoemacs-setup-ctl-c-maps)
 
+(defun ergoemacs-save-major-version-hook ()
+  "Saves major version on kill-emacs."
+  (condition-case err
+      (progn
+        (customize-save-variable 'ergoemacs-mode-used (symbol-value 'ergoemacs-mode-used))
+        (customize-save-variable 'ergoemacs-variant (symbol-value 'ergoemacs-variant))
+        (add-hook 'emacs-startup-hook 'customize-save-customized))
+    (error (message "Error saving new ergoemacs-version."))))
+
 
+(require 'cus-edit)
 ;; ErgoEmacs minor mode
 ;;;###autoload
 (define-minor-mode ergoemacs-mode
@@ -963,6 +983,20 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   :global t
   :group 'ergoemacs-mode
   :keymap ergoemacs-keymap
+  (when (and
+         (custom-file t) ;; Make sure a custom file exists.
+         (not ergoemacs-variant) ;; Ergoemacs default used.
+             (or (not ergoemacs-mode-used)
+                 (not (string= ergoemacs-mode-used ergoemacs-mode-version))))
+    (if (yes-or-no-p (format "Ergoemacs keybindings changed, %s; Would you like to change as well?"
+                             ergoemacs-mode-changes))
+        (progn
+          (setq ergoemacs-mode-used ergoemacs-mode-version)
+          (add-hook 'kill-emacs-hook 'ergoemacs-save-major-version-hook))
+      (when (not ergoemacs-mode-used)
+        (setq ergoemacs-mode-used "5.7.5"))
+      (setq ergoemacs-variant ergoemacs-mode-used)
+      (add-hook 'kill-emacs-hook 'ergoemacs-save-major-version-hook)))
   (ergoemacs-setup-keys t)
   (when ergoemacs-debug
     (message "Ergoemacs Keys have loaded."))

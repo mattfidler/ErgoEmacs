@@ -31,6 +31,10 @@
     ("M-K" scroll-up "↓ page")
     
     ;; Move to beginning/ending of file
+    ("M-n" beginning-of-buffer "Top")
+    ("M-N" end-of-buffer "Bottom")
+    
+    ;; Move by bracket
     ("M-J" ergoemacs-backward-open-bracket "← bracket")
     ("M-L" ergoemacs-forward-close-bracket "→ bracket")
     
@@ -105,7 +109,7 @@
     ("M-%" query-replace-regexp "rep reg")
     
     ("M-3" delete-other-windows "x other pane")
-    ("M-0" delete-window "x pane")
+    ("M-2" delete-window "x pane")
     
     ("M-4" split-window-vertically "split |")
     ("M-$" split-window-horizontally "split —")
@@ -817,7 +821,7 @@ Some exceptions we don't want to unset.
           ("M-f" delete-char "⌦ char")
           
           ;; Delete previous/next word.
-          ("M-e" backward-kill-word "⌫ word")
+E          ("M-e" backward-kill-word "⌫ word")
           ("M-r" kill-word "⌦ word")))
   (setq ergoemacs-redundant-keys-tmp (append ergoemacs-redundant-keys-tmp
                                              (list "M-f" "M-b" "M-d" "C-<backspace>" "C-d"))))
@@ -886,9 +890,16 @@ Some exceptions we don't want to unset.
                                        "<C-end>"
                                        "<backspace>")))
 
+(ergoemacs-defvariant 5.7.5
+  "Old ergoemacs layout.  Uses M-0 for close pane. Does not have beginning/end of buffer."
+  (ergoemacs-replace-key 'delete-window "M-0" "x pane")
+  (setq ergoemacs-variable-layout-tmp
+        (remove-if (lambda (x) (or (string= "M-n" (car x))
+                              (string= "M-N" (car x)))) ergoemacs-variable-layout-tmp)))
+
 (ergoemacs-defvariant 5.3.7
   "Old Ergoemacs layout.  Uses M-; and M-: for isearch.  Uses M-n for cancel."
-  nil
+  5.7.5
   (ergoemacs-replace-key 'isearch-forward "M-;" "→ isearch")
   (ergoemacs-replace-key 'isearch-backward "M-:" "← isearch")
   (ergoemacs-replace-key 'keyboard-quit "M-n" "Cancel"))
