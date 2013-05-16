@@ -16,6 +16,14 @@
   '(delete-backward-char delete-char kill-word backward-kill-word)
   "Defines deletion functions that ergoemacs is aware of.")
 
+(defun ergoemacs-emacs-exe ()
+  "Get the emacs executable for testing purposes."
+  (let ((emacs-exe (invocation-name))
+        (emacs-dir (invocation-directory))
+        (full-exe nil))
+    (setq full-exe (expand-file-name emacs-exe emacs-dir))
+    (symbol-value 'full-exe)))
+
 (defun ergoemacs-smex-if-exists (&optional prefix-arg)
   (interactive "p")
   (if (fboundp 'smex)
@@ -34,11 +42,6 @@
     (when (not (file-exists-p extra-dir))
       (ergoemacs-gen-svg ergoemacs-variant "kbd-ergo.svg" (concat var-dir "ergo-layouts")))
     (symbol-value 'extra-dir)))
-
-(defun ergoemacs-cheat-sheet ()
-  "Opens Ergoemacs Cheat Sheet in Browser."
-  
-  )
 
 ;;; Ido-ergoemacs functional fixes
 (defun ergoemacs-ido-c-o (arg)

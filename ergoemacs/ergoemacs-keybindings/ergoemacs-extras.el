@@ -32,6 +32,150 @@
                                           (insert char)
                                           (char-before)) 'unicode)))))))
 
+(defun ergoemacs-get-html-key-table ()
+  "Gets the key table for the current layout."
+  ;; kbd {padding-left:.25em;padding-right:.25em;font-family:sans-serif;border:solid 1px #c2c2c2;border-radius:4px;background-color:#f0f0f0;box-shadow:1px 1px silver}
+  (let ((case-fold-search nil))
+    (with-temp-buffer
+      (describe-buffer-bindings (current-buffer))
+      (goto-char (point-min))
+      (insert "\n")
+      (goto-char (point-min))
+      (while (re-search-forward ".*:.*" nil t)
+        (replace-match ""))
+      (goto-char (point-min))
+      (while (re-search-forward "key[ \t]+binding[ \t]*\n" nil t)
+        (replace-match ""))
+      (goto-char (point-min))
+      (while (re-search-forward "-+[ \t]+-+[ \t]*\n" nil t)
+        (replace-match ""))
+      (goto-char (point-min))
+      (while (re-search-forward ".*\\(Prefix Command\\|remap\\).*\n" nil t)
+        (replace-match ""))
+      (goto-char (point-min))
+      (while (re-search-forward ".*\\(mouse\\|kp\\|mute\\|dead\\|A\\|self-insert\\|/ergoemacs\\)-.*\n" nil t)
+        (replace-match ""))
+      (goto-char (point-min))
+      (while (search-forward "\n" nil t)
+        (replace-match ""))
+      (goto-char (point-min))
+      (while (re-search-forward "\n\n+" nil t)
+        (replace-match "\n"))
+      (goto-char (point-min))
+      (while (re-search-forward "  +" nil t)
+        (goto-char (match-beginning 0))
+        (save-restriction
+          (narrow-to-region (point-at-bol) (point))
+          (goto-char (point-min))
+          (while (search-forward "<" nil t)
+            (replace-match "<kbd>")
+            (when (search-forward ">" nil t)
+              (replace-match "</kbd>")))
+          (goto-char (point-min))
+          (while (re-search-forward "C-" nil t)
+            (replace-match "<kbd>Ctrl</kbd>+" t t))
+          (goto-char (point-min))
+          (while (re-search-forward "M-" nil t)
+            (replace-match "<kbd>Alt</kbd>+" t t))
+          (goto-char (point-min))
+          (while (re-search-forward "\\<\\(.\\)\\>" nil t)
+            (replace-match "<kbd>\\1</kbd>" t))
+          (goto-char (point-min))
+          (while (re-search-forward "[+]\\(.\\)\\( \\|$\\)" nil t)
+            (replace-match "+<kbd>\\1</kbd>\\2" t))
+          (goto-char (point-min))
+          (while (re-search-forward " \\(.\\)\\( \\|$\\)" nil t)
+            (replace-match " <kbd>\\1</kbd>\\2" t))
+          (goto-char (point-min))
+          (while (re-search-forward " \\([^>]\\)$" nil t)
+            (replace-match " <kbd>\\1</kbd>" t))
+          (goto-char (point-min))
+          (insert "【")
+          (goto-char (point-max))
+          (insert "】"))
+        (when (looking-at "[ \t]*")
+          (replace-match "</td><td>"))
+        (goto-char (point-at-bol))
+        (insert (format "<tr><td>%s</td><td>%s</td><td>"
+                        ergoemacs-keyboard-layout (if ergoemacs-variant ergoemacs-variant "Standard")))
+        (goto-char (point-at-eol))
+        (insert "</td></tr>"))
+      (buffer-string))))
+
+(defun ergoemacs-get-html-key-tables ()
+  "Get key table and convert to HTML"
+  (interactive)
+  (let* ((lay (or layouts (ergoemacs-get-layouts)))
+         (saved-variant ergoemacs-variant))
+    (mapc
+     (lambda(x)
+       (message "Generate SVG for %s" x)
+       (ergoemacs-set-default 'ergoemacs-variant nil)
+       (ergoemacs-set-defulat 'ergoemacs-keyboard-layout x)
+       (mapc
+        (lambda(y)
+          (condition-case err
+              (progn
+                (ergoemacs-set-default 'ergoemacs-variant y)
+                (ergoemacs-gen-svg x "kbd-ergo.svg" (concat y)))
+            (error (message "Error generating variant %s; %s" y err))))
+        (sort (ergoemacs-get-variants) 'string<))
+       (message "Setting variant back to %s" saved-variant)
+       (ergoemacs-set-default 'ergoemacs-variant saved-variant))
+     lay)))
+
+(defun ergoemacs-get-html-select ()
+  "Gets the list of all known layouts and the documentation associated with the layouts."
+  (let ((lays (sort (ergoemacs-get-layouts) 'string<)))
+    (concat
+     "<script type=\"text/javascript\">
+function change_layout() {
+  var select = document.getElementById('select_layout');
+  var selection = select.selectedIndex;
+  var img = select.options[selection].value;
+  select = document.getElementById('select_variant');
+  selection = select.selectedIndex;
+  var dir = select.options[selection].value;  
+  document.getElementById('ergo_image').src = dir + \"/ergoemacs-layout-\" + img + \".png\";
+}
+    </script><form><strong>Layout:</strong><select onchange=\"change_layout()\" id=\"select_layout\">\n"
+     (mapconcat
+      (lambda(lay)
+        (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
+               (alias (condition-case nil
+                          (indirect-variable variable)
+                        (error variable)))
+               (is-alias nil)
+               (doc nil))
+          (setq doc (or (documentation-property variable 'variable-documentation)
+                        (progn
+                          (setq is-alias t)
+                          (documentation-property alias 'variable-documentation))))
+          (concat "<option value=\"" lay "\">" doc "(" lay ")"
+                  (if is-alias ", alias" "")
+                  "</option>")))
+      lays "\n")
+     "\n</select><br/><strong>Variant:</strong><select onchange=\"change_layout()\" id=\"select_variant\"><option value=\"kbd-layouts\">Keyboard Layout</option><option value=\"ergo-layouts\" selected>Standard</option>"
+     (let ((lays (sort (ergoemacs-get-variants) 'string<)))
+             (mapconcat
+              (lambda(lay)
+                (let* ((variable (intern (concat "ergoemacs-" lay "-variant")))
+                       (alias (condition-case nil
+                                  (indirect-variable variable)
+                                (error variable)))
+                       (is-alias nil)
+                       (doc nil))
+                  (setq doc (or (documentation-property variable 'group-documentation)
+                                (progn
+                                  (setq is-alias t)
+                                  (documentation-property alias 'group-documentation))))
+                  (concat "<option value=\"" lay "\">" lay " - "
+                          (replace-regexp-in-string
+                           ">" "&lt;"
+                           (replace-regexp-in-string "<" "&gt;" doc)) "</option>")))
+              lays "\n"))
+     "</select></form><br /><image id=\"ergo_image\" src=\"ergo-layouts/ergoemacs-layout-us.png\" />")))
+
 (defun ergoemacs-trans-mac-osx (key &optional swap-option-and-control)
   "Translates Emacs kbd code KEY to Mac OS X DefaultKeyBinding.dict"
   (let ((ret key)
@@ -74,6 +218,7 @@ Currently only supports two modifier plus key."
       (setq file (expand-file-name
                   (concat "ergoemacs-layout-" layout ".dict. txt") extra-dir))
       (with-temp-file file
+        (set-buffer-file-coding-system 'utf-8)
         (insert-file-contents (expand-file-name fn dir))
         (goto-char (point-min))
         (when (re-search-forward "QWERTY")
@@ -148,6 +293,7 @@ Currently only supports two modifier plus key."
       (setq file (expand-file-name
                   (concat "ergoemacs-layout-" layout ".txt") extra-dir))
       (with-temp-file file
+        (set-buffer-file-coding-system 'utf-8)
         (insert-file-contents (expand-file-name fn dir))
         (goto-char (point-min))
         (when (re-search-forward "QWERTY")
@@ -287,39 +433,6 @@ Currently only supports two modifier plus key."
           (mapc
            (lambda(x)
              (ergoemacs-setup-keys-for-layout x)
-             ;; (insert (concat "[" x "]\n"))
-             ;; (mapc 
-             ;;  (lambda(y)
-             ;;    (let ((key (car y))
-             ;;          (val (cdr y)))
-             ;;      (cond
-             ;;       ((string= val "=")
-             ;;        (setq val "eq"))
-             ;;       ((string= val "[")
-             ;;        (setq val "ob"))
-             ;;       ((string= val "\\")
-             ;;        (setq val "bs"))
-             ;;       ((string= val "#")
-             ;;        (setq val "pn"))
-             ;;       ((string= val ";")
-             ;;        (setq val "sc"))
-             ;;       ((string= val "]")
-             ;;        (setq val "cb")))
-             ;;      (cond
-             ;;       ((string= key "=")
-             ;;        (setq key "eq"))
-             ;;       ((string= key "[")
-             ;;        (setq key "ob"))
-             ;;       ((string= key "\\")
-             ;;        (setq key "bs"))
-             ;;       ((string= key ";")
-             ;;        (setq key "sc"))
-             ;;       ((string= key "#")
-             ;;        (setq key "pn"))
-             ;;       ((string= key "]")
-             ;;        (setq key "cb")))
-             ;;      (insert (format "%s=%s\n" key val))))
-             ;;  ergoemacs-translation-assoc)
              (insert (concat "[" x "-Standard]\n"))
              (mapc
               (lambda(y)
@@ -338,9 +451,9 @@ Currently only supports two modifier plus key."
               (lambda(x)
                 (ergoemacs-setup-keys-for-layout x)
                 (insert (concat "[" x "-" z "]\n"))
+                (message "Generating AHK ini for %s %s" x z)
                 (mapc
                  (lambda(y)
-                   (message "Generating AHK ini for %s %s" x z)
                    (when (string-match re (format "%s" (nth 1 y)))
                      (insert (symbol-name (nth 1 y)))
                      (insert "=")
@@ -368,11 +481,13 @@ Currently only supports two modifier plus key."
         (make-directory extra-dir t))
     (setq file-temp (expand-file-name "ergoemacs.ini" extra-dir))
     (with-temp-file file-temp
+      (set-buffer-file-coding-system 'utf-8)
       (insert (ergoemacs-get-layouts-ahk-ini))
       (insert (ergoemacs-get-variants-ahk-ini))
       (insert (ergoemacs-get-ahk-keys-ini)))
     (setq file-temp (expand-file-name "ergoemacs.ahk" extra-dir))
     (with-temp-file file-temp
+      (set-buffer-file-coding-system 'utf-8)
       (insert-file-contents (expand-file-name "ahk-us.ahk" ergoemacs-dir)))
     (message "Generated ergoemacs.ahk")
     (when (executable-find "ahk2exe")
@@ -392,11 +507,19 @@ The following are generated:
 
 Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'."
   (interactive)
-  (ergoemacs-svgs layouts)
-  (ergoemacs-gen-ahk)
-  (ergoemacs-bashs layouts)
-  (ergoemacs-mac-osx-dicts layouts)
-  (find-file (expand-file-name "ergoemacs-extras" user-emacs-directory)))
+  (if (called-interactively-p 'any)
+      (progn
+        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval (ergoemacs-extras) &"
+                               (ergoemacs-emacs-exe)
+                               ergoemacs-dir ergoemacs-dir)))
+    (unless ergoemacs-mode
+      (ergoemacs-mode 1))
+    (ergoemacs-svgs layouts)
+    (ergoemacs-gen-ahk)
+    (ergoemacs-bashs layouts)
+    (ergoemacs-mac-osx-dicts layouts)
+    ;; (find-file (expand-file-name "ergoemacs-extras" user-emacs-directory))
+    ))
 
 
 
@@ -439,6 +562,7 @@ EXTRA represents an extra file representation."
       (setq file (expand-file-name
                   (concat "ergoemacs-layout-" layout ".svg") extra-dir))
       (with-temp-file file
+        ;;(set-buffer-file-coding-system 'utf-8)
         (insert-file-contents
          (expand-file-name fn dir))
         (when (string-equal system-type "windows-nt")
@@ -558,6 +682,10 @@ EXTRA represents an extra file representation."
           (setq i (+ i 1)))
         (while (re-search-forward ">[CM][0-9]+<" nil t)
           (replace-match "><")))
+      (when ergoemacs-inkscape
+        (message "Converting to png")
+        (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
+                               file (concat (file-name-sans-extension file) ".png"))))
       (message "Layout generated to %s" file))))
 
 
@@ -593,14 +721,21 @@ EXTRA represents an extra file representation."
     (mapc
      (lambda(x)
        (message "Generate SVG for %s" x)
-       (ergoemacs-gen-svg x)
-       (ergoemacs-set-default 'ergoemacs-variant nil)
-       (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts")
+       (condition-case err
+           (progn
+             (ergoemacs-gen-svg x)
+             (ergoemacs-set-default 'ergoemacs-variant nil)
+             (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts")) 
+         (error (message "Error generating base SVG for %s; %s" x err)))
        (mapc
         (lambda(y)
-          (ergoemacs-set-default 'ergoemacs-variant y)
-          (ergoemacs-gen-svg x "kbd-ergo.svg" (concat y "/ergo-layouts")))
+          (condition-case err
+              (progn
+                (ergoemacs-set-default 'ergoemacs-variant y)
+                (ergoemacs-gen-svg x "kbd-ergo.svg" (concat y)))
+            (error (message "Error generating variant %s; %s" y err))))
         (sort (ergoemacs-get-variants) 'string<))
+       (message "Setting variant back to %s" saved-variant)
        (ergoemacs-set-default 'ergoemacs-variant saved-variant))
      lay)))
 (provide 'ergoemacs-extras)

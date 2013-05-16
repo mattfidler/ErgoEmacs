@@ -821,7 +821,7 @@ Some exceptions we don't want to unset.
           ("M-f" delete-char "⌦ char")
           
           ;; Delete previous/next word.
-E          ("M-e" backward-kill-word "⌫ word")
+          ("M-e" backward-kill-word "⌫ word")
           ("M-r" kill-word "⌦ word")))
   (setq ergoemacs-redundant-keys-tmp (append ergoemacs-redundant-keys-tmp
                                              (list "M-f" "M-b" "M-d" "C-<backspace>" "C-d"))))

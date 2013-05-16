@@ -174,7 +174,7 @@
 (defun ergoemacs-issue-130 ()
   "Tries to test ergoemacs Issue #130"
   (interactive)
-  (let ((emacs-exe (ergoemacs-test-emacs-exe))
+  (let ((emacs-exe (ergoemacs-emacs-exe))
         (temp-file (make-temp-file "ergoemacs-test" nil ".el"))
         (temp-elpa (make-temp-file "ergoemacs-test" t)))
     (make-directory temp-elpa t)
@@ -184,17 +184,11 @@
              (shell-command-to-string
               (format "%s -Q -l %s" emacs-exe temp-file)))))
 
-(defun ergoemacs-test-emacs-exe ()
-  "Get the emacs executable for testing purposes."
-  (let ((emacs-exe (invocation-name))
-        (emacs-dir (invocation-directory))
-        (full-exe nil))
-    (setq full-exe (expand-file-name emacs-exe emacs-dir))
-    (symbol-value 'full-exe)))
+
 
 (defun ergoemacs-test-global-key-set-before (&optional after key ergoemacs)
   "Test the global key set before ergoemacs-mode is loaded."
-  (let* ((emacs-exe (ergoemacs-test-emacs-exe))
+  (let* ((emacs-exe (ergoemacs-emacs-exe))
         (ret nil)
         (sk nil)
         (test-key (or key "M-k"))
