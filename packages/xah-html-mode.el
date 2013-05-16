@@ -87,7 +87,7 @@
 ("em" . ["w"])
 ("embed" . ["l"])
 ("fieldset" . ["z"])
-("figcaption" . ["z"])
+("figcaption" . ["l"])
 ("figure" . ["b"])
 ("footer" . ["b"])
 ("form" . ["l"])
@@ -1681,7 +1681,7 @@ If `universal-argument' is called first, then also prompt for a “class” attr
       (xhm-add-open/close-tag tagName className p1 p2)
 
       (when ; put cursor between when input text is empty
-          (and (equal p1 p2) (not (xhm-tag-selfclosing-p tagName)))
+          (and (equal p1 p2) (not (xhm-tag-self-closing-p tagName)))
           (progn (search-backward "</" ) )
          )
  ) ) )
