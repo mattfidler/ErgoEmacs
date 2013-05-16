@@ -69,7 +69,7 @@
   "Ergoemacs-keybindings minor mode version number.")
 
 (defconst ergoemacs-mode-changes "Delete window Alt+0 changed to Alt+2.
-Added beginning-of-line (QWERTY) Alt+n and end-of-line Alt+Shift+n")
+Added beginning-of-buffer Alt+n (QWERTY notation) and end-of-buffer Alt+Shift+n")
 
 
 ;; Include extra files
