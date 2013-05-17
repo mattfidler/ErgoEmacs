@@ -90,6 +90,14 @@
     (setq ret (and ret test))
     (message "Test Issue #128b: %s" test)
     
+    (setq test (ergoemacs-test-global-key-set-before
+                'after "C-e" 'ergoemacs-key))
+    (message "Test Issue #131a: %s" test)
+    (setq ret (and ret test))
+    
+    (setq test (ergoemacs-test-global-key-set-before
+                'after "C-e" 'ergoemacs-key))
+    
     (message "Overall test: %s" ret)))
 
 (defun ergoemacs-test-119 ()

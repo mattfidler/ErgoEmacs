@@ -977,27 +977,31 @@ C-k S-a     -> k S-a           not defined
 
 (defun ergoemacs-check-for-new-version ()
   "This allows the user to keep an old-version of keybindings if they change."
-  (when (and
-         (custom-file t) ;; Make sure a custom file exists.
-         (not ergoemacs-variant) ;; Ergoemacs default used.
-         (or (not ergoemacs-mode-used)
-             (not (string= ergoemacs-mode-used ergoemacs-mode-version))))
-    (if (yes-or-no-p (format "Ergoemacs keybindings changed, %s; Would you like to change as well?"
-                             ergoemacs-mode-changes))
-        (progn
-          (setq ergoemacs-mode-used ergoemacs-mode-version)
-          (customize-save-variable 'ergoemacs-mode-used (symbol-value 'ergoemacs-mode-used))
-          (customize-save-variable 'ergoemacs-variant (symbol-value 'ergoemacs-variant))
-          (customize-save-customized))
-      (when (not ergoemacs-mode-used)
-        (setq ergoemacs-mode-used "5.7.5"))
-      (setq ergoemacs-variant ergoemacs-mode-used)
-      (customize-save-variable 'ergoemacs-mode-used (symbol-value 'ergoemacs-mode-used))
-      (customize-save-variable 'ergoemacs-variant (symbol-value 'ergoemacs-variant))
-      (add-hook 'kill-emacs-hook 'ergoemacs-save-major-version-hook))
-    (when ergoemacs-mode
-      (ergoemacs-mode -1)
-      (ergoemacs-mode 1))))
+  (condition-case err
+      (progn
+        (when ergoemacs-mode
+          ;; Apply any settings...
+          (ergoemacs-mode -1)
+          (ergoemacs-mode 1))
+        (when (and
+               (custom-file t) ;; Make sure a custom file exists.
+               (not ergoemacs-variant) ;; Ergoemacs default used.
+               (or (not ergoemacs-mode-used)
+                   (not (string= ergoemacs-mode-used ergoemacs-mode-version))))
+          (if (yes-or-no-p (format "Ergoemacs keybindings changed, %s; Would you like to change as well?"
+                                   ergoemacs-mode-changes))
+              (progn
+                (setq ergoemacs-mode-used ergoemacs-mode-version)
+                (customize-save-variable 'ergoemacs-mode-used (symbol-value 'ergoemacs-mode-used))
+                (customize-save-variable 'ergoemacs-variant (symbol-value 'ergoemacs-variant))
+                (customize-save-customized))
+            (when (not ergoemacs-mode-used)
+              (setq ergoemacs-mode-used "5.7.5"))
+            (setq ergoemacs-variant ergoemacs-mode-used)
+            (customize-save-variable 'ergoemacs-mode-used (symbol-value 'ergoemacs-mode-used))
+            (customize-save-variable 'ergoemacs-variant (symbol-value 'ergoemacs-variant))
+            (customize-save-customized))))
+    (error nil)))
 
 (add-hook 'emacs-startup-hook 'ergoemacs-check-for-new-version)
 ;; ErgoEmacs minor mode
