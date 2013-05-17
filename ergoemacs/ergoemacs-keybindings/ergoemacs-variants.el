@@ -31,8 +31,8 @@
     ("M-K" scroll-up "↓ page")
     
     ;; Move to beginning/ending of file
-    ("M-n" beginning-of-buffer "Top")
-    ("M-N" end-of-buffer "Bottom")
+    ("M-n" beginning-of-buffer "↑ Top")
+    ("M-N" end-of-buffer "↓ Bottom")
     
     ;; Move by bracket
     ("M-J" ergoemacs-backward-open-bracket "← bracket")
@@ -119,9 +119,6 @@
     ("M-6" ergoemacs-select-current-block "Sel. Block")
     ("M-7" ergoemacs-select-current-line "Sel. Line")
     
-    ("<C-home>" beginning-of-buffer "Top")
-    ("<C-end>" end-of-buffer "Bottom")
-    
     ("<apps> j" ergoemacs-ctl-c "Ctl-c")
     ("<apps> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
     ("<apps> f" ergoemacs-ctl-x "Ctl-x")
@@ -148,8 +145,11 @@
 
 (defcustom ergoemacs-fixed-layout
   `(
-    ("C-+" text-scale-increase)
-    ("C--" text-scale-decrease)
+    ("<C-home>" beginning-of-buffer "↑ Top")
+    ("<C-end>" end-of-buffer "↓ Bottom")
+    
+    ("C-+" text-scale-increase "+Font Size")
+    ("C--" text-scale-decrease "-Font Size")
     ("C-0" ergoemacs-text-scale-normal-size)
     ;; --------------------------------------------------
     ;; STANDARD SHORTCUTS

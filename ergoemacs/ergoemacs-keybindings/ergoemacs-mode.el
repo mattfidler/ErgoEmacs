@@ -101,8 +101,26 @@ Added beginning-of-line (QWERTY) Alt+n and end-of-line Alt+Shift+n")
                 forward-word backward-word next-line previous-line forward-char backward-char
                 ergoemacs-backward-block ergoemacs-forward-block ergoemacs-backward-open-bracket
                 ergoemacs-forward-close-bracket move-end-of-line move-beginning-of-line backward-word forward-word
-                subword-backward subword-forward)
-  "Defines movement functions that ergoemacs is aware of.")
+                subword-backward subword-forward
+                beginning-of-buffer end-of-buffer)
+  "Movement functions")
+
+(defvar ergoemacs-deletion-functions
+  '(delete-backward-char
+  delete-char backward-kill-word kill-word kill-line
+  ergoemacs-shrink-whitespaces ergoemacs-kill-line-backward)
+  "Deletion functions")
+
+(defvar ergoemacs-window-tab-switching
+  '(ergoemacs-switch-to-previous-frame
+    ergoemacs-switch-to-next-frame
+    ergoemacs-previous-user-buffer
+    split-window-horizontally
+    delete-window
+    delete-other-windows
+    split-window-vertically
+    ergoemacs-next-user-buffer)
+  "Window/Tab switching functions")
 
 (defun ergoemacs-set-default (symbol new-value)
   "Ergoemacs equivalent to set-default.  Will reload `ergoemacs-mode' after setting the values."
@@ -986,8 +1004,8 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (when (and
          (custom-file t) ;; Make sure a custom file exists.
          (not ergoemacs-variant) ;; Ergoemacs default used.
-             (or (not ergoemacs-mode-used)
-                 (not (string= ergoemacs-mode-used ergoemacs-mode-version))))
+         (or (not ergoemacs-mode-used)
+             (not (string= ergoemacs-mode-used ergoemacs-mode-version))))
     (if (yes-or-no-p (format "Ergoemacs keybindings changed, %s; Would you like to change as well?"
                              ergoemacs-mode-changes))
         (progn
