@@ -1,0 +1,5 @@
+*~
+*.elc
+ergoemacs/ergoemacs-keybindings/extra/*
+/ergoemacs/ergoemacs-keybindings/Readme.md
+/ergoemacs/ergoemacs-keybindings/ergoemacs-mode.texi
