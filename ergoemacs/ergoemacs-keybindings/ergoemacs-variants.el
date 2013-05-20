@@ -643,20 +643,28 @@ This optionally provides the description, DESC, too."
 ;;;###autoload
 (defun ergoemacs-replace-key (function key &optional desc only-first)
   "Replaces already defined FUNCTION in ergoemacs key binding with KEY.  The KEY definition is based on QWERTY description of a key"
-  (let (found)
+  (if key
+      (let (found)
+        (set (ergoemacs-get-variable-layout)
+             (mapcar
+              (lambda(x)
+                (if (not (condition-case err
+                             (equal function (nth 1 x))
+                           (error nil)))
+                    x
+                  (setq found t)
+                  `(,key ,function ,desc ,only-first)))
+              (symbol-value (ergoemacs-get-variable-layout))))
+        (unless found
+          (add-to-list (ergoemacs-get-variable-layout)
+                       `(,key ,function ,desc ,only-first))))
     (set (ergoemacs-get-variable-layout)
-         (mapcar
+         (remove-if
           (lambda(x)
-            (if (not (condition-case err
-                         (equal function (nth 1 x))
-                       (error nil)))
-                x
-              (setq found t)
-              `(,key ,function ,desc ,only-first)))
-          (symbol-value (ergoemacs-get-variable-layout))))
-    (unless found
-      (add-to-list (ergoemacs-get-variable-layout)
-                   `(,key ,function ,desc ,only-first)))))
+            (condition-case err
+                (equal function (nth 1 x))
+              (error nil)))
+          (symbol-value (ergoemacs-get-variable-layout))))))
 
 ;;;###autoload
 (defun ergoemacs-minor-key (hook list)
