@@ -655,7 +655,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                    (keymapp keymap)
                  (error nil)))
           (not key-def)) nil
-    (let ((key-code
+    (let* ((no-ergoemacs-advice t)
+          (key-code
            (cond
             ((and translate (eq 'string (type-of key-def)))
              (ergoemacs-kbd key-def))
@@ -864,7 +865,7 @@ C-k S-a     -> k S-a           not defined
 "
   `(let ((ret "")
          (buf (current-buffer))
-         (curr-prefix (or ,prefix "C-x"))
+         (ergoemacs-current-prefix (or ,prefix "C-x"))
          (new-key "")
          (fn "")
          (chord (or ,chord "C-"))
@@ -874,11 +875,13 @@ C-k S-a     -> k S-a           not defined
      (setq ,keymap (make-keymap))
      
      (with-temp-buffer
-       (describe-buffer-bindings buf (kbd curr-prefix))
+       (when ergoemacs-debug
+         (message "Current prefix: %s" ergoemacs-current-prefix))
+       (describe-buffer-bindings buf (read-kbd-macro ergoemacs-current-prefix))
        (goto-char (point-min))
        
        (while (re-search-forward
-               (concat curr-prefix " \\("
+               (concat ergoemacs-current-prefix " \\("
                        (if (string= "" rep-chord)
                            chord
                          "") ".*?\\)[ \t]\\{2,\\}\\(.+\\)$")
@@ -983,6 +986,8 @@ C-k S-a     -> k S-a           not defined
       (progn
         (when ergoemacs-mode
           ;; Apply any settings...
+          (when ergoemacs-debug
+            (message "Reset ergoemacs-mode."))
           (ergoemacs-mode -1)
           (ergoemacs-mode 1))
         (when (and
