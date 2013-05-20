@@ -651,7 +651,9 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 
 (defun ergoemacs-hook-define-key (keymap key-def definition translate)
   "Ergoemacs `define-key' in hook."
-  (if (or (not (keymapp keymap))
+  (if (or (not (condition-case err
+                   (keymapp keymap)
+                 (error nil)))
           (not key-def)) nil
     (let ((key-code
            (cond

@@ -726,7 +726,9 @@ This should only be run when no global keys have been set.
           (when (or fix complain)
             (let* ((key-function (lookup-key (current-global-map) key-code t))
                    (old-bindings (assoc key-kbd ergoemacs-emacs-default-bindings))
-                   (trans-function (if (keymapp key-function)
+                   (trans-function (if (condition-case err
+                                           (keymapp key-function)
+                                         (error nil))
                                        'prefix
                                      key-function)))
               (message "Warning %s has been set globally. It is bound to %s not in %s." key-kbd
@@ -736,7 +738,9 @@ This should only be run when no global keys have been set.
           nil
         (let* ((key-function (lookup-key (current-global-map) key-code t))
                (old-bindings (assoc key-kbd ergoemacs-emacs-default-bindings))
-               (trans-function (if (keymapp key-function)
+               (trans-function (if (condition-case err
+                                       (keymapp key-function)
+                                     (error nil))
                                    'prefix
                                  key-function))
                (has-changed (if (not old-bindings)
