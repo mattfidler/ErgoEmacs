@@ -1,4 +1,4 @@
-; -*- coding: utf-8 -*-
+;; -*- coding: utf-8 -*-
 
 ;; 2009-10-01, 2010-11-15
 ;; This elisp script builds a ErgoEmacs elisp package.
