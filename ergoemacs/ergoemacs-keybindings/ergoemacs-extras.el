@@ -1968,30 +1968,35 @@ Currently only supports two modifier plus key."
 (defun ergoemacs-gen-ahk (&optional extra)
   "Generates autohotkey for all layouts and variants"
   (interactive)
-  (let ((xtra (or extra "ahk")) 
-        not-first
-        (extra-dir)
-        file-temp)
-    (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
-    (if (not (file-exists-p extra-dir))
-        (make-directory extra-dir t))
-    (setq extra-dir (expand-file-name xtra extra-dir))
-    (if (not (file-exists-p extra-dir))
-        (make-directory extra-dir t))
-    (setq file-temp (expand-file-name "ergoemacs.ini" extra-dir))
-    (with-temp-file file-temp
-      (set-buffer-file-coding-system 'utf-8)
-      (insert (ergoemacs-get-layouts-ahk-ini))
-      (insert (ergoemacs-get-variants-ahk-ini))
-      (insert (ergoemacs-get-ahk-keys-ini)))
-    (setq file-temp (expand-file-name "ergoemacs.ahk" extra-dir))
-    (with-temp-file file-temp
-      (set-buffer-file-coding-system 'utf-8)
-      (insert-file-contents (expand-file-name "ahk-us.ahk" ergoemacs-dir)))
-    (message "Generated ergoemacs.ahk")
-    (when (executable-find "ahk2exe")
-      (shell-command (format "ahk2exe /in %s" file-temp))
-      (message "Generated ergoemacs.exe"))))
+  (if (called-interactively-p 'any)
+      (progn
+        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval (ergoemacs-gen-ahk) &"
+                               (ergoemacs-emacs-exe)
+                               ergoemacs-dir ergoemacs-dir)))
+    (let ((xtra (or extra "ahk")) 
+          not-first
+          (extra-dir)
+          file-temp)
+      (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      (setq extra-dir (expand-file-name xtra extra-dir))
+      (if (not (file-exists-p extra-dir))
+          (make-directory extra-dir t))
+      (setq file-temp (expand-file-name "ergoemacs.ini" extra-dir))
+      (with-temp-file file-temp
+        (set-buffer-file-coding-system 'utf-8)
+        (insert (ergoemacs-get-layouts-ahk-ini))
+        (insert (ergoemacs-get-variants-ahk-ini))
+        (insert (ergoemacs-get-ahk-keys-ini)))
+      (setq file-temp (expand-file-name "ergoemacs.ahk" extra-dir))
+      (with-temp-file file-temp
+        (set-buffer-file-coding-system 'utf-8)
+        (insert-file-contents (expand-file-name "ahk-us.ahk" ergoemacs-dir)))
+      (message "Generated ergoemacs.ahk")
+      (when (executable-find "ahk2exe")
+        (shell-command (format "ahk2exe /in %s" file-temp))
+        (message "Generated ergoemacs.exe")))))
 
 
 ;;;###autoload
