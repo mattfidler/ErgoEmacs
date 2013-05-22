@@ -1037,18 +1037,10 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
       (when ergoemacs-cua-rect-modifier
         (if ergoemacs-mode
             (progn
-              
-              (unless ergoemacs-ctl-x-unchorded
-                (ergoemacs-extract-map ergoemacs-ctl-x-unchorded))
-              
-              (unless ergoemacs-ctl-x
-                (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" ""))
-              
-              (unless ergoemacs-ctl-h-unchorded
-                (ergoemacs-extract-map ergoemacs-ctl-h-unchorded "C-h"))
-              
-              (unless ergoemacs-ctl-h
-                (ergoemacs-extract-map ergoemacs-ctl-h "C-h" "C-" "M-" ""))
+              (ergoemacs-extract-map ergoemacs-ctl-x-unchorded)
+              (ergoemacs-extract-map ergoemacs-ctl-x "C-x" "C-" "M-" "")
+              (ergoemacs-extract-map ergoemacs-ctl-h-unchorded "C-h")
+              (ergoemacs-extract-map ergoemacs-ctl-h "C-h" "C-" "M-" "")
               
               (setq cua--rectangle-modifier-key ergoemacs-cua-rect-modifier)
               (setq cua--rectangle-keymap (make-sparse-keymap))
