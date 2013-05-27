@@ -187,6 +187,44 @@ Valid values are:
     (when do-it
       ad-do-it)))
 
+(when (not (fboundp 'set-temporary-overlay-map))
+  ;; Backport this function from newer emacs versions
+  (defun set-temporary-overlay-map (map &optional keep-pred)
+    "Set a new keymap that will only exist for a short period of time.
+The new keymap to use must be given in the MAP variable. When to
+remove the keymap depends on user input and KEEP-PRED:
+
+- if KEEP-PRED is nil (the default), the keymap disappears as
+  soon as any key is pressed, whether or not the key is in MAP;
+
+- if KEEP-PRED is t, the keymap disappears as soon as a key *not*
+  in MAP is pressed;
+
+- otherwise, KEEP-PRED must be a 0-arguments predicate that will
+  decide if the keymap should be removed (if predicate returns
+  nil) or kept (otherwise). The predicate will be called after
+  each key sequence."
+    
+    (let* ((clearfunsym (make-symbol "clear-temporary-overlay-map"))
+           (overlaysym (make-symbol "t"))
+           (alist (list (cons overlaysym map)))
+           (clearfun
+            `(lambda ()
+               (unless ,(cond ((null keep-pred) nil)
+                              ((eq t keep-pred)
+                               `(eq this-command
+                                    (lookup-key ',map
+                                                (this-command-keys-vector))))
+                              (t `(funcall ',keep-pred)))
+                 (remove-hook 'pre-command-hook ',clearfunsym)
+                 (setq emulation-mode-map-alists
+                       (delq ',alist emulation-mode-map-alists))))))
+      (set overlaysym overlaysym)
+      (fset clearfunsym clearfun)
+      (add-hook 'pre-command-hook clearfunsym)
+      
+      (push alist emulation-mode-map-alists))))
+
 (defmacro ergoemacs-create-movement-commands (command)
   "Creates a shifted and repeat advices and isearch commands."
   `(progn
@@ -227,6 +265,77 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
    (eval `(ergoemacs-create-movement-commands ,x)))
  ergoemacs-movement-functions)
 
+(defvar ergoemacs-M-O-trans
+  '(("A" "<up>")
+    ("B" "<down>")
+    ("C" "<right>")
+    ("D" "<left>")
+    ("E" "<begin>")
+    ("M" "<kp-enter>")
+    ("P" "<f1>")
+    ("Q" "<f2>")
+    ("R" "<f3>")
+    ("S" "<f4>")
+    ("q" "<kp-1>")
+    ("s" "<kp-3>")
+    ("u" "<kp-9>")
+    ("w" "<kp-7>")
+    ("y" "<kp-5>"))
+  "Terminal Translations.")
+
+(defvar ergoemacs-M-O-keymap (make-keymap)
+  "M-O translation map.")
+
+(defvar ergoemacs-M-o-keymap (make-keymap)
+  "M-o translation map.")
+
+(mapc
+ (lambda(x)
+   (define-key ergoemacs-M-o-keymap
+     (read-kbd-macro (nth 0 x))
+     `(lambda() (interactive)
+        (when ergoemacs-M-O-timer
+          (cancel-timer ergoemacs-M-O-timer))
+        (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t))))
+   (define-key ergoemacs-M-O-keymap
+     (read-kbd-macro (nth 0 x))
+     `(lambda() (interactive)
+        (when ergoemacs-M-O-timer
+          (cancel-timer ergoemacs-M-O-timer))
+        (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t)))))
+ ergoemacs-M-O-trans)
+
+
+(defvar ergoemacs-fix-M-O nil
+  "Fixes the ergoemacs M-O console translation.")
+
+(defvar ergoemacs-M-O-delay 0.2
+  "Number of seconds before sending the M-O event instead of sending the terminal's arrow key equivalent.")
+
+(defvar ergoemacs-M-O-timer nil
+  "Timer for the M-O")
+
+(defun ergoemacs-M-O-timeout ()
+  "Push timeout on unread command events."
+  (setq unread-command-events (cons 'timeout unread-command-events))
+  (setq ergoemacs-M-O-timer nil))
+
+(defun ergoemacs-M-o ()
+  "Ergoemacs M-o function to allow arrow keys and the like to work in the terminal."
+  (interactive)
+  (when ergoemacs-M-O-timer
+    (ergoemacs-M-O-timeout))
+  (set-temporary-overlay-map ergoemacs-M-o-keymap nil)
+  (run-with-timer ergoemacs-M-O-delay nil 'ergoemacs-M-O-timeout))
+
+(defun ergoemacs-M-O ()
+  "Ergoemacs M-O function to allow arrow keys and the like to work in the terminal."
+  (interactive)
+  (when ergoemacs-M-O-timer
+    (ergoemacs-M-O-timeout))
+  (set-temporary-overlay-map ergoemacs-M-O-keymap nil)
+  (run-with-timer ergoemacs-M-O-delay nil 'ergoemacs-M-O-timeout))
+
 (require 'ergoemacs-variants)
 (require 'ergoemacs-unbind)
 
@@ -244,43 +353,7 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
   "Translation regular expression")
 
 ;;; ergoemacs-keymap
-(when (not (fboundp 'set-temporary-overlay-map))
-  ;; Backport this function from newer emacs versions
-  (defun set-temporary-overlay-map (map &optional keep-pred)
-    "Set a new keymap that will only exist for a short period of time.
-The new keymap to use must be given in the MAP variable. When to
-remove the keymap depends on user input and KEEP-PRED:
 
-- if KEEP-PRED is nil (the default), the keymap disappears as
-  soon as any key is pressed, whether or not the key is in MAP;
-
-- if KEEP-PRED is t, the keymap disappears as soon as a key *not*
-  in MAP is pressed;
-
-- otherwise, KEEP-PRED must be a 0-arguments predicate that will
-  decide if the keymap should be removed (if predicate returns
-  nil) or kept (otherwise). The predicate will be called after
-  each key sequence."
-    
-    (let* ((clearfunsym (make-symbol "clear-temporary-overlay-map"))
-           (overlaysym (make-symbol "t"))
-           (alist (list (cons overlaysym map)))
-           (clearfun
-            `(lambda ()
-               (unless ,(cond ((null keep-pred) nil)
-                              ((eq t keep-pred)
-                               `(eq this-command
-                                    (lookup-key ',map
-                                                (this-command-keys-vector))))
-                              (t `(funcall ',keep-pred)))
-                 (remove-hook 'pre-command-hook ',clearfunsym)
-                 (setq emulation-mode-map-alists
-                       (delq ',alist emulation-mode-map-alists))))))
-      (set overlaysym overlaysym)
-      (fset clearfunsym clearfun)
-      (add-hook 'pre-command-hook clearfunsym)
-      
-      (push alist emulation-mode-map-alists))))
 
 (defvar ergoemacs-keymap (make-sparse-keymap)
   "ErgoEmacs minor mode keymap.")
@@ -563,14 +636,35 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (ergoemacs-get-kbd-translation (nth 0 x)))
           (when (not (ergoemacs-global-changed-p trans-key t))
             (setq cmd (nth 1 x))
-            (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
-            (if (condition-case err
-                    (keymapp (symbol-value cmd))
-                  (error nil))
-                (define-key ,keymap  key (symbol-value cmd))
-              (define-key ,keymap  key cmd))
-            (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
-                (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))
+            (if (and ergoemacs-fix-M-O (string= (ergoemacs-kbd trans-key t t) "M-O"))
+                (progn
+                  (when ergoemacs-debug
+                    (message "Attempting to correct the M-O terminal bug."))
+                  (define-key ,keymap key  'ergoemacs-M-O)
+                  (if (condition-case err
+                          (keymapp (symbol-value cmd))
+                        (error nil))
+                      (define-key ergoemacs-M-O-keymap  [timeout] (symbol-value cmd))
+                    (define-key ergoemacs-M-O-keymap  [timeout] cmd)))
+              (if (and ergoemacs-fix-M-O
+                       (string= (ergoemacs-kbd trans-key t t) "M-o"))
+                  (progn
+                    (when ergoemacs-debug
+                      (message "Attempting to correct the M-o terminal bug."))
+                    (define-key ,keymap key  'ergoemacs-M-o)
+                    (if (condition-case err
+                            (keymapp (symbol-value cmd))
+                          (error nil))
+                        (define-key ergoemacs-M-o-keymap  [timeout] (symbol-value cmd))
+                      (define-key ergoemacs-M-o-keymap  [timeout] cmd)))
+              (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
+              (if (condition-case err
+                      (keymapp (symbol-value cmd))
+                    (error nil))
+                  (define-key ,keymap  key (symbol-value cmd))
+                (define-key ,keymap  key cmd))
+              (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
+                  (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))))
       (symbol-value (ergoemacs-get-variable-layout)))
      
      ;; Now change `minor-mode-map-alist'.
