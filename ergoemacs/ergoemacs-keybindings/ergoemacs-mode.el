@@ -289,19 +289,32 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 (defvar ergoemacs-M-o-keymap (make-keymap)
   "M-o translation map.")
 
+(defun ergoemacs-cancel-M-O ()
+  "Cancels M-O [timeout] key."
+  (setq ergoemacs-push-M-O-timeout nil)
+  (when (timerp ergoemacs-M-O-timer)
+    (cancel-timer ergoemacs-M-O-timer)))
+
+(defvar ergoemacs-push-M-O-timeout nil
+  "Should the M-O [timeout] key be canceled?")
+
 (mapc
  (lambda(x)
    (define-key ergoemacs-M-o-keymap
      (read-kbd-macro (nth 0 x))
      `(lambda() (interactive)
+        (setq ergoemacs-push-M-O-timeout nil)
         (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
+        (set-temporary-overlay-map ergoemacs-M-o-dummy)
         (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t))))
    (define-key ergoemacs-M-O-keymap
      (read-kbd-macro (nth 0 x))
      `(lambda() (interactive)
+        (setq ergoemacs-push-M-O-timeout nil)
         (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
+        (set-temporary-overlay-map ergoemacs-M-o-dummy)
         (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t)))))
  ergoemacs-M-O-trans)
 
@@ -317,6 +330,7 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 
 (defun ergoemacs-exit-M-O-keymap ()
   "Exit M-O keymap and cancel the `ergoemacs-M-O-timer'"
+  (setq ergoemacs-push-M-O-timeout nil)
   (when (timerp ergoemacs-M-O-timer)
     (cancel-timer ergoemacs-M-O-timer))
   nil)
@@ -325,8 +339,8 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
   "Push timeout on unread command events."
   (when (timerp ergoemacs-M-O-timer)
     (cancel-timer ergoemacs-M-O-timer))
-  (setq unread-command-events (cons 'timeout unread-command-events))
-  (setq ergoemacs-M-O-timer nil))
+  (when ergoemacs-push-M-O-timeout
+    (setq unread-command-events (cons 'timeout unread-command-events))))
 
 (defun ergoemacs-M-o (&optional arg use-map)
   "Ergoemacs M-o function to allow arrow keys and the like to work in the terminal. Call the true function immediately when `window-system' is true."
@@ -340,6 +354,7 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
         ;; Issue correct command.
         (let ((window-system t))
           (ergoemacs-M-o arg use-map)))
+      (setq ergoemacs-push-M-O-timeout t)
       (set-temporary-overlay-map map 'ergoemacs-exit-M-O-keymap)
       (run-with-timer ergoemacs-M-O-delay nil #'ergoemacs-M-O-timeout))))
 
