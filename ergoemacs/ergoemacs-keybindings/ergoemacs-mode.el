@@ -636,28 +636,28 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (ergoemacs-get-kbd-translation (nth 0 x)))
           (when (not (ergoemacs-global-changed-p trans-key t))
             (setq cmd (nth 1 x))
+            (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
             (if (and ergoemacs-fix-M-O (string= (ergoemacs-kbd trans-key t t) "M-O"))
                 (progn
-                  (when ergoemacs-debug
-                    (message "Attempting to correct the M-O terminal bug."))
                   (define-key ,keymap key  'ergoemacs-M-O)
                   (if (condition-case err
                           (keymapp (symbol-value cmd))
                         (error nil))
                       (define-key ergoemacs-M-O-keymap  [timeout] (symbol-value cmd))
-                    (define-key ergoemacs-M-O-keymap  [timeout] cmd)))
+                    (define-key ergoemacs-M-O-keymap  [timeout] cmd))
+                  (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
+                      (message "Variable: %s (%s) -> %s %s via ergoemacs-M-O" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))
               (if (and ergoemacs-fix-M-O
                        (string= (ergoemacs-kbd trans-key t t) "M-o"))
                   (progn
-                    (when ergoemacs-debug
-                      (message "Attempting to correct the M-o terminal bug."))
                     (define-key ,keymap key  'ergoemacs-M-o)
                     (if (condition-case err
                             (keymapp (symbol-value cmd))
                           (error nil))
                         (define-key ergoemacs-M-o-keymap  [timeout] (symbol-value cmd))
-                      (define-key ergoemacs-M-o-keymap  [timeout] cmd)))
-              (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
+                      (define-key ergoemacs-M-o-keymap  [timeout] cmd))
+                    (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
+                        (message "Variable: %s (%s) -> %s %s via ergoemacs-M-o" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))
               (if (condition-case err
                       (keymapp (symbol-value cmd))
                     (error nil))
@@ -668,17 +668,13 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
       (symbol-value (ergoemacs-get-variable-layout)))
      
      ;; Now change `minor-mode-map-alist'.
-     ,(if (not (eq keymap 'ergoemacs-mode)) nil
-        (let (found)
-          (setq minor-mode-map-alist
-                (mapcar
-                 (lambda(x)
-                   (if (not (eq (nth 0 x) 'ergoemacs-mode)) x
-                     `(ergoemacs-mode ,ergoemacs-keymap)
-                     (setq found t)))
-                 minor-mode-map-alist))
-          (unless found
-            (add-to-list 'minor-mode-map-alist `(ergoemacs-mode ,ergoemacs-keymap)))))))
+     (when (eq 'ergoemacs-keymap ',keymap)
+       (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
+         ;; Install keymap
+         (if x
+             (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
+         (add-to-list 'minor-mode-map-alist
+                      `(ergoemacs-mode  ,ergoemacs-keymap))))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
