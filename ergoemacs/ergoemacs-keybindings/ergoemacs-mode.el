@@ -294,13 +294,13 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
    (define-key ergoemacs-M-o-keymap
      (read-kbd-macro (nth 0 x))
      `(lambda() (interactive)
-        (when ergoemacs-M-O-timer
+        (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
         (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t))))
    (define-key ergoemacs-M-O-keymap
      (read-kbd-macro (nth 0 x))
      `(lambda() (interactive)
-        (when ergoemacs-M-O-timer
+        (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
         (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t)))))
  ergoemacs-M-O-trans)
@@ -317,16 +317,15 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 
 (defun ergoemacs-exit-M-O-keymap ()
   "Exit M-O keymap and cancel the `ergoemacs-M-O-timer'"
-  (when ergoemacs-M-O-timer
-    (cancel-timer 'ergoemacs-M-O-timer)
-    (setq ergoemacs-M-O-timer nil))
+  (when (timerp ergoemacs-M-O-timer)
+    (cancel-timer ergoemacs-M-O-timer))
   nil)
 
 (defun ergoemacs-M-O-timeout ()
   "Push timeout on unread command events."
   (setq unread-command-events (cons 'timeout unread-command-events))
-  (when ergoemacs-M-O-timer
-    (cancel-timer 'ergoemacs-M-O-timer))
+  (when (timerp ergoemacs-M-O-timer)
+    (cancel-timer ergoemacs-M-O-timer))
   (setq ergoemacs-M-O-timer nil))
 
 (defun ergoemacs-M-o (&optional arg use-map)
@@ -336,10 +335,10 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
     (if window-system
       (let ((fn (lookup-key map [timeout] t)))
         (call-interactively fn t))
-    (when ergoemacs-M-O-timer
+    (when (timerp ergoemacs-M-O-timer)
       (ergoemacs-M-O-timeout))
     (set-temporary-overlay-map map 'ergoemacs-exit-M-O-keymap)
-    (run-with-timer ergoemacs-M-O-delay nil 'ergoemacs-M-O-timeout))))
+    (run-with-timer ergoemacs-M-O-delay nil #'ergoemacs-M-O-timeout))))
 
 (defun ergoemacs-M-O (&optional arg)
   "Ergoemacs M-O function to allow arrow keys and the like to work in the terminal."
