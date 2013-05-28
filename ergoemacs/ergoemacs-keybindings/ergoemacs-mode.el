@@ -315,26 +315,36 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 (defvar ergoemacs-M-O-timer nil
   "Timer for the M-O")
 
+(defun ergoemacs-exit-M-O-keymap ()
+  "Exit M-O keymap and cancel the `ergoemacs-M-O-timer'"
+  (when ergoemacs-M-O-timer
+    (cancel-timer 'ergoemacs-M-O-timer)
+    (setq ergoemacs-M-O-timer nil))
+  nil)
+
 (defun ergoemacs-M-O-timeout ()
   "Push timeout on unread command events."
   (setq unread-command-events (cons 'timeout unread-command-events))
+  (when ergoemacs-M-O-timer
+    (cancel-timer 'ergoemacs-M-O-timer))
   (setq ergoemacs-M-O-timer nil))
 
-(defun ergoemacs-M-o ()
-  "Ergoemacs M-o function to allow arrow keys and the like to work in the terminal."
+(defun ergoemacs-M-o (&optional arg use-map)
+  "Ergoemacs M-o function to allow arrow keys and the like to work in the terminal. Call the true function immediately when `window-system' is true."
   (interactive)
-  (when ergoemacs-M-O-timer
-    (ergoemacs-M-O-timeout))
-  (set-temporary-overlay-map ergoemacs-M-o-keymap nil)
-  (run-with-timer ergoemacs-M-O-delay nil 'ergoemacs-M-O-timeout))
+  (let ((map (or use-map ergoemacs-M-o-keymap)))
+    (if window-system
+      (let ((fn (lookup-key map [timeout] t)))
+        (call-interactively fn t))
+    (when ergoemacs-M-O-timer
+      (ergoemacs-M-O-timeout))
+    (set-temporary-overlay-map map 'ergoemacs-exit-M-O-keymap)
+    (run-with-timer ergoemacs-M-O-delay nil 'ergoemacs-M-O-timeout))))
 
-(defun ergoemacs-M-O ()
+(defun ergoemacs-M-O (&optional arg)
   "Ergoemacs M-O function to allow arrow keys and the like to work in the terminal."
   (interactive)
-  (when ergoemacs-M-O-timer
-    (ergoemacs-M-O-timeout))
-  (set-temporary-overlay-map ergoemacs-M-O-keymap nil)
-  (run-with-timer ergoemacs-M-O-delay nil 'ergoemacs-M-O-timeout))
+  (ergoemacs-M-o arg ergoemacs-M-O-keymap))
 
 (require 'ergoemacs-variants)
 (require 'ergoemacs-unbind)
