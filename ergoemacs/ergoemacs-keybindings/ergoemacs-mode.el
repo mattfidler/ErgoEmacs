@@ -271,6 +271,8 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
     ("C" "<right>")
     ("D" "<left>")
     ("E" "<begin>")
+    ("F" "<end>")
+    ("H" "<home>")
     ("M" "<kp-enter>")
     ("P" "<f1>")
     ("Q" "<f2>")
@@ -306,7 +308,6 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
         (setq ergoemacs-push-M-O-timeout nil)
         (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
-        (set-temporary-overlay-map ergoemacs-M-o-dummy)
         (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t))))
    (define-key ergoemacs-M-O-keymap
      (read-kbd-macro (nth 0 x))
@@ -314,7 +315,6 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
         (setq ergoemacs-push-M-O-timeout nil)
         (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
-        (set-temporary-overlay-map ergoemacs-M-o-dummy)
         (execute-kbd-macro ,(edmacro-parse-keys (nth 1 x) t)))))
  ergoemacs-M-O-trans)
 
