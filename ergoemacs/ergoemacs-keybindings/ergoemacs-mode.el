@@ -300,29 +300,33 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 (defvar ergoemacs-push-M-O-timeout nil
   "Should the M-O [timeout] key be canceled?")
 
+(defvar ergoemacs-curr-prefix-arg nil)
+
 (mapc
  (lambda(x)
    (define-key ergoemacs-M-o-keymap
      (read-kbd-macro (nth 0 x))
-     `(lambda() (interactive)
+     `(lambda(&optional arg) (interactive "P")
         (setq ergoemacs-push-M-O-timeout nil)
         (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
+        (setq prefix-arg ergoemacs-curr-prefix-arg)
         (setq unread-command-events (cons ',(nth 1 x) unread-command-events))))
    (define-key ergoemacs-M-O-keymap
      (read-kbd-macro (nth 0 x))
-     `(lambda() (interactive)
+     `(lambda(&optional arg) (interactive "P")
         (setq ergoemacs-push-M-O-timeout nil)
         (when (timerp ergoemacs-M-O-timer)
           (cancel-timer ergoemacs-M-O-timer))
+        (setq prefix-arg ergoemacs-curr-prefix-arg)
         (setq unread-command-events (cons ',(nth 1 x) unread-command-events)))))
  ergoemacs-M-O-trans)
 
 
-(defvar ergoemacs-fix-M-O nil
+(defvar ergoemacs-fix-M-O t
   "Fixes the ergoemacs M-O console translation.")
 
-(defvar ergoemacs-M-O-delay 0.2
+(defvar ergoemacs-M-O-delay 0.01
   "Number of seconds before sending the M-O event instead of sending the terminal's arrow key equivalent.")
 
 (defvar ergoemacs-M-O-timer nil
@@ -340,11 +344,13 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
   (when (timerp ergoemacs-M-O-timer)
     (cancel-timer ergoemacs-M-O-timer))
   (when ergoemacs-push-M-O-timeout
+    (setq prefix-arg ergoemacs-curr-prefix-arg)
     (setq unread-command-events (cons 'timeout unread-command-events))))
 
 (defun ergoemacs-M-o (&optional arg use-map)
   "Ergoemacs M-o function to allow arrow keys and the like to work in the terminal. Call the true function immediately when `window-system' is true."
-  (interactive)
+  (interactive "P")
+  (setq ergoemacs-curr-prefix-arg current-prefix-arg)
   (let ((map (or use-map ergoemacs-M-o-keymap)))
     (if window-system
         (let ((fn (lookup-key map [timeout] t)))
@@ -360,7 +366,7 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 
 (defun ergoemacs-M-O (&optional arg)
   "Ergoemacs M-O function to allow arrow keys and the like to work in the terminal."
-  (interactive)
+  (interactive "P")
   (ergoemacs-M-o arg ergoemacs-M-O-keymap))
 
 (require 'ergoemacs-variants)
