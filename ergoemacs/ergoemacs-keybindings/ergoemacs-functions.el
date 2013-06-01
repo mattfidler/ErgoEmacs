@@ -116,51 +116,91 @@ If narrow-to-region is in effect, then cut that region only."
 
 ;;; CURSOR MOVEMENT
 
-(defun ergoemacs-forward-open-bracket ()
-  "Move cursor to the next occurrence of left bracket or quotation mark."
-  (interactive)
-  (forward-char 1)
-  (search-forward-regexp (regexp-opt '("\"" "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t)
-;;  (search-forward-regexp "\\s(\\|\\s\"\\|<\\|“\\|‘\\|‹") ; using syntax table
-  (backward-char 1))
+(defun ergoemacs-forward-open-bracket (&optional number)
+  "Move cursor to the next occurrence of left bracket or quotation mark.
 
-(defun ergoemacs-backward-open-bracket ()
-  "Move cursor to the previous occurrence of left bracket or quotation mark.."
-  (interactive)
-  (search-backward-regexp (regexp-opt '("\"" "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「" "『" "“" "‘" "‹" "«")) nil t))
+With prefix NUMBER, move forward to the next NUMBER left bracket or quotation mark.
 
-(defun ergoemacs-forward-close-bracket ()
-  "Move cursor to the next occurrence of right bracket or quotation mark."
-  (interactive)
-   (search-forward-regexp (regexp-opt '("\"" ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
-;;  (search-forward-regexp "\\s)\\|\\s\"\\|>\\|”\\|’\\|›") ;using syntax table
- )
+With a negative prefix NUMBER, move backward to the previous NUMBER left bracket or quotation mark."
+  (interactive "p")
+  (if (and number
+           (> 0 number))
+      (ergoemacs-backward-open-braket (- 0 number))
+    (forward-char 1)
+    (search-forward-regexp
+     (eval-when-compile
+       (regexp-opt
+        '("\"" "(" "{" "[" "<" "〔" "【" "〖" "〈" "《"
+          "「" "『" "“" "‘" "‹" "«"))) nil t number)
+    (backward-char 1)))
 
-(defun ergoemacs-backward-close-bracket ()
-  "Move cursor to the previous occurrence of right bracket or quotation mark."
-  (interactive)
-  (backward-char 1)
-  (search-backward-regexp (regexp-opt '("\"" ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»")) nil t)
-  (forward-char 1))
+(defun ergoemacs-backward-open-bracket (&optional number)
+  "Move cursor to the previous occurrence of left bracket or quotation mark.
+With prefix argument NUMBER, move backward NUMBER open brackets.
+With a negative prefix NUMBER, move forward NUMBER open brackets."
+  (interactive "p")
+  (if (and number
+           (> 0 number))
+      (ergoemacs-forward-open-bracket (- 0 number))
+    (search-backward-regexp
+   (eval-when-compile
+     (regexp-opt
+      '("\"" "(" "{" "[" "<" "〔" "【" "〖" "〈" "《" "「"
+        "『" "“" "‘" "‹" "«"))) nil t number)))
 
-(defun ergoemacs-forward-block ()
+(defun ergoemacs-forward-close-bracket (&optional number)
+  "Move cursor to the next occurrence of right bracket or quotation mark.
+With a prefix argument NUMBER, move forward NUMBER closed bracket.
+With a negative prefix argument NUMBER, move backward NUMBER closed brackets."
+  (interactive "p")
+  (if (and number
+           (> 0 number))
+      (ergoemacs-backward-close-bracket (- 0 number))
+    (search-forward-regexp
+     (eval-when-compile
+       (regexp-opt '("\"" ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»"))) nil t number)))
+
+(defun ergoemacs-backward-close-bracket (&optional number)
+  "Move cursor to the previous occurrence of right bracket or quotation mark.
+With a prefix argument NUMBER, move backward NUMBER closed brackets.
+With a negative prefix argument NUMBER, move forward NUMBER closed brackets."
+  (interactive "p")
+  (if (and number
+           (> 0 number))
+      (ergoemacs-forward-close-bracket (- 0 number))
+    (backward-char 1)
+    (search-backward-regexp
+     (eval-when-compile
+       (regexp-opt '("\"" ")" "\\]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»"))) nil t number)
+    (forward-char 1)))
+
+(defun ergoemacs-forward-block (&optional number)
   "Move cursor forward to the beginning of next text block.
 A text block is separated by 2 empty lines (or line with just whitespace).
-In most major modes, this is similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table."
-  (interactive)
-  (if (search-forward-regexp "\n[[:blank:]\n]*\n+" nil "NOERROR")
-      (progn (backward-char))
-    (progn (goto-char (point-max)))))
+In most major modes, this is similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table.
 
-(defun ergoemacs-backward-block ()
+With a prefix argument NUMBER, move forward NUMBER blocks.
+With a negative prefix argument NUMBER, move backward NUMBER blocks."
+  (interactive "p")
+  (if (and number
+           (> 0 number))
+      (ergoemacs-backward-block (- 0 number))
+  (if (search-forward-regexp "\n[[:blank:]\n]*\n+" nil "NOERROR" number)
+      (progn (backward-char))
+    (progn (goto-char (point-max))))))
+
+(defun ergoemacs-backward-block (&optional number)
   "Move cursor backward to previous text block.
 See: `ergoemacs-forward-block'"
-  (interactive)
-  (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
-      (progn
-        (skip-chars-backward "\n\t ")
-        (forward-char 1))
-    (progn (goto-char (point-min)) )))
+  (interactive "p")
+  (if (and number
+           (> 0 number))
+      (ergoemacs-forward-block (- 0 number))
+    (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR" number)
+        (progn
+          (skip-chars-backward "\n\t ")
+          (forward-char 1))
+      (progn (goto-char (point-min))))))
 
 ;;; TEXT SELECTION RELATED
 
@@ -233,23 +273,27 @@ Subsequent calls expands the selection to larger semantic unit."
 
 ;;; TEXT TRANSFORMATION RELATED
 
-(defun ergoemacs-kill-line-backward ()
+(defun ergoemacs-kill-line-backward (&optional number)
   "Kill text between the beginning of the line to the cursor position.
 If there's no text, delete the previous line ending."
-  (interactive)
-  (if (looking-back "\n")
-      (delete-char -1)
-    (kill-line 0)))
+  (interactive "p")
+  (if (not number)
+      (if (looking-back "\n")
+          (delete-char -1)
+        (kill-line 0))
+    (kill-line (- 0 number))))
 
-(defun ergoemacs-move-cursor-next-pane ()
+(defun ergoemacs-move-cursor-next-pane (&optional number)
   "Move cursor to the next pane."
-  (interactive)
-  (other-window 1))
+  (interactive "p")
+  (other-window (or number 1)))
 
-(defun ergoemacs-move-cursor-previous-pane ()
+(defun ergoemacs-move-cursor-previous-pane (&optional number)
   "Move cursor to the previous pane."
   (interactive)
-  (other-window -1))
+  (other-window (if number
+                    (- 0 number)
+                  -1)))
 
 (defun ergoemacs-unfill-paragraph ()
   "Replace newline char in current paragraph by space.
@@ -381,15 +425,18 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
 
 ;;; FRAME
 
-(defun ergoemacs-switch-to-next-frame ()
+(defun ergoemacs-switch-to-next-frame (&optional number)
   "Select the next frame on current display, and raise it."
-  (interactive)
-  (other-frame 1))
+  (interactive "p")
+  (other-frame (or number 1)))
 
-(defun ergoemacs-switch-to-previous-frame ()
+(defun ergoemacs-switch-to-previous-frame (&optional number)
   "Select the previous frame on current display, and raise it."
-  (interactive)
-  (other-frame -1))
+  (interactive "p")
+  (other-frame
+   (if number
+       (- 0 number)
+     -1)))
 
 ;;; BUFFER RELATED
 
