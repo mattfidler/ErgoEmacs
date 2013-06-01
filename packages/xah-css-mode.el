@@ -56,7 +56,8 @@ Example output: hsl(100,24%,82%);"
 (defun xcm-hex-to-hsl-color (hexStr)
   "Convert hexStr color to CSS HSL format.
 Return a string.
- ⁖ #ffefd5 → hsl(37,100%,91%)
+ ⁖ 
+ (xcm-hex-to-hsl-color \"#ffefd5\") ⇒ \"hsl(37,100%,91%)\"
 "
   (let* (
          (colorVec (xcm-convert-color-hex-to-vec hexStr))
@@ -71,17 +72,26 @@ Return a string.
     (format "hsl(%d,%d%%,%d%%)" (* xH 360) (* xS 100) (* xL 100) )
     ))
 
-;(xcm-convert-color-hex-to-vec "aabbcc")
-
 (defun xcm-convert-color-hex-to-vec (hexcolor)
   "Convert HEXCOLOR from “\"rrggbb\"” string to a elisp vector [r g b], where the values are from 0 to 1.
-Example: \"00ffcc\" ⇒ [0.0 1.0 0.8]
+Example:
+ (xcm-convert-color-hex-to-vec \"00ffcc\") ⇒ [0.0 1.0 0.8]
 
-Note: The input string must not start with “#”. If so, the return value is nil."
-(when (= 6 (length hexcolor))
-  (vector (/ (float (string-to-number (substring hexcolor 0 2) 16)) 255.0)
-          (/ (float (string-to-number (substring hexcolor 2 4) 16)) 255.0)
-          (/ (float (string-to-number (substring hexcolor 4) 16)) 255.0))))
+Note: The input string must NOT start with “#”. If so, the return value is nil."
+  (vector
+   (xcm-normalize-number-scale (string-to-number (substring hexcolor 0 2) 16) 255)
+   (xcm-normalize-number-scale (string-to-number (substring hexcolor 2 4) 16) 255)
+   (xcm-normalize-number-scale (string-to-number (substring hexcolor 4) 16) 255)
+   ))
+
+(defun xcm-normalize-number-scale (myVal rangeMax)
+  "Return a number between [0, 1] that's a rescaled myVal. 
+myVal's original range is [0, rangeMax].
+
+The arguments can be int or float.
+Return value is float.
+"
+  (/ (float myVal) (float rangeMax)))
 
 
 ;;; functions
