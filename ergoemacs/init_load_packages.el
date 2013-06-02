@@ -209,10 +209,11 @@
 (keyfreq-autosave-mode 1)
 
 ;;; add a tab bar widget
-(require 'tabbar)
-(tabbar-mode 1)
-(require 'tabbar-ruler)
+;; (require 'tabbar)
+;; (tabbar-mode 1)
+;; (require 'tabbar-ruler)
 ;; 2010-09-30. tabbar problem: sometimes after a while, tabbar mode will slow you down. For example, in your OS, set key repeat rate to highest, so that holding down a key will keep repeating the letter. Then, when using emacs for while (maybe few hours or few days), holding down a key, you'll see jumpy behavior.
+;; 2013-06-01 tabbar and tabbar-ruler together makes emacs take some 20% cpu even when idle. without, it's 1% cpu.
 
 ;; display horizontal line for the Form Feed char (ASCII 12, ^L)
 ;; The Form Feed char is often used in elisp source code for marking sections. The command forward-page (and backward-page) moves to the next form feed char.
