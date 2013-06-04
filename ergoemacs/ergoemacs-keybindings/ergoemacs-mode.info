@@ -72,16 +72,14 @@ File: ergoemacs-mode.info,  Node: Window/Tab Switching,  Next: Shrink-whitespace
 1.2 Window/Tab Switching
 ========================
 
-The following are some new commands that lets you easily switch windows
-or buffers.
+The following are new commands that lets you easily switch windows or buffers.
 
-Standard name     Key press                   Emacs command name
-Next Window       【Alt+`】 【Alt+~】       switch-to-next-frame
-Previous Window   【Ctrl+⇟PageDown▽】    switch-to-previous-frame
-Next Tab          【Ctrl+⇞PageUp△】      next-user-buffer
-Previous Tab NA   【Ctrl+⇧Shift+⇟PageDown▽】previous-user-buffer
-NA                【Ctrl+⇧Shift+⇞PageUp   next-emacs-buffer
-                  △】                      previous-emacs-buffer
+Standard name       Key                    Emacs command name
+Next Window       【Alt+`】 【Alt+~】        switch-to-next-frame
+Previous Window   【Ctrl+⇟PageDown】        switch-to-previous-frame
+Next Tab          【Ctrl+⇞PageUp】          next-user-buffer
+Previous Tab NA   【Ctrl+⇧Shift+⇟PageDown】 previous-user-buffer
+NA                【Ctrl+⇧Shift+⇞PageUp】   next-emacs-buffer previous-emacs-buffer
 
 
 File: ergoemacs-mode.info,  Node: Shrink-whitespaces compact/uncompact-block toggle-letter-case,  Next: Banish Key Chords,  Prev: Window/Tab Switching,  Up: Ergoemacs Keybindings
@@ -94,7 +92,7 @@ several similar commands into one. This way, you have one single
 command with one single shortcut to remember. They do what you want
 depending on context.
 
-Name                     Shortcut    Description
+Name                      Key       Description
 shrink-whitespaces       【Alt+w】  Takes out spaces/tabs around cursor
 compact-uncompact-block  【Alt+q】  Hard Wraps or unwraps text u Change
 toggle-letter-case       【Alt+/】  capitilzation (ALL, First,lower)

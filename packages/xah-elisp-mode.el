@@ -51,6 +51,7 @@
 "featurep"
 "floatp"
 "format"
+"format-time-string"
 "funcall"
 "function"
 "get"
@@ -123,13 +124,14 @@
 "vector"
 "when"
 "while"
+"defvar"
+"float"
 
 ) )
 
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
 (setq xem-emacs-words '(
 
-"forward-sexp"
 "add-hook"
 "autoload"
 "backward-char"
@@ -149,9 +151,9 @@
 "defalias"
 "defconst"
 "defcustom"
+"define-derived-mode"
 "define-key"
 "defsubst"
-"defvar"
 "delete-char"
 "delete-directory"
 "delete-file"
@@ -173,12 +175,15 @@
 "find-file"
 "forward-char"
 "forward-line"
+"forward-sexp"
 "generate-new-buffer"
 "global-set-key"
 "global-unset-key"
 "goto-char"  "insert-file-contents"
 "insert"
+"interactive"
 "kbd"
+"kill-all-local-variables"
 "kill-buffer"
 "line-beginning-position"
 "line-end-position"
@@ -186,6 +191,7 @@
 "looking-at"
 "make-directory"
 "make-local-variable"
+"mark"
 "match-beginning"
 "match-end"
 "match-string"
@@ -193,6 +199,9 @@
 "point"
 "point-max"
 "point-min"
+"pop-mark"
+"prefix-numeric-value"
+"push-mark"
 "re-search-backward"
 "re-search-forward"
 "read-directory-name"
@@ -208,6 +217,7 @@
 "replace-match"
 "replace-regexp"
 "replace-regexp-in-string"
+"run-hooks"
 "save-buffer"
 "save-excursion"
 "save-restriction"
@@ -223,6 +233,7 @@
 "skip-chars-forward"
 "substring-no-properties"
 "thing-at-point"
+"user-error"
 "widget-get"
 "with-current-buffer"
 "with-temp-buffer"
@@ -231,12 +242,6 @@
 "write-region"
 "y-or-n-p"
 "yes-or-no-p"
-"user-error"
-"mark"
-"push-mark"
-"pop-mark"
-"prefix-numeric-value"
-"interactive"
 
 "modify-syntax-entry"
 "make-sparse-keymap"
@@ -257,6 +262,11 @@
 "erase-buffer"
 "append-to-file"
 "buffer-string"
+
+"switch-to-buffer"
+"with-output-to-temp-buffer"
+"setq-default"
+
 ) )
 
 (defvar xem-keyword-builtin nil "a list of elisp  names")
@@ -666,7 +676,6 @@
 "list-matching-lines-default-context-lines"
 "list-matching-lines-face"
 
-
 ))
 
 (defvar xem-elisp-vars-2 nil "a list elisp variables names")
@@ -741,6 +750,7 @@
 "mode-line-default-help-echo"
 "mode-line-format"
 "mode-line-in-non-selected-windows"
+"mode-name"
 "mode-require-final-newline"
 "mouse-1-click-follows-link"
 "mouse-1-click-in-non-selected-windows"
@@ -1034,6 +1044,7 @@
 "yank-handled-properties"
 "yank-menu-length"
 "yank-pop-change-selection"
+"user-emacs-directory"
 
 ) )
 

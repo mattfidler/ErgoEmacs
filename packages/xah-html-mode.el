@@ -25,7 +25,7 @@
 ;; version 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
 ;; version 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
 ;; version 0.5.6, 2013-02-16 added xhm-replace-html-named-entities
-;; version 0.5.5, 2013-02-03 added xhm-replace-html-chars-to-entities, xhm-replace-html-chars-to-unicode
+;; version 0.5.5, 2013-02-03 added xhm-replace-html-&<>-to-entities, xhm-replace-html-chars-to-unicode
 ;; version 0.5.4, 2013-01-26 lots additions and changes. added xhm-wrap-html-tag xhm-wrap-p-tag xhm-lines-to-html-list xhm-make-html-table xhm-wikipedia-linkify xhm-wrap-url xhm-wikipedia-url-linkify xhm-source-url-linkify xhm-make-link-defunct xhm-make-citation xhm-update-title xhm-extract-url xhm-remove-html-tags xhm-remove-span-tag-region xhm-htmlize-keyboard-shortcut-notation
 ;; version 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work.
 ;; version 0.5.2, 2012-09-25 added a color for curly quoted text.
@@ -235,7 +235,7 @@
            ("output" . ["fundamental-mode" "txt"])
 
            ("bash" . ["sh-mode" "sh"])
-           ("bash-output" . ["sh-mode" "sh"])
+           ("bash-output" . ["fundamental-mode" "txt"])
            ("unix-config" . ["conf-space-mode" "conf"])
            ("cmd" . ["dos-mode" "bat"])
 
@@ -738,13 +738,19 @@ For detail, see `comment-dwim'."
    (let ((deactivate-mark nil) (comment-start "<!--") (comment-end "-->"))
      (comment-dwim arg)))
 
-(defun xhm-replace-html-chars-to-entities ()
+(defun xhm-replace-html-&<>-to-entities ()
   "Replace HTML < > & to HTML entities.
 This works on the current text selection or block of text.
 The string replaced are:
  & ⇒ &amp;
  < ⇒ &lt;
- > ⇒ &gt;"
+ > ⇒ &gt;
+
+See also:
+`xhm-replace-html-named-entities'
+`xhm-replace-html-&<>-to-entities'
+`xhm-replace-html-chars-to-unicode'
+"
   (interactive)
   (let (bds p1 p2 myText)
     (setq bds (get-selection-or-unit 'block))
@@ -758,7 +764,13 @@ This works on the current text selection or block of text.
 The characters replaced are:
  & ⇒ ＆
  < ⇒ ‹
- > ⇒ ›"
+ > ⇒ ›
+
+See also:
+`xhm-replace-html-named-entities'
+`xhm-replace-html-&<>-to-entities'
+`xhm-replace-html-chars-to-unicode'
+"
   (interactive)
   (let (bds p1 p2 myText)
     (setq bds (get-selection-or-unit 'block))
@@ -776,7 +788,13 @@ When called in lisp code, if ξstring is non-nil, returns a changed string.  If 
 The following HTML Entities are not replaced:
  &amp; &
  &lt; <
- &gt; >"
+ &gt; >
+
+See also:
+`xhm-replace-html-named-entities'
+`xhm-replace-html-&<>-to-entities'
+`xhm-replace-html-chars-to-unicode'
+"
   (interactive
    (if (region-active-p)
        (list nil (region-beginning) (region-end))
@@ -1510,18 +1528,16 @@ Case shouldn't matter, except when it's emacs's key notation.
          (p2 (elt bds 2))
          (replaceList [
                        ;; case in find string shouldn't matter.
-                       ["control" "<kbd>Ctrl</kbd>"]
                        ["ctrl" "<kbd>Ctrl</kbd>"]
                        ["altgr" "<kbd>AltGr</kbd>"]
                        ["alt" "<kbd>Alt</kbd>"]
                        ["shift" "<kbd>⇧ Shift</kbd>"]
-                       ["command" "<kbd>⌘ Cmd</kbd>"]
                        ["cmd" "<kbd>⌘ Cmd</kbd>"]
                        ["option" "<kbd>⌥ Opt</kbd>"]
                        ["win" "<kbd>❖ Win</kbd>"]
                        ["menu" "<kbd>▤ Menu</kbd>"]
                        ["meta" "<kbd>Meta</kbd>"]
-                       ["super" "<kbd>Super</kbd>"]
+                       ["super" "<kbd>❖ Super</kbd>"]
                        ["hyper" "<kbd>Hyper</kbd>"]
 
                        ["return" "<kbd>Return ↩</kbd>"]
@@ -1543,7 +1559,13 @@ Case shouldn't matter, except when it's emacs's key notation.
                        ["undo" "<kbd>⎌</kbd>"]
                        ["redo" "<kbd>↷</kbd>"]
 
-                       ["Fn" "<kbd>Fn</kbd>"]
+                       ["F10" "<kbd>F10</kbd>"]
+                       ["F11" "<kbd>F11</kbd>"]
+                       ["F12" "<kbd>F12</kbd>"]
+                       ["F13" "<kbd>F13</kbd>"]
+                       ["F14" "<kbd>F14</kbd>"]
+                       ["F15" "<kbd>F15</kbd>"]
+                       ["F16" "<kbd>F16</kbd>"]
                        ["F1" "<kbd>F1</kbd>"]
                        ["F2" "<kbd>F2</kbd>"]
                        ["F3" "<kbd>F3</kbd>"]
@@ -1553,13 +1575,7 @@ Case shouldn't matter, except when it's emacs's key notation.
                        ["F7" "<kbd>F7</kbd>"]
                        ["F8" "<kbd>F8</kbd>"]
                        ["F9" "<kbd>F9</kbd>"]
-                       ["F10" "<kbd>F10</kbd>"]
-                       ["F11" "<kbd>F11</kbd>"]
-                       ["F12" "<kbd>F12</kbd>"]
-                       ["F13" "<kbd>F13</kbd>"]
-                       ["F14" "<kbd>F14</kbd>"]
-                       ["F15" "<kbd>F15</kbd>"]
-                       ["F16" "<kbd>F16</kbd>"]
+                       ["Fn" "<kbd>Fn</kbd>"]
 
                        ["kp0" "<kbd>Keypad 0</kbd>"]
                        ["kp1" "<kbd>Keypad 1</kbd>"]
@@ -1602,6 +1618,9 @@ Case shouldn't matter, except when it's emacs's key notation.
       (save-restriction
         (narrow-to-region p1 p2)
         (xhm-emacs-to-windows-kbd-notation (point-min) (point-max) )
+
+(goto-char (point-min))
+
         (replace-pairs-region (point-min) (point-max) replaceList)
         ;; (replace-regexp-pairs-region
         ;;  (point-min) (point-max)
