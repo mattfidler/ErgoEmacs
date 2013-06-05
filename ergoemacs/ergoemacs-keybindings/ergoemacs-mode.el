@@ -1054,9 +1054,10 @@ C-k S-a     -> k S-a           not defined
               (when ergoemacs-debug
                 (message "Error defining %s: %s" new-key err)))))))))
 
-(defun ergoemacs-ctl-c-unchorded ()
+(defun ergoemacs-ctl-c-unchorded (&optional arg)
   "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
-  (interactive)
+  (interactive "P")
+  (setq prefix-arg current-prefix-arg)
   (eval
    `(progn
       (defvar ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) (make-keymap)
@@ -1070,9 +1071,10 @@ C-k S-a     -> k S-a           not defined
       (when (called-interactively-p 'interactive)
         (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))))))
 
-(defun ergoemacs-ctl-c ()
+(defun ergoemacs-ctl-c (&optional arg)
   "Creates a keymap for the current major mode that extract the 【Ctl+c】 combinations."
-  (interactive)
+  (interactive "P")
+  (setq prefix-arg current-prefix-arg)
   (eval
    `(progn
       (defvar ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) (make-keymap)
