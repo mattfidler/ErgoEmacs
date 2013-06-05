@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Ergoemacs Keybindings"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-05-17T10:24-0500"/>
+<meta name="generated" content="2013-06-05T00:20-0500"/>
 <meta name="author" content="Xah Lee, David Capello, and Matthew Fidler"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -132,70 +132,58 @@ bundles many elisp packages that are not in GNU Emacs.
 <li><a href="#sec-2">2 Standard Keyboard Shortcuts</a></li>
 <li><a href="#sec-3">3 Window/Tab Switching</a></li>
 <li><a href="#sec-4">4 Shrink-whitespaces, compact/uncompact-block, toggle-letter-case</a></li>
-<li><a href="#sec-5">5 Banish Key Chords</a>
+<li><a href="#sec-5">5 Layouts Supported</a></li>
+<li><a href="#sec-6">6 Tips for adopting ErgoEmacs Keybindings</a>
 <ul>
-<li><a href="#sec-5-1">5.1 Background</a>
+<li><a href="#sec-6-1">6.1 Where Did My Command Go?</a></li>
+<li><a href="#sec-6-2">6.2 Shortcut To Open Cheatsheet</a></li>
+<li><a href="#sec-6-3">6.3 Gradual Adoption for an Emacs User</a>
 <ul>
-<li><a href="#sec-5-1-1">5.1.1 Whence Did Key Chord Came From?</a></li>
-<li><a href="#sec-5-1-2">5.1.2 What Should a Keyboard Nerd Do with Key Chords?</a></li>
-<li><a href="#sec-5-1-3">5.1.3 Principles on Efficient Use of Key Chords</a></li>
-<li><a href="#sec-5-1-4">5.1.4 What About Sticky Keys?</a></li>
-</ul>
-</li>
-<li><a href="#sec-5-2">5.2 Keyboard Shortcut Design</a>
-<ul>
-<li><a href="#sec-5-2-1">5.2.1 Repeatable and Non-Repeatable Commands</a></li>
-<li><a href="#sec-5-2-2">5.2.2 Repeatable and Non-Repeatable Keys</a></li>
-</ul>
-</li>
-<li><a href="#sec-5-3">5.3 Ergoemacs Key Chord Reduction</a>
-<ul>
-<li><a href="#sec-5-3-1">5.3.1 [Control+x] and [Control-c] reduction</a></li>
-<li><a href="#sec-5-3-2">5.3.2 Movement without key-chords</a></li>
+<li><a href="#sec-6-3-1">6.3.1 Level 1</a></li>
+<li><a href="#sec-6-3-2">6.3.2 Level 2</a></li>
+<li><a href="#sec-6-3-3">6.3.3 Level 3</a></li>
+<li><a href="#sec-6-3-4">6.3.4 Full Ergoemacs Keys</a></li>
+<li><a href="#sec-6-3-5">6.3.5 Guru</a></li>
+<li><a href="#sec-6-3-6">6.3.6 Master</a></li>
 </ul></li>
 </ul>
 </li>
-<li><a href="#sec-6">6 Layouts Supported</a></li>
-<li><a href="#sec-7">7 Tips for adopting ErgoEmacs Keybindings</a>
+<li><a href="#sec-7">7 Changing key layouts or adding variants</a>
 <ul>
-<li><a href="#sec-7-1">7.1 Where Did My Command Go?</a></li>
-<li><a href="#sec-7-2">7.2 Shortcut To Open Cheatsheet</a></li>
-<li><a href="#sec-7-3">7.3 Gradual Adoption for an Emacs User</a>
+<li><a href="#sec-7-1">7.1 Globally defined keys</a></li>
+<li><a href="#sec-7-2">7.2 Ergoemacs defined keys</a>
 <ul>
-<li><a href="#sec-7-3-1">7.3.1 Level 1</a></li>
-<li><a href="#sec-7-3-2">7.3.2 Level 2</a></li>
-<li><a href="#sec-7-3-3">7.3.3 Level 3</a></li>
-<li><a href="#sec-7-3-4">7.3.4 Full Ergoemacs Keys</a></li>
-<li><a href="#sec-7-3-5">7.3.5 Guru</a></li>
-<li><a href="#sec-7-3-6">7.3.6 Master</a></li>
+<li><a href="#sec-7-2-1">7.2.1 Adding a ergonomic key</a></li>
+<li><a href="#sec-7-2-2">7.2.2 Adding a fixed key</a></li>
+<li><a href="#sec-7-2-3">7.2.3 Adding an ergonomic key map with fixed mappings</a></li>
+<li><a href="#sec-7-2-4">7.2.4 Creating a keyboard variant</a></li>
 </ul></li>
 </ul>
 </li>
-<li><a href="#sec-8">8 Changing key layouts or adding variants</a>
+<li><a href="#sec-8">8 Ergoemacs Keys System wide</a>
 <ul>
-<li><a href="#sec-8-1">8.1 Globally defined keys</a></li>
-<li><a href="#sec-8-2">8.2 Ergoemacs defined keys</a>
-<ul>
-<li><a href="#sec-8-2-1">8.2.1 Adding a ergonomic key</a></li>
-<li><a href="#sec-8-2-2">8.2.2 Adding a fixed key</a></li>
-<li><a href="#sec-8-2-3">8.2.3 Adding an ergonomic key map with fixed mappings</a></li>
-<li><a href="#sec-8-2-4">8.2.4 Creating a keyboard variant</a></li>
-</ul></li>
+<li><a href="#sec-8-1">8.1 Bash</a></li>
+<li><a href="#sec-8-2">8.2 Windows</a></li>
+<li><a href="#sec-8-3">8.3 Mac OS X</a></li>
 </ul>
 </li>
-<li><a href="#sec-9">9 Ergoemacs Keys System wide</a>
+<li><a href="#sec-9">9 Developer information</a>
 <ul>
-<li><a href="#sec-9-1">9.1 Bash</a></li>
-<li><a href="#sec-9-2">9.2 Windows</a></li>
-<li><a href="#sec-9-3">9.3 Mac OS X</a></li>
+<li><a href="#sec-9-1">9.1 Layouts</a></li>
+<li><a href="#sec-9-2">9.2 Customizing/Saving the variables</a></li>
+<li><a href="#sec-9-3">9.3 Extras</a></li>
+<li><a href="#sec-9-4">9.4 Updating Ergoemacs for the latest version of emacs</a></li>
 </ul>
 </li>
-<li><a href="#sec-10">10 Developer information</a>
+<li><a href="#sec-10">10 Experimental Ergoemacs</a>
 <ul>
-<li><a href="#sec-10-1">10.1 Layouts</a></li>
-<li><a href="#sec-10-2">10.2 Customizing/Saving the variables</a></li>
-<li><a href="#sec-10-3">10.3 Extras</a></li>
-<li><a href="#sec-10-4">10.4 Updating Ergoemacs for the latest version of emacs</a></li>
+<li><a href="#sec-10-1">10.1 Banish Key Chords</a>
+<ul>
+<li><a href="#sec-10-1-1">10.1.1 Background</a></li>
+<li><a href="#sec-10-1-2">10.1.2 Keyboard Shortcut Design</a></li>
+<li><a href="#sec-10-1-3">10.1.3 Ergoemacs Key Chord Reduction</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -356,15 +344,460 @@ depending on context.
 </div>
 
 <div id="outline-container-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> Banish Key Chords</h2>
+<h2 id="sec-5"><span class="section-number-2">5</span> Layouts Supported</h2>
 <div class="outline-text-2" id="text-5">
+
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Tips for adopting ErgoEmacs Keybindings</h2>
+<div class="outline-text-2" id="text-6">
+
+<p>If you are a long time emacs user, you may find it painful to adopt
+this setup.
+</p>
+<p>
+This difficulty is nothing special. It's the same difficulty when you
+switching to dvorak after years of qwerty. Basically, it's about
+changing muscle memory.
+</p>
+
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> Where Did My Command Go?</h3>
+<div class="outline-text-3" id="text-6-1">
+
+<p>The ergonomic-mode minor mode features the command
+where-is-old-binding, with shortcut “Ctrl+h o”. This command asks you
+to type a shortcut, and tells you which command it was bound in GNU
+Emacs, and the new shortcut for it under ErgoEmacs?.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Shortcut To Open Cheatsheet</h3>
+<div class="outline-text-3" id="text-6-2">
+
+<p>You can open a cheatsheet by pressing [Control+h] ['].  On the first
+run, this will create a svg and (possibly) create a png based on the
+svg (if <code>ergoemacs-inkscape</code> points to the inkscape executable). Once
+these are created, the cheatsheet will be opened displaying all the
+keys based on your layout.
+</p></div>
+
+</div>
+
+<div id="outline-container-6-3" class="outline-3">
+<h3 id="sec-6-3"><span class="section-number-3">6.3</span> Gradual Adoption for an Emacs User</h3>
+<div class="outline-text-3" id="text-6-3">
+
+<p>Here's some tips that may help you adopt.
+</p>
+</div>
+
+<div id="outline-container-6-3-1" class="outline-4">
+<h4 id="sec-6-3-1"><span class="section-number-4">6.3.1</span> Level 1</h4>
+<div class="outline-text-4" id="text-6-3-1">
+
+<p>If you find it too painful to switch, don't use the whole package. Instead, start off with just the arrow key movements.
+</p>
+
+
+<pre class="example">(setq ergoemacs-variant "lvl1")
+(ergoemacs-mode 1)
+</pre>
+
+<p>
+Either put the above in your emacs init file (usually at “~/.emacs”), or customize ergoemacs-mode to set the variant to lvl1.
+</p>
+<p>
+With only the above change, you will increase your emacs productivity, especially if you are a touch typist. These single char cursor moving commands are the top 4 most frequently used emacs commands by statistics, roughly accounting for 43% of commands that have a shortcut.
+</p>
+
+<p>
+Once you used the above for a couple of weeks, you may add more keys to adopt.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6-3-2" class="outline-4">
+<h4 id="sec-6-3-2"><span class="section-number-4">6.3.2</span> Level 2</h4>
+<div class="outline-text-4" id="text-6-3-2">
+
+<p>Adding keys for moving around words and deleting words.
+</p>
+
+
+
+<pre class="example">(setq ergoemacs-variant "lvl2")
+(ergoemacs-mode 1)
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-3-3" class="outline-4">
+<h4 id="sec-6-3-3"><span class="section-number-4">6.3.3</span> Level 3</h4>
+<div class="outline-text-4" id="text-6-3-3">
+
+<p>Full ergoemacs keyset without the &lt;menu&gt; unchorded keys.
+</p>
+
+
+<pre class="example">(setq ergoemacs-variant "lvl3")
+(ergoemacs-mode 1)
+</pre>
 
 
 </div>
 
-<div id="outline-container-5-1" class="outline-3">
-<h3 id="sec-5-1"><span class="section-number-3">5.1</span> Background</h3>
-<div class="outline-text-3" id="text-5-1">
+</div>
+
+<div id="outline-container-6-3-4" class="outline-4">
+<h4 id="sec-6-3-4"><span class="section-number-4">6.3.4</span> Full Ergoemacs Keys</h4>
+<div class="outline-text-4" id="text-6-3-4">
+
+<p>Try to use the full ergoemacs mode.
+</p>
+
+
+<pre class="example">(setq ergoemacs-variant nil)
+(ergoemacs-mode 1)
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-3-5" class="outline-4">
+<h4 id="sec-6-3-5"><span class="section-number-4">6.3.5</span> Guru</h4>
+<div class="outline-text-4" id="text-6-3-5">
+
+<p>The guru variant takes away the arrow keys and page up/page down keys.
+</p>
+
+
+
+<pre class="example">(setq ergoemacs-variant "guru")
+(ergoemacs-mode 1)
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-3-6" class="outline-4">
+<h4 id="sec-6-3-6"><span class="section-number-4">6.3.6</span> Master</h4>
+<div class="outline-text-4" id="text-6-3-6">
+
+<p>The Master variant takes away the backspace.  This key is not
+particularly ergonomic, and can cause possible pinky issues.
+Changing this means that you may wish to try to get ergoemacs
+bindings everywhere.
+</p>
+
+
+
+<pre class="example">(setq ergoemacs-variant "master")
+(ergoemacs-mode 1)
+</pre>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Changing key layouts or adding variants</h2>
+<div class="outline-text-2" id="text-7">
+
+
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> Globally defined keys</h3>
+<div class="outline-text-3" id="text-7-1">
+
+<p>These keys are defined on the global keymap and should be retained
+regardless of the variant or layout used.  However, these keys will
+not show up on keyboard documentation generated by ergoemacs.
+Additionally, these keys may be masked or remapped by other programs.
+</p></div>
+
+</div>
+
+<div id="outline-container-7-2" class="outline-3">
+<h3 id="sec-7-2"><span class="section-number-3">7.2</span> Ergoemacs defined keys</h3>
+<div class="outline-text-3" id="text-7-2">
+
+<p>These keys are defined in the ergoemacs-keymap.  When the layout
+changes by changing options, these keys are lost.  However, you may
+create your own variant to allow these keys to be saved.
+</p>
+</div>
+
+<div id="outline-container-7-2-1" class="outline-4">
+<h4 id="sec-7-2-1"><span class="section-number-4">7.2.1</span> Adding a ergonomic key</h4>
+<div class="outline-text-4" id="text-7-2-1">
+
+<p>Ergonomic keys can be added by:
+</p>
+
+
+<pre class="example">(ergoemacs-key "M-a" 'execute-extended-command "Execute")
+</pre>
+
+
+<p>
+This adds the Alt-a command to all keyboards based on the QWERTY
+layout.  This only applies to the currently selected keyboard variant.
+</p>
+
+<p>
+Note the last parameter is optional and allows Ergoemacs to document
+that this is an "Execute" command when generating keyboard layout diagrams.
+</p></div>
+
+</div>
+
+<div id="outline-container-7-2-2" class="outline-4">
+<h4 id="sec-7-2-2"><span class="section-number-4">7.2.2</span> Adding a fixed key</h4>
+<div class="outline-text-4" id="text-7-2-2">
+
+<p>Fixed keys can be added by:
+</p>
+
+
+<pre class="example">(ergoemacs-fixed-key "C-o" 'ido-find-file "Open File")
+</pre>
+
+
+<p>
+This adds the fixed key to the currently selected emacs variant
+</p>
+<p>
+Note the last parameter is optional and allows Ergoemacs to document
+that this is an "Open" command when generating keyboard layout diagrams.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-7-2-3" class="outline-4">
+<h4 id="sec-7-2-3"><span class="section-number-4">7.2.3</span> Adding an ergonomic key map with fixed mappings</h4>
+<div class="outline-text-4" id="text-7-2-3">
+
+<p>When you want to add an ergonomic keymap with fixed mappings such as
+the ergoprog variant you can add them as follows:
+</p>
+
+
+
+<pre class="example">(ergoemacs-key "M-m s" 'save-buffer "" t)
+</pre>
+
+
+<p>
+This converts the QWERTY M-m keybinding and the fixed keybinding s to
+save buffer
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-7-2-4" class="outline-4">
+<h4 id="sec-7-2-4"><span class="section-number-4">7.2.4</span> Creating a keyboard variant</h4>
+<div class="outline-text-4" id="text-7-2-4">
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Ergoemacs Keys System wide</h2>
+<div class="outline-text-2" id="text-8">
+
+
+</div>
+
+<div id="outline-container-8-1" class="outline-3">
+<h3 id="sec-8-1"><span class="section-number-3">8.1</span> Bash</h3>
+<div class="outline-text-3" id="text-8-1">
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2" class="outline-3">
+<h3 id="sec-8-2"><span class="section-number-3">8.2</span> Windows</h3>
+<div class="outline-text-3" id="text-8-2">
+
+<p>In windows some of the ergoemacs keys are implemented system wide by
+assuming apps follow the CUA-style keys like CTRL-f for find, CTRL-h
+for replace.  This also optionally implements:
+</p><ul>
+<li>CapsLock as Menu in emacs
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-8-3" class="outline-3">
+<h3 id="sec-8-3"><span class="section-number-3">8.3</span> Mac OS X</h3>
+<div class="outline-text-3" id="text-8-3">
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Developer information</h2>
+<div class="outline-text-2" id="text-9">
+
+
+</div>
+
+<div id="outline-container-9-1" class="outline-3">
+<h3 id="sec-9-1"><span class="section-number-3">9.1</span> Layouts</h3>
+<div class="outline-text-3" id="text-9-1">
+
+<p>All the layouts in ergoemacs are easy to generate.  To add your own
+personal layout you just need to match the keybindings for your in a
+layout variable from <code>ergoemacs-layout-XXX</code>.  For the US and UK
+layouts, the defining variable adds the layout:
+</p>
+
+
+
+<pre class="example">(defvar ergoemacs-layout-us
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" "\\"
+    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "" ""
+    "" ""  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
+    ;; Shifted
+    "" "~" "!" "@" "#" "$" "%" "^" "&amp;" "*" "(" ")" "_" "+" ""
+    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" "|"
+    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "\"" "" ""
+    "" ""  "Z" "X" "C" "V" "B" "N" "M" "&lt;" "&gt;" "?" "" "" "")
+  "US Engilsh QWERTY Keyboard")
+
+(defvar ergoemacs-layout-gb
+  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
+    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" ""
+    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "#" ""
+    "" "\\"  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
+    ;; Shifted
+    "" "¬" "!" "@" "#" "$" "%" "^" "&amp;" "*" "(" ")" "_" "+" ""
+    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
+    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
+    "" "|"  "Z" "X" "C" "V" "B" "N" "M" "&lt;" "&gt;" "?" "" "" "")
+  "UK QWERTY")
+</pre>
+
+
+<p>
+This lists the keyboard positions from left to right for the unshifted
+and shifted states of he keyboard.  After listing the keyboard
+descriptions it provides a description of the layout which is used for
+the customization variable `ergoemacs-keyboard-layout'.  By simply
+defining your layout before ergoemacs-mode is loaded, you add it to
+the ergoemacs-keyboard-layout variable with its description.
+</p></div>
+
+</div>
+
+<div id="outline-container-9-2" class="outline-3">
+<h3 id="sec-9-2"><span class="section-number-3">9.2</span> Customizing/Saving the variables</h3>
+<div class="outline-text-3" id="text-9-2">
+
+<p>You can customize the ergoemacs keybindings by typing M-x
+customize-group ergoemacs-mode
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-9-3" class="outline-3">
+<h3 id="sec-9-3"><span class="section-number-3">9.3</span> Extras</h3>
+<div class="outline-text-3" id="text-9-3">
+
+<p>To generate keyboard binding diagrams and scripts that allow you to
+use ergoemacs elsewhere, please type M-x ergoemacs-extra.  These
+scripts will be stored under the extras directory.
+</p>
+<p>
+Note that if you use an alternative layout on a QWERTY keyboard (such
+as colemak), and use the portable colemak layout, to use ergoemacs
+keys use the us layout not the colemak layout.  However, if you
+installed the colemak keyboard layout to your system, use the colemak
+not the US layout variant.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-9-4" class="outline-3">
+<h3 id="sec-9-4"><span class="section-number-3">9.4</span> Updating Ergoemacs for the latest version of emacs</h3>
+<div class="outline-text-3" id="text-9-4">
+
+<p>To tell if a key was a globally defined emacs key, ergoemacs needs to
+know what key was defined by emacs.  This typically changes a little
+for each emacs version.  This is due to renamed functions, or
+re-purposed keys.  To update for the current version of emacs, you
+can type
+</p>
+
+
+
+<pre class="example">(ergoemacs-warn-globally-changed-keys t)
+</pre>
+
+
+<p>
+This is also done in the test suite.  This can be accessed by
+<code>ergoemacs-test</code> command.
+</p>
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Experimental Ergoemacs</h2>
+<div class="outline-text-2" id="text-10">
+
+<p>This section is experimental ergoemacs keybindings that are being
+incorporated into ergoemacs.  These are likely to change and are a
+work in progress.
+</p>
+
+</div>
+
+<div id="outline-container-10-1" class="outline-3">
+<h3 id="sec-10-1"><span class="section-number-3">10.1</span> Banish Key Chords</h3>
+<div class="outline-text-3" id="text-10-1">
+
+
+</div>
+
+<div id="outline-container-10-1-1" class="outline-4">
+<h4 id="sec-10-1-1"><span class="section-number-4">10.1.1</span> Background</h4>
+<div class="outline-text-4" id="text-10-1-1">
 
 <p>Key chords (like 【Ctrl+x】) is the bane of keyboarding.
 There are 3 types of key shortcuts to invoke commands in software:
@@ -401,16 +834,11 @@ A more natural way is either key sequence, or real chords. That is,
 pressing several keys together but you don't have to worry about which
 to hold or release first. Stenograph machines are like that.
 </p>
-
-</div>
-
-<div id="outline-container-5-1-1" class="outline-4">
-<h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span> Whence Did Key Chord Came From?</h4>
-<div class="outline-text-4" id="text-5-1-1">
-
-<p>I suppose, when computer keyboard came, sans levels and gears, but
+<ul>
+<li id="sec-10-1-1-1">Whence Did Key Chord Came From?<br/>
+I suppose, when computer keyboard came, sans levels and gears, but
 habit stuck, and this evolved into “modifier” keys, with Bucky bits.
-</p>
+
 <p>
 Now, thinking about this, i think Microsoft must be a genius, when
 they invented the key system on Windows, where Alt is used to invoke
@@ -420,16 +848,12 @@ you invoke any command, yet has menu counter-part, so it's easy to see
 a list of them and also grouped by category. (emacs's system of course
 is much more extensive than that.)
 </p>
-</div>
+</li>
+</ul>
+<ul>
+<li id="sec-10-1-1-2">What Should a Keyboard Nerd Do with Key Chords?<br/>
+BAN the them out of the universe.
 
-</div>
-
-<div id="outline-container-5-1-2" class="outline-4">
-<h4 id="sec-5-1-2"><span class="section-number-4">5.1.2</span> What Should a Keyboard Nerd Do with Key Chords?</h4>
-<div class="outline-text-4" id="text-5-1-2">
-
-<p>BAN the them out of the universe.
-</p>
 <p>
 But, there isn't enough keys on keyboard. You only have 12 function
 keys, plus some others such as ↖ Home, ↓. But there are 10 times more
@@ -457,18 +881,14 @@ you need to release the key and press again to invoke the command
 again. Answer: use single key. Retort: But F keys are far away and
 arrow keys are already used. Answer: key chord then.
 </p>
-</div>
-
-</div>
-
-<div id="outline-container-5-1-3" class="outline-4">
-<h4 id="sec-5-1-3"><span class="section-number-4">5.1.3</span> Principles on Efficient Use of Key Chords</h4>
-<div class="outline-text-4" id="text-5-1-3">
-
-<p>Key chord should be used only for commands that need to be repeated
+</li>
+</ul>
+<ul>
+<li id="sec-10-1-1-3">Principles on Efficient Use of Key Chords<br/>
+Key chord should be used only for commands that need to be repeated
 within a second (hold the key and let the command repeat).  This
 includes moving cursor, paging, switching tab/window.
-</p>
+
 <p>
 Key chord should use no more than one modifier. This saves your
 hand. So, key chord such as emacs interactive replace 【Alt+⇧ Shift+%】
@@ -485,44 +905,36 @@ less than 5% of commands. Using 【Ctrl+‹letter/digit›】 key give you
 about 36 spots. Adding Alt, you have 72 spots. And that's more than
 enough for repeating commands. In practice, i estimate a programer
 uses less than 30 repeating commands per day on average.
-</p></div>
-
-</div>
-
-<div id="outline-container-5-1-4" class="outline-4">
-<h4 id="sec-5-1-4"><span class="section-number-4">5.1.4</span> What About Sticky Keys?</h4>
-<div class="outline-text-4" id="text-5-1-4">
-
-<p>I do not advocate the Sticky Keys feature for the handicapped. It's
+</p></li>
+</ul>
+<ul>
+<li id="sec-10-1-1-4">What About Sticky Keys?<br/>
+I do not advocate the Sticky Keys feature for the handicapped. It's
 not the same. Sticky Keys actually make things a worse, because it's a
 hack over key chords. When you press a sequence of keys, it has to
 guess whether you mean a sequence or chord (since emacs supports
 both). The end result is that it's confusing to use, imprecise, and
 slows you down.
-</p>
-</div>
+
+</li>
+</ul>
 </div>
 
 </div>
 
-<div id="outline-container-5-2" class="outline-3">
-<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Keyboard Shortcut Design</h3>
-<div class="outline-text-3" id="text-5-2">
+<div id="outline-container-10-1-2" class="outline-4">
+<h4 id="sec-10-1-2"><span class="section-number-4">10.1.2</span> Keyboard Shortcut Design</h4>
+<div class="outline-text-4" id="text-10-1-2">
 
 <p>This section discuss one criterion on the design of keyboard shortcut
 system: Repeatable vs Non-Repeatable Commands and Keys. This
 applicable in designing keybinding for emacs, vi, 3D modeling app, or
 any app that has hundreds commands that needs to map to keys.
-</p>
-</div>
-
-<div id="outline-container-5-2-1" class="outline-4">
-<h4 id="sec-5-2-1"><span class="section-number-4">5.2.1</span> Repeatable and Non-Repeatable Commands</h4>
-<div class="outline-text-4" id="text-5-2-1">
-
-<p>In my keyboarding research, there's a important discovery. Commands
+</p><ul>
+<li id="sec-10-1-2-1">Repeatable and Non-Repeatable Commands<br/>
+In my keyboarding research, there's a important discovery. Commands
 can be classified into 2 types:
-</p><ol>
+<ol>
 <li>Repeatable commands. Commands that make sense to be repeated within
    a second. i.e. moving cursor by char, word, page. Page up/down. Delete
    by char, word. Expand selection, prev/next tab. You can hold down a
@@ -538,18 +950,14 @@ can be classified into 2 types:
 </ol>
 
 
-</div>
-
-</div>
-
-<div id="outline-container-5-2-2" class="outline-4">
-<h4 id="sec-5-2-2"><span class="section-number-4">5.2.2</span> Repeatable and Non-Repeatable Keys</h4>
-<div class="outline-text-4" id="text-5-2-2">
-
-<p>The Repeatable Commands must have keys that can be held down. Here's
+</li>
+</ul>
+<ul>
+<li id="sec-10-1-2-2">Repeatable and Non-Repeatable Keys<br/>
+The Repeatable Commands must have keys that can be held down. Here's
 example of repeatable hotkeys: F8, t, ⇟ Page ▽, ↓, 【Ctrl+t】,
 【Ctrl+Alt+8】, ….
-</p>
+
 <p>
 Non-repeatable hotkeys are basically keys that involves a sequence:
 【Ctrl+x 2】, 【F8 F9】
@@ -582,24 +990,20 @@ a keyboard shortcut system is that most frequently used commands be
 mapped to the most easy-to-press keys. 
 </p>
 
+</li>
+</ul>
 </div>
-</div>
-
-</div>
-
-<div id="outline-container-5-3" class="outline-3">
-<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Ergoemacs Key Chord Reduction</h3>
-<div class="outline-text-3" id="text-5-3">
-
 
 </div>
 
-<div id="outline-container-5-3-1" class="outline-4">
-<h4 id="sec-5-3-1"><span class="section-number-4">5.3.1</span> [Control+x] and [Control-c] reduction</h4>
-<div class="outline-text-4" id="text-5-3-1">
+<div id="outline-container-10-1-3" class="outline-4">
+<h4 id="sec-10-1-3"><span class="section-number-4">10.1.3</span> Ergoemacs Key Chord Reduction</h4>
+<div class="outline-text-4" id="text-10-1-3">
 
-<p>For emacs, the most common prefixes are [Control-x] or [Control-c].
-</p>
+<ul>
+<li id="sec-10-1-3-1">[Control+x] and [Control-c] reduction<br/>
+For emacs, the most common prefixes are [Control-x] or [Control-c].
+
 <p>
 For QWERTY, an additional mapping of these keys have been made:
 </p><ul>
@@ -666,16 +1070,12 @@ This is bound to [Menu] [h] for the normal Control-h keymap.  It is
 also bound to [Menu] [y] for the unchorded Control-h keymap.
 </p>
 
-</div>
-
-</div>
-
-<div id="outline-container-5-3-2" class="outline-4">
-<h4 id="sec-5-3-2"><span class="section-number-4">5.3.2</span> Movement without key-chords</h4>
-<div class="outline-text-4" id="text-5-3-2">
-
+</li>
+</ul>
 <ul>
-<li id="sec-5-3-2-1">Method #1 &ndash; &lt;menu&gt; Movement mode<br/>
+<li id="sec-10-1-3-2">Movement without key-chords<br/>
+<ul>
+<li id="sec-10-1-3-2-1">Method #1 &ndash; &lt;menu&gt; Movement mode<br/>
 One can enable movement without key-chords as follows:
 <ul>
 <li>On QWERTY, press [Menu] [k] and then the movement key.  This key is
@@ -715,451 +1115,18 @@ One can enable movement without key-chords as follows:
 </li>
 </ul>
 
-
+</li>
+</ul>
 </li>
 </ul>
 </div>
-</div>
-</div>
-
-</div>
-
-<div id="outline-container-6" class="outline-2">
-<h2 id="sec-6"><span class="section-number-2">6</span> Layouts Supported</h2>
-<div class="outline-text-2" id="text-6">
-
-</div>
-
-</div>
-
-<div id="outline-container-7" class="outline-2">
-<h2 id="sec-7"><span class="section-number-2">7</span> Tips for adopting ErgoEmacs Keybindings</h2>
-<div class="outline-text-2" id="text-7">
-
-<p>If you are a long time emacs user, you may find it painful to adopt
-this setup.
-</p>
-<p>
-This difficulty is nothing special. It's the same difficulty when you
-switching to dvorak after years of qwerty. Basically, it's about
-changing muscle memory.
-</p>
-
-</div>
-
-<div id="outline-container-7-1" class="outline-3">
-<h3 id="sec-7-1"><span class="section-number-3">7.1</span> Where Did My Command Go?</h3>
-<div class="outline-text-3" id="text-7-1">
-
-<p>The ergonomic-mode minor mode features the command
-where-is-old-binding, with shortcut “Ctrl+h o”. This command asks you
-to type a shortcut, and tells you which command it was bound in GNU
-Emacs, and the new shortcut for it under ErgoEmacs?.
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-7-2" class="outline-3">
-<h3 id="sec-7-2"><span class="section-number-3">7.2</span> Shortcut To Open Cheatsheet</h3>
-<div class="outline-text-3" id="text-7-2">
-
-<p>You can open a cheatsheet by pressing [Control+h] ['].  On the first
-run, this will create a svg and (possibly) create a png based on the
-svg (if <code>ergoemacs-inkscape</code> points to the inkscape executable). Once
-these are created, the cheatsheet will be opened displaying all the
-keys based on your layout.
-</p></div>
-
-</div>
-
-<div id="outline-container-7-3" class="outline-3">
-<h3 id="sec-7-3"><span class="section-number-3">7.3</span> Gradual Adoption for an Emacs User</h3>
-<div class="outline-text-3" id="text-7-3">
-
-<p>Here's some tips that may help you adopt.
-</p>
-</div>
-
-<div id="outline-container-7-3-1" class="outline-4">
-<h4 id="sec-7-3-1"><span class="section-number-4">7.3.1</span> Level 1</h4>
-<div class="outline-text-4" id="text-7-3-1">
-
-<p>If you find it too painful to switch, don't use the whole package. Instead, start off with just the arrow key movements.
-</p>
-
-
-<pre class="example">(setq ergoemacs-variant "lvl1")
-(ergoemacs-mode 1)
-</pre>
-
-<p>
-Either put the above in your emacs init file (usually at “~/.emacs”), or customize ergoemacs-mode to set the variant to lvl1.
-</p>
-<p>
-With only the above change, you will increase your emacs productivity, especially if you are a touch typist. These single char cursor moving commands are the top 4 most frequently used emacs commands by statistics, roughly accounting for 43% of commands that have a shortcut.
-</p>
-
-<p>
-Once you used the above for a couple of weeks, you may add more keys to adopt.
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-7-3-2" class="outline-4">
-<h4 id="sec-7-3-2"><span class="section-number-4">7.3.2</span> Level 2</h4>
-<div class="outline-text-4" id="text-7-3-2">
-
-<p>Adding keys for moving around words and deleting words.
-</p>
-
-
-
-<pre class="example">(setq ergoemacs-variant "lvl2")
-(ergoemacs-mode 1)
-</pre>
-
-</div>
-
-</div>
-
-<div id="outline-container-7-3-3" class="outline-4">
-<h4 id="sec-7-3-3"><span class="section-number-4">7.3.3</span> Level 3</h4>
-<div class="outline-text-4" id="text-7-3-3">
-
-<p>Full ergoemacs keyset without the &lt;menu&gt; unchorded keys.
-</p>
-
-
-<pre class="example">(setq ergoemacs-variant "lvl3")
-(ergoemacs-mode 1)
-</pre>
-
-
-</div>
-
-</div>
-
-<div id="outline-container-7-3-4" class="outline-4">
-<h4 id="sec-7-3-4"><span class="section-number-4">7.3.4</span> Full Ergoemacs Keys</h4>
-<div class="outline-text-4" id="text-7-3-4">
-
-<p>Try to use the full ergoemacs mode.
-</p>
-
-
-<pre class="example">(setq ergoemacs-variant nil)
-(ergoemacs-mode 1)
-</pre>
-
-</div>
-
-</div>
-
-<div id="outline-container-7-3-5" class="outline-4">
-<h4 id="sec-7-3-5"><span class="section-number-4">7.3.5</span> Guru</h4>
-<div class="outline-text-4" id="text-7-3-5">
-
-<p>The guru variant takes away the arrow keys and page up/page down keys.
-</p>
-
-
-
-<pre class="example">(setq ergoemacs-variant "guru")
-(ergoemacs-mode 1)
-</pre>
-
-</div>
-
-</div>
-
-<div id="outline-container-7-3-6" class="outline-4">
-<h4 id="sec-7-3-6"><span class="section-number-4">7.3.6</span> Master</h4>
-<div class="outline-text-4" id="text-7-3-6">
-
-<p>The Master variant takes away the backspace.  This key is not
-particularly ergonomic, and can cause possible pinky issues.
-Changing this means that you may wish to try to get ergoemacs
-bindings everywhere.
-</p>
-
-
-
-<pre class="example">(setq ergoemacs-variant "master")
-(ergoemacs-mode 1)
-</pre>
-
-
-</div>
-</div>
-</div>
-
-</div>
-
-<div id="outline-container-8" class="outline-2">
-<h2 id="sec-8"><span class="section-number-2">8</span> Changing key layouts or adding variants</h2>
-<div class="outline-text-2" id="text-8">
-
-
-</div>
-
-<div id="outline-container-8-1" class="outline-3">
-<h3 id="sec-8-1"><span class="section-number-3">8.1</span> Globally defined keys</h3>
-<div class="outline-text-3" id="text-8-1">
-
-<p>These keys are defined on the global keymap and should be retained
-regardless of the variant or layout used.  However, these keys will
-not show up on keyboard documentation generated by ergoemacs.
-Additionally, these keys may be masked or remapped by other programs.
-</p></div>
-
-</div>
-
-<div id="outline-container-8-2" class="outline-3">
-<h3 id="sec-8-2"><span class="section-number-3">8.2</span> Ergoemacs defined keys</h3>
-<div class="outline-text-3" id="text-8-2">
-
-<p>These keys are defined in the ergoemacs-keymap.  When the layout
-changes by changing options, these keys are lost.  However, you may
-create your own variant to allow these keys to be saved.
-</p>
-</div>
-
-<div id="outline-container-8-2-1" class="outline-4">
-<h4 id="sec-8-2-1"><span class="section-number-4">8.2.1</span> Adding a ergonomic key</h4>
-<div class="outline-text-4" id="text-8-2-1">
-
-<p>Ergonomic keys can be added by:
-</p>
-
-
-<pre class="example">(ergoemacs-key "M-a" 'execute-extended-command "Execute")
-</pre>
-
-
-<p>
-This adds the Alt-a command to all keyboards based on the QWERTY
-layout.  This only applies to the currently selected keyboard variant.
-</p>
-
-<p>
-Note the last parameter is optional and allows Ergoemacs to document
-that this is an "Execute" command when generating keyboard layout diagrams.
-</p></div>
-
-</div>
-
-<div id="outline-container-8-2-2" class="outline-4">
-<h4 id="sec-8-2-2"><span class="section-number-4">8.2.2</span> Adding a fixed key</h4>
-<div class="outline-text-4" id="text-8-2-2">
-
-<p>Fixed keys can be added by:
-</p>
-
-
-<pre class="example">(ergoemacs-fixed-key "C-o" 'ido-find-file "Open File")
-</pre>
-
-
-<p>
-This adds the fixed key to the currently selected emacs variant
-</p>
-<p>
-Note the last parameter is optional and allows Ergoemacs to document
-that this is an "Open" command when generating keyboard layout diagrams.
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-8-2-3" class="outline-4">
-<h4 id="sec-8-2-3"><span class="section-number-4">8.2.3</span> Adding an ergonomic key map with fixed mappings</h4>
-<div class="outline-text-4" id="text-8-2-3">
-
-<p>When you want to add an ergonomic keymap with fixed mappings such as
-the ergoprog variant you can add them as follows:
-</p>
-
-
-
-<pre class="example">(ergoemacs-key "M-m s" 'save-buffer "" t)
-</pre>
-
-
-<p>
-This converts the QWERTY M-m keybinding and the fixed keybinding s to
-save buffer
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-8-2-4" class="outline-4">
-<h4 id="sec-8-2-4"><span class="section-number-4">8.2.4</span> Creating a keyboard variant</h4>
-<div class="outline-text-4" id="text-8-2-4">
-
-</div>
-</div>
-</div>
-
-</div>
-
-<div id="outline-container-9" class="outline-2">
-<h2 id="sec-9"><span class="section-number-2">9</span> Ergoemacs Keys System wide</h2>
-<div class="outline-text-2" id="text-9">
-
-
-</div>
-
-<div id="outline-container-9-1" class="outline-3">
-<h3 id="sec-9-1"><span class="section-number-3">9.1</span> Bash</h3>
-<div class="outline-text-3" id="text-9-1">
-
-</div>
-
-</div>
-
-<div id="outline-container-9-2" class="outline-3">
-<h3 id="sec-9-2"><span class="section-number-3">9.2</span> Windows</h3>
-<div class="outline-text-3" id="text-9-2">
-
-<p>In windows some of the ergoemacs keys are implemented system wide by
-assuming apps follow the CUA-style keys like CTRL-f for find, CTRL-h
-for replace.  This also optionally implements:
-</p><ul>
-<li>CapsLock as Menu in emacs
-</li>
-</ul>
-
-</div>
-
-</div>
-
-<div id="outline-container-9-3" class="outline-3">
-<h3 id="sec-9-3"><span class="section-number-3">9.3</span> Mac OS X</h3>
-<div class="outline-text-3" id="text-9-3">
-
-</div>
-</div>
-
-</div>
-
-<div id="outline-container-10" class="outline-2">
-<h2 id="sec-10"><span class="section-number-2">10</span> Developer information</h2>
-<div class="outline-text-2" id="text-10">
-
-
-</div>
-
-<div id="outline-container-10-1" class="outline-3">
-<h3 id="sec-10-1"><span class="section-number-3">10.1</span> Layouts</h3>
-<div class="outline-text-3" id="text-10-1">
-
-<p>All the layouts in ergoemacs are easy to generate.  To add your own
-personal layout you just need to match the keybindings for your in a
-layout variable from <code>ergoemacs-layout-XXX</code>.  For the US and UK
-layouts, the defining variable adds the layout:
-</p>
-
-
-
-<pre class="example">(defvar ergoemacs-layout-us
-  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
-    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" "\\"
-    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "" ""
-    "" ""  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
-    ;; Shifted
-    "" "~" "!" "@" "#" "$" "%" "^" "&amp;" "*" "(" ")" "_" "+" ""
-    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" "|"
-    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "\"" "" ""
-    "" ""  "Z" "X" "C" "V" "B" "N" "M" "&lt;" "&gt;" "?" "" "" "")
-  "US Engilsh QWERTY Keyboard")
-
-(defvar ergoemacs-layout-gb
-  '("" "`" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "-" "=" ""
-    "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "[" "]" ""
-    "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" ";" "'" "#" ""
-    "" "\\"  "z" "x" "c" "v" "b" "n" "m" "," "." "/" "" "" ""
-    ;; Shifted
-    "" "¬" "!" "@" "#" "$" "%" "^" "&amp;" "*" "(" ")" "_" "+" ""
-    "" ""  "Q" "W" "E" "R" "T" "Y" "U" "I" "O" "P" "{" "}" ""
-    "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" ":" "@" "~" ""
-    "" "|"  "Z" "X" "C" "V" "B" "N" "M" "&lt;" "&gt;" "?" "" "" "")
-  "UK QWERTY")
-</pre>
-
-
-<p>
-This lists the keyboard positions from left to right for the unshifted
-and shifted states of he keyboard.  After listing the keyboard
-descriptions it provides a description of the layout which is used for
-the customization variable `ergoemacs-keyboard-layout'.  By simply
-defining your layout before ergoemacs-mode is loaded, you add it to
-the ergoemacs-keyboard-layout variable with its description.
-</p></div>
-
-</div>
-
-<div id="outline-container-10-2" class="outline-3">
-<h3 id="sec-10-2"><span class="section-number-3">10.2</span> Customizing/Saving the variables</h3>
-<div class="outline-text-3" id="text-10-2">
-
-<p>You can customize the ergoemacs keybindings by typing M-x
-customize-group ergoemacs-mode
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-10-3" class="outline-3">
-<h3 id="sec-10-3"><span class="section-number-3">10.3</span> Extras</h3>
-<div class="outline-text-3" id="text-10-3">
-
-<p>To generate keyboard binding diagrams and scripts that allow you to
-use ergoemacs elsewhere, please type M-x ergoemacs-extra.  These
-scripts will be stored under the extras directory.
-</p>
-<p>
-Note that if you use an alternative layout on a QWERTY keyboard (such
-as colemak), and use the portable colemak layout, to use ergoemacs
-keys use the us layout not the colemak layout.  However, if you
-installed the colemak keyboard layout to your system, use the colemak
-not the US layout variant.
-</p>
-</div>
-
-</div>
-
-<div id="outline-container-10-4" class="outline-3">
-<h3 id="sec-10-4"><span class="section-number-3">10.4</span> Updating Ergoemacs for the latest version of emacs</h3>
-<div class="outline-text-3" id="text-10-4">
-
-<p>To tell if a key was a globally defined emacs key, ergoemacs needs to
-know what key was defined by emacs.  This typically changes a little
-for each emacs version.  This is due to renamed functions, or
-re-purposed keys.  To update for the current version of emacs, you
-can type
-</p>
-
-
-
-<pre class="example">(ergoemacs-warn-globally-changed-keys t)
-</pre>
-
-
-<p>
-This is also done in the test suite.  This can be accessed by
-<code>ergoemacs-test</code> command.
-</p>
-
 </div>
 </div>
 </div>
 </div>
 
 <div id="postamble">
-<p class="date">Date: 2013-05-17T10:24-0500</p>
+<p class="date">Date: 2013-06-05T00:20-0500</p>
 <p class="author">Author: Xah Lee, David Capello, and Matthew Fidler</p>
 <p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
 <a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
