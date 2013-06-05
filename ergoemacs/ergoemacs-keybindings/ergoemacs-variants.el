@@ -900,6 +900,7 @@ Some exceptions we don't want to unset.
 
 (ergoemacs-defvariant 5.7.5
   "Old ergoemacs layout.  Uses M-0 for close pane. Does not have beginning/end of buffer."
+  nil
   (ergoemacs-replace-key 'delete-window "M-0" "x pane")
   (setq ergoemacs-variable-layout-tmp
         (remove-if (lambda (x) (or (string= "M-n" (car x))

@@ -1321,7 +1321,6 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   '(progn
      (define-key org-src-mode-map [remap save-buffer] 'org-edit-src-save)))
 
-(require 'ergoemacs-variants)
 (provide 'ergoemacs-mode)
 
 ;;; ergoemacs-mode.el ends here
