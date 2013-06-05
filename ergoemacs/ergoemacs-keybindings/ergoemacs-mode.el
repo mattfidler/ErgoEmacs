@@ -713,8 +713,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
        (set-buffer buf)
        (let ((x (assq 'ergoemacs-mode minor-mode-overriding-map-alist)))
          (if x
-             (setq minor-mode-overriding-map-alist (delq x minor-mode-overriding-map-alist)))))
-     (buffer-list)))
+             (setq minor-mode-overriding-map-alist (delq x minor-mode-overriding-map-alist))))))
+     (buffer-list))
   
   ;; Now change `minor-mode-map-alist'.
   (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
