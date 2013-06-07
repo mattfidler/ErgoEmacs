@@ -698,22 +698,32 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (define-key ,keymap  key cmd))
               (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                   (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))))
-      (symbol-value (ergoemacs-get-variable-layout)))
-     
-     ;; Now change `minor-mode-map-alist'.
-     (when (eq 'ergoemacs-keymap ',keymap)
-       (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
-         ;; Install keymap
-         (if x
-             (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
-         (add-to-list 'minor-mode-map-alist
-                      `(ergoemacs-mode  ,ergoemacs-keymap))))))
+      (symbol-value (ergoemacs-get-variable-layout)))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
   (ergoemacs-setup-translation layout base-layout)
   (ergoemacs-setup-fast-keys)
   (ergoemacs-setup-keys-for-keymap ergoemacs-keymap)
+  ;; Remove all overriding-map-alists...  I believe some are being
+  ;; created out of context.  However, this seems to fix issue #134
+  (mapc
+   (lambda(buf)
+     (save-excursion
+       (set-buffer buf)
+       (let ((x (assq 'ergoemacs-mode minor-mode-overriding-map-alist)))
+         (if x
+             (setq minor-mode-overriding-map-alist (delq x minor-mode-overriding-map-alist))))))
+     (buffer-list))
+  
+  ;; Now change `minor-mode-map-alist'.
+  (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
+    ;; Install keymap
+    (if x
+        (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
+    (add-to-list 'minor-mode-map-alist
+                 `(ergoemacs-mode  ,(symbol-value 'ergoemacs-keymap)))
+    )
   (easy-menu-define ergoemacs-menu ergoemacs-keymap
     "ErgoEmacs menu"
     `("ErgoEmacs"
@@ -1276,6 +1286,7 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
       (ergoemacs-local-set-key key command)
     ad-do-it))
 
+
 (defadvice local-unset-key (around ergoemacs-local-unset-key-advice (key))
   "This let you use local-unset-key as usual when ergoemacs-mode is enabled."
   (if (fboundp 'ergoemacs-mode)
@@ -1310,7 +1321,6 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   '(progn
      (define-key org-src-mode-map [remap save-buffer] 'org-edit-src-save)))
 
-(require 'ergoemacs-variants)
 (provide 'ergoemacs-mode)
 
 ;;; ergoemacs-mode.el ends here
