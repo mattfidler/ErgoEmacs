@@ -2097,6 +2097,28 @@ EXTRA represents an extra file representation."
           (unless (string= "" txt)
             (when (search-forward (format ">M%s<" i) nil t)
               (replace-match  (format ">%s<" txt) t t)))
+
+          (goto-char (point-min))
+          (when (search-forward (format ">%s<" i) nil t)
+            (replace-match (format ">%s<" (ergoemacs-gen-svg-quote (nth i lay))) t t))
+
+          (goto-char (point-min))
+          (setq txt (assoc (format "<apps> %s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) (symbol-value (ergoemacs-get-variable-layout))))
+          (if (not txt)
+              (setq txt "")
+            (if (>= (length txt) 3)
+                (setq txt (nth 2 txt))
+              (setq txt "")))
+          
+          (when (string= txt "")
+            (setq txt (all-completions (format "<apps> %s " (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) (symbol-value (ergoemacs-get-variable-layout))))
+            (if (= 0 (length txt))
+                (setq txt "")
+              (setq txt "prefix")))
+          
+          (unless (string= "" txt)
+            (when (search-forward (format ">A%s<" i) nil t)
+              (replace-match  (format ">%s<" txt) t t)))
           
           (goto-char (point-min))
           (setq txt (assoc (format "C-%s" (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))) (symbol-value (ergoemacs-get-variable-layout))))
@@ -2182,10 +2204,10 @@ EXTRA represents an extra file representation."
                    (setq txt "prefix"))))
              (when (search-forward (format ">%s<" x) nil t)
                (replace-match  (format ">%s<" txt) t t)))
-           '("M-S-SPC" "M-SPC" "C-S-SPC" "C-SPC"))
+           '("M-S-SPC" "M-SPC" "C-S-SPC" "C-SPC" "<apps> SPC"))
           
           (setq i (+ i 1)))
-        (while (re-search-forward ">[CM][0-9]+<" nil t)
+        (while (re-search-forward ">\\([CMA][0-9]+\\|nil\\)<" nil t)
           (replace-match "><")))
       (when ergoemacs-inkscape
         (message "Converting to png")

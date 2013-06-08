@@ -50,6 +50,8 @@
 ;; 
 ;;; Code:
 
+(setq ergoemacs-dir (file-name-directory (or load-file-name (buffer-file-name))))
+
 ;;;###autoload
 (defun ergoemacs-test ()
   "Tests ergoemacs issues"
