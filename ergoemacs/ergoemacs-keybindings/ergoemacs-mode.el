@@ -1054,61 +1054,31 @@ C-k S-a     -> k S-a           not defined
               (when ergoemacs-debug
                 (message "Error defining %s: %s" new-key err)))))))))
 
-(defun ergoemacs-ctl-c-unchorded ()
+(defun ergoemacs-ctl-c-unchorded (&optional arg)
   "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
-  (interactive)
+  (interactive "P")
+  (setq prefix-arg current-prefix-arg)
   (eval
-   `(progn
-      (defvar ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) (make-keymap)
-        ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
-      (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)) "C-c")
-      ;; Install keymap locally per buffer.  Would do in each mode,
-      ;; but modes like ESS makes this a bit tricky...
-      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-unchorded)
-                     ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))
-      ;; On first run, the unchorded ctl-c map is a temporary-keymap.
-      (when (called-interactively-p 'interactive)
-        (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-unchorded-%s" major-mode)))))))
+   `(let ((ctl-c-unchorded (make-keymap)))
+      (message "Unchorded C-c-")
+      (ergoemacs-extract-map ctl-c-unchorded "C-c")
+      (set-temporary-overlay-map ctl-c-unchorded))))
 
-(defun ergoemacs-ctl-c ()
+(defun ergoemacs-ctl-c (&optional arg)
   "Creates a keymap for the current major mode that extract the 【Ctl+c】 combinations."
-  (interactive)
+  (interactive "P")
+  (setq prefix-arg current-prefix-arg)
   (eval
-   `(progn
-      (defvar ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) (make-keymap)
-        ,(format "Derived keymap for unchorded 【Ctl+c】 combinations in `%s'." major-mode))
-      (ergoemacs-extract-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)) "C-c" "C-" "M-" "")
-      ;; Install keymap locally.
-      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c)
-                     ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))
-      ;; On first run, the unchorded ctl-c map is a temporary-keymap.
-      (when (called-interactively-p 'interactive)
-        (set-temporary-overlay-map ,(intern (format "ergoemacs-ctl-c-%s" major-mode)))))))
+   `(let ((ctl-c (make-keymap)))
+      (message "C-c-")
+      (ergoemacs-extract-map ctl-c "C-c" "C-" "M-" "")
+      (set-temporary-overlay-map ctl-c))))
 
-(defun ergoemacs-ctl-c-ctl-c ()
+(defun ergoemacs-ctl-c-ctl-c (&optional arg)
   "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
-  (interactive)
-  (ergoemacs-ctl-c-unchorded)
-  (let ((fn (lookup-key
-             (symbol-value
-              (intern
-               (format "ergoemacs-ctl-c-unchorded-%s" major-mode))) (kbd "c"))))
-    (if (not fn)
-        (when (called-interactively-p 'interactive)
-          (message "[Ctl+c] [Ctl+c] is not defined."))
-      (local-set-key (ergoemacs-key-fn-lookup 'ergoemacs-ctl-c-ctl-c) fn)
-      (when (called-interactively-p 'interactive)
-        (call-interactively fn t)))))
-
-(defun ergoemacs-setup-ctl-c-maps ()
-  "Setup control+c maps on change major modes."
-  (interactive)
-  (when (and ergoemacs-mode (not (minibufferp)))
-    (ergoemacs-ctl-c-ctl-c)
-    (ergoemacs-ctl-c)))
-
-(add-hook 'after-change-major-mode-hook
-          'ergoemacs-setup-ctl-c-maps)
+  (interactive "P")
+  (setq prefix-arg current-prefix-arg)
+  (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c C-c"))))
 
 
 (require 'cus-edit)
