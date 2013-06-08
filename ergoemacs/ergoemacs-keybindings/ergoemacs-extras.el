@@ -1882,9 +1882,11 @@ Currently only supports two modifier plus key."
            (setq lay-ini (format "%s\n[%s]" lay-ini lay))
            (mapc
             (lambda(x)
-              (let ((key (format "%s" (string-to-char x))))
-                (add-to-list 'trans-keys `(,x ,key))
-                (setq lay-ini (format "%s\n%s=%s" lay-ini i key)))
+              (unless (string-match "<apps>" x) ;; Currently take out
+                ;; <apps> mapping.  Needs some work.
+                (let ((key (format "%s" (string-to-char x))))
+                  (add-to-list 'trans-keys `(,x ,key))
+                  (setq lay-ini (format "%s\n%s=%s" lay-ini i key))))
               (setq i (+ i 1)))
             (symbol-value variable))))
        (ergoemacs-get-layouts))
@@ -1940,10 +1942,12 @@ Currently only supports two modifier plus key."
               (lambda(y)
                 (message "Generating AHK ini for %s Standard" x)
                 (when (string-match re (format "%s"(nth 1 y)))
-                  (insert (symbol-name (nth 1 y)))
-                  (insert "=")
-                  (insert (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y)) t))
-                  (insert "\n")))
+                  (unless (string-match "<apps>"
+                                        (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y)) t))
+                    (insert (symbol-name (nth 1 y)))
+                    (insert "=")
+                    (insert (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y)) t))
+                    (insert "\n"))))
               (symbol-value (ergoemacs-get-variable-layout))))
            (ergoemacs-get-layouts))
           (mapc
@@ -1957,10 +1961,11 @@ Currently only supports two modifier plus key."
                 (mapc
                  (lambda(y)
                    (when (string-match re (format "%s" (nth 1 y)))
-                     (insert (symbol-name (nth 1 y)))
-                     (insert "=")
-                     (insert (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
-                     (insert "\n")))
+                     (unless (string-match "<apps>" (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
+                       (insert (symbol-name (nth 1 y)))
+                       (insert "=")
+                       (insert (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
+                       (insert "\n"))))
                  (symbol-value (ergoemacs-get-variable-layout))))
               (ergoemacs-get-layouts)))
            (ergoemacs-get-variants))
