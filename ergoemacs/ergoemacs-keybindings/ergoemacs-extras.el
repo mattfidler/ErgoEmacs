@@ -1,6 +1,9 @@
 ;;; ergoemacs-extras.el --- Generate Ergoemacs Extras  -*- coding: utf-8 -*-
 ;;; Code:
 
+
+(setq ergoemacs-dir (file-name-directory
+                     (or load-file-name (buffer-file-name))))
 (defgroup ergoemacs-extras nil
   "Documentation and script generation"
   :group 'ergoemacs-mode)
@@ -314,7 +317,7 @@
   (interactive)
   (if (called-interactively-p 'any)
       (progn
-        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval (ergoemacs-get-html) &"
+        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval \"(ergoemacs-get-html)\" &"
                                (ergoemacs-emacs-exe)
                                ergoemacs-dir ergoemacs-dir)))
     (if (not (file-exists-p (expand-file-name "Readme.org" ergoemacs-dir)))
@@ -1970,7 +1973,7 @@ Currently only supports two modifier plus key."
   (interactive)
   (if (called-interactively-p 'any)
       (progn
-        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval (ergoemacs-gen-ahk) &"
+        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval \"(ergoemacs-gen-ahk)\" &"
                                (ergoemacs-emacs-exe)
                                ergoemacs-dir ergoemacs-dir)))
     (let ((xtra (or extra "ahk")) 
@@ -2013,7 +2016,7 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
   (interactive)
   (if (called-interactively-p 'any)
       (progn
-        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval (ergoemacs-extras) &"
+        (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode %s/ergoemacs-extras --eval \"(ergoemacs-extras)\" &"
                                (ergoemacs-emacs-exe)
                                ergoemacs-dir ergoemacs-dir)))
     (unless ergoemacs-mode

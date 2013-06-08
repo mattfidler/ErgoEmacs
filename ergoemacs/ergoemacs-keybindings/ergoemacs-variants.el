@@ -128,7 +128,7 @@
     ("<apps> a" mark-whole-buffer "Sel All")
     ("<apps> f" ergoemacs-ctl-x "Ctl-x")
     ("<apps> h" ergoemacs-ctl-h "Ctl-h")
-    ("<apps> i" ergoemacs-alt-shift-keys "Repeat Alt+Shift")
+    ("<apps> i" ergoemacs-alt-shift-keys "Rep Alt+Shift")
     ("<apps> j" ergoemacs-ctl-c "Ctl-c")
     ("<apps> k" ergoemacs-alt-keys "Repeat Alt")
     ("<apps> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
