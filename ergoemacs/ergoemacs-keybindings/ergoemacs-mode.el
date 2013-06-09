@@ -9,7 +9,7 @@
 ;;     Matthew Fidler <matthew.fidler@gmail.com> ( http://github.com/mlf176f2/ )
 ;; Maintainer: Matthew Fidler, Xah Lee, David Capello
 ;; Created: August 01 2007
-;; Version: 5.7.4
+;; Version: 5.8.0
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 ;; Package-Requires: ((org-cua-dwim "0.5"))
 
@@ -804,19 +804,18 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                (error (read-kbd-macro
                        (encode-coding-string key-def locale-coding-system)))))
             ((ergoemacs-key-fn-lookup key-def)
-             (ergoemacs-key-fn-lookup key-def)
              ;; Also define <apps> key
              (when (ergoemacs-key-fn-lookup key-def t)
-               (define-key keymap
-                 (ergoemacs-key-fn-lookup key-def t) definition)))
+               (define-key keymap (ergoemacs-key-fn-lookup key-def t) definition))
+             (ergoemacs-key-fn-lookup key-def))
             ;; Define <apps>  key
             ((ergoemacs-key-fn-lookup key-def t)
-             (ergoemacs-key-fn-lookup key-def t))
+             (ergoemacs-key-fn-lookup key-def t)
+             nil)
             (t nil))))
-      (when ergoemacs-debug
         (when ergoemacs-debug
           (message "hook: %s->%s %s %s" key-def key-code
-                   definition translate)))
+                   definition translate))
       (when key-code
         (define-key keymap key-code definition)))))
 
