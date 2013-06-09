@@ -777,7 +777,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
   (let ((ret nil))
     (mapc
      (lambda(x)
-       (when (equal (nth 1 x) function)
+       (when (and (equal (nth 1 x) function)
+                  (not (string-match "<apps>" (nth 0 x))))
          (setq ret (ergoemacs-kbd (nth 0 x) nil (nth 3 x)))))
      (symbol-value (ergoemacs-get-variable-layout)))
     (symbol-value 'ret)))
