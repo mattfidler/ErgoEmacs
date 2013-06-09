@@ -2210,10 +2210,13 @@ EXTRA represents an extra file representation."
                  (if (= 0 (length txt))
                      (setq txt "")
                    (setq txt "prefix"))))
-             (when (search-forward (format ">%s<" x) nil t)
-               (replace-match  (format ">%s<" txt) t t)))
+             (if (string= "<apps> SPC")
+                 (progn
+                   (when (search-forward "&lt;apps&gt; SPC" nil t)
+                     (replace-mapch txt t t)))
+               (when (search-forward (format ">%s<" x) nil t)
+                 (replace-match  (format ">%s<" txt) t t))))
            '("M-S-SPC" "M-SPC" "C-S-SPC" "C-SPC" "<apps> SPC"))
-          
           (setq i (+ i 1)))
         (while (re-search-forward ">\\([CMA][0-9]+\\|nil\\)<" nil t)
           (replace-match "><")))

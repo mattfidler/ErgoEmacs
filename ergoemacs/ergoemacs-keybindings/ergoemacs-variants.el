@@ -134,7 +134,7 @@
     ("<apps> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
     ("<apps> r" ergoemacs-ctl-x-unchorded "Ctl-x*")
     ("<apps> s" save-buffer "Save")
-    ("<apps> o" open-buffer)
+    ("<apps> o" find-file "Open")
     ("<apps> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
     ("<apps> g" universal-argument "C-u")
     ("<apps> w" close-buffer "Close")
@@ -142,7 +142,7 @@
     ("<apps> x" ergoemacs-cut-line-or-region "✂ region")
     ("<apps> c" ergoemacs-copy-line-or-region "copy")
     ("<apps> v" yank "paste")
-    ("<apps> Z" redo "↷ redo")
+    ("<apps> b" redo "↷ redo")
     ("<apps> z" undo "↶ undo")
     
     ;; ("<apps> V" yank-pop "paste ↑")
