@@ -2213,7 +2213,7 @@ EXTRA represents an extra file representation."
              (if (string= "<apps> SPC" x)
                  (progn
                    (when (search-forward "&lt;apps&gt; SPC" nil t)
-                     (replace-mapch txt t t)))
+                     (replace-match txt t t)))
                (when (search-forward (format ">%s<" x) nil t)
                  (replace-match  (format ">%s<" txt) t t))))
            '("M-S-SPC" "M-SPC" "C-S-SPC" "C-SPC" "<apps> SPC"))
