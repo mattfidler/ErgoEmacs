@@ -2210,7 +2210,7 @@ EXTRA represents an extra file representation."
                  (if (= 0 (length txt))
                      (setq txt "")
                    (setq txt "prefix"))))
-             (if (string= "<apps> SPC")
+             (if (string= "<apps> SPC" x)
                  (progn
                    (when (search-forward "&lt;apps&gt; SPC" nil t)
                      (replace-mapch txt t t)))
@@ -2276,6 +2276,7 @@ EXTRA represents an extra file representation."
        (message "Setting variant back to %s" saved-variant)
        (ergoemacs-set-default 'ergoemacs-variant saved-variant))
      lay)))
+
 (provide 'ergoemacs-extras)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-extras.el ends here
