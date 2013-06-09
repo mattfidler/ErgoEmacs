@@ -28,9 +28,9 @@
      inkscape:window-height="706"
      id="namedview4026"
      showgrid="false"
-     inkscape:zoom="1.2230182"
-     inkscape:cx="487.99642"
-     inkscape:cy="296.62932"
+     inkscape:zoom="1.2614238"
+     inkscape:cx="486.75156"
+     inkscape:cy="209.0015"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -1875,7 +1875,7 @@
        sodipodi:role="line"
        id="tspan3507-09-3-5-3-5"
        x="703.79199"
-       y="374.85757">Alt+</tspan></text>
+       y="374.85757">MM</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#db3027;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -2249,7 +2249,7 @@
        sodipodi:role="line"
        id="tspan3507-09-3-5-3-5-6"
        x="703.79199"
-       y="360.70233">Alt+⇧Shift+</tspan></text>
+       y="360.70233">MS</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff00ff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -2986,7 +2986,7 @@
        sodipodi:role="line"
        id="tspan3507-09-3-5-3-5-7"
        x="703.79199"
-       y="400.99811">Ctrl+</tspan></text>
+       y="400.99811">CC</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff00ff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -2997,7 +2997,7 @@
        sodipodi:role="line"
        id="tspan3507-09-3-5-3-5-6-8"
        x="703.79199"
-       y="386.84286">Ctrl+⇧Shift+</tspan></text>
+       y="386.84286">CS</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000080;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -3008,7 +3008,7 @@
        sodipodi:role="line"
        id="tspan3507-4-2-8-9-6-74"
        x="235.79182"
-       y="375.04999">M-SPC</tspan></text>
+       y="375.04999">MM-SPC</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#db3027;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -3019,7 +3019,7 @@
        sodipodi:role="line"
        id="tspan3507-4-2-8-9-8"
        x="235.79182"
-       y="360.38333">M-S-SPC</tspan></text>
+       y="360.38333">MS-SPC</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff00ff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -3030,7 +3030,7 @@
        sodipodi:role="line"
        id="tspan3507-4-2-8-9-7-6"
        x="235.79182"
-       y="387.71667">C-S-SPC</tspan></text>
+       y="387.71667">CS-SPC</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#006400;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -3041,7 +3041,7 @@
        sodipodi:role="line"
        id="tspan3507-4-2-8-9-6-7-0"
        x="235.79182"
-       y="400.38333">C-SPC</tspan></text>
+       y="400.38333">CC-SPC</tspan></text>
   <text
      sodipodi:linespacing="125%"
      style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Helvetica;-inkscape-font-specification:Helvetica Bold"
@@ -3745,7 +3745,7 @@
        sodipodi:role="line"
        id="tspan3507-4-2-8-9-6-7-0-0"
        x="235.79182"
-       y="412.38333">&lt;apps&gt; SPC</tspan></text>
+       y="412.38333">AA-SPC</tspan></text>
   <text
      xml:space="preserve"
      style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -3756,5 +3756,5 @@
        sodipodi:role="line"
        id="tspan3507-09-3-5-3-5-7-1"
        x="703.79199"
-       y="412.99811">▤ Menu/Apps</tspan></text>
+       y="412.99811">AA</tspan></text>
 </svg>

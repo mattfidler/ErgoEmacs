@@ -148,13 +148,13 @@
     ("<apps> v" yank "paste")
     ("<apps> b" redo "↷ redo")
     ("<apps> z" undo "↶ undo")
-    ("<apps> m c" calc "calc" t)
-    ("<apps> m m" magit-status "magit" t)
-    ("<apps> m g" grep "grep" t)
-    ("<apps> m d" dired-jump "dired" t)
-    ("<apps> m f" ergoemacs-open-in-desktop "OS Dir" t)
-    ("<apps> m o" ergoemacs-open-in-external-app "OS Open" t)
-    ("<apps> m s" shell "shell" t)
+    ("<apps> n c" calc "calc" t)
+    ("<apps> n m" magit-status "magit" t)
+    ("<apps> n g" grep "grep" t)
+    ("<apps> n d" dired-jump "dired" t)
+    ("<apps> n f" ergoemacs-open-in-desktop "OS Dir" t)
+    ("<apps> n o" ergoemacs-open-in-external-app "OS Open" t)
+    ("<apps> n s" shell "shell" t)
     ("<apps> TAB" indent-region "indent-region")  ;; Already in CUA
     ;; but some modes don't honor it...
     
