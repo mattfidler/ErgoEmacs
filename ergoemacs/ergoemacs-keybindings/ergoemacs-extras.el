@@ -2040,22 +2040,26 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
     ("M-" "M" "MM" "Alt+" "M-" nil)
     ("C-" "C" "CS" "Ctrl+⇧Shift+" "C-S-" nil)
     ("C-" "C" "CC" "Ctrl+" "C-" nil)
-    ("<apps> " "A" "AA" "▤ Menu/Apps" "<apps> " nil)))
+    ("<apps> " "A" "AA" "▤ Menu/Apps " "<apps> " nil)))
 
 ;;; Format of list -- (0) Emacs prefix (1) svg prefix (2) Final/Symbol
 ;;; prefix (3) Final text legend (4) Keyboard lookup (5) Treat
 ;;; variable-layout as fixed-layout
 
-(defun ergoemacs-gen-svg (layout &optional file-name extra)
+(defun ergoemacs-gen-svg (layout &optional file-name extra is-prefix)
   "Generates a SVG picture of the layout
 FILE-NAME represents the SVG template
-EXTRA represents an extra file representation."
+EXTRA represents an extra file representation.
+IS-PREFIX tell ergoemacs if this is a prefix diagram."
   (let ((dir ergoemacs-dir)
         (extra-dir)
         (fn (or file-name "kbd.svg"))
         (xtra (or extra "kbd-layouts"))
         file
         txt
+        (prefix-lst '())
+        (prefix-num 0)
+        prefix-fixed
         (lay
          (intern-soft
           (concat "ergoemacs-layout-" layout)))
@@ -2083,18 +2087,43 @@ EXTRA represents an extra file representation."
           (make-directory extra-dir t))
       (setq lay (symbol-value lay))
       (setq file (expand-file-name
-                  (concat "ergoemacs-layout-" layout ".svg") extra-dir))
+                  (concat "ergoemacs-layout-" layout (if is-prefix "-prefix" "") ".svg") extra-dir))
       (with-temp-file file
         ;;(set-buffer-file-coding-system 'utf-8)
         (insert-file-contents
          (expand-file-name fn dir))
+        (when is-prefix
+          (goto-char (point-min))
+          (while (search-forward ">A" nil t)
+            (replace-match ">4A"))
+          (goto-char (point-min))
+          (while (re-search-forward ">M\\([0-9]+\\)<" nil t)
+            (if (<= 60 (string-to-number (match-string 1)))
+                (replace-match (format ">0A%s<" (- (string-to-number (match-string 1)) 60)) t t)
+              (replace-match (format ">1A%s<" (match-string 1)) t t)))
+          (goto-char (point-min))
+          (while (re-search-forward ">C\\([0-9]+\\)<" nil t)
+            (if (<= 60 (string-to-number (match-string 1)))
+                (replace-match (format ">2A%s<" (- (string-to-number (match-string 1)) 60)) t t)
+              (replace-match (format ">3A%s<" (match-string 1)) t t)))
+          (goto-char (point-min))
+          (while (re-search-forward ">MS" nil t)
+            (replace-match ">0AA" t t))
+          (goto-char (point-min))
+          (while (re-search-forward ">MM" nil t)
+            (replace-match ">1AA" t t))
+          (goto-char (point-min))
+          (while (re-search-forward ">CS" nil t)
+            (replace-match ">2AA"))
+          (goto-char (point-min))
+          (while (re-search-forward ">CC" nil t)
+            (replace-match ">3AA")))
         (when (string-equal system-type "windows-nt")
           ;; Use Arial Unicode MS when on windows
           (goto-char (point-min))
           (while (re-search-forward "\\(?:Helvetica\\|Sans\\)\\([\";]\\)" nil t)
             (replace-match "Arial Unicode MS\\1")))
         (while (< i (length lay))
-          
           (goto-char (point-min))
           (when (search-forward (format ">%s<" i) nil t)
             (replace-match (format ">%s<" (ergoemacs-gen-svg-quote (nth i lay))) t t))
@@ -2108,9 +2137,12 @@ EXTRA represents an extra file representation."
                    (var-is-fixed-p (nth 5 x))
                    curr-var)
                ;; Variable Layout
+               (setq curr-var (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from)))))
+               
                (if var-is-fixed-p
                    (setq curr-var (nth i lay))
                  (setq curr-var (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))))
+               
                (unless (string= curr-var "")
                  (setq txt (assoc (format "%s%s" key-pre curr-var)
                                   (symbol-value (ergoemacs-get-variable-layout))))
@@ -2125,7 +2157,20 @@ EXTRA represents an extra file representation."
                                               (symbol-value (ergoemacs-get-variable-layout))))
                    (if (= 0 (length txt))
                        (setq txt "")
-                     (setq txt "prefix")))
+                     (setq prefix-fixed (nth 3 (assoc (nth 0 txt) (symbol-value (ergoemacs-get-variable-layout)))))
+                     (setq txt "prefix")
+                     ;; Add to prefix list
+                     (setq prefix-lst
+                           (append prefix-lst
+                                   (list
+                                    (list
+                                     (format "%s%s " key-pre curr-var)
+                                     (format "%sA" prefix-num)
+                                     (format "%sAA" prefix-num)
+                                     (format "%s%s" final-txt (nth i lay))
+                                     (format "%sAA-" prefix-num)
+                                     prefix-fixed))))
+                     (setq prefix-num (+ prefix-num 1))))
                  (goto-char (point-min))
                  (unless (string= "" txt)
                    (when (search-forward (format ">%s%s<" rep-pre i) nil t)
@@ -2147,7 +2192,6 @@ EXTRA represents an extra file representation."
                (unless (string= "" txt)
                  (when (search-forward (format ">%s%s<" rep-pre i) nil t)
                    (replace-match  (format ">%s<" txt) t t)))
-               (message "Sym %s" sym-pre)
                ;; Space and other symbols
                (mapc
                 (lambda(sym)
@@ -2159,7 +2203,10 @@ EXTRA represents an extra file representation."
                       (setq txt "")))
                   
                   (when (string= "" txt)
-                    (setq txt (all-completions (format "%s%s " sym-pre sym) (symbol-value (ergoemacs-get-variable-layout))))
+                    (setq txt
+                          (all-completions
+                           (format "%s%s " sym-pre sym)
+                           (symbol-value (ergoemacs-get-variable-layout))))
                     (if (= 0 (length txt))
                         (setq txt "")
                       (setq txt "prefix")))
@@ -2175,13 +2222,18 @@ EXTRA represents an extra file representation."
                  (replace-match (format ">%s<" (ergoemacs-gen-svg-quote final-txt)) t t))))
            ergoemacs-svn-prefixes)
           (setq i (+ i 1)))
-        (while (re-search-forward ">\\([CMA][0-9]+\\|nil\\)<" nil t)
+        (while (re-search-forward ">\\([0-4]?[CMA][0-9]+\\|[0-4][CMA]\\{2\\}.*\\|nil\\)<" nil t)
           (replace-match "><")))
       (when ergoemacs-inkscape
         (message "Converting to png")
         (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
                                file (concat (file-name-sans-extension file) ".png"))))
-      (message "Layout generated to %s" file))))
+      (message "Layout generated to %s" file)
+      (when prefix-lst
+        (let ((ergoemacs-svn-prefixes prefix-lst))
+          (message "%s" ergoemacs-svn-prefixes)
+          (ergoemacs-gen-svg layout file-name extra t)
+          )))))
 
 
 (defun ergoemacs-curr-svg ()
