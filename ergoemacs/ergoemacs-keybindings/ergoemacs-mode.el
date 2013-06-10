@@ -540,6 +540,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
     (if (not key)
         nil
       (let ((new-key key))
+        (cond
+         ((eq system-type 'windows-nt)
+          (setq new-key (replace-regexp-in-string "<menu>" "<apps>" new-key)))
+         (t
+          (setq new-key (replace-regexp-in-string "<apps>" "<menu>" new-key))))
         (when ergoemacs-needs-translation
           (setq new-key
                 (with-temp-buffer
