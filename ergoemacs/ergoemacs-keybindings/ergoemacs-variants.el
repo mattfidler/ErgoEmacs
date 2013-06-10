@@ -137,7 +137,7 @@
     ("<apps> o" find-file "Open")
     ("<apps> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
     ("<apps> g" universal-argument "C-u")
-    ("<apps> w" ergoemacs-close-current-bufferclose-buffer "Close")
+    ("<apps> w" ergoemacs-close-current-buffer "Close")
     ;;("<apps> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
     ("<apps> y y" isearch-forward "→ isearch")
     ("<apps> y h" isearch-backward "← isearch")
@@ -681,9 +681,11 @@ This optionally provides the description, DESC, too."
         (set (ergoemacs-get-variable-layout)
              (mapcar
               (lambda(x)
-                (if (not (condition-case err
-                             (equal function (nth 1 x))
-                           (error nil)))
+                (if (and
+                     (not (condition-case err
+                              (equal function (nth 1 x))
+                            (error nil)))
+                     (not (string-match "<apps>" (nth 0 x))))
                     x
                   (setq found t)
                   `(,key ,function ,desc ,only-first)))

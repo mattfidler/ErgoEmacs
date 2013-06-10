@@ -2042,8 +2042,8 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
     ("C-" "C" "CC" "Ctrl+" "C-" nil)
     ("<apps> " "A" "AA" "▤ Menu/Apps" "<apps> " nil)))
 
-;;; Format of list -- (1) Emacs prefix (2) svg prefix (3) Final/Symbol
-;;; prefix (4) Final text legend (5) Keyboard lookup (6) Treat
+;;; Format of list -- (0) Emacs prefix (1) svg prefix (2) Final/Symbol
+;;; prefix (3) Final text legend (4) Keyboard lookup (5) Treat
 ;;; variable-layout as fixed-layout
 
 (defun ergoemacs-gen-svg (layout &optional file-name extra)
@@ -2101,35 +2101,36 @@ EXTRA represents an extra file representation."
           (mapc
            (lambda(x)
              (let ((key-pre (nth 0 x))
-                   (rep-pre (nth 2 x))
+                   (rep-pre (nth 1 x))
+                   (rep-sym-pre (nth 2 x))
                    (final-txt (nth 3 x))
-                   (final-rep (nth 4 x))
-                   (sym-pre (nth 5 x))
-                   (var-is-fixed-p (nth 6 x))
+                   (sym-pre (nth 4 x))
+                   (var-is-fixed-p (nth 5 x))
                    curr-var)
                ;; Variable Layout
                (if var-is-fixed-p
                    (setq curr-var (nth i lay))
                  (setq curr-var (nth i (symbol-value (intern (concat "ergoemacs-layout-" ergoemacs-translation-from))))))
-               (setq txt (assoc (format "%s%s" key-pre curr-var)
-                                (symbol-value (ergoemacs-get-variable-layout))))
-               (if (not txt)
-                   (setq txt "")
-                 (if (>= (length txt) 3)
-                     (setq txt (nth 2 txt))
-                   (setq txt "")))
-               
-               (when (string= "" txt)
-                 (setq txt (all-completions (format "%s%s " key-pre curr-var)
-                                            (symbol-value (ergoemacs-get-variable-layout))))
-                 (if (= 0 (length txt))
+               (unless (string= curr-var "")
+                 (setq txt (assoc (format "%s%s" key-pre curr-var)
+                                  (symbol-value (ergoemacs-get-variable-layout))))
+                 
+                 (if (not txt)
                      (setq txt "")
-                   (setq txt "prefix")))
-               (goto-char (point-min))
-               (unless (string= "" txt)
-                 (when (search-forward (format ">%s%s<" rep-pre i) nil t)
-                   (replace-match  (format ">%s<" txt) t t)))
-
+                   (if (>= (length txt) 3)
+                       (setq txt (nth 2 txt))
+                     (setq txt "")))
+                 (when (string= "" txt)
+                   (setq txt (all-completions (format "%s%s " key-pre curr-var)
+                                              (symbol-value (ergoemacs-get-variable-layout))))
+                   (if (= 0 (length txt))
+                       (setq txt "")
+                     (setq txt "prefix")))
+                 (goto-char (point-min))
+                 (unless (string= "" txt)
+                   (when (search-forward (format ">%s%s<" rep-pre i) nil t)
+                     (replace-match  (format ">%s<" txt) t t))))
+               
                ;; Fixed layout
                (goto-char (point-min))
                (setq txt (assoc (format "%s%s" key-pre (nth i lay)) fix))
@@ -2146,7 +2147,7 @@ EXTRA represents an extra file representation."
                (unless (string= "" txt)
                  (when (search-forward (format ">%s%s<" rep-pre i) nil t)
                    (replace-match  (format ">%s<" txt) t t)))
-
+               (message "Sym %s" sym-pre)
                ;; Space and other symbols
                (mapc
                 (lambda(sym)
@@ -2164,14 +2165,14 @@ EXTRA represents an extra file representation."
                       (setq txt "prefix")))
                   (goto-char (point-min))
                   (unless (string= "" txt)
-                    (when (search-forward (format ">%s-%s<" final-txt sym) nil t)
+                    (when (search-forward (format ">%s-%s<" rep-sym-pre sym) nil t)
                       (replace-match  (format ">%s<" (ergoemacs-gen-svg-quote txt)) t t))))
                 '("SPC"))
                
                ;; Legend/Key
                (goto-char (point-min))
-               (when (search-forward (format ">%s<" final-txt) nil t)
-                 (replace-match (format ">%s<" (ergoemacs-gen-svg-quote final-rep)) t t))))
+               (when (search-forward (format ">%s<" rep-sym-pre) nil t)
+                 (replace-match (format ">%s<" (ergoemacs-gen-svg-quote final-txt)) t t))))
            ergoemacs-svn-prefixes)
           (setq i (+ i 1)))
         (while (re-search-forward ">\\([CMA][0-9]+\\|nil\\)<" nil t)

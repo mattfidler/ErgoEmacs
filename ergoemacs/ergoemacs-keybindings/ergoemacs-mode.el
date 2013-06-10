@@ -9,7 +9,7 @@
 ;;     Matthew Fidler <matthew.fidler@gmail.com> ( http://github.com/mlf176f2/ )
 ;; Maintainer: Matthew Fidler, Xah Lee, David Capello
 ;; Created: August 01 2007
-;; Version: 5.7.4
+;; Version: 5.8.0
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 ;; Package-Requires: ((org-cua-dwim "0.5"))
 
@@ -546,10 +546,12 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                   (insert new-key)
                   (goto-char (point-min))
                   (when (re-search-forward ergoemacs-translation-regexp nil t)
-                    (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t))
+                    (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t)
+                    (skip-chars-backward " "))
                   (when (not only-first)
                     (while (re-search-forward ergoemacs-translation-regexp nil t)
-                      (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t)))
+                      (replace-match (concat (match-string 1) (cdr (assoc (match-string 2) ergoemacs-translation-assoc)) (match-string 3)) t t)
+                      (skip-chars-backward " ")))
                   (buffer-string))))
         (if (not just-translate)
             (condition-case err
@@ -772,12 +774,15 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
 (require 'ergoemacs-extras)
 
 ;; ErgoEmacs hooks
-(defun ergoemacs-key-fn-lookup (function)
+(defun ergoemacs-key-fn-lookup (function &optional use-apps)
   "Looks up the key binding for FUNCTION based on `ergoemacs-get-variable-layout'."
   (let ((ret nil))
     (mapc
      (lambda(x)
-       (when (equal (nth 1 x) function)
+       (when (and (equal (nth 1 x) function)
+                  (if use-apps
+                      (string-match "<apps>" (nth 0 x))
+                    (not (string-match "<apps>" (nth 0 x)))))
          (setq ret (ergoemacs-kbd (nth 0 x) nil (nth 3 x)))))
      (symbol-value (ergoemacs-get-variable-layout)))
     (symbol-value 'ret)))
@@ -799,12 +804,18 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                (error (read-kbd-macro
                        (encode-coding-string key-def locale-coding-system)))))
             ((ergoemacs-key-fn-lookup key-def)
+             ;; Also define <apps> key
+             (when (ergoemacs-key-fn-lookup key-def t)
+               (define-key keymap (ergoemacs-key-fn-lookup key-def t) definition))
              (ergoemacs-key-fn-lookup key-def))
+            ;; Define <apps>  key
+            ((ergoemacs-key-fn-lookup key-def t)
+             (ergoemacs-key-fn-lookup key-def t)
+             nil)
             (t nil))))
-      (when ergoemacs-debug
         (when ergoemacs-debug
           (message "hook: %s->%s %s %s" key-def key-code
-                   definition translate)))
+                   definition translate))
       (when key-code
         (define-key keymap key-code definition)))))
 

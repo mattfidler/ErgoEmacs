@@ -690,9 +690,10 @@ Else it is a user buffer."
   :type 'string
   :group 'ergoemacs-mode)
 
-(defun ergoemacs-display-current-svg ()
-  "Generates the current ergoemacs layout, unless it already exists and opens it in a browser."
-  (interactive)
+(defun ergoemacs-display-current-svg (&optional arg)
+  "Generates the current ergoemacs layout, unless it already exists and opens it in a browser.
+With a prefix, force regeneration. "
+  (interactive "p")
   (let ((var ergoemacs-variant)
         (layout ergoemacs-keyboard-layout)
         (extra "ergo-layouts")
@@ -706,7 +707,7 @@ Else it is a user buffer."
     (setq file (expand-file-name (concat "ergoemacs-layout-" layout ".svg") dir))
     (setq png (expand-file-name (concat "ergoemacs-layout-" layout ".png") dir))
     
-    (unless (file-exists-p file)
+    (unless (and (not arg) (file-exists-p file))
       (message "Generating SVG file...")
       (unless (featurep 'ergoemacs-extras)
         (require 'ergoemacs-extras))
@@ -714,7 +715,7 @@ Else it is a user buffer."
       (message "Generated!"))
     
     (when ergoemacs-inkscape
-      (unless (file-exists-p png)
+      (unless (and (not arg) (file-exists-p png))
         (message "Converting to png")
         (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
                                file png))
