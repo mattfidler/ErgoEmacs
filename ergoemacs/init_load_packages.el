@@ -26,7 +26,7 @@
 (add-to-list 'auto-mode-alist '("\\.cls\\'" . visual-basic-mode)) ;C++ class definition file
 
 ;;; csharp mode
-(autoload 'csharp-mode "csharp-mode-0.7.6" "Major mode for editing C# code." t)
+(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
 (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-mode))
 
 ;;; for editing Windows's cmd.exe's script; batch, “.bat” file mode.
@@ -35,12 +35,12 @@
 (add-to-list 'auto-mode-alist '("\\.cmd\\'" . dos-mode))
 
 ;;; powershell-mode. http://en.wikipedia.org/wiki/PowerShell
-(autoload 'powershell-mode "powershell-mode" "A editing mode for Microsoft PowerShell." t)
+(autoload 'powershell-mode "powershell-mode" "A editing mode for Microsoft PowerShell scripts." t)
 (add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode)) ; PowerShell script
 
 ;;; powershell interactive shell
 (when (string-equal system-type "windows-nt")
-  (autoload 'powershell "powershell" "Interactive shell for PowerShell." t)
+  (autoload 'powershell "powershell" "Interactive shell for Microsoft PowerShell." t)
 )
 
 ;;; xlsl-mode. http://en.wikipedia.org/wiki/Linden_Scripting_Language
@@ -74,23 +74,6 @@
  (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/yasnippet-0.6.1c/snippets/")
  )
 (add-to-list 'auto-mode-alist '("\\.yasnippet\\'" . snippet-mode))
-
-;; a user interface library used by auto-complete
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/popup-20121020.1203/" ) )
-
-;; auto-complete v1.3.1 (a enhanced word completion for computer 8languages)
-(add-to-list 'load-path
- (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete/" ) )
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories
- (concat (file-name-directory (or load-file-name buffer-file-name))
-                     "../packages/auto-complete/dict/" ))
-(require 'auto-complete-config)
-(ac-config-default)
-(auto-complete-mode 1)
 
 ;;; enhanced “directory viewer”/“file manager” (diredplus mode)
 (require 'dired+)

@@ -267,6 +267,9 @@
 "with-output-to-temp-buffer"
 "setq-default"
 
+"shell-command-on-region"
+"parse-time-string"
+
 ) )
 
 (defvar xem-keyword-builtin nil "a list of elisp  names")

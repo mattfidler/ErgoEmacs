@@ -119,17 +119,50 @@
     ("M-6" ergoemacs-select-current-block "Sel. Block")
     ("M-7" ergoemacs-select-current-line "Sel. Line")
     
-    ("<apps> j" ergoemacs-ctl-c "Ctl-c")
-    ("<apps> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
-    ("<apps> f" ergoemacs-ctl-x "Ctl-x")
-    ("<apps> r" ergoemacs-ctl-x-unchorded "Ctl-x*")
-    ("<apps> h" ergoemacs-ctl-h "Ctl-h")
-    ("<apps> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
-    ("<apps> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
+    ("<apps> 2" delete-window "x pane")
+    ("<apps> 3" delete-other-windows "x other pane")
+    ("<apps> 4" split-window-vertically "split —")
+    ("<apps> 5" query-replace "rep")
+    ("<apps> <return>" ergoemacs-smex-if-exists "M-x")
     ("<apps> SPC" set-mark-command "Set Mark")
+    ("<apps> a" mark-whole-buffer "Sel All")
+    ("<apps> f" ergoemacs-ctl-x "Ctl-x")
+    ("<apps> h" ergoemacs-ctl-h "Ctl-h")
+    ("<apps> i" ergoemacs-alt-shift-keys "Rep Alt+Shift")
+    ("<apps> j" ergoemacs-ctl-c "Ctl-c")
     ("<apps> k" ergoemacs-alt-keys "Repeat Alt")
-    ("<apps> i" ergoemacs-alt-shift-keys "Repeat Alt+Shift")
-    ("<apps> <return>" ergoemacs-smex-if-exists "M-x"))
+    ("<apps> m" ergoemacs-ctl-c-ctl-c "C-c C-c")
+    ("<apps> r" ergoemacs-ctl-x-unchorded "Ctl-x*")
+    ("<apps> s" save-buffer "Save")
+    ("<apps> o" find-file "Open")
+    ("<apps> u" ergoemacs-ctl-c-unchorded "Ctl-c*")
+    ("<apps> g" universal-argument "C-u")
+    ("<apps> w" ergoemacs-close-current-buffer "Close")
+    ;;("<apps> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
+    ("<apps> y y" isearch-forward "→ isearch")
+    ("<apps> y h" isearch-backward "← isearch")
+    ("<apps> y u" isearch-forward-regexp "→ reg isearch")
+    ("<apps> y j" isearch-backward-regexp "← reg isearch")
+    ("<apps> x" ergoemacs-cut-line-or-region "✂ region")
+    ("<apps> c" ergoemacs-copy-line-or-region "copy")
+    ("<apps> v" yank "paste")
+    ("<apps> b" redo "↷ redo")
+    ("<apps> z" undo "↶ undo")
+    ("<apps> n c" calc "calc" t)
+    ("<apps> n m" magit-status "magit" t)
+    ("<apps> n g" grep "grep" t)
+    ("<apps> n d" dired-jump "dired" t)
+    ("<apps> n f" ergoemacs-open-in-desktop "OS Dir" t)
+    ("<apps> n o" ergoemacs-open-in-external-app "OS Open" t)
+    ("<apps> n s" shell "shell" t)
+    ("<apps> TAB" indent-region "indent-region")  ;; Already in CUA
+    ;; but some modes don't honor it...
+    
+    ;; ("<apps> V" yank-pop "paste ↑")
+    ;; ("<apps> C" ergoemacs-copy-all "copy all")
+    ;; ("<apps> X" ergoemacs-cut-all "✂ all")
+    
+    )
   
   "Ergoemacs that vary from keyboard types.  By default these keybindings are based on QWERTY."
   :type '(repeat
@@ -648,9 +681,11 @@ This optionally provides the description, DESC, too."
         (set (ergoemacs-get-variable-layout)
              (mapcar
               (lambda(x)
-                (if (not (condition-case err
-                             (equal function (nth 1 x))
-                           (error nil)))
+                (if (and
+                     (not (condition-case err
+                              (equal function (nth 1 x))
+                            (error nil)))
+                     (not (string-match "<apps>" (nth 0 x))))
                     x
                   (setq found t)
                   `(,key ,function ,desc ,only-first)))

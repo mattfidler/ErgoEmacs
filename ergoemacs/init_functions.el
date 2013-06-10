@@ -77,44 +77,45 @@ for dired, irc, mail, shell, etc."
 (with-output-to-temp-buffer "*Major Modes for Text Editing*"
   (princ 
          "###############################################
-# This is a list of text-editing related major modes that comes with ErgoEmacs.
-# The lines are formatted this way:
-# ‹purpose/language name› • ‹command name›
-
-# The list is not complete.
-# please help by adding modes you use at
-# http://code.google.com/p/ergoemacs/issues/detail?id=64
+# This is a list of text-editing related major modes.
 
 AutoHotKey • xahk-mode
-BBCode • xbbcode-mode
 Bash • sh-mode
 C • c-mode
 C++ • c++-mode
 CSS • css-mode
-Clojure • clojure-mode
 Emacs Lisp • emacs-lisp-mode
-Erlang • erlang-mode
 HTML • html-mode
-Haskell • haskell-mode
 Java • java-mode
 Javascript • js-mode
-Javascript • js2-mode
 LaTeX • latex-mode
-Linden Scripting Language • xlsl-mode
-Lua • lua-mode
-OCaml • tuareg-mode
 PHP • php-mode
 Perl • cperl-mode
 PowerShell • powershell-mode
 Python • python-mode
 Ruby • ruby-mode
-Scala • scala-mode
 TCL • tcl-mode
 Visual Basic • visual-basic-mode
 XML • nxml-mode
 XML • xml-mode
-cmd.exe • dos-mode"
-         )
+cmd.exe • dos-mode
+
+# The lines are formatted this way:
+# ‹purpose/language name› • ‹command name›
+
+# The list is not complete. They only include most popular languages and or those added by ErgoEmacs.
+You can install modes by adding MELPA:
+
+;; adding MELPA to package source
+ (when (>= emacs-major-version 24)
+   (require 'package)
+   (package-initialize)
+   (add-to-list 'package-archives '(\"melpa\" . \"http://melpa.milkbox.net/packages/\") t)
+   )
+
+call `eval-region'
+then, call `list-packages'.
+"         )
   )
   )
 

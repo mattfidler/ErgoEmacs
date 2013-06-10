@@ -274,6 +274,10 @@
            ("vbs" . ["visual-basic-mode" "vbs"])
            ("visualbasic" . ["visual-basic-mode" "vbs"])
            ("mma" . ["fundamental-mode" "m"])
+
+           ("slim" . ["slim-mode" "slim"])
+           ("yaml" . ["yaml-mode" "yaml"])
+
            ) )
 
 ;(defvar xhm-lang-name-list nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
@@ -1622,13 +1626,13 @@ Case shouldn't matter, except when it's emacs's key notation.
 (goto-char (point-min))
 
         (replace-pairs-region (point-min) (point-max) replaceList)
-        ;; (replace-regexp-pairs-region
-        ;;  (point-min) (point-max)
-        ;;  [
-        ;;   ["\+\\([^<]\\) \\(.\\) \\(.\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd> <kbd>\\3</kbd>"]
-        ;;   ["\+\\([^<]\\) \\([A-Za-z0-0]\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd>"]
-        ;;   ["\+\\([^<]\\)" "+<kbd>\\1</kbd>"]
-        ;;   ])
+        (replace-regexp-pairs-region
+         (point-min) (point-max)
+         [
+          ["\+\\([^<]\\) \\(.\\) \\(.\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd> <kbd>\\3</kbd>"]
+          ["\+\\([^<]\\) \\([A-Za-z0-0]\\)\\'" "+<kbd>\\1</kbd> <kbd>\\2</kbd>"]
+          ["\+\\([^<]\\)" "+<kbd>\\1</kbd>"]
+          ])
         ) ) )
 
   ;; test cases
@@ -1750,6 +1754,31 @@ When cursor is in HTML link file path, e.g.  <img src=\"gki/macosxlogo.png\" > a
         )
       )
     ))
+
+(defun xhm-clean-whitespace ()
+  "Delete redundant whitespace in HTML file.
+Work on text selection or whole buffer.
+This is heuristic based, does not remove ALL possible redundant whitespace."
+  (interactive)
+  (let* (
+         (bds (get-selection-or-unit 'buffer))
+         (p1 (elt bds 1))
+         (p2 (elt bds 2))
+         )
+    (save-excursion
+      (save-restriction
+        (narrow-to-region p1 p2)
+        (progn
+          (goto-char (point-min))
+          (while (search-forward-regexp "[ \t]+\n" nil "noerror")
+            (replace-match "\n") ))
+        
+        (progn
+          (goto-char (point-min))
+          (while (search-forward-regexp " *<p>\n+" nil "noerror")
+            (replace-match "<p>") ))
+
+        )) ))
 
 
 

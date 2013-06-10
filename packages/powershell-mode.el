@@ -1,209 +1,243 @@
-;; powershell-mode.el, version 0.5 
-;; 
-;; Author: Vivek Sharma (http://www.viveksharma.com/techlog) 
-;; Provides: Major mode for editing PS (PowerShell) scripts 
-;; Last Updated: 08/19/08 
-;; 
-;; DONE 
-;; - Indentation support  (done) 
-;; - support here strings (done) 
+;;; powershell-mode.el --- Mode for editing Powershell scripts
+;; Version: 20100203.458
+
+;; Copyright (C) 2009, 2010 Frédéric Perrin
+
+;; Author: Frédéric Perrin <frederic (dot) perrin (arobas) resel (dot) fr>
+;; Keywords: Powershell, Monad, MSH
+
+;; This file is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published
+;; by the Free Software Foundation, either version 3 of the License,
+;; or (at your option) any later version.
+
+;; GNU Emacs is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Comment:
+;; This is still WIP.
 ;;
-;; TODO
-;; - C# class support 
-;; - PowerShell v2 support 
-;; 
-;; CHANGES 
-;; 0.1 - initial version with text highlighting support and indenting 
-;; 0.2 - fixed file based on feedback to handle xemacs and syntax file changes 
-;; 0.3 - updated to reflect Monad --> PowerShell name change 
-;; 0.4 - added manual indentation support, not totally what I'd like, but good enough 
-;; 0.5 - update from Richard Bielawski (email address excluded till he grants permission to 
-;;       include it :) - Many thanks Richard! Fixes: indenting fixed, elseif keyword added, 
-;;       visiting file bug fixed, standard comment support added. I only tested with latest
-;;       EmacsWin32, YMMV 
+;; This was written from scratch, without using Vivek Sharma's code:
+;; it had issues I wanted to correct, but unfortunately there were no
+;; licence indication, and Vivek didn't answered my mails.
+;;
+;; This is still pretty basic: there is indentation, syntax
+;; hilighting, speedbar/imenu support. The indentation is pretty naïve
+;; but robust, and sufficient for my current needs.
 
+(setq debug-on-error t)
 
+(defvar powershell-indent 8
+  "Amount of horizontal space to indent after, for instance, an
+opening brace")
 
-;; custom hooks 
-(defvar powershell-mode-hook nil) 
+(defvar powershell-continuation-indent 4
+  "Amount of horizontal space to indent a continuation line")
 
-;; default mode map, really simple 
-(defvar powershell-mode-map   
-  (let ((powershell-mode-map (make-keymap))) 
-;;    (define-key powershell-mode-map "\r" 'powershell-indent-line) 
-    (define-key powershell-mode-map "\t" 'powershell-indent-line) 
-;;    (define-key powershell-mode-map "{" 'powershell-electric-brace) 
-;;    (define-key powershell-mode-map "}" 'powershell-electric-brace) 
-    powershell-mode-map) 
-  "Keymap for PS major mode") 
+(defvar powershell-continued-regexp  ".*\\(|[\\t ]*\\|`\\)$"
+  "Regexp matching a continued line (ending either with an
+explicit backtick, or with a pipe).")
 
-(defvar powershell-indent-width 4) 
-;; make braces indent properly 
-(defun powershell-electric-brace (arg) 
-  "Correct indentation for squigly brace" 
-  (interactive "P") 
-  (self-insert-command (prefix-numeric-value arg)) 
-  (unless 
-      (save-excursion 
-        (beginning-of-line) 
-        (or 
-;;          (looking-at "$\w+") ;Don't do this in a variable 
-          (looking-at "{\s*|[^}]") ;Don't do this in an open procedure block 
-          (looking-at "\"[^\"]*$")) ;Don't do this in a open string 
-       ) 
-    (powershell-indent-line) 
-    (forward-char 1) 
-  ) 
-) 
+(defun powershell-continuation-line-p ()
+  "Returns t is the current line is a continuation line (i.e. the
+previous line is a continued line, ending with a backtick or a pipe"
+  (interactive)
+  (save-excursion
+    (forward-line -1)
+    (looking-at powershell-continued-regexp)))
 
-;(add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode)) 
+(defun powershell-indent-line-amount ()
+  "Returns the column to which the current line ought to be indented."
+  (interactive)
+  (beginning-of-line)
+  (let ((closing-paren (looking-at "[\t ]*[])}]")))
+    ;; a very simple indentation method: if on a continuation line (i.e. the
+    ;; previous line ends with a trailing backtick or pipe), we indent relative
+    ;; to the continued line; otherwise, we indent relative to the ([{ that
+    ;; opened the current block.
+    (if (powershell-continuation-line-p)
+	(progn
+	  (while (powershell-continuation-line-p)
+	    (forward-line -1))
+	  (+ (current-indentation) powershell-continuation-indent))
+      (condition-case nil
+	  (progn
+	    (backward-up-list)
+	    ;; indentation relative to the opening paren: if there is text (no
+	    ;; comment) after the opening paren, vertically align the block
+	    ;; with this text; if we were looking at the closing paren, reset
+	    ;; the indentation; otherwise, indent the block by powershell-indent.
+	    (cond ((not (looking-at ".[\t ]*\\(#.*\\)?$"))
+		   (forward-char)
+		   (skip-chars-forward " \t")
+		   (current-column))
+		  (closing-paren
+		   (current-indentation))
+		  (t
+		   (+ (current-indentation) powershell-indent))))
+	(scan-error ;; most likely, we are at the top-level
+	 0)))))
 
+(defun powershell-indent-line ()
+  "Indent the current line of powershell mode, leaving the point
+in place if it is inside the meat of the line"
+  (interactive)
+  (let ((savep (> (current-column) (current-indentation)))
+	(amount (save-excursion (powershell-indent-line-amount))))
+    (if savep
+	(save-excursion (indent-line-to amount))
+      (indent-line-to amount))))
 
-;; Function to control indenting. 
-(defun powershell-indent-line () 
-  "Indent current PowerShell script line" 
-  (interactive) 
+
+;; Taken from <http://www.manning.com/payette/AppCexcerpt.pdf> which seems the
+;; closest to a grammar definition for powershell. It is not complete, and
+;; contains some inaccuracies (e.g. it says that variables match \$[:alnum:]+,
+;; so $_ is not a variable it seems...)
 
-  ;; Set the point to beginning of line. 
-  (beginning-of-line) 
+(defvar powershell-keywords
+  (regexp-opt '("begin" "break" "catch" "continue" "data" "do" "dynamicparam"
+		"else" "elseif" "end" "exit" "filter" "finally" "for" "foreach"
+		"from" "function" "if" "in" "param" "process" "return"
+		"switch" "throw" "trap" "try" "until" "while"))
+  "Powershell keywords")
 
-  (if (bobp) 
-      (indent-line-to 0) 
+(defvar powershell-operators
+  (regexp-opt '("and" "as" "band" "bnot" "bor" "bxor" "casesensitive"
+		"ccontains" "ceq" "cge" "cgt" "cle" "clike" "clt" "cmatch"
+		"cne" "cnotcontains" "cnotlike" "cnotmatch" "contains"
+		"creplace" "eq" "exact" "f" "file" "ge" "gt" "icontains"
+		"ieq" "ige" "igt" "ile" "ilike" "ilt" "imatch" "ine"
+		"inotcontains" "inotlike" "inotmatch" "ireplace" "is"
+		"isnot" "le" "like" "lt" "match" "ne" "not" "notcontains"
+		"notlike" "notmatch" "or" "replace" "wildcard"))
+  "Powershell operators")
 
-    (let ((not-indented t) (lines-back 0) cur-indent) 
+(defvar powershell-scope-names
+  (regexp-opt
+  '("env" "function" "global" "local" "private" "script" "variable"))
+  "Names of scopes in Powershell mode.")
 
-      (if (looking-at "^[ \t]*}") ; Check for closing brace 
-          (progn 
-            (save-excursion 
-              (forward-line -1) 
-              (setq lines-back (+ lines-back 1)) 
-              (if (looking-at "^[ \t]*{") ; If now looking at opening block 
-                (setq cur-indent (current-indentation)) ;; duplicate indent 
-                (setq cur-indent (- (current-indentation) powershell-indent-width))) 
-            ) 
+;; Taken from Get-Variable on a fresh shell, merged with man
+;; about_automatic_variables
+(defvar powershell-builtin-variables
+  (regexp-opt
+   '("^" "_" "$" "?" "Args" "ConfirmPreference" "ConsoleFileName"
+     "DebugPreference" "Error" "ErrorActionPreference" "ErrorView"
+     "ExecutionContext" "foreach" "FormatEnumerationLimit" "HOME" "Host"
+     "Input" "LASTEXITCODE" "MaximumAliasCount" "MaximumDriveCount"
+     "MaximumErrorCount" "MaximumFunctionCount" "MaximumHistoryCount"
+     "MaximumVariableCount" "MyInvocation" "NestedPromptLevel" "OFS"
+     "OutputEncoding" "PID" "PROFILE" "PSHOME" "PWD" "ProgressPreference"
+     "ReportErrorShowExceptionClass" "ReportErrorShowInnerException"
+     "ReportErrorShowSource" "ReportErrorShowStackTrace" "ShellId"
+     "ShouldProcessPreference" "ShouldProcessReturnPreference" "StackTrace"
+     "VerbosePreference" "WarningPreference" "WhatIfPreference" "false"
+     "input" "lastWord" "line" "null" "true" ))
+  "Names of the built-in Powershell variables. They are hilighted
+differently from the other variables.")
 
-  ;; Safety check to make sure we don't indent negative. 
-            (if (< cur-indent 0) 
-                (setq cur-indent 0))) 
+(defvar powershell-font-lock-keywords-1
+  `(;; Type annotations
+    ("\\[\\([[:word:].]+\\(\\[\\]\\)?\\)\\]" 1 font-lock-type-face)
+    ;; syntaxic keywords
+    (,(concat "\\<" powershell-keywords "\\>") . font-lock-keyword-face)
+    ;; operators
+    (,(concat "\\<-" powershell-operators "\\>") . font-lock-builtin-face)
+    ;; the REQUIRES mark
+    ("^#\\(REQUIRES\\)" 1 font-lock-warning-face t))
+  "Keywords for the first level of font-locking in Powershell mode.")
 
-        (save-excursion 
-          (if (looking-at "^[ \t]*{") ; Opening block 
-              (progn 
-                (forward-line -1) 
-                (setq lines-back (+ lines-back 1)) 
-                (setq cur-indent (current-indentation)) 
-                (setq not-indented nil)) 
+(defvar powershell-font-lock-keywords-2
+  (append
+   powershell-font-lock-keywords-1
+   `(;; Built-in variables
+     (,(concat "\\$\\(" powershell-builtin-variables "\\)\\>")
+      1 font-lock-builtin-face t)))
+  "Keywords for the second level of font-locking in Powershell mode.")
 
-            (while not-indented 
-              (forward-line -1) 
-              (setq lines-back (+ lines-back 1)) 
-              (if (looking-at "^[ \t]*}") ; Closing block 
-                  (progn 
-                    (setq cur-indent (current-indentation)) 
-                    (setq not-indented nil)) 
-                
-                (if (looking-at "^[ \t]*{") ; Opening block 
-                    (progn 
-                      (setq cur-indent (+ (current-indentation) powershell-indent-width)) 
-                      (setq not-indented nil)) 
-                      
-                (if (looking-at "^[ \t]*\\(if\\|for\\|foreach\\|function\\|else\\|do\\|while\\)\\>") 
-                    (progn 
-                      (setq cur-indent (current-indentation)) 
-                      (forward-line 1) 
-                      (setq lines-back (- lines-back 1)) 
-                      (if (looking-at "^[ \t]*{") ; Has block 
-                          (setq not-indented nil) 
-                        (if (equal lines-back 0) ; No block 
-                            (progn 
-                              (setq cur-indent (+ cur-indent powershell-indent-width)) 
-                              (setq not-indented nil)) 
-                          (setq not-indented nil))) 
-                      ) 
-                  (if (bobp) 
-                      (setq not-indented nil))))))))) 
+(defvar powershell-font-lock-keywords-3
+  (append
+   powershell-font-lock-keywords-2
+   `(;; Variables in curly brackets
+     ("\\${\\([^}]+\\)}" 1 font-lock-variable-name-face)
+     ;; Variables, with a scope
+     (,(concat "\\$\\(" powershell-scope-names "\\):"
+	       "\\([[:alnum:]_]+\\)")
+      (1 (cons font-lock-type-face '(underline)))
+      (2 font-lock-variable-name-face))
+     ;; Variables, without a scope. XXX: unify this with the
+     ;; previous rule?
+     ("\\$\\([[:alnum:]_]+\\)" 1 font-lock-variable-name-face)
+     ;; hilight properties, but not the methods (personnal preference)
+     ("\\.\\([[:alnum:]_.]+\\)\\>\\s *[^(]" 1 font-lock-variable-name-face)))
+  "Keywords for the maximum level of font-locking in Powershell mode.")
 
-      (if cur-indent 
-          (indent-line-to cur-indent) 
-        (indent-line-to 0))))) 
+
+(defvar powershell-mode-syntax-table (make-syntax-table)
+  "Syntax table for Powershell mode")
 
+(modify-syntax-entry ?# "<" powershell-mode-syntax-table)
+(modify-syntax-entry ?\n ">" powershell-mode-syntax-table)
+;; Powershell uses a backtick as its escape character.
+(modify-syntax-entry ?` "\\" powershell-mode-syntax-table)
+(modify-syntax-entry ?\\ "_" powershell-mode-syntax-table)
+(modify-syntax-entry ?- "w" powershell-mode-syntax-table)
+(modify-syntax-entry ?' "\"" powershell-mode-syntax-table)
 
+
+(defvar powershell-imenu-expression
+  `(("Functions" "function \\(\\w+\\)" 1)
+    ("Top variables" ,(concat "^\\$\\(" powershell-scope-names "\\)?:?"
+			      "\\([[:alnum:]_]+\\)")
+     2))
+  "List of regexps matching important expressions, for speebar & imenu.")
 
-;; only defined one keyword list right now 
-(defconst powershell-font-lock-keywords-3 
-  (list 
-   '("\\<\\(d\\(?:o\\|efault\\)\\|else\\(if\\)?\\|f\\(?:oreach\\|unction\\)\\|if\\|switch\\|t\\(?:hrow\\|rap\\)\\|w\\(?:here\\|hile\\)\\)\\>" . font-lock-keyword-face) 
-   '("$[a-zA-Z0-9_\\.:{}]+\\>" . font-lock-variable-name-face) 
-   '("\\<\\w+-\\w+\\>" . font-lock-function-name-face) 
-   '("\\<-\\w+\\>" . font-lock-builtin-face) 
-   '("@'[A-z0-9\n\t ]+'@" . font-lock-string-face) 
-   '("@\"[A-z0-9\n\t ]+\"@" . font-lock-string-face) 
-   '("\\(-\\)\\([a-z][a-zA-Z0-9]+\\)" . font-lock-type-face)) 
-  "Maximum highlighting for PowerShell major mode") 
+(if (require 'speedbar nil t)
+    (speedbar-add-supported-extension ".ps1?"))
 
-(defvar powershell-font-lock-keywords powershell-font-lock-keywords-3 
-  "Maximum highlighting for PowerShell major mode") 
+(require 'compile nil t)
+;; A better command would be something like "powershell.exe -NoLogo
+;; -NonInteractive -Command & (buffer-file-name)". But it will just
+;; sit there waiting...  The following will only work when .ps1 files
+;; are associated with powershell.exe. And if they don't contain spaces.
+(defvar powershell-compile-command
+  '(buffer-file-name)
+  "Default command used to invoke a powershell script")
 
-;; is adding punctuation to word syntax appropriate?? 
-(defvar powershell-mode-syntax-table 
-  (let ((powershell-mode-syntax-table (make-syntax-table))) 
-   (modify-syntax-entry ?.  "_" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?:  "_" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?\\ "_" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?{ "(}" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?} "){" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?[ "(]" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?] ")[" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?( "()" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?) ")(" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?` "\\" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?_  "w" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?#  "<" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?\n ">" powershell-mode-syntax-table) 
-   (modify-syntax-entry ?' "\"" powershell-mode-syntax-table) 
-    powershell-mode-syntax-table) 
-  "Syntax for PowerShell major mode") 
+;; The column number will be off whenever tabs are used. Since this is
+;; the default in this mode, we will not capture the column number.
+(setq compilation-error-regexp-alist
+      (cons '("At \\(.*\\):\\([0-9]+\\) char:\\([0-9]+\\)" 1 2)
+	    compilation-error-regexp-alist))
 
-;; (defvar powershell-imenu-expressions 
-;;   '((nil "^\\(?:function\\|Add-Class\\)\\s-+\\([-a-z0-9A-Z_^:.]+\\)[^-a-z0-9A-Z_^:.]" 1)) 
-;;   "alist of regexp identifying the start of powershell definitions" 
-;; ) 
-;; (defun powershell-setup-imenu () 
-;;   "Installs powershell-imenu-expression." 
-;;   (require 'imenu t) 
-;;   ;; imenu doc says these 3 are buffer-local by default 
-;;   (setq imenu-generic-expression powershell-imenu-expressions) 
-;;   (imenu-add-menubar-index) 
-;;   (require 'which-func t) 
-;;   (which-function-mode t) 
-;; ) 
+
+;; the hook is automatically run by derived-mode
+(defvar powershell-mode-hook '(imenu-add-menubar-index)
+  "Hook run after the initialization of Powershell mode.")
 
-(defun powershell-mode () 
-  "Major mode for editing PowerShell files" 
-  (interactive) 
-  (kill-all-local-variables) 
-  (setq major-mode 'powershell-mode) 
-  (setq mode-name "PS") 
-  (set-syntax-table powershell-mode-syntax-table) 
-  (use-local-map powershell-mode-map) 
-  (set (make-local-variable 'font-lock-defaults) 
-       '(powershell-font-lock-keywords)) 
+(define-derived-mode powershell-mode fundamental-mode "PS"
+  "A major mode for editing Powershell script files."
+  (set (make-local-variable 'indent-line-function) 'powershell-indent-line)
+  (set (make-local-variable 'font-lock-defaults)
+       '((powershell-font-lock-keywords-1
+	  powershell-font-lock-keywords-2
+	  powershell-font-lock-keywords-3)
+	 nil t))
+  (set (make-local-variable 'comment-start) "# ")
+  (set (make-local-variable 'comment-start-skip) "#+\\s*")
+  ;; not sure why this is not the default
+  (set (make-local-variable 'parse-sexp-ignore-comments) t)
+  (set-syntax-table powershell-mode-syntax-table)
+  (set (make-local-variable 'imenu-generic-expression)
+       powershell-imenu-expression)
+  (set (make-local-variable 'imenu-case-fold-search) nil)
+  (set (make-local-variable 'compile-command) powershell-compile-command))
 
-  (make-local-variable 'compile-command) 
-  (if buffer-file-name 
-      (setq compile-command (format "PowerShell -noprofile -nologo -command %s" 
-                                    (expand-file-name buffer-file-name)))) 
+(provide 'powershell-mode)
 
-   ; Here we register our line indentation function with Emacs. Now Emacs will 
-   ; call our function every time line indentation is required (like when the 
-   ; user calls indent-region). 
-;;  (make-local-variable 'indent-line-function) 
-;;  (setq indent-line-function 'powershell-indent-line) 
-
-   ; Set indentation defaults. 
-  (make-local-variable 'powershell-indent-width) 
-  (set (make-local-variable 'comment-start) "#") 
-;  (powershell-setup-imenu) 
-  (run-hooks 'powershell-mode-hook)) 
-
-(provide 'powershell-mode) 
+;;; powershell-mode.el ends here
