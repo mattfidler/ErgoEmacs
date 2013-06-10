@@ -184,7 +184,8 @@
   "German QWERTZ layout")
 
 ;; From Baptiste Fouques
-(defvar ergoemacs-layout-bépo
+;; changed to bepo because it breaks how I run things (unfortunately)...
+(defvar ergoemacs-layout-bepo
   '("" "$" "\"" "«" "»" "(" ")" "@" "+" "-" "/" "*" "=" "%" ""
     "" ""  "b" "é" "p" "o" "è" "^" "v" "d" "l" "j" "z" "w" ""
     "" ""  "a" "u" "i" "e" "," "c" "t" "s" "r" "n" "m" "ç" ""
