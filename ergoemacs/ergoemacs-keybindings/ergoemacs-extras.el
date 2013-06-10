@@ -2229,9 +2229,11 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
         (when (search-forward ">title<" nil t)
           (if is-prefix
               (replace-match ">Prefixes:<")
-            (replace-match ">Layout: %s; Variant %s<"
-                           (ergoemacs-gen-svg-quote layout)
-                           (ergoemacs-gen-svg-quote (or ergoemacs-variant "Standard"))))))
+            (replace-match (format
+                            ">Layout: %s; Variant %s<"
+                            layout
+                            (ergoemacs-gen-svg-quote
+                             (or ergoemacs-variant "Standard")))))))
       (when ergoemacs-inkscape
         (message "Converting to png")
         (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
@@ -2243,7 +2245,15 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
       (when (and is-prefix ergoemacs-convert ergoemacs-inkscape)
         (message "Concatenating layouts.")
         ;; Concatenate two files
-        ))))
+        (shell-command
+         (format "%s -append \"%s\" \"%s\" \"%s\"" ergoemacs-convert
+                 (replace-regexp-in-string "-prefix.svg" ".png" file)
+                 (replace-regexp-in-string ".svg" ".png" file)
+                 (replace-regexp-in-string ".svg" "-tmp.png" file)))
+        (copy-file
+         (replace-regexp-in-string ".svg" "-tmp.png" file)
+         (replace-regexp-in-string "-prefix.svg" ".png" file) t)
+        (delete-file (replace-regexp-in-string ".svg" "-tmp.png" file))))))
 
 
 (defun ergoemacs-curr-svg ()

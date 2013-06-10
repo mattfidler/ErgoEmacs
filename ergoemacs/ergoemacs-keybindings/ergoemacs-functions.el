@@ -736,25 +736,7 @@ With a prefix, force regeneration. "
         (unless (featurep 'ergoemacs-extras)
           (require 'ergoemacs-extras))
         (ergoemacs-gen-svg layout "kbd-ergo.svg" extra)
-        (message "Generated!")
-        (when ergoemacs-inkscape
-          (unless (and (not arg) (file-exists-p png))
-            (message "Converting to png")
-            (shell-command (format "%s -z -f \"%s\" -e \"%s\""
-                                   ergoemacs-inkscape
-                                   file png))
-            (message "Converted!")
-            (when (file-exists-p file-prefix)
-              (message "Converting Prefix to png")
-              (shell-command (format "%s -z -f \"%s\" -e \"%s\""
-                                     ergoemacs-inkscape
-                                     file-prefix png-prefix))
-              (message "Converted!")
-              (when ergoemacs-convert
-                (message "Attempting to concatenate images")
-                (shell-command (format "%s -append %s %s %s" ergoemacs-convert png png-prefix png-tmp))
-                (message "Concatenated!")))
-            (message "Done!")))))
+        (message "Generated!")))
     
     (when (file-exists-p png)
       (setq file png))
