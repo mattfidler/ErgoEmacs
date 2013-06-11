@@ -2222,8 +2222,16 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
                  (replace-match (format ">%s<" (ergoemacs-gen-svg-quote final-txt)) t t))))
            ergoemacs-svn-prefixes)
           (setq i (+ i 1)))
-        (while (re-search-forward ">\\([0-4]?[CMA][0-9]+\\|[0-4][CMA]\\{2\\}.*\\|nil\\)<" nil t)
-          (replace-match "><")))
+        (goto-char (point-min))
+        (while (re-search-forward ">\\([0-4]?[CMA][0-9]+\\|[0-4][CMA]\\{2\\}.*?\\|nil\\)<" nil t)
+          (replace-match "><"))
+        (goto-char (point-min))
+        (when (search-forward ">title<" nil t)
+          (if is-prefix
+              (replace-match ">Prefixes:<")
+            (replace-match ">Layout: %s; Variant %s<"
+                           (ergoemacs-gen-svg-quote layout)
+                           (ergoemacs-gen-svg-quote (or ergoemacs-variant "Standard"))))))
       (when ergoemacs-inkscape
         (message "Converting to png")
         (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
@@ -2231,9 +2239,11 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
       (message "Layout generated to %s" file)
       (when prefix-lst
         (let ((ergoemacs-svn-prefixes prefix-lst))
-          (message "%s" ergoemacs-svn-prefixes)
-          (ergoemacs-gen-svg layout file-name extra t)
-          )))))
+          (ergoemacs-gen-svg layout file-name extra t)))
+      (when (and is-prefix ergoemacs-convert ergoemacs-inkscape)
+        (message "Concatenating layouts.")
+        ;; Concatenate two files
+        ))))
 
 
 (defun ergoemacs-curr-svg ()

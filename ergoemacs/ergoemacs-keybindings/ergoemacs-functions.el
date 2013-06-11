@@ -690,6 +690,11 @@ Else it is a user buffer."
   :type 'string
   :group 'ergoemacs-mode)
 
+(defcustom ergoemacs-convert (executable-find "convert")
+  "Location of Imagemagick's convert facility (used to concatenate png files)."
+  :type 'string
+  :group 'ergoemacs-mode)
+
 (defun ergoemacs-display-current-svg (&optional arg)
   "Generates the current ergoemacs layout, unless it already exists and opens it in a browser.
 With a prefix, force regeneration. "
@@ -699,36 +704,68 @@ With a prefix, force regeneration. "
         (extra "ergo-layouts")
         (dir "")
         (png "")
+        (png-tmp)
+        (png-prefix "")
+        (file-prefix "")
         (file ""))
     (when var
       (setq extra (concat var "/ergo-layouts")))
     (setq dir (expand-file-name extra
                                 (expand-file-name "ergoemacs-extras" user-emacs-directory)))
     (setq file (expand-file-name (concat "ergoemacs-layout-" layout ".svg") dir))
+    (setq file-prefix (expand-file-name (concat "ergoemacs-layout-" layout "-prefix.svg") dir))
+    
     (setq png (expand-file-name (concat "ergoemacs-layout-" layout ".png") dir))
+    (setq png-tmp (expand-file-name (concat "ergoemacs-layout-" layout "-tmp.png") dir))
+    (setq png-prefix (expand-file-name (concat "ergoemacs-layout-" layout "-prefix.png") dir))
     
     (unless (and (not arg) (file-exists-p file))
-      (message "Generating SVG file...")
-      (unless (featurep 'ergoemacs-extras)
-        (require 'ergoemacs-extras))
-      (ergoemacs-gen-svg layout "kbd-ergo.svg" extra)
-      (message "Generated!"))
-    
-    (when ergoemacs-inkscape
-      (unless (and (not arg) (file-exists-p png))
-        (message "Converting to png")
-        (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
-                               file png))
-        (message "Done!")))
+      (if (called-interactively-p 'any)
+          (let ((temp-file (make-temp-file "ergoemacs-gen" nil ".el")))
+            (with-temp-file temp-file
+              (insert (format "(setq ergoemacs-variant %s)\n(setq ergoemacs-keyboard-layout \"%s\")\n(ergoemacs-mode 1)\n(ergoemacs-display-current-svg 1)"
+                              (if var
+                                  (concat "\"" var "\"")
+                                "nil")
+                              layout)))
+            
+            (shell-command (format "%s -Q --batch -l %s/ergoemacs-mode -l %s &"
+                                   (ergoemacs-emacs-exe)
+                                   ergoemacs-dir temp-file)))
+        (message "Generating SVG file...")
+        (unless (featurep 'ergoemacs-extras)
+          (require 'ergoemacs-extras))
+        (ergoemacs-gen-svg layout "kbd-ergo.svg" extra)
+        (message "Generated!")
+        (when ergoemacs-inkscape
+          (unless (and (not arg) (file-exists-p png))
+            (message "Converting to png")
+            (shell-command (format "%s -z -f \"%s\" -e \"%s\""
+                                   ergoemacs-inkscape
+                                   file png))
+            (message "Converted!")
+            (when (file-exists-p file-prefix)
+              (message "Converting Prefix to png")
+              (shell-command (format "%s -z -f \"%s\" -e \"%s\""
+                                     ergoemacs-inkscape
+                                     file-prefix png-prefix))
+              (message "Converted!")
+              (when ergoemacs-convert
+                (message "Attempting to concatenate images")
+                (shell-command (format "%s -append %s %s %s" ergoemacs-convert png png-prefix png-tmp))
+                (message "Concatenated!")))
+            (message "Done!")))))
     
     (when (file-exists-p png)
       (setq file png))
-    
-    (when (called-interactively-p 'interactive)
-      (condition-case err
-          (browse-url-of-file file)
-        (error
-         (ergoemacs-open-in-external-app file))))
+      
+    (if (not(file-exists-p file))
+        (message "Need to generate/download layout.")
+      (when (called-interactively-p 'interactive)
+        (condition-case err
+            (browse-url-of-file file)
+          (error
+           (ergoemacs-open-in-external-app file)))))
     (symbol-value 'file)))
 
 (provide 'ergoemacs-functions)
