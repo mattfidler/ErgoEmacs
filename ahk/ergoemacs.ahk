@@ -23,6 +23,8 @@
 ;; hotkey layout taken from http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Changelog:
+;; Version 0.9:
+;; - Added beginning and end of buffer commands.
 ;; Version 0.8:
 ;; - Added BigCtl, key translation and SetMark
 ;; Version 0.7:
@@ -463,6 +465,14 @@ move-beginning-of-line:
 
 move-end-of-line:
  SendKey("{End}",1)
+ return
+
+beginning-of-buffer:
+ SendKey("{Ctrl down}{Home}{Ctrl up}",1)
+ return
+
+end-of-buffer:
+ SendKey("{Ctrl down}{End}{Ctrl up}",1)
  return
 
 

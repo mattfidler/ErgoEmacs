@@ -189,6 +189,8 @@ This converts the QWERTY M-m keybinding and the fixed keybinding s to
 save buffer
 
 *** Creating a keyboard variant
+* Ergoemacs interaction with specific modes
+** 
 * Ergoemacs Keys System wide
 ** Bash
 ** Windows
