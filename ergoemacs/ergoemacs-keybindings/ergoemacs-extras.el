@@ -2223,7 +2223,7 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
            ergoemacs-svn-prefixes)
           (setq i (+ i 1)))
         (goto-char (point-min))
-        (while (re-search-forward ">\\([0-4]?[CMA][0-9]+\\|[0-4][CMA]\\{2\\}.*?\\|nil\\)<" nil t)
+        (while (re-search-forward ">\\([0-4]?[CMA][0-9]+\\|[0-4]?[CMA]\\{2\\}.*?\\|nil\\)<" nil t)
           (replace-match "><"))
         (goto-char (point-min))
         (when (search-forward ">title<" nil t)
@@ -2232,8 +2232,7 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
             (replace-match (format
                             ">Layout: %s; Variant %s<"
                             layout
-                            (ergoemacs-gen-svg-quote
-                             (or ergoemacs-variant "Standard")))))))
+                            (or ergoemacs-variant "Standard"))))))
       (when ergoemacs-inkscape
         (message "Converting to png")
         (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
