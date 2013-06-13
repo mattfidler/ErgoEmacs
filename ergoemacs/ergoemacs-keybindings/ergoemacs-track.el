@@ -170,12 +170,67 @@
 
 (ergoemacs-calculate-keyboard-coordinates)
 
-(defun ergoemacs-calculate-distance (first second layout)
-  "Calculates the distance traveled for a touch-type keystroke.
-FIRST is the first letter typed.
-SECOND is the second letter typed.
-LAYOUT is the ergoemacs-layout that this is calculated for."
-  )
+(defun ergoemacs-key-properties (key layout &optional curr-i)
+  "Key the KEY properties based on ergoemacs LAYOUT"
+  (let ((i 0)
+        (lay (intern-soft (format "ergoemacs-layout-%s" layout)))
+        ret)
+    (when lay
+      (if curr-i
+          (setq wi curr-i)
+        (mapc
+         (lambda(x)
+           (when (string= key x)
+             (setq wi i))
+           (setq i (+ i 1)))
+         (symbol-value lay)))
+     (setq i wi) 
+     (setq ret `(:x ,(nth i ergoemacs-keyboard-coordinates-x)
+           :y ,(nth i ergoemacs-keyboard-coordinates-y)
+           :hand ,(if (= 0 (nth i ergoemacs-track-hand))
+                      'left
+                    'right)
+           :finger ,(cond
+                     ((or (= 0 (nth i ergoemacs-track-finger))
+                          (= 8 (nth i ergoemacs-track-finger)))
+                      'pinky)
+                     ((or (= 1 (nth i ergoemacs-track-finger))
+                          (= 7 (nth i ergoemacs-track-finger)))
+                      'ring)
+                     ((or (= 2 (nth i ergoemacs-track-finger))
+                          (= 6 (nth i ergoemacs-track-finger)))
+                      'middle)
+                     (t
+                      'pointer))
+           :finger-n ,(nth i ergoemacs-track-finger)
+           :row-n ,(nth i ergoemacs-track-row)
+           :row ,(cond
+                  ((= 1 (nth i ergoemacs-track-row))
+                   'number)
+                  ((= 2 (nth i ergoemacs-track-row))
+                   'top)
+                  ((= 3 (nth i  ergoemacs-track-row))
+                   'home)
+                  ((= 4 (nth i ergoemacs-track-row))
+                      'bottom))))
+     (symbol-value 'ret))))
+
+(defvar ergoemacs-key-hash nil
+  "Key hash")
+
+(setq ergoemacs-key-hash (make-hash-table))
+
+(mapc
+ (lambda(layout)
+   (let ((lay (intern-soft (format "ergoemacs-layout-%s" layout))))
+     (when lay
+       (mapc
+        (lambda(key)
+          (unless (string= key "")
+            (puthash (cons layout key) (ergoemacs-key-properties key layout)
+                     ergoemacs-key-hash)))
+        (symbol-value lay)))))
+ (ergoemacs-get-layouts t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-track.el ends here
