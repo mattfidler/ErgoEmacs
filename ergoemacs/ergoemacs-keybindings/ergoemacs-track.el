@@ -58,8 +58,7 @@
       0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
       0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
       0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
-      0 0 0 0 0 0 0 1 1 1 1 1 1 1 1
-      )
+      0 0 0 0 0 0 0 1 1 1 1 1 1 1 1)
   "Based on ergoemcs-layouts, which hand is typing?
 0 represents left, 1 represents right.")
 
@@ -100,23 +99,83 @@
 ")
 
 ;; These are taken from http://www.colemak.com/wiki/index.php?title=Compare
-(defvar ergoemacs-key-width 18
+(defvar ergoemacs-key-width 18.0
   "Assumption of key width (in px)")
 
-(defvar ergoemacs-key-height 22
+(defvar ergoemacs-key-height 22.0
   "Assumption of key height (in px)")
 
-(defvar ergoemacs-tab-key-width 28
+(defvar ergoemacs-tab-key-width 28.0
   "Assumption of key width (in px)")
 
-(defvar ergoemacs-lock-key-width 34
+(defvar ergoemacs-lock-key-width 34.0
   "Assumption of lock key width (in px)")
 
-(defvar ergoemacs-shift-key-width 26
+(defvar ergoemacs-shift-key-width 26.0
   "Assumption of shift key width (in px)")
 
-(defvar ergoemacs-return-key-width 36
+(defvar ergoemacs-return-key-width 36.0
   "Assumption of return key width (in px)")
+
+(defvar ergoemacs-tab-key-width 28.0
+  "Assumption of tab key width (in px)")
+
+(defvar ergoemacs-key-width-m 0.010
+  "Default key width (in m)")
+
+(defvar ergoemacs-keyboard-coordinates-x nil
+  "Keyboard x-coordinates (in m)")
+
+(defvar ergoemacs-keyboard-coordinates-y nil
+  "Keyboard y-coordinates (in m)")
+
+(defun ergoemacs-calculate-keyboard-coordinates ()
+  "Calculates `ergoemacs-keyboard-coordinates-x' and
+`ergoemacs-keyboard-coordintes-y'"
+  (setq ergoemacs-keyboard-coordinates-x
+        (let ((i 0)
+              (last 0)
+              curr)
+          (mapcar
+           (lambda(x)
+             (setq i (+ i 1))
+             (setq curr (+ last (/ ergoemacs-tab-key-width 2)))
+             (cond
+              ((or (= 17 i) (= 58 i))
+               (setq last ergoemacs-tab-key-width))
+              ((or (= 34 i) (= 75 i))
+               (setq last ergoemacs-lock-key-width))
+              ((or (= 41 i) (= 92 i))
+               (setq last ergoemacs-shift-key-width))
+              (t
+               (setq last (+ last ergoemacs-key-width))))
+             (* (/ ergoemacs-key-width-m ergoemacs-key-width) curr))
+           ergoemacs-track-finger)))
+  
+  (setq ergoemacs-keyboard-coordinates-y
+        (let ((i 0)
+              (last 0)
+              curr)
+          (mapcar
+           (lambda(x)
+             (setq i (+ i 1))
+             (setq curr (+ last (/ ergoemacs-tab-key-width 2)))
+             (cond
+              ((= 58 i)
+               (setq last 0))
+              ((or (= 17 i) (= 34 i) (= 75 i)(= 41 i) (= 92 i))
+               (setq last (+ last ergoemacs-tab-key-width))))
+             (* (/ ergoemacs-key-width-m ergoemacs-key-width) curr))
+           ergoemacs-track-finger))))
+
+(ergoemacs-calculate-keyboard-coordinates)
+
+(defun ergoemacs-calculate-distance (first second layout)
+  "Calculates the distance traveled for a touch-type keystroke.
+FIRST is the first letter typed.
+SECOND is the second letter typed.
+LAYOUT is the ergoemacs-layout that this is calculated for."
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-track.el ends here
