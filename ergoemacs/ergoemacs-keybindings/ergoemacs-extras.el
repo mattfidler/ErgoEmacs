@@ -86,7 +86,7 @@
         (end-of-line)
         (insert "---cua"))
       (goto-char (point-min))
-      (while (re-search-forward "<apps>" nil t)
+      (while (re-search-forward "\\(<apps>\\|<menu>\\)" nil t)
         (end-of-line)
         (insert "---apps"))
       (goto-char (point-min))
@@ -1882,7 +1882,7 @@ Currently only supports two modifier plus key."
            (setq lay-ini (format "%s\n[%s]" lay-ini lay))
            (mapc
             (lambda(x)
-              (unless (string-match "<apps>" x) ;; Currently take out
+              (unless (string-match "\\(<apps>\\|<menu>\\)" x) ;; Currently take out
                 ;; <apps> mapping.  Needs some work.
                 (let ((key (format "%s" (string-to-char x))))
                   (add-to-list 'trans-keys `(,x ,key))
@@ -1942,7 +1942,7 @@ Currently only supports two modifier plus key."
               (lambda(y)
                 (message "Generating AHK ini for %s Standard" x)
                 (when (string-match re (format "%s"(nth 1 y)))
-                  (unless (string-match "<apps>"
+                  (unless (string-match "\\(<apps>\\|<menu>\\)"
                                         (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y)) t))
                     (insert (symbol-name (nth 1 y)))
                     (insert "=")
@@ -1961,7 +1961,7 @@ Currently only supports two modifier plus key."
                 (mapc
                  (lambda(y)
                    (when (string-match re (format "%s" (nth 1 y)))
-                     (unless (string-match "<apps>" (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
+                     (unless (string-match "\\(<apps>\\|<menu>\\)" (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
                        (insert (symbol-name (nth 1 y)))
                        (insert "=")
                        (insert (ergoemacs-trans-ahk (ergoemacs-kbd (nth 0 y) t (nth 3 y))))
