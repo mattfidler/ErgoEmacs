@@ -29,8 +29,8 @@
      id="namedview4026"
      showgrid="false"
      inkscape:zoom="1.1150881"
-     inkscape:cx="532.24493"
-     inkscape:cy="227.67131"
+     inkscape:cx="524.17382"
+     inkscape:cy="235.74242"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -1835,7 +1835,7 @@
                                  y="377.24017"
                                  x="174.56441"
                                  id="tspan3507-0-9-3-0-4-4"
-                                 sodipodi:role="line">prefix</tspan></text>
+                                 sodipodi:role="line">♦</tspan></text>
                             <text
                                sodipodi:linespacing="125%"
                                id="text3505-2-2-5-1-9"
@@ -2473,7 +2473,7 @@
                              y="290.73151"
                              x="441.73483"
                              id="tspan3507-4-3-0-0-8-6"
-                             sodipodi:role="line">prefix</tspan></text>
+                             sodipodi:role="line">♦</tspan></text>
                         <text
                            sodipodi:linespacing="125%"
                            id="text3505-0-5-2-6-7-8"
@@ -3493,7 +3493,7 @@
                sodipodi:role="line"
                id="tspan3507-4-1-3-5-4-3-0"
                x="823.36938"
-               y="266.73151">cmt dwim</tspan></text>
+               y="266.73151"></tspan></text>
           <text
              xml:space="preserve"
              style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000080;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
@@ -3843,125 +3843,121 @@
          id="tspan3507-4-1-3-5-4-3-8-4-7-7-9"
          sodipodi:role="line"></tspan></text>
   </g>
-  <g
-     id="g11981"
-     transform="translate(42.229776,-6.59375)">
-    <path
-       d="m 229.48236,393.68338 457.60579,0 0,67.65439 -457.60579,0 0,-67.65439 z"
-       id="rect2362"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.1972003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0"
-       inkscape:connector-curvature="0" />
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-9-9-7-6-0"
-       y="418.79095"
-       x="703.79199"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000080;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="418.79095"
-         x="703.79199"
-         id="tspan3507-09-3-5-3-5"
-         sodipodi:role="line">Alt+</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-9-9-7-6-0-4"
-       y="404.63571"
-       x="703.79199"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#db3027;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="404.63571"
-         x="703.79199"
-         id="tspan3507-09-3-5-3-5-6"
-         sodipodi:role="line">Alt+⇧Shift+</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-9-9-7-6-0-6"
-       y="444.93149"
-       x="703.79199"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#006400;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="444.93149"
-         x="703.79199"
-         id="tspan3507-09-3-5-3-5-7"
-         sodipodi:role="line">Ctrl+</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-9-9-7-6-0-4-0"
-       y="430.77625"
-       x="703.79199"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff00ff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="430.77625"
-         x="703.79199"
-         id="tspan3507-09-3-5-3-5-6-8"
-         sodipodi:role="line">Ctrl+⇧Shift+</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-0-8-0-1-8-7"
-       y="418.98337"
-       x="235.79182"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000080;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="418.98337"
-         x="235.79182"
-         id="tspan3507-4-2-8-9-6-74"
-         sodipodi:role="line">Set Mark</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-0-8-0-1-15"
-       y="404.31671"
-       x="235.79182"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#db3027;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="404.31671"
-         x="235.79182"
-         id="tspan3507-4-2-8-9-8"
-         sodipodi:role="line">Mark Paragraph</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-0-8-0-1-1-2"
-       y="431.65005"
-       x="235.79182"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff00ff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="431.65005"
-         x="235.79182"
-         id="tspan3507-4-2-8-9-7-6"
-         sodipodi:role="line">CS-SPC</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-0-8-0-1-8-8-1"
-       y="444.31671"
-       x="235.79182"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#006400;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="444.31671"
-         x="235.79182"
-         id="tspan3507-4-2-8-9-6-7-0"
-         sodipodi:role="line">CC-SPC</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-0-8-0-1-8-8-1-0"
-       y="456.31671"
-       x="235.79182"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="456.31671"
-         x="235.79182"
-         id="tspan3507-4-2-8-9-6-7-0-0"
-         sodipodi:role="line">AA-SPC</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
-       id="text3505-9-9-7-6-0-6-6"
-       y="456.93149"
-       x="703.79199"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
-       xml:space="preserve"><tspan
-         y="456.93149"
-         x="703.79199"
-         id="tspan3507-09-3-5-3-5-7-1"
-         sodipodi:role="line">▤ Menu/Apps </tspan></text>
-  </g>
+  <path
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.1972003;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0"
+     id="rect2362"
+     d="m 271.71214,387.08963 457.60579,0 0,67.65439 -457.60579,0 0,-67.65439 z" />
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000080;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="746.02179"
+     y="412.1972"
+     id="text3505-9-9-7-6-0"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-09-3-5-3-5"
+       x="746.02179"
+       y="412.1972">Alt+</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#db3027;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="746.02179"
+     y="398.04196"
+     id="text3505-9-9-7-6-0-4"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-09-3-5-3-5-6"
+       x="746.02179"
+       y="398.04196">Alt+⇧Shift+</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#006400;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="746.02179"
+     y="438.33774"
+     id="text3505-9-9-7-6-0-6"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-09-3-5-3-5-7"
+       x="746.02179"
+       y="438.33774">Ctrl+</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff00ff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="746.02179"
+     y="424.1825"
+     id="text3505-9-9-7-6-0-4-0"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-09-3-5-3-5-6-8"
+       x="746.02179"
+       y="424.1825">Ctrl+⇧Shift+</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000080;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="278.02161"
+     y="412.38962"
+     id="text3505-0-8-0-1-8-7"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-4-2-8-9-6-74"
+       x="278.02161"
+       y="412.38962">Set Mark</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#db3027;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="278.02161"
+     y="397.72296"
+     id="text3505-0-8-0-1-15"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-4-2-8-9-8"
+       x="278.02161"
+       y="397.72296"></tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ff00ff;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="278.02161"
+     y="425.0563"
+     id="text3505-0-8-0-1-1-2"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-4-2-8-9-7-6"
+       x="278.02161"
+       y="425.0563">CS-SPC</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#006400;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="278.02161"
+     y="437.72296"
+     id="text3505-0-8-0-1-8-8-1"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-4-2-8-9-6-7-0"
+       x="278.02161"
+       y="437.72296"></tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="278.02161"
+     y="449.72296"
+     id="text3505-0-8-0-1-8-8-1-0"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-4-2-8-9-6-7-0-0"
+       x="278.02161"
+       y="449.72296"></tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="746.02179"
+     y="450.33774"
+     id="text3505-9-9-7-6-0-6-6"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-09-3-5-3-5-7-1"
+       x="746.02179"
+       y="450.33774">▤ Menu/Apps </tspan></text>
   <text
      xml:space="preserve"
      style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -3974,4 +3970,26 @@
        x="518.89288"
        y="24.3125"
        style="font-size:32px;font-weight:bold;-inkscape-font-specification:Arial Bold">Layout: ge; Variant lvl3</tspan></text>
-</svg>
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Helvetica"
+     x="32.905972"
+     y="400.52264"
+     id="text3505-9-9-7-6-0-4-5"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3507-09-3-5-3-5-6-82"
+       x="32.905972"
+       y="400.52264"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#000000;font-family:Sans;-inkscape-font-specification:Helvetica Bold">♦ = Emacs Command Sequence </tspan></text>
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot3801"
+     style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:12px;line-height:125%;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:Helvetica;font-stretch:normal;font-variant:normal"><flowRegion
+       id="flowRegion3803"><rect
+         id="rect3805"
+         width="6.2775307"
+         height="16.142221"
+         x="129.13777"
+         y="397.05127" /></flowRegion><flowPara
+       id="flowPara3807" /></flowRoot></svg>
