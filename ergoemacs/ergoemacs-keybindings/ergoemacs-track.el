@@ -79,23 +79,23 @@
 4 = 4th row")
 
 (defvar ergoemacs-track-finger
-  '(0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8
-     0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8
-     0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8
-     0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8
-     0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8
-     0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8
-     0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8
-     0 0 0 1 2 3 4 4 5 5 6 7 8 8 8 8 8)
+  ' (0 0 0 1 2 3 3 4 4 5 6 7 7 7 7
+     0 0 0 1 2 3 3 4 4 5 6 7 7 7 7
+     0 0 0 1 2 3 3 4 4 5 6 7 7 7 7
+     0 0 0 1 2 3 3 4 4 5 6 7 7 7 7
+     0 0 0 1 2 3 3 4 4 5 6 7 7 7 7
+     0 0 0 1 2 3 3 4 4 5 6 7 7 7 7
+     0 0 0 1 2 3 3 4 4 5 6 7 7 7 7
+     0 0 0 1 2 3 3 4 4 5 6 7 7 7 7)
   "Track the finger based on the ergoemacs-layout.
 0 = left pinky,
 1 = left ring
-3 = left middle
-4 = left pointer
-5 = right pointer
-6 = right middle
-7 = right ring
-8 = right pinky
+2 = left middle
+3 = left pointer
+4 = right pointer
+5 = right middle
+6 = right ring
+7 = right pinky
 ")
 
 ;; These are taken from http://www.colemak.com/wiki/index.php?title=Compare
@@ -184,41 +184,58 @@
              (setq wi i))
            (setq i (+ i 1)))
          (symbol-value lay)))
-     (setq i wi) 
-     (setq ret `(:x ,(nth i ergoemacs-keyboard-coordinates-x)
-           :y ,(nth i ergoemacs-keyboard-coordinates-y)
-           :hand ,(if (= 0 (nth i ergoemacs-track-hand))
-                      'left
-                    'right)
-           :finger ,(cond
-                     ((or (= 0 (nth i ergoemacs-track-finger))
-                          (= 8 (nth i ergoemacs-track-finger)))
-                      'pinky)
-                     ((or (= 1 (nth i ergoemacs-track-finger))
-                          (= 7 (nth i ergoemacs-track-finger)))
-                      'ring)
-                     ((or (= 2 (nth i ergoemacs-track-finger))
-                          (= 6 (nth i ergoemacs-track-finger)))
-                      'middle)
-                     (t
-                      'pointer))
-           :finger-n ,(nth i ergoemacs-track-finger)
-           :row-n ,(nth i ergoemacs-track-row)
-           :row ,(cond
-                  ((= 1 (nth i ergoemacs-track-row))
-                   'number)
-                  ((= 2 (nth i ergoemacs-track-row))
-                   'top)
-                  ((= 3 (nth i  ergoemacs-track-row))
-                   'home)
-                  ((= 4 (nth i ergoemacs-track-row))
-                      'bottom))))
+      (setq i wi)
+     (setq ret
+           `(:x ,(nth i ergoemacs-keyboard-coordinates-x)
+
+                :y ,(nth i ergoemacs-keyboard-coordinates-y)
+
+                :x-home ,(nth (if (<= (nth i ergoemacs-track-finger) 3)
+                                  (+ 32 (nth i ergoemacs-track-finger))
+                                (+ 38 (- (nth i ergoemacs-track-finger) 4)))
+                              ergoemacs-keyboard-coordinates-x)
+
+                :y-home ,(nth (if (<= (nth i ergoemacs-track-finger) 3)
+                                  (+ 32 (nth i ergoemacs-track-finger))
+                                (+ 38 (- (nth i ergoemacs-track-finger) 4)))
+                              ergoemacs-keyboard-coordinates-y)
+                
+                :hand ,(if (= 0 (nth i ergoemacs-track-hand))
+                           'left
+                         'right)
+
+                :finger ,(cond
+                          ((or (= 0 (nth i ergoemacs-track-finger))
+                               (= 7 (nth i ergoemacs-track-finger)))
+                           'pinky)
+                          ((or (= 1 (nth i ergoemacs-track-finger))
+                               (= 6 (nth i ergoemacs-track-finger)))
+                           'ring)
+                          ((or (= 2 (nth i ergoemacs-track-finger))
+                               (= 5 (nth i ergoemacs-track-finger)))
+                           'middle)
+                          (t
+                           'pointer))
+
+                :finger-n ,(nth i ergoemacs-track-finger)
+
+                :row-n ,(nth i ergoemacs-track-row)
+
+                :row ,(cond
+                       ((= 1 (nth i ergoemacs-track-row))
+                        'number)
+                       ((= 2 (nth i ergoemacs-track-row))
+                        'top)
+                       ((= 3 (nth i  ergoemacs-track-row))
+                        'home)
+                       ((= 4 (nth i ergoemacs-track-row))
+                        'bottom))))
      (symbol-value 'ret))))
 
 (defvar ergoemacs-key-hash nil
   "Key hash")
 
-(setq ergoemacs-key-hash (make-hash-table))
+(setq ergoemacs-key-hash (make-hash-table :test 'equal))
 
 (mapc
  (lambda(layout)
@@ -231,6 +248,24 @@
                      ergoemacs-key-hash)))
         (symbol-value lay)))))
  (ergoemacs-get-layouts t))
+
+(defun ergoemacs-key-distance (key1 key2 layout)
+  "Gets the key distance based on the layout."
+  (let ((kp1 (gethash (cons layout key1) ergoemacs-key-hash))
+        (kp2 (gethash (cons layout key2) ergoemacs-key-hash))
+        dx dy d dh
+        (ret 0))
+    (message "%s; %s" kp1 kp2)
+    (cond
+     ((eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n))
+      (setq dx (- (plist-get kp1 :x) (plist-get kp2 :x)))
+      (setq dy (- (plist-get kp1 :y) (plist-get kp2 :y)))
+      (setq d (sqrt (+ (* dx dx) (* dy dy))))
+      (setq dx (- (plist-get kp1 :x-home) (plist-get kp2 :x)))
+      (setq dy (- (plist-get kp1 :y-home) (plist-get kp2 :y)))
+      (setq dh (sqrt (+(* dx dx) (* dy dy))))
+      (message "%s %s" d dh)))
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-track.el ends here
