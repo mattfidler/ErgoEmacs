@@ -540,6 +540,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
     (if (not key)
         nil
       (let ((new-key key))
+        (cond
+         ((eq system-type 'windows-nt)
+          (setq new-key (replace-regexp-in-string "<menu>" "<apps>" new-key)))
+         (t
+          (setq new-key (replace-regexp-in-string "<apps>" "<menu>" new-key))))
         (when ergoemacs-needs-translation
           (setq new-key
                 (with-temp-buffer
@@ -1069,21 +1074,19 @@ C-k S-a     -> k S-a           not defined
   "Creates a keymap for the current major mode that extract the unchorded 【Ctl+c】 combinations."
   (interactive "P")
   (setq prefix-arg current-prefix-arg)
-  (eval
-   `(let ((ctl-c-unchorded (make-keymap)))
-      (message "Unchorded C-c-")
-      (ergoemacs-extract-map ctl-c-unchorded "C-c")
-      (set-temporary-overlay-map ctl-c-unchorded))))
+  (let ((ctl-c-unchorded (make-keymap)))
+    (message "Unchorded C-c-")
+    (ergoemacs-extract-map ctl-c-unchorded "C-c")
+    (set-temporary-overlay-map ctl-c-unchorded)))
 
 (defun ergoemacs-ctl-c (&optional arg)
   "Creates a keymap for the current major mode that extract the 【Ctl+c】 combinations."
   (interactive "P")
   (setq prefix-arg current-prefix-arg)
-  (eval
-   `(let ((ctl-c (make-keymap)))
-      (message "C-c-")
-      (ergoemacs-extract-map ctl-c "C-c" "C-" "M-" "")
-      (set-temporary-overlay-map ctl-c))))
+  (let ((ctl-c (make-keymap)))
+    (message "C-c-")
+    (ergoemacs-extract-map ctl-c "C-c" "C-" "M-" "")
+    (set-temporary-overlay-map ctl-c)))
 
 (defun ergoemacs-ctl-c-ctl-c (&optional arg)
   "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."

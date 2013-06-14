@@ -171,7 +171,7 @@
   "French AZERTY layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
 ;; From Thomas Rikl
-(defvar ergoemacs-layout-ge
+(defvar ergoemacs-layout-de
   '("" "" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "ß" "" ""
     "" ""  "q" "w" "e" "r" "t" "z" "u" "i" "o" "p" "ü" "+" ""
     "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ö" "ä" "#" ""
@@ -183,8 +183,11 @@
     "" ""  "Y" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
   "German QWERTZ layout")
 
+(defvaralias 'ergoemacs-layout-ge 'ergoemacs-layout-de)
+
 ;; From Baptiste Fouques
-(defvar ergoemacs-layout-bépo
+;; changed to bepo because it breaks how I run things (unfortunately)...
+(defvar ergoemacs-layout-bepo
   '("" "$" "\"" "«" "»" "(" ")" "@" "+" "-" "/" "*" "=" "%" ""
     "" ""  "b" "é" "p" "o" "è" "^" "v" "d" "l" "j" "z" "w" ""
     "" ""  "a" "u" "i" "e" "," "c" "t" "s" "r" "n" "m" "ç" ""
@@ -195,6 +198,8 @@
     "" ""  "A" "U" "I" "E" ";" "C" "T" "S" "R" "N" "M" "Ç" ""
     "" "Ê" "À" "Y" "X" ":" "K" "?" "Q" "G" "H" "F" "" "" "")
   "French BÉPO layout. URL `http://bepo.fr/'")
+
+(defvaralias 'ergoemacs-layout-bépo 'ergoemacs-layout-bepo)
 
 (defvar ergoemacs-layout-fa
   '("" "‍" "۱" "۲" "۳" "۴" "۵" "۶" "۷" "۸" "۹" "۰" "-" "=" ""
@@ -217,7 +222,7 @@
   `(choice ,@(mapcar
               (lambda(elt)
                 `(const :tag ,elt :value ,elt))
-              (sort (ergoemacs-get-layouts) 'string<))))
+              (sort (ergoemacs-get-layouts t) 'string<))))
 
 (defun ergoemacs-set-layout (layout)
   "Set the ergoemacs layout."
@@ -245,7 +250,7 @@
 
 (defun ergoemacs-get-layouts-doc ()
   "Gets the list of all known layouts and the documentation associated with the layouts."
-  (let ((lays (sort (ergoemacs-get-layouts) 'string<)))
+  (let ((lays (sort (ergoemacs-get-layouts t) 'string<)))
     (mapconcat
      (lambda(lay)
        (let* ((variable (intern (concat "ergoemacs-layout-" lay)))
@@ -261,14 +266,20 @@
          (concat "\"" lay "\" (" doc ")" (if is-alias ", alias" ""))))
      lays "\n")))
 
-(defun ergoemacs-get-layouts (&optional ob)
+(defun ergoemacs-get-layouts (&optional aliases ob)
   "Gets the list of all known layouts"
   (let (ret)
-    (mapatoms (lambda(s)
-                (let ((sn (symbol-name s)))
-                  (and (string-match "^ergoemacs-layout-" sn)
-                       (setq ret (cons (replace-regexp-in-string "ergoemacs-layout-" "" sn) ret)))))
-              ob)
+    (mapatoms
+     (lambda(s)
+       (let ((sn (symbol-name s)))
+         (and (string-match "^ergoemacs-layout-" sn)
+              (if (or aliases
+                      (and (not aliases)
+                           (documentation-property
+                            (intern sn) 'variable-documentation)))
+                  (setq ret (cons (replace-regexp-in-string "ergoemacs-layout-" "" sn) ret)))
+              )))
+     ob)
     ret))
 
 (provide 'ergoemacs-layouts)
