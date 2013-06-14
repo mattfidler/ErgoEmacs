@@ -101,6 +101,23 @@
    )
   )
 
+;; a user interface library used by auto-complete
+(add-to-list 'load-path
+ (concat (file-name-directory (or load-file-name buffer-file-name)) 
+         "../packages/popup/" ) )
+
+;; auto-complete 1.4.0 (a enhanced word completion for computer languages)
+(add-to-list 'load-path
+ (concat (file-name-directory (or load-file-name buffer-file-name))
+                     "../packages/auto-complete/" ) )
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories
+ (concat (file-name-directory (or load-file-name buffer-file-name))
+                     "../packages/auto-complete/dict/" ))
+(require 'auto-complete-config)
+(ac-config-default)
+(auto-complete-mode 1)
+
 ;; enhanced text selection, expand-region
 ;; 2013-04-19 turned it off. Because, it's slow, and often incorrect. e.g. in js-mode, itone case took it few seconds …
 ;(add-to-list 'load-path (concat (file-name-directory (or load-file-name buffer-file-name)) "../packages/expand-region/"))
