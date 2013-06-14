@@ -1129,11 +1129,9 @@ elisp keywords are colored. Basically that's it.
   (run-mode-hooks 'xah-elisp-mode-hook)
 )
 
-
-(when 
-    (featurep 'auto-complete )
+(when (featurep 'auto-complete )
+  (add-to-list 'ac-modes 'xah-elisp-mode)
   (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
   )
-
 
 (provide 'xah-elisp-mode)

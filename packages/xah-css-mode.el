@@ -247,9 +247,14 @@ CSS keywords are colored. Basically that's it.
   (set (make-local-variable 'comment-start-skip) "/\\*+[ \t]*")
   (set (make-local-variable 'comment-end) "*/")
   (set (make-local-variable 'comment-end-skip) "[ \t]*\\*+/")
-
   (use-local-map xcm-keymap)
+
   (run-mode-hooks 'xah-css-mode-hook)
 )
 
+(when (featurep 'auto-complete )
+  (add-to-list 'ac-modes 'xah-css-mode)
+  (add-hook 'xah-css-mode-hook 'ac-css-mode-setup)
+  )
+  
 (provide 'xah-css-mode)
