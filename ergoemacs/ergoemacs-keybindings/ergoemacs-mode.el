@@ -1076,11 +1076,11 @@ C-k S-a     -> k S-a           not defined
   (setq prefix-arg current-prefix-arg)
   (let ((ctl-c-unchorded (make-keymap))
         (ctl-c-unchorded-1 (make-sparse-keymap)))
-    (message "Unchorded C-c-")
     (ergoemacs-extract-map ctl-c-unchorded "C-c")
-    (define-key ctl-c-unchorded-1 (kbd "C-c") ctl-c-unchorded)
+    (define-key ctl-c-unchorded-1 (kbd "C-c *") ctl-c-unchorded)
     (set-temporary-overlay-map ctl-c-unchorded-1)
-    (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c")))))
+    (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c *")))
+    (message "C-c *-")))
 
 (defun ergoemacs-ctl-c (&optional arg)
   "Creates a keymap for the current major mode that extract the 【Ctl+c】 combinations."
@@ -1088,11 +1088,11 @@ C-k S-a     -> k S-a           not defined
   (setq prefix-arg current-prefix-arg)
   (let ((ctl-c (make-keymap))
         (ctl-c-1 (make-sparse-keymap)))
-    (message "C-c-")
     (ergoemacs-extract-map ctl-c "C-c" "C-" "M-" "")
     (define-key ctl-c-1 (kbd "C-c") ctl-c)
     (set-temporary-overlay-map ctl-c-1)
-    (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c")))))
+    (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c")))
+    (message "C-c-")))
 
 (defun ergoemacs-ctl-c-ctl-c (&optional arg)
   "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
