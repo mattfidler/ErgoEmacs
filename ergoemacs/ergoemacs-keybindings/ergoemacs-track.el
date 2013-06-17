@@ -255,7 +255,6 @@
         (kp2 (gethash (cons layout key2) ergoemacs-key-hash))
         dx dy d dh
         (ret 0))
-    (message "%s; %s" kp1 kp2)
     (cond
      ((eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n))
       (setq dx (- (plist-get kp1 :x) (plist-get kp2 :x)))
@@ -264,7 +263,18 @@
       (setq dx (- (plist-get kp1 :x-home) (plist-get kp2 :x)))
       (setq dy (- (plist-get kp1 :y-home) (plist-get kp2 :y)))
       (setq dh (sqrt (+(* dx dx) (* dy dy))))
-      (message "%s %s" d dh)))
+      (message "%s %s" d dh))
+     (t
+      ;; different fingers.
+      (setq dx (- (plist-get kp1 :x) (plist-get kp1 :x-home)))
+      (setq dy (- (plist-get kp1 :y) (plist-get kp1 :y-home)))
+      (setq d (* 2 (sqrt (+ (* dx dx) (* dy dy)))))
+      (setq dx (- (plist-get kp2 :x) (plist-get kp2 :x-home)))
+      (setq dy (- (plist-get kp2 :y) (plist-get kp2 :y-home)))
+      (setq dh (sqrt (+ (* dx dx) (* dy dy))))
+      (seq d (+ dh d))
+      (message "%s; %s" d dh)
+      ))
     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
