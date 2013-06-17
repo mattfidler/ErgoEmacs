@@ -132,7 +132,7 @@
 "while"
 "defvar"
 "float"
-
+"vectorp"
 ) )
 
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
