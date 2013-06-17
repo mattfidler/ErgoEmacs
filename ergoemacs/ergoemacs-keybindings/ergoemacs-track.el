@@ -244,7 +244,8 @@
        (mapc
         (lambda(key)
           (unless (string= key "")
-            (puthash (cons layout key) (ergoemacs-key-properties key layout)
+            (puthash (cons layout key)
+                     (ergoemacs-key-properties key layout)
                      ergoemacs-key-hash)))
         (symbol-value lay)))))
  (ergoemacs-get-layouts t))

@@ -830,6 +830,8 @@ disabled at `ergoemacs-restore-global-keys'."
                 key
                 (car (cdr (cdr x)))))))
 	ergoemacs-overridden-global-keys)
+  ;; Fix backspace issue
+  (define-key global-map (kbd "<backspace>") 'backward-delete-char-untabify)
   ;; clear the lists
   (setq ergoemacs-global-not-changed-cache '())
   (setq ergoemacs-global-changed-cache '())
