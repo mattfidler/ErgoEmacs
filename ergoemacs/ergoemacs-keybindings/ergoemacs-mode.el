@@ -173,14 +173,19 @@ Valid values are:
 ;; called to get the correct movement commands for isearch.
 (defadvice cua--pre-command-handler (around ergoemacs-fix-shifted-commands activate)
   "Fixes shifted movement problems"
-  (let ((do-it t))
+  (let ((do-it t)
+        (case-fold-search nil))
     (condition-case nil
         (progn
           ;; Fix shifted commands.
           (when (and (string-match "\\(^\\|-\\)M-" (key-description (this-single-command-keys))) ;; Alt command
                      (or (eq (get this-command 'CUA) 'move)
                          (memq this-command ergoemacs-movement-functions)))
-            (setq do-it nil)))
+            (setq do-it nil))
+          ;; Fix Issue 139.  However may introduce an issue when you
+          ;; want to issue C-c commands quickly... 
+          (when (and mark-active (string-match "^C-\\(c\\|x\\)" (key-description (this-single-command-keys))))
+            (setq unread-command-events (cons 'timeout unread-command-events))))
       (error nil))
     (when cua--rectangle
       (setq do-it t))
