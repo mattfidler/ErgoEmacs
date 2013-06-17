@@ -174,6 +174,8 @@
   "Key the KEY properties based on ergoemacs LAYOUT"
   (let ((i 0)
         (lay (intern-soft (format "ergoemacs-layout-%s" layout)))
+        xh yh xc yc
+        dx dy
         ret)
     (when lay
       (if curr-i
@@ -185,20 +187,25 @@
            (setq i (+ i 1)))
          (symbol-value lay)))
       (setq i wi)
-     (setq ret
-           `(:x ,(nth i ergoemacs-keyboard-coordinates-x)
-
-                :y ,(nth i ergoemacs-keyboard-coordinates-y)
-
-                :x-home ,(nth (if (<= (nth i ergoemacs-track-finger) 3)
-                                  (+ 32 (nth i ergoemacs-track-finger))
-                                (+ 38 (- (nth i ergoemacs-track-finger) 4)))
-                              ergoemacs-keyboard-coordinates-x)
-
-                :y-home ,(nth (if (<= (nth i ergoemacs-track-finger) 3)
-                                  (+ 32 (nth i ergoemacs-track-finger))
-                                (+ 38 (- (nth i ergoemacs-track-finger) 4)))
-                              ergoemacs-keyboard-coordinates-y)
+      (setq xh (nth (if (<= (nth i ergoemacs-track-finger) 3)
+                        (+ 32 (nth i ergoemacs-track-finger))
+                      (+ 38 (- (nth i ergoemacs-track-finger) 4)))
+                    ergoemacs-keyboard-coordinates-x))
+      (setq yh (nth (if (<= (nth i ergoemacs-track-finger) 3)
+                        (+ 32 (nth i ergoemacs-track-finger))
+                      (+ 38 (- (nth i ergoemacs-track-finger) 4)))
+                    ergoemacs-keyboard-coordinates-y))
+      (setq xc (nth i ergoemacs-keyboard-coordinates-x))
+      (setq yc (nth i ergoemacs-keyboard-coordinates-y))
+      (setq dx (- xc xh))
+      (setq dy (- yc yh))
+      
+      (setq ret
+           `(:x ,xc
+                :y ,yc
+                :x-home ,xh
+                :y-home ,yh
+                :d-home ,(sqrt (+ (* dx dx) (* dy dy)))
                 
                 :hand ,(if (= 0 (nth i ergoemacs-track-hand))
                            'left
@@ -250,32 +257,25 @@
         (symbol-value lay)))))
  (ergoemacs-get-layouts t))
 
-(defun ergoemacs-key-distance (key1 key2 layout)
-  "Gets the key distance based on the layout."
+(defun ergoemacs-key-distance (key1 key2 layout &optional last-plist)
+  "Gets the key distance based on the layout.
+KEY1 is the first key pressed.
+KEY2 is the second key pressed.
+LAYOUT is the ergoemacs-layout used.
+LAST-PLIST is the last property list returned by this function or nil if nothing was returned previously."
   (let ((kp1 (gethash (cons layout key1) ergoemacs-key-hash))
         (kp2 (gethash (cons layout key2) ergoemacs-key-hash))
         dx dy d dh
-        (ret 0))
+        (ret '())))
     (cond
      ((eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n))
+      ;; In this case the finger is moving is the same like e and d on
+      ;; QWERTY
+
+      ;; (1) Distance between key 1 and key 2.
       (setq dx (- (plist-get kp1 :x) (plist-get kp2 :x)))
       (setq dy (- (plist-get kp1 :y) (plist-get kp2 :y)))
-      (setq d (sqrt (+ (* dx dx) (* dy dy))))
-      (setq dx (- (plist-get kp1 :x-home) (plist-get kp2 :x)))
-      (setq dy (- (plist-get kp1 :y-home) (plist-get kp2 :y)))
-      (setq dh (sqrt (+(* dx dx) (* dy dy))))
-      (message "%s %s" d dh))
-     (t
-      ;; different fingers.
-      (setq dx (- (plist-get kp1 :x) (plist-get kp1 :x-home)))
-      (setq dy (- (plist-get kp1 :y) (plist-get kp1 :y-home)))
-      (setq d (* 2 (sqrt (+ (* dx dx) (* dy dy)))))
-      (setq dx (- (plist-get kp2 :x) (plist-get kp2 :x-home)))
-      (setq dy (- (plist-get kp2 :y) (plist-get kp2 :y-home)))
-      (setq dh (sqrt (+ (* dx dx) (* dy dy))))
-      (seq d (+ dh d))
-      (message "%s; %s" d dh)
-      ))
+      (setq d (sqrt (+ (* dx dx) (* dy dy)))))
     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
