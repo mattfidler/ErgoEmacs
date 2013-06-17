@@ -29,7 +29,8 @@
 
 ;;; HISTORY
 
-;; version 1.6.6, 2012-12-16 Now, the backup file's suffix is same for all backup files created during one command call. Before, each backup file has timestamp when the backup file is created.
+;; version 1.6.7, 2013-06-17 • WARNING the argument for case search is reversed for xah-find-replace-text-regex. • added a case search option for xah-find-text-regex
+;; version 1.6.6, 2012-12-16 Now, the backup file's suffix is same for all backup files created during one command call. Before, each backup file has timestamp when the backup file is created, that is, their seconds will differ.
 ;; version 1.6.5, 2012-12-08 improved the prompt for “xah-find-count” and also its output.
 ;; version 1.6.4, 2012-12-06 Backup file name now has this format: 「~‹x›~‹datetimestamp›~」 where ‹x› is 「t」 for plain text replace and 「r」 for regex replace. e.g. 「x.html~r~20121206_095642~」 Also, modified the prompt for 「xah-find-replace-text-regex」 so it is consistent with the function's argument.
 ;; version 1.6.3, 2012-11-30 fixed a bug: when one of the find or find/replace is called, and the temp output buffer already exits, the highlighting doesn't work. Now it does work.
@@ -121,20 +122,18 @@ Path Regex 「%s」
     ))
 
 
-(defun xah-find-text-regex (searchRegex inputDir ξpathRegex )
+(defun xah-find-text-regex (searchRegex inputDir ξpathRegex ξfixedCaseSearch-p )
   "Report how many occurances of a string, of a given dir.
 Also print context.
 TODO more/correct description here
 Similar to grep, written in elisp.
-
-Search case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-search' to change.
-Replacement
 "
   (interactive
    (list
     (read-string (format "Search regex (default %s): " (current-word)) nil 'query-replace-history (current-word))
     (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
+    (y-or-n-p "Fixed case seearch?")
     )
    )
 
@@ -163,7 +162,7 @@ Path Regex 「%s」
          (setq ξcount 0)
          (with-temp-buffer
            (insert-file-contents ξfp)
-           (setq case-fold-search case-fold-search)
+           (setq case-fold-search ξfixedCaseSearch-p)
            (while (search-forward-regexp searchRegex nil t)
              (setq ξpos-prev-end ξpos2)
 ;             (setq ξpos1 (- (match-beginning 0) 30))
@@ -279,7 +278,7 @@ Directory 〔%s〕
     )
   )
 
-(defun xah-find-replace-text-regex (ξregex ξreplaceStr ξinputDir ξpathRegex ξwriteToFile-p ξcaseFoldSearch-p ξfixedCaseReplace-p)
+(defun xah-find-replace-text-regex (ξregex ξreplaceStr ξinputDir ξpathRegex ξwriteToFile-p ξfixedCaseSearch-p ξfixedCaseReplace-p)
   "Find/Replace by regex in all files of a directory.
 
 ξregex is a regex pattern.
@@ -297,8 +296,8 @@ Directory 〔%s〕
     (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
     (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)
     (y-or-n-p "Write changes to file?")
-    (y-or-n-p "Ignore letter case in search?")
-    (y-or-n-p "Match case in replacement as you have it?")
+    (y-or-n-p "Fixed case in search?")
+    (y-or-n-p "Fixed case in replacement?")
     )
    )
 
@@ -324,7 +323,7 @@ Directory 〔%s〕
            (when t
              (with-temp-buffer
                (insert-file-contents ξfp)
-               (setq case-fold-search ξcaseFoldSearch-p)
+               (setq case-fold-search (not ξfixedCaseSearch-p))
                (while (re-search-forward ξregex nil t)
                  (setq matchStrFound (match-string 0))
                  (replace-match ξreplaceStr ξfixedCaseReplace-p)
@@ -370,7 +369,7 @@ Case sensitivity is determined by `case-fold-search'. Call `toggle-case-fold-sea
    (let* ( ξoperator)
      (list
       (read-string (format "Search string (default %s): " (current-word)) nil 'query-replace-history (current-word))
-      (setq ξoperator (read-string "Greater less equal unqual, any of < > <= >= = /=: " nil nil ">") )
+      (setq ξoperator (ido-completing-read "Greater less equal unqual:" '("<" ">" "<=" ">=" "=" "/=")) )
       (read-string (format "Count %s: "  ξoperator) "0")
       (read-directory-name "Directory: " default-directory default-directory "MUSTMATCH")
       (read-from-minibuffer "Path regex: " nil nil nil 'dired-regexp-history)

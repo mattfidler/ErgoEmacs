@@ -12,9 +12,15 @@
 ;; Major mode for editing emacs lisp. Beta stage.
 ;; home page: http://ergoemacs.org/emacs/xah-elisp-mode.html
 
+;; 2013-06-09
+;; if you use auto-complete-mode, you need to add a hook
+;; (auto-complete-mode 1)
+;; (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
+
 ;;; HISTORY
 
 ;; version 0.1, 2013-03-23 first version
+
 
 (defvar xah-elisp-mode-hook nil "Standard hook for `xah-elisp-mode'")
 
@@ -126,7 +132,7 @@
 "while"
 "defvar"
 "float"
-
+"vectorp"
 ) )
 
 (defvar xem-emacs-words nil "a list of keywords more or less related to emacs system.")
@@ -1122,5 +1128,10 @@ elisp keywords are colored. Basically that's it.
   (use-local-map xem-keymap)
   (run-mode-hooks 'xah-elisp-mode-hook)
 )
+
+(when (featurep 'auto-complete )
+  (add-to-list 'ac-modes 'xah-elisp-mode)
+  (add-hook 'xah-elisp-mode-hook 'ac-emacs-lisp-mode-setup)
+  )
 
 (provide 'xah-elisp-mode)

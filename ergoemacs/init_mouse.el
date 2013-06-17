@@ -5,6 +5,9 @@
 (global-set-key [C-wheel-down] 'text-scale-decrease)
 (global-set-key [C-down-mouse-2] 'text-scale-normal-size)
 
+;; automatically copy text when mouse drag. Similar to Linux X11 behavior
+(setq mouse-drag-copy-region t)
+
 ;; Right-click opens the context menu
 (global-set-key [mouse-3] 'ergoemacs-context-menu)
 

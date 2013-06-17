@@ -157,7 +157,7 @@
 ("title" . ["z"])
 ("tr" . ["z"])
 ("u" . ["z"])
-("ul" . ["z"])
+("ul" . ["b"])
 ("var" . ["w"])
 ("video" . ["z"])
 ("wbr" . ["z"])
@@ -733,6 +733,19 @@ this is a quick 1 min hackjob, works only when there's no nesting."
                  (progn (delete-region p1 p2 )
                       (goto-char p1)
                       (insert newClassName) ) ) ) ) ) ))
+
+;; (defun xhm-split-tag ()
+;;   "split a HTML element into 2 elements of the same tag, at cursor point.
+
+;; for example:
+;;  <p>some▮thing</p>
+;; becomes
+;;  <p>some</p>
+;;  ▮
+;;  <p>thing</p>
+;; "
+;;   (interactive)
+;;   )
 
 (defun xhm-comment-dwim (arg)
 "Comment or uncomment current line or region in a smart way.

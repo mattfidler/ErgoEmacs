@@ -127,9 +127,6 @@ No splash screen. and If the *scratch* buffer is the current one, then create a 
 (setq electric-pair-pairs '( (?\" . ?\") (?\{ . ?\}) ) )
  )
 
-;; automatically copy text when mouse drag. Similar to Linux X11 behavior
-(setq mouse-drag-copy-region t)
-
 ;; make 【Ctrl+c】 for copy, 【Ctrl+x】 for cut, etc.
 (cua-mode 1)
 

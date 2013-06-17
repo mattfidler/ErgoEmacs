@@ -133,7 +133,7 @@ WARNING: not robust."
 (setq xcm-property-names
 '(
 
-"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-right" "border-style" "border-top" "border-width" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font" "font-family" "font-size" "font-style" "font-weight" "height" "letter-spacing" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
+"background" "background-color" "background-image" "background-position" "background-repeat" "border" "border-bottom" "border-collapse" "border-color" "border-left" "border-radius" "border-right" "border-style" "border-top" "border-width" "box-shadow" "clear" "color" "content" "cursor" "direction" "display" "filter" "float" "font" "font-family" "font-size" "font-style" "font-weight" "height" "letter-spacing" "line-height" "list-style" "list-style-image" "list-style-type" "margin" "margin-bottom" "margin-left" "margin-right" "margin-top" "max-width" "min-width" "opacity" "orphans" "overflow" "padding" "padding-left" "padding-right" "padding-top" "page-break-after" "page-break-inside" "position" "pre-wrap" "table" "table-cell" "text-align" "text-decoration" "text-shadow" "unicode-bidi" "vertical-align" "white-space" "widows" "width" "word-wrap" "z-index"
 
 ) )
 
@@ -247,9 +247,14 @@ CSS keywords are colored. Basically that's it.
   (set (make-local-variable 'comment-start-skip) "/\\*+[ \t]*")
   (set (make-local-variable 'comment-end) "*/")
   (set (make-local-variable 'comment-end-skip) "[ \t]*\\*+/")
-
   (use-local-map xcm-keymap)
+
   (run-mode-hooks 'xah-css-mode-hook)
 )
 
+(when (featurep 'auto-complete )
+  (add-to-list 'ac-modes 'xah-css-mode)
+  (add-hook 'xah-css-mode-hook 'ac-css-mode-setup)
+  )
+  
 (provide 'xah-css-mode)
