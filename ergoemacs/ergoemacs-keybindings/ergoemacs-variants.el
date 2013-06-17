@@ -139,10 +139,10 @@
     ("<apps> g" universal-argument "C-u")
     ("<apps> w" ergoemacs-close-current-buffer "Close")
     ;;("<apps> y" ergoemacs-ctl-h-unchorded "Ctl-h*")
-    ("<apps> y y" isearch-forward "→ isearch")
-    ("<apps> y h" isearch-backward "← isearch")
-    ("<apps> y u" isearch-forward-regexp "→ reg isearch")
-    ("<apps> y j" isearch-backward-regexp "← reg isearch")
+    ;; ("<apps> y y" isearch-forward "→ isearch")
+    ;; ("<apps> y h" isearch-backward "← isearch")
+    ;; ("<apps> y u" isearch-forward-regexp "→ reg isearch")
+    ;; ("<apps> y j" isearch-backward-regexp "← reg isearch")
     ("<apps> x" ergoemacs-cut-line-or-region "✂ region")
     ("<apps> c" ergoemacs-copy-line-or-region "copy")
     ("<apps> v" yank "paste")
@@ -175,12 +175,14 @@
   :set 'ergoemacs-set-default
   :group 'ergoemacs-standard-layout)
 
-
 (defcustom ergoemacs-fixed-layout
   `(
     ("<C-home>" beginning-of-buffer "↑ Top")
     ("<C-end>" end-of-buffer "↓ Bottom")
     ("<M-f4>" delete-frame) ;; Alt+f4 should work.
+    ;; From http://superuser.com/questions/521223/shift-click-to-extend-marked-region
+    ("<S-down-mouse-1>" mouse-save-then-kill) ;; Allow shift selection
+    
     
     ("C-+" text-scale-increase "+Font Size")
     ("C--" text-scale-decrease "-Font Size")
