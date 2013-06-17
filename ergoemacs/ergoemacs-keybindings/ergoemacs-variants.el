@@ -180,6 +180,7 @@
   `(
     ("<C-home>" beginning-of-buffer "↑ Top")
     ("<C-end>" end-of-buffer "↓ Bottom")
+    ("<M-f4>" delete-frame) ;; Alt+f4 should work.
     
     ("C-+" text-scale-increase "+Font Size")
     ("C--" text-scale-decrease "-Font Size")
