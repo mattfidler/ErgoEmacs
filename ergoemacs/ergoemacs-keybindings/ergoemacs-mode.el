@@ -188,7 +188,8 @@ Valid values are:
 (defadvice cua--pre-command-handler (around ergoemacs-fix-shifted-commands activate)
   "Fixes shifted movement problems"
   (let ((do-it t)
-        (case-fold-search nil))
+        (case-fold-search nil)
+        (send-timeout nil))
     (condition-case nil
         (progn
           ;; Fix shifted commands.
@@ -199,12 +200,16 @@ Valid values are:
           ;; Fix Issue 139.  However may introduce an issue when you
           ;; want to issue C-c commands quickly... 
           (when (and mark-active (string-match "^C-\\(c\\|x\\)" (key-description (this-single-command-keys))))
-            (setq unread-command-events (cons 'timeout unread-command-events))))
+            (setq do-it t)
+            (setq send-timeout t)))
       (error nil))
     (when cua--rectangle
       (setq do-it t))
     (when do-it
-      ad-do-it)))
+      ad-do-it)
+    (when send-timeout
+      (setq unread-command-events
+            (cons 'timeout unread-command-events)))))
 
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
@@ -782,8 +787,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
     (if x
         (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
     (add-to-list 'minor-mode-map-alist
-                 `(ergoemacs-mode  ,(symbol-value 'ergoemacs-keymap)))
-    )
+                 `(ergoemacs-mode  ,(symbol-value 'ergoemacs-keymap))))
   (easy-menu-define ergoemacs-menu ergoemacs-keymap
     "ErgoEmacs menu"
     `("ErgoEmacs"
@@ -1209,6 +1213,9 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (ergoemacs-setup-keys t)
   (when ergoemacs-debug
     (message "Ergoemacs Keys have loaded."))
+  (if ergoemacs-mode
+      (define-key cua--cua-keys-keymap (read-kbd-macro "M-v") nil)
+    (define-key cua--cua-keys-keymap (read-kbd-macro "M-v") 'cua-repeat-replace-region))
   (condition-case err
       (when ergoemacs-cua-rect-modifier
         (if ergoemacs-mode
