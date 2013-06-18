@@ -111,6 +111,13 @@ Added beginning-of-buffer Alt+n (QWERTY notation) and end-of-buffer Alt+Shift+n"
   ergoemacs-shrink-whitespaces ergoemacs-kill-line-backward)
   "Deletion functions")
 
+(defvar ergoemacs-undo-redo-functions
+  '(undo
+    redo
+    undo-tree-undo
+    undo-tree-redo)
+  "Undo and redo functions that ErgoEmacs is aware of...")
+
 (defvar ergoemacs-window-tab-switching
   '(ergoemacs-switch-to-previous-frame
     ergoemacs-switch-to-next-frame
@@ -168,6 +175,13 @@ Valid values are:
           (const :tag "Do not allow fast repeat commands." nil)
           (const :tag "Allow fast repeat command of the current movement command" 'single)
           (const :tag "Allow fast repeat of all movement commands" 'all)))
+
+(defcustom ergoemacs-repeat-undo-commands 'apps
+  "Allow undo commands to be repeated without pressing the entire key.  For example if <apps> z is undo, then <apps> z z sould be undo twice if enabled."
+  :group 'ergoemacs-mode
+  :type '(choce
+          (const :tag "Do not allow fast repeat commands." nil)
+          (const :tag "Allow fast repeat for <apps> menu." 'apps)))
 
 ;; Movement commands need to be defined before ergoemacs-variants is
 ;; called to get the correct movement commands for isearch.
@@ -229,6 +243,39 @@ remove the keymap depends on user input and KEEP-PRED:
       (add-hook 'pre-command-hook clearfunsym)
       
       (push alist emulation-mode-map-alists))))
+
+(defvar ergoemacs-undo-apps-keymap nil
+  "Keymap for repeating undo/redo commands in apps menu.")
+
+(defun ergoemacs-undo-apps-text nil
+  "Text for repeat undo/redo commands in apps menu.")
+
+(defun ergoemacs-create-undo-apps-keymap ()
+  "Create `ergoemacs-undo-apps-keymap', based on current ergoemacs keybindings."
+  (let ((ergoemacs-undo-key
+         (replace-regexp-in-string "<\\(apps\\|menu\\)> " "" (key-description (ergoemacs-key-fn-lookup 'undo t))))
+        (ergoemacs-redo-key
+         (replace-regexp-in-string "<\\(apps\\|menu\\)> " "" (key-description (ergoemacs-key-fn-lookup 'redo t)))))
+    (setq ergoemacs-undo-apps-text (format "Undo repeat key `%s'; Redo repeat key `%s'"
+                                           ergoemacs-undo-key ergoemacs-redo-key))
+    (setq ergoemacs-undo-apps-keymap (make-keymap))
+    (define-key ergoemacs-undo-apps-keymap (read-kbd-macro ergoemacs-undo-key) 'undo)
+    (define-key ergoemacs-undo-apps-keymap (read-kbd-macro ergoemacs-redo-key) 'redo)))
+
+(defmacro ergoemacs-create-undo-advices (command)
+  "Creates repeat advices for undo/redo commands defined in `ergoemacs-undo-redo-functions'. The repeat behavior is defined by `ergoemacs-repeat-undo-commands'.ergoemacs-repeat-undo-commands"
+  `(defadvice ,(intern (symbol-name command)) (around ergoemacs-undo-redo-advice activate)
+     ,(format "ErgoEmacs fast keymap for `%s'" (symbol-name command))
+     ad-do-it
+     (when (and ergoemacs-mode (eq ergoemacs-repeat-undo-commands 'apps))
+       (message "%s" ergoemacs-undo-apps-text)
+       (set-temporary-overlay-map ergoemacs-undo-apps-keymap t))))
+
+(mapc
+ (lambda(x)
+   (eval `(ergoemacs-create-undo-advices ,x)))
+ ergoemacs-undo-redo-functions)
+
 
 (defmacro ergoemacs-create-movement-commands (command)
   "Creates a shifted and repeat advices and isearch commands."
@@ -413,6 +460,7 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
 (defun ergoemacs-setup-fast-keys ()
   "Setup an array listing the fast keys."
   (interactive)
+  (ergoemacs-create-undo-apps-keymap)
   (setq ergoemacs-full-fast-keys-keymap (make-sparse-keymap))
   (setq ergoemacs-full-alt-keymap (make-keymap))
   (setq ergoemacs-full-alt-shift-keymap (make-keymap))
