@@ -270,7 +270,7 @@ LAST-PLIST is the last property list returned by this function or nil if nothing
         dx dy d dh
         (ret '()))
     
-    (when (and (not kp12)
+    (when (and (not kp12) kp1 kp2
              (eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n)))
         (setq dx (- (plist-get kp1 :x) (plist-get kp2 :x)))
         (setq dy (- (plist-get kp1 :y) (plist-get kp2 :y)))
@@ -278,6 +278,53 @@ LAST-PLIST is the last property list returned by this function or nil if nothing
         (puthash (cons layout (cons key1 key2)) kp12 ergoemacs-key-hash))
     
     (cond
+     ((and (not last-plist) kp1 (not kp2))
+
+      ;; kp2 is not defined.  Assume space or no-length character.
+      (setq ret `(:d ,(* 2 (plist-get kp1 :d-home)) :dh 0
+                     :finger-n -10
+                     :key ,key2)))
+
+     ((and (not last-plist) (not kp1) kp2)
+      ;; kp1 is not defined.  Assume space or no-length character.
+      (setq ret `(:d ,(plist-get kp2 :d-home) :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2)))
+
+     ((and last-plist (not kp1) kp2)
+      ;; kp1 is not defined.  Assume space or no-length character.
+      (setq ret `(:d ,(+ (plist-get last-plist :dh)
+                         (plist-get kp2 :d-home))
+                     :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2)))
+
+     ((and last-plist kp1 (not kp2)
+           (eq (plist-get last-plist :finger-n) (plist-get kp1 :finger-n)))
+      
+      ;; Last keypress was on the same finger as kp1.  kp2 is a reset.
+      (setq kpl (gethash (cons layout (plist-get last-plist :key)) ergoemacs-key-hash))
+      (setq kpl1 (gethash (cons layout (cons (plist-get last-plist :key) key1))
+                          ergoemacs-key-hash))
+
+      (when (not kpl1)
+        (setq dx (- (plist-get kpl :x) (plist-get kp1 :x)))
+        (setq dy (- (plist-get kpl :y) (plist-get kp1 :y)))
+        (setq kpl1 (sqrt (+ (* dx dx) (* dy dy))))
+        (puthash (cons layout
+                       (cons (plist-get last-plist :key)
+                             key1)) kp12 ergoemacs-key-hash))
+      (setq ret `(:d ,(+ kpl1 (plist-get kp1 :d-home)) :dh 0
+                     :finger-n -10
+                     :key ,key2)))
+     ((and last-plist kp1 (not kp2))
+      ;; last keypress was not on the same finger as kp1. kp2 is a
+      ;; reset
+      (setq ret `(:d ,(+ (plist-gt last-plist :dh)
+                         (* 2 (plist-get kp1 :d-home)))
+                     :dh 0
+                     :finger-n -10
+                     :key ,key2)))
      ((and (not last-plist)
            (eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n)))
 
