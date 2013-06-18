@@ -265,18 +265,110 @@ LAYOUT is the ergoemacs-layout used.
 LAST-PLIST is the last property list returned by this function or nil if nothing was returned previously."
   (let ((kp1 (gethash (cons layout key1) ergoemacs-key-hash))
         (kp2 (gethash (cons layout key2) ergoemacs-key-hash))
+        kpl kpl1
+        (kp12 (gethash (cons layout (cons key1 key2)) ergoemacs-key-hash))
         dx dy d dh
-        (ret '())))
+        (ret '()))
+    
+    (when (and (not kp12)
+             (eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n)))
+        (setq dx (- (plist-get kp1 :x) (plist-get kp2 :x)))
+        (setq dy (- (plist-get kp1 :y) (plist-get kp2 :y)))
+        (setq kp12 (sqrt (+ (* dx dx) (* dy dy))))
+        (puthash (cons layout (cons key1 key2)) kp12 ergoemacs-key-hash))
+    
     (cond
-     ((eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n))
-      ;; In this case the finger is moving is the same like e and d on
-      ;; QWERTY
+     ((and (not last-plist)
+           (eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n)))
 
-      ;; (1) Distance between key 1 and key 2.
-      (setq dx (- (plist-get kp1 :x) (plist-get kp2 :x)))
-      (setq dy (- (plist-get kp1 :y) (plist-get kp2 :y)))
-      (setq d (sqrt (+ (* dx dx) (* dy dy)))))
-    ))
+      ;; Distance when key1 and key2 are on the same finger is:
+      ;; D(Home,Key1)+D(Key1,Key2)
+      ;; Residual is D(Key2, Home)
+      
+      (setq ret `(:d ,(+ (plist-get kp1 :d-home) kp12) :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2)))
+     ((not last-plist)
+
+      ;; Distance when key1 and key2 are on a different finger is:
+      ;; 2*D(Home,Key1)+D(Home,Key2)
+      ;; Residual is D(Key2,Home)
+      
+      (setq ret `(:d ,(+ (* 2 (plist-get kp1 :d-home))
+                         (plist-get kp2 :d-home))
+                     :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2)))
+     
+     ((and (eq (plist-get last-plist :finger-n) (plist-get kp1 :finger-n))
+           (eq (plist-get last-plist :finger-n) (plist-get kp2 :finger-n)))
+      
+      ;; The last finger called is the same as the current finger
+      ;; Key1 and Key 2 are on the same finger
+      ;; Distance is D(Last-Key,Key1)+D(Key1,Key2)
+      ;; Residual Distance is D(Key2,Home)
+      
+      (setq kpl (gethash (cons layout (plist-get last-plist :key)) ergoemacs-key-hash))
+      (setq kpl1 (gethash (cons layout (cons (plist-get last-plist :key) key1))
+                          ergoemacs-key-hash))
+
+      (when (not kpl1)
+        (setq dx (- (plist-get kpl :x) (plist-get kp1 :x)))
+        (setq dy (- (plist-get kpl :y) (plist-get kp1 :y)))
+        (setq kpl1 (sqrt (+ (* dx dx) (* dy dy))))
+        (puthash (cons layout
+                       (cons (plist-get last-plist :key)
+                             key1)) kp12 ergoemacs-key-hash))
+      
+      (setq ret `(:d ,(+ kpl1 kp12)
+                     :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2)))
+     ((and (eq (plist-get last-plist :finger-n) (plist-get kp1 :finger-n)))
+      ;; The last finger is the same as kp1.  the kp1 finger is
+      ;; different from kp2.
+      ;;
+      ;; Distance is D(Last,kp1)+D(kp1,home)+D(kp2,home)
+      ;; Residual is D(kp2,home)
+      (setq kpl (gethash (cons layout (plist-get last-plist :key)) ergoemacs-key-hash))
+      (setq kpl1 (gethash (cons layout (cons (plist-get last-plist :key) key1))
+                          ergoemacs-key-hash))
+
+      (when (not kpl1)
+        (setq dx (- (plist-get kpl :x) (plist-get kp1 :x)))
+        (setq dy (- (plist-get kpl :y) (plist-get kp1 :y)))
+        (setq kpl1 (sqrt (+ (* dx dx) (* dy dy))))
+        (puthash (cons layout
+                       (cons (plist-get last-plist :key)
+                             key1)) kp12 ergoemacs-key-hash))
+
+      (setq ret `(:d ,(+ kpl1 (plist-get kp1 :d-home) (plist-get kp2 :d-home))
+                     :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2)))
+     ((and
+       (not (eq (plist-get last-plist :finger-n) (plist-get kp1 :finger-n)))
+       (eq (plist-get kp1 :finger-n) (plist-get kp2 :finger-n)))
+      ;; The last finger called not the same as kp1
+      ;; key1 and key2 are on the same finger.
+      ;; Distance is D(Last-Key,home)+D(Key1,Key2)
+      ;; Residual Distance is D(Key2,Home)
+      (setq ret `(:d ,(+ (plist-get last-plist :dh) kp12)
+                     :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2)))
+     (t
+      ;; The three fingers are on different hands or the last finger
+      ;; pressed and kp2 are on the same hand.  For this layout the
+      ;; distance is given by:
+      ;; d(Last,Home)+2*D(home,kp1)+D(home,kp2)
+      ;; Residual distance is D(kp2,home)
+      (setq ret `(:d ,(+ (plist-get last-plist :dh)
+                         (* 2 (plist-get kp1 :d-home))
+                         (plist-get kp2 :d-home))
+                     :dh ,(plist-get kp2 :d-home)
+                     :finger-n ,(plist-get kp2 :finger-n)
+                     :key ,key2))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-track.el ends here
