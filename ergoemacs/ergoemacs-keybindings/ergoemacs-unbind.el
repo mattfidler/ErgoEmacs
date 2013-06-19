@@ -838,15 +838,30 @@ disabled at `ergoemacs-restore-global-keys'."
   (setq ergoemacs-overridden-global-keys '())
   (setq ergoemacs-do-not-restore-list '()))
 
+(defcustom ergoemacs-pretty-key-use-unicode 'gui
+  "Determines weather Unicode braces should be used for `ergoemacs-pretty-key'"
+  :type '(choice
+          (const :tag "Use [] everywhere" nil)
+          (const :tag "Use 【】 in gui, [] in terimnal" 'gui)
+          (const :tag "Use 【】 in everywhere" 'all))
+  :set 'ergoemacs-set-default
+  :group 'ergoemacs-mode)
+
 (defun ergoemacs-pretty-key (code)
   "Creates Pretty keyboard binding from kbd CODE to like M-x to 【Alt+x】"
   (let ((ret code)
-        (case-fold-search nil))
+        (case-fold-search nil)
+        (use-unicode-p (or (eq ergoemacs-pretty-key-use-unicode 'all)
+                           (and window-system (eq ergoemacs-pretty-key-use-unicode 'gui)))))
     (save-match-data
       (with-temp-buffer
-        (insert "【")
+        (insert (if use-unicode-p
+                    "【"
+                  "["))
         (insert code)
-        (insert "】")
+        (insert (if use-unicode-p
+                    "】"
+                  "]"))
         (goto-char (point-min))
         (when (re-search-forward "\\<M-x\\>" nil t)
           (replace-match "")
@@ -856,7 +871,9 @@ disabled at `ergoemacs-restore-global-keys'."
           (replace-match (format "-S%s%s" (downcase (match-string 1))(match-string 2))))
         (goto-char (point-min))
         (while (re-search-forward "\\> +\\<" nil t)
-          (replace-match "】【"))
+          (if use-unicode-p
+              (replace-match "】【")
+            (replace-match "][")))
         (goto-char (point-min))
         (while (search-forward "M-" nil t)
           (replace-match "Alt+" t))
@@ -865,7 +882,9 @@ disabled at `ergoemacs-restore-global-keys'."
           (replace-match "Ctrl+" t))
         (goto-char (point-min))
         (while (search-forward "S-" nil t)
-          (replace-match "⇧Shift+" t))
+          (if use-unicode-p
+              (replace-match "⇧Shift+" t)
+            (replace-match "Shift+")))
         (goto-char (point-min))
         (while (re-search-forward "[<>]" nil t)
           (replace-match ""))
