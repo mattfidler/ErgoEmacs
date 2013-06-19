@@ -83,12 +83,20 @@
     (setq ret (and ret test))
     (message "Test Issue #128: %s" test)
     
-    (setq test (ergoemacs-test-global-key-set-before nil "<apps> m"))
+    (setq test (ergoemacs-test-global-key-set-before
+                nil
+                (if (eq system-type 'windows-nt)
+                    "<apps> m"
+                  "<menu> m")))
+    
     (setq ret (and ret test))
     (message "Test Issue #128a: %s" test)
     
     (setq test (ergoemacs-test-global-key-set-before
-                'after "<apps> m" 'ergoemacs-key))
+                'after
+                (if (eq system-type 'windows-nt)
+                    "<apps> m"
+                  "<menu> m") 'ergoemacs-key))
     (setq ret (and ret test))
     (message "Test Issue #128b: %s" test)
     
@@ -101,6 +109,15 @@
                 'after "C-e" 'ergoemacs-key))
     
     (message "Overall test: %s" ret)))
+
+(defvar ergoemacs-test-lorem-ipsum
+  "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+enim ad minim veniam, quis nostrud exercitation ullamco laboris
+nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat
+nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+sunt in culpa qui officia deserunt mollit anim id est laborum.")
 
 (defun ergoemacs-test-119 ()
   "C-f doesn't work in isearch-mode."
