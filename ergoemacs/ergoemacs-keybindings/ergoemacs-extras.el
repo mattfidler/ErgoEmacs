@@ -31,9 +31,11 @@
        ((string-match "[A-Z0-9]" char)
         char)
        (t
-        (format "&#x%04X;" (encode-char (with-temp-buffer
-                                          (insert char)
-                                          (char-before)) 'unicode)))))))
+        (format "&#x%04X;"
+                (encode-char
+                 (with-temp-buffer
+                   (insert char)
+                   (char-before)) 'unicode)))))))
 
 (defun ergoemacs-get-html-key-table ()
   "Gets the key table for the current layout."

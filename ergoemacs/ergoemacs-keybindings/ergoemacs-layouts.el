@@ -146,7 +146,7 @@
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
   "Italian layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
-(defvar ergoemacs-layout-sp
+(defvar ergoemacs-layout-es
   '("" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
     "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "`" "+" ""
     "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ñ" "'" "ç" ""
@@ -157,6 +157,8 @@
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ñ" "\"" "Ç" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
   "Spanish layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
+
+(defvaralias 'ergoemacs-layout-sp 'ergoemacs-layout-es)
 
 (defvar ergoemacs-layout-fr
   '("" "²" "&" "é" "\"" "'" "(" "-" "è" "_" "ç" "à" ")" "=" ""
