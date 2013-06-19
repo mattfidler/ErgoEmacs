@@ -536,6 +536,10 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
               (format "\\(-\\| \\|^\\)\\(%s\\)\\($\\| \\)"
                       (regexp-opt (mapcar (lambda(x) (nth 0 x))
                                           ergoemacs-translation-assoc) nil)))))))
+(defvar ergoemacs-kbd-hash nil)
+
+(setq ergoemacs-kbd-hash (make-hash-table :test 'equal))
+;; This is called so frequently make a hash-table of the results.
 
 (defun ergoemacs-kbd (key &optional just-translate only-first)
   "Translates kbd code KEY for layout `ergoemacs-translation-from' to kbd code for `ergoemacs-translation-to'.
@@ -544,12 +548,16 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
   (save-match-data
     (if (not key)
         nil
-      (let ((new-key key))
-        (cond
-         ((eq system-type 'windows-nt)
-          (setq new-key (replace-regexp-in-string "<menu>" "<apps>" new-key)))
-         (t
-          (setq new-key (replace-regexp-in-string "<apps>" "<menu>" new-key))))
+      (let ((new-key (gethash `(,key ,just-translate ,only-first ,ergoemacs-translation-from ,ergoemacs-translation-to)
+                              ergoemacs-kbd-hash)))
+        (if new-key
+            (symbol-value 'new-key)
+          (setq new-key key)
+          (cond
+           ((eq system-type 'windows-nt)
+            (setq new-key (replace-regexp-in-string "<menu>" "<apps>" new-key)))
+           (t
+            (setq new-key (replace-regexp-in-string "<apps>" "<menu>" new-key))))
         (when ergoemacs-needs-translation
           (setq new-key
                 (with-temp-buffer
@@ -564,11 +572,13 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                       (skip-chars-backward " ")))
                   (buffer-string))))
         (if (not just-translate)
-            (condition-case err
+             (condition-case err
                 (read-kbd-macro new-key)
               (error
                (read-kbd-macro (encode-coding-string new-key locale-coding-system))))
-          new-key)))))
+          (puthash `(,key ,just-translate ,only-first ,ergoemacs-translation-from ,ergoemacs-translation-to) new-key
+                   ergoemacs-kbd-hash)
+          new-key))))))
 
 (defvar ergoemacs-backward-compatability-variables 
   '((ergoemacs-backward-paragraph-key            backward-block)
