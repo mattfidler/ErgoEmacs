@@ -270,7 +270,7 @@ Loop %keysToDelayArray0%
 }
 
 capslock-handle:
-  If (WinActive("ahk_class Emacs") && CurrCaps == "1") {
+  If ((WinActive("ahk_class Emacs") || WinActive("ahk_class ConsoleWindowClass")) && CurrCaps == "1") {
     SendInput {AppsKey}
   } else {
     SendInput {Capslock}
