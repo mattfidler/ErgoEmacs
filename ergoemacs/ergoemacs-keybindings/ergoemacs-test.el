@@ -83,9 +83,9 @@
     (setq ret (and ret test))
     (message "Test Issue #128: %s" test)
     
-    ;; (setq test (ergoemacs-test-global-key-set-before nil "<apps> m"))
-    ;; (setq ret (and ret test))
-    ;; (message "Test Issue #128a: %s" test)
+    (setq test (ergoemacs-test-global-key-set-before nil "<apps> m"))
+    (setq ret (and ret test))
+    (message "Test Issue #128a: %s" test)
     
     (setq test (ergoemacs-test-global-key-set-before
                 'after "<apps> m" 'ergoemacs-key))

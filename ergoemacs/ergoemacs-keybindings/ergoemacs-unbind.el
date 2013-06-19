@@ -664,7 +664,7 @@
    (t curr-fn)))
 
 (defmacro ergoemacs-create-old-key-description-fn (key)
-  `(defun ,(intern (concat "/ergoemacs-old-key-" (md5 (format "%s" key)))) ()
+  `(defun ,(intern (concat "ergoemacs-old-key---" (md5 (format "%s" key)))) ()
      (interactive)
      (beep)
      (let ((fn (assoc ,key ergoemacs-emacs-default-bindings))
@@ -748,7 +748,7 @@ This should only be run when no global keys have been set.
                               (not (memq trans-function (nth 1 old-bindings))))))
           (when (and has-changed
                      (condition-case err
-                         (string-match "/ergoemacs-old-key-" (symbol-name key-function))
+                         (string-match "ergoemacs-old-key---" (symbol-name key-function))
                        (error nil)))
             ;; Already unset, assume that the old key hasn't changed.
             (setq has-changed nil))
@@ -804,7 +804,7 @@ disabled at `ergoemacs-restore-global-keys'."
     (if oldcmd
 	(add-to-list 'ergoemacs-overridden-global-keys (cons map (cons key-s (cons oldcmd nil)))))
     ;; redefine the key in the ergoemacs-keymap
-    (define-key map key (intern-soft (concat "/ergoemacs-old-key-" (md5 (format "%s" (key-description key))))))))
+    (define-key map key (intern-soft (concat "ergoemacs-old-key---" (md5 (format "%s" (key-description key))))))))
 
 (defun ergoemacs-unset-redundant-global-keys ()
   "Unsets redundant keyboard shortcuts that should not be used in ErgoEmacs."

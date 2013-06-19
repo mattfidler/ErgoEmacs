@@ -685,31 +685,9 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
          (case-fold-search t)
          key
          trans-key
-         cmd)
-     ;; When calling the (define-minor-mode ergoemacs-mode ...) in
-     ;; ergoemacs-setup-keys the ergoemacs-keymap is used after
-     ;; changes are made. Without this call, the old ergoemacs-keymap
-     ;; is retained even if it is changed within customize. Therefore
-     ;; the describe-variable for ergoemacs-keymap shows the proper
-     ;; bindings, but the C-h b shows the old bindings. I'm not sure
-     ;; if this is true for the minor-mode defined keymaps, but it
-     ;; could also be a problem.
-     
-     ;; A test case for this is changing the ergoemacs-variant to
-     ;; lvl1.  While the variable stored in ergoemacs-keymap is
-     ;; correct, the bindings that were previously defined are
-     ;; retained. In consequence, the "M-x" key is not restored.
-     
-     ;; However, as noted later in the file, this
-     ;; causes describe function in to say “ergoemacs-mode is an
-     ;; interactive Lisp function in `.emacs.desktop'”.
-     
-     ;; Another way to change this is to over-ride the value in
-     ;; `minor-mode-map-alist' 
+         cmd cmd-tmp)
      (setq ,keymap (make-sparse-keymap))
      
-     ;; At this point, `ergoemacs-save-bound-keys' has no information
-     ;; about the keymap.
      (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
          (message "Variant: %s" ergoemacs-variant))
      ;; Fixed layout keys
@@ -734,7 +712,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
               (define-key ,keymap key cmd))
             (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                 (message "Fixed: %s -> %s %s" trans-key cmd key)))))
-      (symbol-value (ergoemacs-get-fixed-layout)))
+       (symbol-value (ergoemacs-get-fixed-layout)))
      
      ;; Variable Layout Keys
      (mapc
@@ -742,7 +720,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
         (when (and (eq 'string (type-of (nth 0 x))))
           (setq trans-key
                 (ergoemacs-get-kbd-translation (nth 0 x)))
-          (when (not (ergoemacs-global-changed-p trans-key t))
+          (when (or (string-match "<\\(apps\\|menu\\)>" trans-key)
+                    (not (ergoemacs-global-changed-p trans-key t)))
             (setq cmd (nth 1 x))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
             (if (and ergoemacs-fix-M-O (string= (ergoemacs-kbd trans-key t t) "M-O"))
@@ -766,13 +745,18 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                       (define-key ergoemacs-M-o-keymap  [timeout] cmd))
                     (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                         (message "Variable: %s (%s) -> %s %s via ergoemacs-M-o" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))
-              (if (condition-case err
-                      (keymapp (symbol-value cmd))
-                    (error nil))
-                  (define-key ,keymap  key (symbol-value cmd))
-                (define-key ,keymap  key cmd))
-              (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
-                  (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))))
+                (when (string-match "<\\(apps\\|menu\\)>" trans-key)
+                  ;; Retain globally defined <apps> or <menu> defines.
+                  (setq cmd-tmp (lookup-key (current-global-map) key t))
+                  (when (functionp cmd-tmp)
+                    (setq cmd cmd-tmp))) 
+                (if (condition-case err
+                        (keymapp (symbol-value cmd))
+                      (error nil))
+                    (define-key ,keymap  key (symbol-value cmd))
+                  (define-key ,keymap  key cmd))
+                (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
+                    (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))))
       (symbol-value (ergoemacs-get-variable-layout)))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
@@ -1180,7 +1164,7 @@ C-k S-a     -> k S-a           not defined
             (message "Reset ergoemacs-mode."))
           (ergoemacs-mode -1)
           (ergoemacs-mode 1))
-        (when (and
+         (when (and
                (custom-file t) ;; Make sure a custom file exists.
                (not ergoemacs-variant) ;; Ergoemacs default used.
                (or (not ergoemacs-mode-used)
@@ -1360,8 +1344,11 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
   (add-to-list 'ergoemacs-global-changed-cache (key-description key))
   (when ergoemacs-global-not-changed-cache
     (delete (key-description key) ergoemacs-global-not-changed-cache))
-  (let ((no-ergoemacs-advice t))
-    (define-key ergoemacs-keymap key nil)))
+  (if (string-match "<\\(apps\\|menu\\)>" (key-description key))
+      (progn
+        (define-key ergoemacs-keymap key command))
+      (let ((no-ergoemacs-advice t))
+    (define-key ergoemacs-keymap key nil))))
 
 (defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
   "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
