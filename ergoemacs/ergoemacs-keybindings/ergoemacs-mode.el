@@ -801,7 +801,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
       ["Generate Documentation"
        (lambda()
          (interactive)
-         (ergoemacs-extras)) t]
+         (call-interactively 'ergoemacs-extras)) t]
       ["Customize Ergoemacs"
        (lambda()
          (interactive)
