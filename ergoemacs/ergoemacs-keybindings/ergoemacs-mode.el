@@ -748,15 +748,26 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (when (string-match "<\\(apps\\|menu\\)>" trans-key)
                   ;; Retain globally defined <apps> or <menu> defines.
                   (setq cmd-tmp (lookup-key (current-global-map) key t))
-                  (when (functionp cmd-tmp)
-                    (setq cmd cmd-tmp))) 
-                (if (condition-case err
-                        (keymapp (symbol-value cmd))
-                      (error nil))
-                    (define-key ,keymap  key (symbol-value cmd))
-                  (define-key ,keymap  key cmd))
-                (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
-                    (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))))
+                  (when (and ergoemacs-debug
+                             (eq ',keymap 'ergoemacs-keymap))
+                    (message "<apps>; %s -> cmd: %s; global cmd: %s" trans-key cmd cmd-tmp))
+                  (if (functionp cmd-tmp)
+                      (setq cmd cmd-tmp)
+                    (when (and cmd-tmp
+                               (or
+                                (not (string-match "<menu>" trans-key))
+                                (not (= cmd-tmp 1))
+                                (not (eq (lookup-key (current-global-map) (read-kbd-macro "<menu>"))
+                                         'execute-extended-command))))
+                      (setq cmd nil)))) 
+                (when cmd
+                  (if (condition-case err
+                          (keymapp (symbol-value cmd))
+                        (error nil))
+                      (define-key ,keymap  key (symbol-value cmd))
+                    (define-key ,keymap  key cmd))
+                  (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
+                      (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key))))))))
       (symbol-value (ergoemacs-get-variable-layout)))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
@@ -1346,9 +1357,17 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
     (delete (key-description key) ergoemacs-global-not-changed-cache))
   (if (string-match "<\\(apps\\|menu\\)>" (key-description key))
       (progn
+        (define-key ergoemacs-keymap key nil);; Take care of prefix
+        ;; commands.
         (define-key ergoemacs-keymap key command))
-      (let ((no-ergoemacs-advice t))
-    (define-key ergoemacs-keymap key nil))))
+    (let ((no-ergoemacs-advice t))
+      (define-key ergoemacs-keymap key nil)))
+  (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
+    ;; Install keymap
+    (if x
+        (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
+    (add-to-list 'minor-mode-map-alist
+                 `(ergoemacs-mode  ,(symbol-value 'ergoemacs-keymap)))))
 
 (defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
   "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
@@ -1359,7 +1378,13 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (when ergoemacs-global-not-changed-cache
     (delete (key-description key) ergoemacs-global-not-changed-cache))
   (let ((no-ergoemacs-advice t))
-    (define-key ergoemacs-keymap key nil)))
+    (define-key ergoemacs-keymap key nil))
+  (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
+    ;; Install keymap
+    (if x
+        (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
+    (add-to-list 'minor-mode-map-alist
+                 `(ergoemacs-mode  ,(symbol-value 'ergoemacs-keymap)))))
 
 ;; Org edit source bug fix to allow C-s to save the org file in a
 ;; source snippet.
