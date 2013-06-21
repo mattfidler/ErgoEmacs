@@ -760,7 +760,9 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                                 (not (= cmd-tmp 1))
                                 (not (eq (lookup-key (current-global-map) (read-kbd-macro "<menu>"))
                                          'execute-extended-command))))
-                      (setq cmd nil)))) 
+                      (unless (and (string-match "<apps>" trans-key)
+                                   (not (lookup-key (current-global-map) (read-kbd-macro "<apps>"))))
+                        (setq cmd nil)))))
                 (when cmd
                   (if (condition-case err
                           (keymapp (symbol-value cmd))

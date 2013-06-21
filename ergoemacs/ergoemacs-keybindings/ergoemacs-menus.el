@@ -458,9 +458,9 @@
         (search-backward menu-item "    Backward..." search-backward)
         (re-search-forward menu-item "Regexp Forward..." re-search-forward)
         (re-search-backward menu-item "    Backward..." re-search-backward)
-        (separator-repeat-search "--" )
+        (separator-repeat-search menu-item "--" )
         
-        (separator-isearch "--")
+        (separator-isearch menu-item "--")
         (i-search menu-item "Incremental Search"
                   (keymap
                    (isearch-forward menu-item "Forward String..." isearch-forward
