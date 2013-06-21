@@ -15,24 +15,25 @@
 
 ;;; HISTORY
 
-; 2013-05-10 improved on “xhm-make-citation”
-; 2013-04-29 added xhm-change-current-tag
-;; version 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
-;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
-;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
-;; version 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
-;; version 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
-;; version 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
-;; version 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
-;; version 0.5.6, 2013-02-16 added xhm-replace-html-named-entities
-;; version 0.5.5, 2013-02-03 added xhm-replace-html-&<>-to-entities, xhm-replace-html-chars-to-unicode
-;; version 0.5.4, 2013-01-26 lots additions and changes. added xhm-wrap-html-tag xhm-wrap-p-tag xhm-lines-to-html-list xhm-make-html-table xhm-wikipedia-linkify xhm-wrap-url xhm-wikipedia-url-linkify xhm-source-url-linkify xhm-make-link-defunct xhm-make-citation xhm-update-title xhm-extract-url xhm-remove-html-tags xhm-remove-span-tag-region xhm-htmlize-keyboard-shortcut-notation
-;; version 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work.
-;; version 0.5.2, 2012-09-25 added a color for curly quoted text.
-;; version 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
-;; version 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
-;; version 0.3, 2012-05-13 added comment handling. improved syntax coloring. Added keymap and syntax table."
-;; version 0.2, 2012-05-12 first version
+;; 0.6.6, 2013-06-20 critical bug-fix on xhm-htmlize-or-de-precode. Before, it'll just remove html entities for & < >.
+;; 0.6.5, 2013-05-10 improved on “xhm-make-citation”
+;; 0.6.4, 2013-04-29 added xhm-change-current-tag
+;; 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
+;; 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
+;; 0.6.1, 2013-04-21 added xhm-pre-source-code.
+;; 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
+;; 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
+;; 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
+;; 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
+;; 0.5.6, 2013-02-16 added xhm-replace-html-named-entities
+;; 0.5.5, 2013-02-03 added xhm-replace-html-&<>-to-entities, xhm-replace-html-chars-to-unicode
+;; 0.5.4, 2013-01-26 lots additions and changes. added xhm-wrap-html-tag xhm-wrap-p-tag xhm-lines-to-html-list xhm-make-html-table xhm-wikipedia-linkify xhm-wrap-url xhm-wikipedia-url-linkify xhm-source-url-linkify xhm-make-link-defunct xhm-make-citation xhm-update-title xhm-extract-url xhm-remove-html-tags xhm-remove-span-tag-region xhm-htmlize-keyboard-shortcut-notation
+;; 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work.
+;; 0.5.2, 2012-09-25 added a color for curly quoted text.
+;; 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
+;; 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
+;; 0.3, 2012-05-13 added comment handling. improved syntax coloring. Added keymap and syntax table."
+;; 0.2, 2012-05-12 first version
 
 (require 'ido)
 (require 'xfrp_find_replace_pairs)
@@ -451,7 +452,7 @@ This command does the reverse of `xhm-htmlize-precode'."
 (defun xhm-precode-htmlized-p (inputStr)
   "return true if inputStr is htmlized code."
   (let ()
-    (string-match "<span class=\\|&amp;\\|&lt;\\|&gt;" inputStr)
+    (string-match "<span class=" inputStr)
   ))
 
 
