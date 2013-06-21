@@ -193,7 +193,7 @@ Valid values are:
     (condition-case nil
         (progn
           ;; Fix shifted commands.
-          (when (and (string-match "\\(^\\|-\\)M-" (key-description (this-single-command-keys))) ;; Alt command
+          (when (and (string-match "\\(^\\|-\\)M-" (key-descrtion (this-single-command-keys))) ;; Alt command
                      (or (eq (get this-command 'CUA) 'move)
                          (memq this-command ergoemacs-movement-functions)))
             (setq do-it nil))
@@ -744,7 +744,8 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                         (define-key ergoemacs-M-o-keymap  [timeout] (symbol-value cmd))
                       (define-key ergoemacs-M-o-keymap  [timeout] cmd))
                     (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
-                        (message "Variable: %s (%s) -> %s %s via ergoemacs-M-o" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))
+                        (message "Variable: %s (%s) -> %s %s via ergoemacs-M-o" trans-key
+                                 (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))
                 (when (string-match "<\\(apps\\|menu\\)>" trans-key)
                   ;; Retain globally defined <apps> or <menu> defines.
                   (setq cmd-tmp (lookup-key (current-global-map) key t))
@@ -1356,18 +1357,12 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (when ergoemacs-global-not-changed-cache
     (delete (key-description key) ergoemacs-global-not-changed-cache))
   (if (string-match "<\\(apps\\|menu\\)>" (key-description key))
-      (progn
+      (let ((no-ergoemacs-advice t))
         (define-key ergoemacs-keymap key nil);; Take care of prefix
         ;; commands.
         (define-key ergoemacs-keymap key command))
     (let ((no-ergoemacs-advice t))
-      (define-key ergoemacs-keymap key nil)))
-  (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
-    ;; Install keymap
-    (if x
-        (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
-    (add-to-list 'minor-mode-map-alist
-                 `(ergoemacs-mode  ,(symbol-value 'ergoemacs-keymap)))))
+      (define-key ergoemacs-keymap key nil))))
 
 (defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
   "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
@@ -1378,13 +1373,7 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (when ergoemacs-global-not-changed-cache
     (delete (key-description key) ergoemacs-global-not-changed-cache))
   (let ((no-ergoemacs-advice t))
-    (define-key ergoemacs-keymap key nil))
-  (let ((x (assq 'ergoemacs-mode minor-mode-map-alist)))
-    ;; Install keymap
-    (if x
-        (setq minor-mode-map-alist (delq x minor-mode-map-alist)))
-    (add-to-list 'minor-mode-map-alist
-                 `(ergoemacs-mode  ,(symbol-value 'ergoemacs-keymap)))))
+    (define-key ergoemacs-keymap key nil)))
 
 ;; Org edit source bug fix to allow C-s to save the org file in a
 ;; source snippet.
