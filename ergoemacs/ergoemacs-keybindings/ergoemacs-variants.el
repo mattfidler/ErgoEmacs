@@ -189,6 +189,7 @@
     ("C-0" ergoemacs-text-scale-normal-size)
     ;; --------------------------------------------------
     ;; STANDARD SHORTCUTS
+    ;; See http://en.wikipedia.org/wiki/Table_of_keyboard_shortcuts
     ("C-n" ergoemacs-new-empty-buffer "New Buffer")
     ("C-S-n" make-frame-command "New Frame")
     ("C-o" find-file "Edit File")
@@ -202,6 +203,11 @@
     ("C-S-z" redo "↷ redo")
     ("C-y" redo "↷ redo")
     ("C-z" undo "↶ undo")
+    
+    ("<M-backspace>" undo "↶ undo")
+    ("<S-delete>" ergoemacs-cut-line-or-region "✂ region")
+    ("<C-insert>" ergoemacs-copy-line-or-region "copy")
+    ("<S-insert>" yank "paste")
     
     ("C-f" isearch-forward "Search")
     

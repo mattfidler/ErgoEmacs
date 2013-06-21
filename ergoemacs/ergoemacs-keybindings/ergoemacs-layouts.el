@@ -146,7 +146,7 @@
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
   "Italian layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
 
-(defvar ergoemacs-layout-sp
+(defvar ergoemacs-layout-es
   '("" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0" "'" "¡" ""
     "" ""  "q" "w" "e" "r" "t" "y" "u" "i" "o" "p" "`" "+" ""
     "" ""  "a" "s" "d" "f" "g" "h" "j" "k" "l" "ñ" "'" "ç" ""
@@ -157,6 +157,8 @@
     "" ""  "A" "S" "D" "F" "G" "H" "J" "K" "L" "Ñ" "\"" "Ç" ""
     "" ">"  "Z" "X" "C" "V" "B" "N" "M" ";" ":" "_" "" "" "")
   "Spanish layout. URL `http://en.wikipedia.org/wiki/Keyboard_layout'")
+
+(defvaralias 'ergoemacs-layout-sp 'ergoemacs-layout-es)
 
 (defvar ergoemacs-layout-fr
   '("" "²" "&" "é" "\"" "'" "(" "-" "è" "_" "ç" "à" ")" "=" ""
@@ -266,21 +268,39 @@
          (concat "\"" lay "\" (" doc ")" (if is-alias ", alias" ""))))
      lays "\n")))
 
+
+(defun ergoemacs-reset-layouts ()
+  "Reset Layout information"
+  (interactive)
+  (setq ergoemacs-get-layouts-no-aliases nil)
+  (setq ergoemacs-get-layouts-aliases nil))
+
+(defvar ergoemacs-get-layouts-no-aliases nil)
+(defvar ergoemacs-get-layouts-aliases nil)
+
 (defun ergoemacs-get-layouts (&optional aliases ob)
   "Gets the list of all known layouts"
-  (let (ret)
-    (mapatoms
-     (lambda(s)
-       (let ((sn (symbol-name s)))
-         (and (string-match "^ergoemacs-layout-" sn)
-              (if (or aliases
-                      (and (not aliases)
-                           (documentation-property
-                            (intern sn) 'variable-documentation)))
-                  (setq ret (cons (replace-regexp-in-string "ergoemacs-layout-" "" sn) ret)))
-              )))
-     ob)
-    ret))
+  (if (and ergoemacs-get-layouts-no-aliases
+           (not aliases))
+      (symbol-value 'ergoemacs-get-layouts-no-aliases)
+    (if (and ergoemacs-get-layouts-aliases
+             aliases)
+        (symbol-value 'ergoemacs-get-layouts-aliases)
+      (let (ret)
+        (mapatoms
+         (lambda(s)
+           (let ((sn (symbol-name s)))
+             (and (string-match "^ergoemacs-layout-" sn)
+                  (if (or aliases
+                          (and (not aliases)
+                               (documentation-property
+                                (intern sn) 'variable-documentation)))
+                      (setq ret (cons (replace-regexp-in-string "ergoemacs-layout-" "" sn) ret))))))
+         ob)
+        (if aliases
+            (setq ergoemacs-get-layouts-aliases)
+          (setq ergoemacs-get-layouts-no-aliases))
+        ret))))
 
 (provide 'ergoemacs-layouts)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -14,24 +14,25 @@ your mindset when you switch in and out of emacs. The following are
 supported standard keys in Windows, Mac OS X, and Linux. (Mac uses Cmd
 instead of Ctrl.)
 
-|---------------+--------------+----------------------|
-| Standard name | Key press    | Emacs command name   |
-|---------------+--------------+----------------------|
-| Copy          | Ctrl+c       | kill-ring-save       |
-| Cut           | Ctrl+x       | kill-region          |
-| Paste         | Ctrl+v       | yank                 |
-| Undo          | Ctrl+z       | undo                 |
-| Redo          | Ctrl+Shift+z | redo                 |
-| Redo          | Ctrl+y       | redo                 |
-| Open New File | Ctrl+n       | new-empty-buffer     |
-| Open          | Ctrl+o       | find-file            |
-| Close         | Ctrl+w       | close-current-buffer |
-| Save          | Ctrl+s       | save-buffer          |
-| Save As       | Ctrl+Shift+s | write-file           |
-| Print         | Ctrl+p       | print-buffer         |
-| Select All    | Ctrl+a       | mark-whole-buffer    |
-| Find          | Ctrl+f       | search-forward       |
-|---------------+--------------+----------------------|
+|---------------+-----------------+----------------------|
+| Standard name | Key press       | Emacs command name   |
+|---------------+-----------------+----------------------|
+| Copy          | Ctrl+c          | kill-ring-save       |
+| Cut           | Ctrl+x          | kill-region          |
+| Paste         | Ctrl+v          | yank                 |
+| Undo          | Ctrl+z          | undo                 |
+| Undo          | Alt+<backspace> | undo                 |
+| Redo          | Ctrl+Shift+z    | redo                 |
+| Redo          | Ctrl+y          | redo                 |
+| Open New File | Ctrl+n          | new-empty-buffer     |
+| Open          | Ctrl+o          | find-file            |
+| Close         | Ctrl+w          | close-current-buffer |
+| Save          | Ctrl+s          | save-buffer          |
+| Save As       | Ctrl+Shift+s    | write-file           |
+| Print         | Ctrl+p          | print-buffer         |
+| Select All    | Ctrl+a          | mark-whole-buffer    |
+| Find          | Ctrl+f          | search-forward       |
+|---------------+-----------------+----------------------|
 
 Standard shortcuts for cursor navigation are also supported. Example:
 【Ctrl+Left】 ⇒ go to previous word, Home ⇒ beginning of line, 【⇧
