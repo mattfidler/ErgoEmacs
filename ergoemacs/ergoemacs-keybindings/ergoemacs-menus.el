@@ -459,17 +459,24 @@
         (re-search-forward menu-item "Regexp Forward..." re-search-forward)
         (re-search-backward menu-item "    Backward..." re-search-backward)
         (separator-repeat-search menu-item "--" )
-        
+        (repeat-forward menu-item "Repeat Forward" nonincremental-repeat-search-forward
+                        :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
+                                    (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))
+                        :help "Repeat last search forward")
+        (repeat-backward menu-item "    Repeat Backward" nonincremental-repeat-search-backward
+                        :enable (or (and (memq menu-bar-last-search-type '(string word)) search-ring)
+                                    (and (eq menu-bar-last-search-type 'regexp) regexp-search-ring))
+                        :help "Repeat last search forward")
         (separator-isearch menu-item "--")
         (i-search menu-item "Incremental Search"
                   (keymap
                    (isearch-forward menu-item "Forward String..." isearch-forward
                                     :help "Search forward for a string as you type it")
-                   (isearch-backward menu-item "Backward String..." isearch-backward
+                   (isearch-backward menu-item "    Backward..." isearch-backward
                                      :help "Search backwards for a string as you type it")
                    (isearch-forward-regexp menu-item "Forward Regexp..." isearch-forward-regexp
                                            :help "Search forward for a regular expression as you type it")
-                   (isearch-backward-regexp menu-item "Backward Regexp..." isearch-backward-regexp
+                   (isearch-backward-regexp menu-item "    Backward..." isearch-backward-regexp
                                             :help "Search backwards for a regular expression as you type it")
                    "Incremental Search"))
         
@@ -487,6 +494,13 @@
                   (tags-repl-continue menu-item "Continue Replace" tags-loop-continue
                                       :help "Continue last tags replace operation")
                   "Replace"))
+        (grep menu-item "Grep..." grep
+              :enable (executable-find "grep"))
+        (occur menu-item "Occurrences in buffer..." occur
+               :help "Show Lines in a buffer that match a regular expression")
+        (moccur menu-item "Occurrences in all buffers..." multi-occur
+               :help "Show Lines in all buffers that match a regular expression")
+        (separator-go-to menu-item "--" )
         
         (goto menu-item "Go To"
               (keymap
