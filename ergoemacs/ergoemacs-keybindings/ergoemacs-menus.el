@@ -49,6 +49,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
+
+(defvar ergoemacs-xah-emacs-lisp-tutorial-url
+  "http://ergoemacs.org/emacs/elisp.html")
+
 (defun ergoemacs-kbd-to-key (key)
   "Converts key Emacs key code to ergoemacs-key-code."
   (let ((case-fold-search nil))
@@ -57,7 +61,7 @@
      (replace-regexp-in-string
       "<" ""
       (replace-regexp-in-string
-       ">" ""
+       "?" ""
        (replace-regexp-in-string
         "\\bRET\\b" "ENTER"
         (replace-regexp-in-string
@@ -128,6 +132,7 @@
 
 
 (defvar ergoemacs-menu-bar-old-file-menu (lookup-key global-map [menu-bar file]))
+
 (defvar ergoemacs-menu-bar-file-menu nil)
 
 (defun ergoemacs-menu-bar-file-menu ()
@@ -533,16 +538,140 @@
         
         (bookmark menu-item "Bookmarks" menu-bar-bookmark-map)
         "Search"))
+
+;;; `Help' menus
 
+(defvar ergoemacs-menu-bar-old-help-menu (lookup-key global-map [menu-bar help-menu]))
+
+(setq ergoemacs-menu-bar-help-menu
+      '(keymap
+        ;; Adapted from Menu-bar+
+        (whoops menu-item "Whoops!?"
+                (keymap
+                 (what-did-i-do
+                  menu-item "What did I do !?"
+                  view-lossage
+                  :help "Display last 100 input keystrokes")
+                 (exit-recurive-edit
+                  menu-item "Exit Recursive Editing"
+                  top-level
+                  :help "Exit all Recursive editing Levels")
+                 (keyboard-quit
+                  menu-item "Cancel Current Action"
+                  keyboard-quit
+                  :help "Quit any operation in progress")))
+        
+        (help-for-help menu-item "Help for Help..."
+                       help-for-help
+                       :help "Emacs main help command")
+        (separator-1 menu-item  "--")
+        (describe menu-item "Describe"
+                  (keymap
+                   (function menu-item "Function..."
+                             describe-function
+                             :help "Describe command or other function")
+                   (variable menu-item "Variable..."
+                             describe-variable
+                             :help "Describe an emacs user option or other variable.")
+                   (face menu-item "Face..."
+                             describe-face
+                             :help "Describe a face")
+                   (key menu-item "Key..."
+                             describe-key
+                             :help "Describe a command bound to a key")
+                   (input menu-item "Input Method..."
+                             describe-input-method)
+                   (coding menu-item "Coding System..."
+                             describe-coding-system)
+                   (separator-curr-modes menu-item "--")
+                   (curr-modes menu-item "Current Modes"
+                               describe-modes
+                               :help "Describe this buffers major and minor modes.")
+                   (curr-keys menu-item "Current Key Bindings"
+                              describe-bindings
+                              :help "List all key-bindings with brief descriptions.")
+                   (curr-syntax menu-item "Current Syntax Table"
+                                describe-syntax
+                                :help "Describe the syntax specifications in the current syntax table")))
+        (learn-more menu-item "Learn More"
+                    (keymap
+                     (emacs menu-item"Emacs"
+                            (keymap
+                             (manual menu-item
+                                     "Manual"
+                                     info-emacs-manual)
+                             (command-desc menu-item
+                                           "    Command Description..."
+                                           Info-goto-emacs-command-node
+                                           :help "Show emacs manual section about a command")
+                             ;; Useless for ergoemacs...
+                             ;; (key-desc menu-item
+                             ;;           "    Key Description..."
+                             ;;           Info-goto-emacs-key-command-node
+                             ;;           :help "Show Emacs manual
+                             ;;           section that describes a key
+                             ;;           sequence.")
+                             (index menu-item
+                                    "    Index..."
+                                    emacs-index-search
+                                    :help "Lookup topic in Emacs manual")
+                             (glossary menu-item
+                                       "    Glossary"
+                                       search-emacs-glossary)
+                             (separator-emacs menu-item "--")
+                             (faq menu-item
+                                  "FAQ"
+                                  view-emacs-FAQ
+                                  :help "Read frequently asked questions about Emacs (with answers)")
+                             (whats-new menu-item
+                                        "What's new"
+                                        view-emacs-news
+                                        :help "New features of emacs")
+                             (known-problems menu-item
+                                             "Known problems"
+                                             view-emacs-problems
+                                             :help "Known problems of this Emacs version.")))
+                     (emacs-lisp menu-item "Emacs Lisp"
+                                 (keymap
+                                  (xah-lisp menu-item
+                                            "Xah Emacs Lisp Tutorial"
+                                            (lambda() (interactive)
+                                              (browse-url ergoemacs-xah-emacs-lisp-tutorial-url))
+                                            :help "Read Emacs Lisp Tutorial")
+                                  
+                                  (intro menu-item
+                                         "Intro to Elisp"
+                                         (lambda() (interactive)
+                                           (info "eintr"))
+                                         :help "Read introduction to Emacs Lisp")
+                                  (manual menu-item
+                                          "Manual"
+                                          (lambda() (interactive) (info "elisp"))
+                                          :help "Read Emacs Lisp reference Manual")
+                                  (index menu-item
+                                         "    Index..."
+                                         elisp-index-search
+                                         :help "Lookup topic in emacs lisp manual")
+                                  (elisp-separator menu-item "--")
+                                  (locate-library menu-item "Locate Library"
+                                                  locate-library
+                                                  :help "Locate lisp library"))))) 
+        (separator-2 menu-item "--")
+        (send-bug-report menu-item "Send Emacs Bug Report"
+                         report-emacs-bug)
+        "?"))
 
 ;; Preprocess menu keybindings...
 
 (defun ergoemacs-menus-on ()
   "Turn on ergoemacs menus instead of emacs menus."
   (interactive)
-  (ergoemacs-menu-bar-file-menu)
+  (ergoemacs-menu-bar-file-menu )
   (ergoemacs-preprocess-menu-keybindings ergoemacs-menu-bar-edit-menu)
   (ergoemacs-preprocess-menu-keybindings ergoemacs-menu-bar-search-menu)
+  ;; Remove help menu
+  (define-key global-map [menu-bar help-menu]
+    (cons "?" ergoemacs-menu-bar-help-menu))
   (define-key global-map [menu-bar file] (cons "File" ergoemacs-menu-bar-file-menu))
   (define-key global-map [menu-bar edit] (cons "Edit" ergoemacs-menu-bar-edit-menu))
   (define-key-after global-map [menu-bar search] (cons "Search" ergoemacs-menu-bar-search-menu)
@@ -553,7 +682,9 @@
   (interactive)
   (define-key global-map [menu-bar file] (cons "File" ergoemacs-menu-bar-old-file-menu))
   (define-key global-map [menu-bar edit] (cons "Edit" ergoemacs-menu-bar-old-edit-menu))
-  (define-key global-map [menu-bar search] nil))
+  (define-key global-map [menu-bar search] nil)
+  (define-key global-map [menu-bar help-menu]
+    ("Help" ergoemacs-menu-bar-old-help-menu)))
 
 (ergoemacs-menus-on)
 (provide 'ergoemacs-menus)
