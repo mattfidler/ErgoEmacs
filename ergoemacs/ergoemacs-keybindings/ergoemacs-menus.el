@@ -237,6 +237,11 @@
         (separator-search menu-item "--")
         (blank-operations menu-item "Blank/Whitespace Operations"
                           (keymap
+                           (trim-trailing-space menu-item
+                                                "Trim Trailing Space"
+                                                delete-trailing-whitespace
+                                                :help "Trim Trailing spaces on each line")
+                           (separator-tabify menu-item "--")
                            (tabify-region menu-item
                                           "Change multiple spaces to tabs (Tabify)"
                                           (lambda() (interactive)
