@@ -53,6 +53,9 @@
 (defvar ergoemacs-xah-emacs-lisp-tutorial-url
   "http://ergoemacs.org/emacs/elisp.html")
 
+(defvar ergoemacs-mode-web-page-url
+  "http://mlf176f2.github.io/ErgoEmacs/")
+
 (defun ergoemacs-kbd-to-key (key)
   "Converts key Emacs key code to ergoemacs-key-code."
   (let ((case-fold-search nil))
@@ -565,6 +568,29 @@
                        help-for-help
                        :help "Emacs main help command")
         (separator-1 menu-item  "--")
+        (apropos menu-item "Apropos (Find matching)"
+                 (keymap
+                  (commands menu-item "Commands..."
+                            apropos-commands
+                            :help "Find commands matching a regular expression")
+                  (user-options menu-item "User Options..."
+                                apropos-user-options
+                                :help "Find user options matching a regular expression")
+                  (all-vars menu-item "All Variables..."
+                            apropos-variable
+                            :help "Find a variable that matches a regular expression")
+                  (var-values menu-item "Variable Values..."
+                              apropos-value
+                              :help "Find variable values that matches a regular expression.")
+                  (symbols menu-item "Symbols..."
+                           apropos
+                           :help "Find functions/variables that match a regular expression.")
+                  (symbol-desc menu-item "Symbol Descriptions (Doc)..."
+                               apropos-documentation
+                               :help "Find functions/variables whose documentation match a regular expression")
+                  (tags menu-item "Tags..."
+                        tags-apropos
+                        :help "Find Tags Matching Regular Expression")))
         (describe menu-item "Describe"
                   (keymap
                    (function menu-item "Function..."
@@ -655,10 +681,41 @@
                                   (elisp-separator menu-item "--")
                                   (locate-library menu-item "Locate Library"
                                                   locate-library
-                                                  :help "Locate lisp library"))))) 
+                                                  :help "Locate lisp library")))
+                     (last-accessed-info menu-item "Last Accessed Manual (Info)"
+                                         info
+                                         :help "Open Info, at the last doc place visited.")
+                     (info-dir menu-item "All Manuals (`Info')"
+                               Info-directory
+                               :help "Open a list of all the info docs.")
+                     (man-dir menu-item "Unix Man Pages..."
+                              woman
+                              :help "Unix Manual entries (with WoMan)"))) 
         (separator-2 menu-item "--")
+
+        (eroemacs-current-keybindings menu-item
+                                      "Current Ergoemacs Keybindings"
+                                      ergoemacs-display-current-svg)
+        
+        (ergoemacs-mode-web-page menu-item
+                                 "Ergoemacs-mode web-page"
+                                 (lambda() (interactive)
+                                   (browse-url ergoemacs-mode-web-page-url))
+                                 :help "Online help about ergoemacs.")
+        
+        (separator-3 menu-item "--")
         (send-bug-report menu-item "Send Emacs Bug Report"
-                         report-emacs-bug)
+                         report-emacs-bug
+                         :help "Report an emacs bug.")
+        
+        (emacs-web-page menu-item "Emacs Web Page"
+                        (lambda() (interactive)
+                          (browse-url "http://www.gnu.org/software/emacs/"))
+                        :help "Emacs Web Page")
+
+        (separator-licence menu-item "--")
+        (license menu-item "License"
+                 describe-copying)
         "?"))
 
 ;; Preprocess menu keybindings...
