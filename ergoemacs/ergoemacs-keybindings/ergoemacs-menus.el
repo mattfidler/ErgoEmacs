@@ -137,7 +137,8 @@
 (defvar ergoemacs-menu-bar-old-file-menu (lookup-key global-map [menu-bar file]))
 
 (defvar ergoemacs-menu-bar-file-menu nil)
-
+
+;;; `File' menu
 (defun ergoemacs-menu-bar-file-menu ()
   "Creates Ergoemacs File Menu"
   (setq ergoemacs-menu-bar-file-menu
@@ -195,6 +196,7 @@
           "File"))
   (ergoemacs-preprocess-menu-keybindings ergoemacs-menu-bar-file-menu))
 
+;;; `Edit' Menu
 (defvar ergoemacs-menu-bar-old-edit-menu (lookup-key global-map [menu-bar edit]))
 
 (setq ergoemacs-menu-bar-edit-menu
@@ -465,6 +467,7 @@
         (props menu-item "Text Properties" facemenu-menu)
         "Edit"))
 
+;;; `Search' menu
 (setq ergoemacs-menu-bar-search-menu
       '(keymap
         (search-forward menu-item "String Forward..." search-forward)
@@ -546,6 +549,97 @@
         
         (bookmark menu-item "Bookmarks" menu-bar-bookmark-map)
         "Search"))
+
+;;; `View' menu
+
+(setq ergoemacs-menu-bar-view-menu
+      `(keymap
+        (menu-font-size menu-item "Zoom"
+                        (keymap
+                         (zoom-in menu-item "Zoom In" text-scale-increase)
+                         (zoom-out menu-item "Zoom Out" text-scale-decrease)
+                         (zoom-reset menu-item "Zoom Reset" text-scale-normal-size)))
+        
+        (menu-set-font menu-item "Set Default Font..." menu-set-font :visible
+                       (display-multi-font-p)
+                       :help "Select a default font" :keys "")
+        
+        ,(when (fboundp 'customize-themes)
+           '(color-theme menu-item "Customize Color Themes" customize-themes
+                         :help "Customize Emacs Themes."))
+        
+        (separator-font-size menu-item "--")
+
+        (highlight-current-line menu-item "Highlight Current Line" global-hl-line-mode
+                                :help "Have the cursor line always Highlighted"
+                                :button (:toggle . (and (boundp 'global-hl-line-mode)
+                                                        global-hl-line-mode)))
+
+        (paren-mode menu-item "Highlight Matching Parentheses" show-paren-mode
+                    :button (:toggle . show-paren-mode))
+
+        (ruler-mode menu-item "Ruler Mode" ruler-mode
+                    :button (:toggle . ruler-mode))
+
+        (blink-cursor menu-item "Cursor Blink" blink-cursor-mode
+                      :button (:toggle . blink-cursor-mode))
+
+        ;; (tabbar-mode menu-item "Tabbar Mode" tabbar-mode
+        ;;              :button (:toggle . tabbar-mode))
+
+        ;; Need to figure out how to install tabbar-ruler easily.
+        ;; (tabbar-ruler menu-item "Tabbar"
+        ;;               (lambda()
+        ;;                 (interactive)
+        ;;                 (unless (package-installed-p 'tabbar-ruler)
+        ;;                   (package-install 'tabbar-ruler))
+        ;;                 ))
+        
+        
+        ;; (showhide-tool-bar menu-item "Tool-bar" tool-bar-mode :help "Turn tool-bar on/off"
+        ;;                    :button (:toggle . tool-bar-mode))
+        
+        ;; (menu-bar-mode menu-item "Menu-bar" toggle-menu-bar-mode-from-frame :help "Turn menu-bar on/off" :button
+        ;;                (:toggle menu-bar-positive-p
+        ;;                         (frame-parameter
+        ;;                          (menu-bar-frame-for-menubar)
+        ;;                          'menu-bar-lines))
+        ;;                :keys "")
+
+        ;; (showhide-tooltip-mode menu-item "Tooltips" tooltip-mode :help "Turn tooltips on/off" :visible
+        ;;                        (and
+        ;;                         (display-graphic-p)
+        ;;                         (fboundp 'x-show-tip))
+        ;;                        :button
+        ;;                        (:toggle . tooltip-mode)
+        ;;                        :keys "")
+        (separator-speedbar menu-item "--")
+        ;; (showhide-scroll-bar)
+        ;; (showhide-fringe)
+
+        (showhide-speedbar menu-item "Speedbar" speedbar-frame-mode :help "Display a Speedbar quick-navigation frame" :button
+                           (:toggle and
+                                    (boundp 'speedbar-frame)
+                                    (frame-live-p
+                                     (symbol-value 'speedbar-frame))
+                                    (frame-visible-p
+                                     (symbol-value 'speedbar-frame)))
+                           :keys "")
+        ;; (datetime-separator)
+        ;; (showhide-date-time)
+        (linecolumn-separator "--")
+        (line-number-mode menu-item "Line Numbers" line-number-mode :help "Show the current line number in the mode line" :button
+                          (:toggle and
+                                   (default-boundp 'line-number-mode)
+                                   (default-value 'line-number-mode))
+                          :keys "")
+        (global-whitespace-mode menu-item "Show/Hide whitespaces" global-whitespace-mode :button
+                                (:toggle . global-whitespace-mode)
+                                :keys "")
+        (global-linum-mode menu-item "Show/Hide line numbers in margin" global-linum-mode :button
+                           (:toggle . global-linum-mode)
+                           :keys "")))
+
 
 ;;; `Help' menus
 
@@ -737,7 +831,9 @@
   (define-key global-map [menu-bar file] (cons "File" ergoemacs-menu-bar-file-menu))
   (define-key global-map [menu-bar edit] (cons "Edit" ergoemacs-menu-bar-edit-menu))
   (define-key-after global-map [menu-bar search] (cons "Search" ergoemacs-menu-bar-search-menu)
-    'edit))
+    'edit)
+  (define-key-after global-map [menu-bar view] (cons "View" ergoemacs-menu-bar-view-menu)
+    'search))
 
 (defun ergoemacs-menus-off ()
   "Turn off ergoemacs menus instead of emacs menus"
@@ -745,10 +841,11 @@
   (define-key global-map [menu-bar file] (cons "File" ergoemacs-menu-bar-old-file-menu))
   (define-key global-map [menu-bar edit] (cons "Edit" ergoemacs-menu-bar-old-edit-menu))
   (define-key global-map [menu-bar search] nil)
+  (define-key global-map [menu-bar view] nil)
   (define-key global-map [menu-bar help-menu]
     ("Help" ergoemacs-menu-bar-old-help-menu)))
 
-(ergoemacs-menus-on)
+;;(ergoemacs-menus-on)
 (provide 'ergoemacs-menus)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-menus.el ends here
