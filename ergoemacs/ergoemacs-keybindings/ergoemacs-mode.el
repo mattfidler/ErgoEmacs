@@ -722,6 +722,9 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (ergoemacs-get-kbd-translation (nth 0 x)))
           (when (or (string-match "<\\(apps\\|menu\\)>" trans-key)
                     (not (ergoemacs-global-changed-p trans-key t)))
+            ;; Add M-O and M-o handling for globally defined M-O and
+            ;; M-o.
+            ;; Only works if ergoemacs-mode is on...
             (setq cmd (nth 1 x))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
             (if (and ergoemacs-fix-M-O (string= (ergoemacs-kbd trans-key t t) "M-O"))
@@ -771,7 +774,26 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                     (define-key ,keymap  key cmd))
                   (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
                       (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key))))))))
-      (symbol-value (ergoemacs-get-variable-layout)))))
+      (symbol-value (ergoemacs-get-variable-layout)))
+     (when ergoemacs-fix-M-O
+       (let ((M-O (lookup-key ,keymap (read-kbd-macro "M-O")))
+             (g-M-O (lookup-key global-map (read-kbd-macro "M-O")))
+             (M-o (lookup-key ,keymap (read-kbd-macro "M-o")))
+             (g-M-o (lookup-key global-map (read-kbd-macro "M-o"))))
+         (when ergoemacs-debug
+           (message "M-O %s; Global M-O: %s; M-o %s; Global M-o: %s" M-O g-M-O M-o g-M-o))
+         (when (and (not (functionp M-O))
+                    (functionp g-M-O))
+           (when ergoemacs-debug
+             (message "Fixed M-O"))
+           (define-key ,keymap (read-kbd-macro "M-O") 'ergoemacs-M-O)
+           (define-key ergoemacs-M-O-keymap [timeout] g-M-O))
+         (when (and (not (functionp M-o))
+                    (functionp g-M-o))
+           (when ergoemacs-debug
+             (message "Fixed M-o"))
+           (define-key ,keymap (read-kbd-macro "M-o") 'ergoemacs-M-o)
+           (define-key ergoemacs-M-o-keymap [timeout] g-M-o))))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
@@ -1363,8 +1385,18 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
         (define-key ergoemacs-keymap key nil);; Take care of prefix
         ;; commands.
         (define-key ergoemacs-keymap key command))
-    (let ((no-ergoemacs-advice t))
-      (define-key ergoemacs-keymap key nil))))
+    (if (and ergoemacs-fix-M-O
+             (string= "M-O" (key-description key)))
+        (let ((no-ergoemacs-advice t))
+          (define-key ergoemacs-keymap key 'ergoemacs-M-O)
+          (define-key ergoemacs-M-O-keymap [timeout] command))
+      (if (and ergoemacs-fix-M-O
+               (string= "M-o" (key-description key)))
+          (let ((no-ergoemacs-advice t))
+            (define-key ergoemacs-keymap key 'ergoemacs-M-o)
+            (define-key ergoemacs-M-o-keymap [timeout] command)))
+      (let ((no-ergoemacs-advice t))
+        (define-key ergoemacs-keymap key nil)))))
 
 (defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
   "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
