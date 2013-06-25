@@ -750,6 +750,134 @@ With a prefix, force regeneration. "
            (ergoemacs-open-in-external-app file)))))
     (symbol-value 'file)))
 
+
+(defun ergoemacs-copy-full-path (&optional arg)
+  "Copies full path to clipboard.
+If arg is nil, copy file name only.
+If arg is a negative prefix, copy file path only"
+  (interactive "p")
+  (let ((fn (buffer-file-name)))
+    (if (or (eq arg '-) (< arg 0))
+        (setq fn (file-name-directory fn))
+      (when current-prefix-arg
+        (setq fn (file-name-nondirectory fn))))
+    (with-temp-buffer
+      (insert fn)
+      (mark-whole-buffer)
+      (ergoemacs-cut-line-or-region))))
+
+(defun ergoemacs-copy-file-name ()
+  "Copy File Name"
+  (interactive)
+  (let ((current-prefix-arg 1))
+    (ergoemacs-copy-full-path 1)))
+
+(defun ergoemacs-copy-dir-path ()
+  "Copy File Name"
+  (interactive)
+  (ergoemacs-copy-full-path '-))
+
+(defun ergoemacs-eol-p (eol-type)
+  "Does this file match the eol-type dos, mac or unix"
+  (save-match-data
+    (string-match (symbol-name eol-type) (symbol-name buffer-file-coding-system))))
+
+(defun ergoemacs-eol-conversion (new-eol)
+  "Converts file to new EOL"
+  (let ((current-coding (symbol-name buffer-file-coding-system))
+        new-coding)
+    (setq new-coding
+          (intern (replace-regexp-in-string
+                   "\\(unix\\|dos\\|mac\\|\\)$"
+                   (cond
+                    ((eq 'dos new-eol)
+                     "dos")
+                    ((eq 'mac new-eol)
+                     "mac")
+                    (t
+                     "unix")) current-coding)))
+    (set-buffer-file-coding-system new-coding t)))
+
+;;; Unaccent region taken and modified from Drew Adam's unaccent.el
+
+(require 'strings nil t) ;; (no error if not found): region-description
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defvar ergoemacs-reverse-iso-chars-alist
+  '(;; Trema/umlaut (äëïöü) (ÄËÏÖÜ)
+    (?\344 . ?a)(?\353 . ?e)(?\357 . ?i)(?\366 . ?o)(?\374 . ?u)
+    (?\304 . ?A)(?\313 . ?E)(?\317 . ?I)(?\326 . ?O)(?\334 . ?U)
+    ;; Circumflex (âêîôû) (ÂÊÎÔÛ)
+    (?\342 . ?a)(?\352 . ?e)(?\356 . ?i)(?\364 . ?o)(?\373 . ?u)
+    (?\302 . ?A)(?\312 . ?E)(?\316 . ?I)(?\324 . ?O)(?\333 . ?U)
+    ;; Grave (àèìòù) (ÀÈÌÒÙ)
+    (?\340 . ?a)(?\350 . ?e)(?\354 . ?i)(?\362 . ?o)(?\371 . ?u)
+    (?\300 . ?A)(?\310 . ?E)(?\314 . ?I)(?\322 . ?O)(?\331 . ?U)
+    ;; Acute (áéíóúý) (ÁÉÍÓÚÝ)
+    (?\341 . ?a)(?\351 . ?e)(?\355 . ?i)(?\363 . ?o)(?\372 . ?u)(?\375 . ?y)
+    (?\301 . ?A)(?\311 . ?E)(?\315 . ?I)(?\323 . ?O)(?\332 . ?U)(?\335 . ?Y)
+    (?\347 . ?c)(?\307 . ?C)            ; Cedilla (çÇ)
+    ;; Tilde (ñãõÑÃÕ)
+    (?\361 . ?n)(?\343 . ?a)(?\365 . ?o)(?\321 . ?N)(?\303 . ?A)(?\325 . ?O)
+    (?\337 . "ss")                      ; S-zed (Beta) (ß)
+    (?\253 . ?")(?\273 . ?")            ; Guillemets -> double quotes («»)
+    (?\346 . "ae")(?\306 . "AE")        ; ae, AE (æÆ)
+    (?\370 . ?o)(?\330 . ?O)            ; Slashed O (øØ)
+    (?\260 . ?@)(?\345 . ?a)(?\305 . ?A) ; Angstrom (degree) (°åÅ)
+    (?\277 . ??)                        ; Upside-down question mark (¿)
+    (?\241 . ?!)                        ; Upside-down exclamation mark (¡)
+    ))
+
+;;;###autoload
+(defun ergoemacs-unaccent-word (num)
+  "Move curseur forward NUM (prefix arg) words, removing accents.
+Guillemet -> quote, degree -> @, s-zed -> ss, upside-down ?! -> ?!."
+  (interactive "p")
+  (let ((start (point)))
+    (forward-word num)
+    (ergoemacs-unaccent-region start (point) nil)))
+
+;;;###autoload
+(defun ergoemacs-unaccent-region (start end display-msgs)
+  "Replace accented chars between START and END by unaccented chars.
+Guillemet -> quote, degree -> @, s-zed -> ss, upside-down ?! -> ?!.
+When called from a program, third arg DISPLAY-MSGS non-nil means to
+display in-progress messages."
+  (interactive "r\nd")                  ; Display-msgs non-nil => interactive-p
+  (when (> start end)
+    (let ((temp end))
+      (setq end start)
+      (setq start temp)))
+  (when display-msgs
+    (message "Removing accents in region..."))
+  (save-excursion
+    (goto-char start)
+    (while (< (point) end)
+      (ergoemacs-unaccent-char)
+      (forward-char)))
+  (when display-msgs
+    (message "Removing accents in region...done")))
+
+(defsubst ergoemacs-accented-char-p (char)
+  "Non-nil iff CHAR is an accented character."
+  (and (>= char ?\240)(<= char ?\377))) ; SPC <= char <= ÿ
+
+;;;###autoload
+(defun ergoemacs-unaccent-char ()
+  "Replace accented char at curser by corresponding unaccented char(s).
+Guillemet -> quote, degree -> @, s-zed -> ss, upside-down ?! -> ?!."
+  (interactive)
+  (when (accented-char-p (following-char))
+    (let ((sans-accent (assoc (following-char) ergoemacs-reverse-iso-chars-alist)))
+      (delete-char 1)
+      (insert (cdr sans-accent))
+      (backward-char))))
+
+
+
+
 (provide 'ergoemacs-functions)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ergoemacs-functions.el ends here

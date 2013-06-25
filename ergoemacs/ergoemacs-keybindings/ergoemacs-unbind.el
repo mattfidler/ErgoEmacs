@@ -631,6 +631,23 @@
     ("C-x a i l" (inverse-add-mode-abbrev)))
   "Default Emacs Key Bindings")
 
+;;;###autoload
+(defun ergoemacs-ignore-prev-global ()
+  "Ignores previously defined global keys."
+  (setq ergoemacs-emacs-default-bindings
+        (mapcar
+         (lambda(elt)
+           (let ((first (car elt))
+                 (last (cdr elt))
+                 fn)
+             (setq fn (lookup-key global-map (read-kbd-macro first)))
+             (if (not (functionp fn))
+                 elt
+               (add-to-list 'last fn)
+               `(,first ,last))))
+         ergoemacs-emacs-default-bindings)))
+
+  
 (defun ergoemacs-format-where-is-buffer (&optional include-menu-bar include-alias)
   "Format a buffer created from a `where-is' command."
   (when (and (boundp 'fn)
