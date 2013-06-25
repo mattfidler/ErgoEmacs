@@ -285,7 +285,7 @@
 ; (mapcar (lambda (x) (car x)) xhm-lang-name-map)
 
 (defun xhm-get-precode-langCode ()
-  "Get the langCode and boundary of current HTML pre block.
+  "Get the langCode and position boundary of current HTML pre block.
 A pre block is text of this form
  <pre class=\"‹langCode›\">…▮…</pre>.
 Your cursor must be between the tags.
@@ -297,7 +297,8 @@ Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the t
         (progn
           (setq p1 (region-beginning) )
           (setq p2 (region-end) )
-          (setq langCode (read-string "langcode:"))
+          ;; (setq langCode (read-string "langcode:"))
+          (setq langCode (ido-completing-read "langcode:" (mapcar (lambda (x) (car x)) xhm-lang-name-map) ))
           (vector langCode p1 p2)
           )
 
@@ -319,6 +320,7 @@ Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the t
           (backward-char 1)
           (xhm-skip-tag-forward)
           (setq p2 (search-backward "<"))   ; text content end
+(message "thissss 「%s」" (vector langCode p1 p2)) ; todo xxxxxxxxx 2013-06-25
           (vector langCode p1 p2)
           ))
 
@@ -390,20 +392,23 @@ This function requires the `htmlize-buffer' from 〔htmlize.el〕 by Hrvoje Niks
   (let (ξlangCode p1 p2 inputStr ξmodeName )
 
     (save-excursion
-      (let (( ξxx (xhm-get-precode-langCode)))
-        (setq ξlangCode (elt ξxx 0))
-        (setq p1 (elt ξxx 1))
-        (setq p2 (elt ξxx 2))
+      (let* (
+            (ξxx (xhm-get-precode-langCode))
+            (ξlangCode (elt ξxx 0))
+            (p1 (elt ξxx 1))
+            (p2 (elt ξxx 2))
+            (ξmodeName (elt (cdr (assoc ξlangCode ξlangCodeMap)) 0))
+            )
+
+        ;; remove beginning or trailing whitespace
         (setq inputStr (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" (buffer-substring-no-properties p1 p2))) )
-        (setq ξmodeName (elt (cdr (assoc ξlangCode ξlangCodeMap)) 0))
-        )
+
       (progn
         (delete-region p1 p2 )
         (goto-char p1)
-        (insert (xhm-htmlize-string inputStr ξmodeName))
+        (insert (xhm-htmlize-string inputStr ξmodeName)) )
         )
-      )
-    ) )
+ ) ) )
 
 (defun xhm-dehtmlize-precode ()
   "Delete span tags between pre tags.
@@ -428,31 +433,42 @@ This command does the reverse of `xhm-htmlize-precode'."
          (inputStr (buffer-substring-no-properties p1 p2) )
          )
     (if (xhm-precode-htmlized-p inputStr)
-        (xhm-remove-span-tag-region p1 p2)
-      (progn               ;; do htmlize
-        (let (
-              langCodeResult
-              ξmode-name)
-          (setq langCodeResult (assoc langCode langCodeMap))
-          (if (null langCodeResult)
-              (progn (error "Your lang code 「%s」 is not recognized." langCode))
-            (progn
-              (save-excursion
-                (setq ξmode-name (elt (cdr langCodeResult) 0))
-                (let ((newInStr inputStr) resultStr)
-                  (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "" newInStr) ) ; trim beginning
-                  (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "" newInStr) ) ; trim trailing
-                  (setq resultStr (xhm-htmlize-string newInStr ξmode-name))
-                  (if (equal (length inputStr) (length resultStr))
-                      (message "%s" "htmlize done, but no change necessary.")
-                    (progn
-                      (delete-region p1 p2)
-                      (insert resultStr) ) ) ) )) )) )) ))
+        (progn
+          (message "doing de-htmlizing")
+          ;; (xhm-remove-span-tag-region p1 p2)
+          (xhm-dehtmlize-precode)
+          )
+        
+(progn
+        (message "doing htmlizing, langcode 「%s」" langCode)
+        (xhm-htmlize-precode xhm-lang-name-map) )
+;; (progn               ;; do htmlize
+;;         (message "doing htmlizing")
+;;         (let (
+;;               langCodeResult
+;;               ξmode-name)
+;;           (setq langCodeResult (assoc langCode langCodeMap))
+;;           (if (null langCodeResult)
+;;               (progn (error "Your lang code 「%s」 is not recognized." langCode))
+;;             (progn
+;;               (save-excursion
+;;                 (setq ξmode-name (elt (cdr langCodeResult) 0))
+;;                 (let ((newInStr inputStr) resultStr)
+;;                   (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "" newInStr) ) ; trim beginning
+;;                   (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "" newInStr) ) ; trim trailing
+;;                   (setq resultStr (xhm-htmlize-string newInStr ξmode-name))
+;;                   (if (equal (length inputStr) (length resultStr))
+;;                       (message "%s" "htmlize done, but no change necessary.")
+;;                     (progn
+;;                       (delete-region p1 p2)
+;;                       (insert resultStr) ) ) ) )) )) )
+
+) ))
 
 (defun xhm-precode-htmlized-p (inputStr)
   "return true if inputStr is htmlized code."
   (let ()
-    (string-match "<span class=" inputStr)
+    (string-match "<span class=\"string\">\\|<span class=\"comment\">\\|<span class=\"function-name\">\\|<span class=\"variable-name\">\\|<span class=\"keyword\">" inputStr)
   ))
 
 
@@ -1786,7 +1802,7 @@ This is heuristic based, does not remove ALL possible redundant whitespace."
           (goto-char (point-min))
           (while (search-forward-regexp "[ \t]+\n" nil "noerror")
             (replace-match "\n") ))
-        
+
         (progn
           (goto-char (point-min))
           (while (search-forward-regexp " *<p>\n+" nil "noerror")
