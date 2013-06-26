@@ -403,12 +403,14 @@ This function requires the `htmlize-buffer' from 〔htmlize.el〕 by Hrvoje Niks
         ;; remove beginning or trailing whitespace
         (setq inputStr (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" (buffer-substring-no-properties p1 p2))) )
 
-      (progn
-        (delete-region p1 p2 )
-        (goto-char p1)
-        (insert (xhm-htmlize-string inputStr ξmodeName)) )
-        )
- ) ) )
+        (progn
+          (let ((x38838 (xhm-htmlize-string inputStr ξmodeName) ))
+            (if (equal inputStr x38838)
+                (progn (message "No change needed."))
+              (progn
+                (delete-region p1 p2 )
+                (goto-char p1)
+                (insert x38838) ) ) ) ) ) ) ) )
 
 (defun xhm-dehtmlize-precode ()
   "Delete span tags between pre tags.
@@ -466,10 +468,18 @@ This command does the reverse of `xhm-htmlize-precode'."
 ) ))
 
 (defun xhm-precode-htmlized-p (inputStr)
-  "return true if inputStr is htmlized code."
+  "Return true if inputStr is htmlized code."
   (let ()
     (string-match "<span class=\"string\">\\|<span class=\"comment\">\\|<span class=\"function-name\">\\|<span class=\"variable-name\">\\|<span class=\"keyword\">" inputStr)
   ))
+
+;; (defun xhm-precode-htmlized-p (p1 p2)
+;;   "Return true if region p1 p2 is htmlized code."
+;;   (let ()
+;; (goto-char p1)
+;; (re-search-forward "<span class=\"string\">\\|<span class=\"comment\">\\|<span class=\"function-name\">\\|<span class=\"variable-name\">\\|<span class=\"keyword\">" p2 "NOERROR")
+;;     ;; (string-match "<span class=\"string\">\\|<span class=\"comment\">\\|<span class=\"function-name\">\\|<span class=\"variable-name\">\\|<span class=\"keyword\">" inputStr)
+;;   ))
 
 
 ;; syntax table
