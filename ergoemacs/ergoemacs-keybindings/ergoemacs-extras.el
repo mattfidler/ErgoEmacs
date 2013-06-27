@@ -2059,7 +2059,7 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
           (cmd-n 0)
           (i 0)
           i2
-          cmd-freq-ergo cmd-freq
+          cmd-freq-ergo 
           tmp
           (lay (or (intern-soft (format "ergoemacs-layout-%s"
                                         ergoemacs-keyboard-layout))
@@ -2094,7 +2094,7 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
                         
                         ;; Now add the layout information.
                         (setq i 0)
-                        (setq cmd-freq '())
+                        ;; (setq cmd-freq '())
                         (while (< i (length lay))
                           (goto-char (point-min))
                           (when (search-forward (format ">%s<" i) nil t)
@@ -2117,7 +2117,11 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
                                 (when (re-search-forward (format "id=\"key%s\"" i) nil t)
                                   (when (re-search-backward "fill:.*?;" nil t)
                                     (replace-match "fill:#FFFF00;"))))
-                            (add-to-list 'cmd-freq (cons (nth 2 tmp) (format "id=\"key%s\"" i)))
+                            (goto-char (point-min))
+                            (when (search-forward (format "id=\"key%s\"" i) nil t)
+                              (when (re-search-backward "fill:.*?;" nil t)
+                                (replace-match (format "fill:%s;" (nth 6 tmp)))))
+                            ;;(add-to-list 'cmd-freq (cons (nth 2 tmp) (format "id=\"key%s\"" i)))
                             (goto-char (point-min))
                             (when (search-forward (format ">A%s<" i) nil t)
                               (replace-match (format ">%s<" (nth 1 tmp)) t t))
@@ -2146,7 +2150,7 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
                               (when (re-search-forward "id=\"keySPC\"" nil t)
                                 (when (re-search-backward "fill:.*?;" nil t)
                                   (replace-match "fill:#FFFF00;"))))
-                          (add-to-list 'cmd-freq (cons (nth 2 tmp) "id=\"keySPC\""))
+                          ;;(add-to-list 'cmd-freq (cons (nth 2 tmp) "id=\"keySPC\""))
                           (goto-char (point-min))
                           (when (search-forward ">MS-SPC<" nil t)
                             (replace-match (format ">%s<" (nth 1 tmp)) t t))
@@ -2161,27 +2165,26 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
                             (replace-match (format ">Cmd: %s<" (nth 4 tmp)) t t))
                           (goto-char (point-min))
                           (when (search-forward ">AA-SPC<" nil t)
-                            (replace-match (format ">Tot: %s<" (nth 5 tmp)) t t))
-                          )
-                        (setq cmd-freq (sort cmd-freq #'(lambda(x y) (< (car x) (car y)))))
-                        (setq i2 (/ (* 1e0 (length cmd-freq)) 2.0))
-                        (setq i 0)
-                        (mapc
-                         (lambda(x)
-                           (let (tmp color)
-                             (cond
-                              ((< i i2)
-                               (setq tmp (* 255e0 (/ (* 1e0 i) (* 1e0 i2))))
-                               (setq color (format "#%02X%02Xff" tmp tmp)))
-                              (t
-                               (setq tmp (* 255e0 (- 1e0 (/ (- (* 1e0 i) (* 1e0 i2)) (* 1e0 i2)) )))
-                               (setq color (format "#ff%02X%02X" tmp tmp))))
-                             (goto-char (point-min))
-                             (when (search-forward (cdr x) nil t)
-                               (when (re-search-backward "fill:.*?;" nil t)
-                                 (replace-match (format "fill:%s;" color) nil t))))
-                           (setq i (+ i 1)))
-                         cmd-freq)
+                            (replace-match (format ">Tot: %s<" (nth 5 tmp)) t t)))
+                        ;; (setq cmd-freq (sort cmd-freq #'(lambda(x y) (< (car x) (car y)))))
+                        ;; (setq i2 (/ (* 1e0 (length cmd-freq)) 2.0))
+                        ;; (setq i 0)
+                        ;; (mapc
+                        ;;  (lambda(x)
+                        ;;    (let (tmp color)
+                        ;;      (cond
+                        ;;       ((< i i2)
+                        ;;        (setq tmp (* 255e0 (/ (* 1e0 i) (* 1e0 i2))))
+                        ;;        (setq color (format "#%02X%02Xff" tmp tmp)))
+                        ;;       (t
+                        ;;        (setq tmp (* 255e0 (- 1e0 (/ (- (* 1e0 i) (* 1e0 i2)) (* 1e0 i2)) )))
+                        ;;        (setq color (format "#ff%02X%02X" tmp tmp))))
+                        ;;      (goto-char (point-min))
+                        ;;      (when (search-forward (cdr x) nil t)
+                        ;;        (when (re-search-backward "fill:.*?;" nil t)
+                        ;;          (replace-match (format "fill:%s;" color) nil t))))
+                        ;;    (setq i (+ i 1)))
+                        ;;  cmd-freq)
                         (goto-char (point-min))
                         (when (search-forward ">title<" nil t)
                           (replace-match (format ">Frequency Heatmap for %s<" text)))
@@ -2267,6 +2270,26 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
                        (append
                         (symbol-value (ergoemacs-get-variable-layout))))))
         
+        (setq cmd-freq-ergo (sort cmd-freq-ergo #'(lambda(x y) (< (nth 2 x) (nth 2 y)))))
+
+        ;; Consolidated color calculation
+        (setq i2 (/ (* 1e0 (length cmd-freq-ergo)) 2.0))
+        (setq i 0)
+        
+        (setq cmd-freq-ergo
+              (mapcar
+               (lambda(x)
+                 (let (tmp color)
+                   (cond
+                    ((< i i2)
+                     (setq tmp (* 255e0 (/ (* 1e0 i) (* 1e0 i2))))
+                     (setq color (format "#%02X%02Xff" tmp tmp)))
+                    (t
+                     (setq tmp (* 255e0 (- 1e0 (/ (- (* 1e0 i) (* 1e0 i2)) (* 1e0 i2)) )))
+                     (setq color (format "#ff%02X%02X" tmp tmp))))
+                   (setq i (+ i 1))
+                   (append x (list color))))
+               cmd-freq-ergo))
         (let ((fn "kbd-ergo.svg")
               extra-dir)
           (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
