@@ -284,6 +284,14 @@
 ;(defvar xhm-lang-name-list nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
 ; (mapcar (lambda (x) (car x)) xhm-lang-name-map)
 
+(defun xhm-precode-htmlized-p (p1 p2)
+  "Return true if region p1 p2 is htmlized code.
+WARNING: it just losely check if it contains span tag."
+  (progn
+    (goto-char p1)
+    (re-search-forward "<span class=" p2 "NOERROR")
+    ))
+
 (defun xhm-get-precode-langCode ()
   "Get the langCode and position boundary of current HTML pre block.
 A pre block is text of this form
@@ -350,7 +358,7 @@ If there's a text selection, use that region as content."
       (split-window-vertically)
       (find-file (format "xx-testscript-%d.%s" (random 9008000 ) ξfileSuffix) )
       (insert ξtextContent)
-      (when (xhm-precode-htmlized-p ξtextContent)
+      (when (xhm-precode-htmlized-p (point-min) (point-max))
         (xhm-remove-span-tag-region (point-min) (point-max))
         )
 ;      (save-buffer )
@@ -434,7 +442,7 @@ This command does the reverse of `xhm-htmlize-precode'."
          (p2 (elt ξxx 2))
          (inputStr (buffer-substring-no-properties p1 p2) )
          )
-    (if (xhm-precode-htmlized-p inputStr)
+    (if (xhm-precode-htmlized-p p1 p2)
         (progn
           (message "doing de-htmlizing")
           ;; (xhm-remove-span-tag-region p1 p2)
@@ -466,20 +474,6 @@ This command does the reverse of `xhm-htmlize-precode'."
 ;;                       (insert resultStr) ) ) ) )) )) )
 
 ) ))
-
-(defun xhm-precode-htmlized-p (inputStr)
-  "Return true if inputStr is htmlized code."
-  (let ()
-    (string-match "<span class=\"string\">\\|<span class=\"comment\">\\|<span class=\"function-name\">\\|<span class=\"variable-name\">\\|<span class=\"keyword\">" inputStr)
-  ))
-
-;; (defun xhm-precode-htmlized-p (p1 p2)
-;;   "Return true if region p1 p2 is htmlized code."
-;;   (let ()
-;; (goto-char p1)
-;; (re-search-forward "<span class=\"string\">\\|<span class=\"comment\">\\|<span class=\"function-name\">\\|<span class=\"variable-name\">\\|<span class=\"keyword\">" p2 "NOERROR")
-;;     ;; (string-match "<span class=\"string\">\\|<span class=\"comment\">\\|<span class=\"function-name\">\\|<span class=\"variable-name\">\\|<span class=\"keyword\">" inputStr)
-;;   ))
 
 
 ;; syntax table
