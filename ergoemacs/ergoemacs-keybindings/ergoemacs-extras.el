@@ -4,6 +4,7 @@
 
 (setq ergoemacs-dir (file-name-directory
                      (or load-file-name (buffer-file-name))))
+
 (defgroup ergoemacs-extras nil
   "Documentation and script generation"
   :group 'ergoemacs-mode)
@@ -2035,6 +2036,257 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
     (ergoemacs-get-html)
     ;; (find-file (expand-file-name "ergoemacs-extras" user-emacs-directory))
     ))
+
+(defvar ergoemacs-key-heatmap
+  ["#4682B4" "#4D87B7" "#558CBA" "#5D91BD" "#6496C0" "#6C9CC3" "#74A1C6"
+   "#7BA6C9" "#83ABCD" "#8BB0D0" "#93B6D3" "#9ABBD6" "#A2C0D9" "#AAC5DC"
+   "#B1CADF" "#B9D0E2" "#C1D5E6" "#C9DAE9" "#D0DFEC" "#D8E4EF" "#E0EAF2"
+   "#E7EFF5" "#EFF4F8" "#F7F9FB" "#FFFFFF" "#FFF4F4" "#FFE9E9" "#FFDFDF"
+   "#FFD4D4" "#FFC9C9" "#FFBFBF" "#FFB4B4" "#FFAAAA" "#FF9F9F" "#FF9494"
+   "#FF8A8A" "#FF7F7F" "#FF7474" "#FF6A6A" "#FF5F5F" "#FF5454" "#FF4A4A"
+   "#FF3F3F" "#FF3535" "#FF2A2A" "#FF1F1F" "#FF1515" "#FF0A0A" "#FF0000"]
+  "Heat-map colors for ergoemacs/kefreq heatmap image"
+  )
+
+(defun ergoemacs-keyfreq-image ()
+  "Create heatmap keyfreq images, based on the current layout."
+  (interactive)
+  (if (not (featurep 'keyfreq))
+      (error "This requires the package `keyfreq'")
+    (let ((table (copy-hash-table keyfreq-table))
+          list
+          (total-n 0)
+          (cmd-n 0)
+          (i 0)
+          i2
+          cmd-freq-ergo cmd-freq
+          tmp
+          (lay (or (intern-soft (format "ergoemacs-layout-%s"
+                                        ergoemacs-keyboard-layout))
+                   'ergoemacs-layout-us))
+          var-layout)
+      (setq lay (symbol-value lay))
+      (flet ((gen-img (file prefix text shift)
+                      (with-temp-file file
+                        (insert-file-contents (expand-file-name fn ergoemacs-dir))
+                        ;; Change all text to black
+                        (goto-char (point-min))
+                        (while (re-search-forward "<text" nil t)
+                          (when (re-search-forward "fill:#.*?;" nil t)
+                            (replace-match "fill:#000000;")))
+
+                        ;; Change the letters to A, B, C, D, and E
+                        (goto-char (point-min))
+                        (while (re-search-forward ">\\([MCA]\\)\\([0-9]+\\)<" nil t)
+                          (cond
+                           ((string= "A" (match-string 1))
+                            (replace-match ">E\\2<" t))
+                           ((and (string= "C" (match-string 1))
+                                 (<= 60 (string-to-number (match-string 2))))
+                            (replace-match (format ">C%s<" (- (string-to-number (match-string 2)) 60))))
+                           ((and (string= "M" (match-string 1))
+                                 (<= 60 (string-to-number (match-string 2))))
+                            (replace-match (format ">A%s<" (- (string-to-number (match-string 2)) 60))))
+                           ((string= "M" (match-string 1))
+                            (replace-match ">B\\2<"))
+                           ((string= "C" (match-string 1))
+                            (replace-match ">D\\2<"))))
+                        
+                        ;; Now add the layout information.
+                        (setq i 0)
+                        (setq cmd-freq '())
+                        (while (< i (length lay))
+                          (goto-char (point-min))
+                          (when (search-forward (format ">%s<" i) nil t)
+                            (if (string= "" (nth (+ (if shift 60 0) i) lay))
+                                (replace-match "><")
+                              (replace-match (format ">%s<"
+                                                     (ergoemacs-gen-svg-quote
+                                                      (upcase (nth
+                                                               (+ (if shift 60 0) i)
+                                                               lay)))) t t)))
+                          (setq tmp (assoc (format "%s%s" prefix
+                                                   (nth (+ (if shift 60 0) i) lay))
+                                           cmd-freq-ergo))
+                          (if (not tmp)
+                              (progn
+                                (goto-char (point-min))
+                                (while (re-search-forward (format ">[ABCDE]%s<" i) nil t)
+                                  (replace-match "><"))
+                                (goto-char (point-min))
+                                (when (re-search-forward (format "id=\"key%s\"" i) nil t)
+                                  (when (re-search-backward "fill:.*?;" nil t)
+                                    (replace-match "fill:#FFFF00;"))))
+                            (add-to-list 'cmd-freq (cons (nth 2 tmp) (format "id=\"key%s\"" i)))
+                            (goto-char (point-min))
+                            (when (search-forward (format ">A%s<" i) nil t)
+                              (replace-match (format ">%s<" (nth 1 tmp)) t t))
+                            (goto-char (point-min))
+                            (when (search-forward (format ">B%s<" i) nil t)
+                              (replace-match (format ">N: %s<" (nth 2 tmp)) t t))
+                            (goto-char (point-min))
+                            (when (search-forward (format ">C%s<" i) nil t)
+                              (replace-match (format ">NC: %s<" (length (nth 3 tmp))) t t))
+                            (goto-char (point-min))
+                            (when (search-forward (format ">D%s<" i) nil t)
+                              (replace-match (format ">Cmd: %s<" (nth 4 tmp)) t t))
+                            (goto-char (point-min))
+                            (when (search-forward (format ">E%s<" i) nil t)
+                              (replace-match (format ">Tot: %s<" (nth 5 tmp)) t t)))
+                          (setq i (+ i 1)))
+                        ;; Now lookup prefix-SPC
+                        (setq tmp (assoc (format "%s%sSPC" prefix (if shift "S-" ""))
+                                         cmd-freq-ergo))
+                        (if (not tmp)
+                            (progn
+                              (goto-char (point-min))
+                              (while (re-search-forward ">\\(MS\\|MM\\|CS\\|CC\\|AA\\)-SPC<" nil t)
+                                (replace-match "><"))
+                              (goto-char (point-min))
+                              (when (re-search-forward "id=\"keySPC\"" nil t)
+                                (when (re-search-backward "fill:.*?;" nil t)
+                                  (replace-match "fill:#FFFF00;"))))
+                          (add-to-list 'cmd-freq (cons (nth 2 tmp) "id=\"keySPC\""))
+                          (goto-char (point-min))
+                          (when (search-forward ">MS-SPC<" nil t)
+                            (replace-match (format ">%s<" (nth 1 tmp)) t t))
+                          (goto-char (point-min))
+                          (when (search-forward ">MM-SPC<" nil t)
+                            (replace-match (format ">N: %s<" (nth 2 tmp)) t t))
+                          (goto-char (point-min))
+                          (when (search-forward ">CS-SPC<" nil t)
+                            (replace-match (format ">NC: %s<" (length (nth 3 tmp))) t t))
+                          (goto-char (point-min))
+                          (when (search-forward ">CC-SPC<" nil t)
+                            (replace-match (format ">Cmd: %s<" (nth 4 tmp)) t t))
+                          (goto-char (point-min))
+                          (when (search-forward ">AA-SPC<" nil t)
+                            (replace-match (format ">Tot: %s<" (nth 5 tmp)) t t))
+                          )
+                        (setq cmd-freq (sort cmd-freq #'(lambda(x y) (< (car x) (car y)))))
+                        (setq i2 (/ (* 1e0 (length cmd-freq)) 2.0))
+                        (setq i 0)
+                        (mapc
+                         (lambda(x)
+                           (let (tmp color)
+                             (cond
+                              ((< i i2)
+                               (setq tmp (* 255e0 (/ (* 1e0 i) (* 1e0 i2))))
+                               (setq color (format "#%02X%02Xff" tmp tmp)))
+                              (t
+                               (setq tmp (* 255e0 (- 1e0 (/ (- (* 1e0 i) (* 1e0 i2)) (* 1e0 i2)) )))
+                               (setq color (format "#ff%02X%02X" tmp tmp))))
+                             (goto-char (point-min))
+                             (when (search-forward (cdr x) nil t)
+                               (when (re-search-backward "fill:.*?;" nil t)
+                                 (replace-match (format "fill:%s;" color) nil t))))
+                           (setq i (+ i 1)))
+                         cmd-freq)
+                        (goto-char (point-min))
+                        (when (search-forward ">title<" nil t)
+                          (replace-match (format ">Frequency Heatmap for %s<" text)))
+                        (goto-char (point-min))
+                        (when (search-forward ">MS<" nil t)
+                          (replace-match ">N: Number of times called<" t))
+                        (goto-char (point-min))
+                        (when (search-forward ">MM<" nil t)
+                          (replace-match ">NC: Number of commands for this key<" t))
+                        (goto-char (point-min))
+                        (when (search-forward ">CS<" nil t)
+                          (replace-match ">Cmd: % of emacs keyboard commands<" t))
+                        (goto-char (point-min))
+                        (when (search-forward ">CC<" nil t)
+                          (replace-match ">Tot: % of typing<" t))
+                        (goto-char (point-min))
+                        (while (re-search-forward ">\\(AA\\|[^><]*?Emacs Command Sequence[^><]*?\\)<" nil t)
+                          (replace-match "><" t))))
+             (calc-ergo (x)
+                        (let ((a (assoc (nth 1 x) (cdr list)))
+                              curr-cmd
+                              (cmds '())
+                              (num 0))
+                          (when a
+                            (setq num (+ num (cdr a)))
+                            (add-to-list 'cmds (car a)))
+                          ;; Now lookup key based on the currently installed
+                          ;; minor modes
+
+                          ;; For example with subword-mode, backward-word
+                          ;; becomes subword-backward-word
+                          (setq curr-cmd
+                                (key-binding (if var-layout
+                                                 (ergoemacs-kbd (nth 0 x) nil (nth 3 x))
+                                               (read-kbd-macro (nth 0 x))) t))
+                          
+                          (unless (memq curr-cmd cmds)
+                            (setq a (assoc curr-cmd (cdr list)))
+                            (when a
+                              (setq num (+ num (cdr a)))
+                              (add-to-list 'cmds (car a))))
+                          ;; Also lookup based on any compatibility fixes with
+                          ;; made by ergoemacs. 
+                          (mapc
+                           (lambda(minor-list)
+                             (mapc
+                              (lambda(translation-list)
+                                (when (eq (nth 1 x) (nth 0 translation-list))
+                                  (setq a (assoc (nth 1 translation-list) (cdr list)))
+                                  (when a
+                                    (setq num (+ num (cdr a)))
+                                    (add-to-list 'cmds (car a)))))
+                              (nth 1 minor-list)))
+                           (symbol-value (ergoemacs-get-minor-mode-layout)))
+                          (list (if var-layout
+                                    (ergoemacs-kbd (nth 0 x) t (nth 3 x))
+                                  (nth 0 x)) (nth 2 x)  num cmds
+                                  (format "%6.2f%%" (/ (* 1e2 num) cmd-n))
+                                  (format "%6.2f%%" (/ (* 1e2 num) total-n))))))
+        
+        ;; Merge with the values in .emacs.keyfreq file
+        (keyfreq-table-load table)
+        (setq list (keyfreq-list (keyfreq-groups-major-modes table) 'no-sort))
+        (mapc
+         (lambda(x)
+           (setq total-n (+ total-n (cdr x)))
+           (unless (string-match "self-insert" (symbol-name (car x)))
+             (setq cmd-n (+ cmd-n (cdr x)))))
+         (cdr list))
+
+        ;; Get the frequencies for all the ergoemacs commands
+        (setq cmd-freq-ergo
+              (mapcar
+               'calc-ergo 
+               (append
+                (symbol-value (ergoemacs-get-fixed-layout)))))
+        (setq var-layout t)
+        
+        (setq cmd-freq-ergo
+              (append cmd-freq-ergo
+                      (mapcar
+                       'calc-ergo 
+                       (append
+                        (symbol-value (ergoemacs-get-variable-layout))))))
+        
+        (let ((fn "kbd-ergo.svg")
+              extra-dir)
+          (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
+          (if (not (file-exists-p extra-dir))
+              (make-directory extra-dir t))
+          (setq file (expand-file-name  "keyfreq-alt-map.svg" extra-dir))
+          (gen-img file "M-" "Alt+" nil)
+          (message "Generated Alt+ frequency heatmap")
+          
+          (setq file (expand-file-name  "keyfreq-alt-shift-map.svg" extra-dir))
+          (gen-img file "M-" "Alt+⇧Shift+" t)
+          (message "Generated Alt+⇧Shift+ frequency heatmap")
+          
+          (setq file (expand-file-name  "keyfreq-ctrl-map.svg" extra-dir))
+          (gen-img file "C-" "Ctrl+" nil)
+          (message "Generated Ctrl+ frequency heatmap")
+          
+          (setq file (expand-file-name  "keyfreq-ctrl-shift-map.svg" extra-dir))
+          (gen-img file "C-" "Ctrl+⇧Shift+" t)
+          (message "Generated Ctrl+⇧Shift+ frequency heatmap"))))))
 
 ;; Allow the SVN prefixes to be specified by the following:
 (setq ergoemacs-svn-prefixes
