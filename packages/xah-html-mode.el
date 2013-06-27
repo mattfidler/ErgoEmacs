@@ -445,7 +445,7 @@ This command does the inverse of `xhm-htmlize-precode'."
           )
       
       (progn
-        (message "doing htmlizing, langcode 「%s」" langCode)
+        (message "doing htmlizing")
         (xhm-htmlize-precode xhm-lang-name-map) )
       ;; (progn               ;; do htmlize
       ;;         (message "doing htmlizing")
