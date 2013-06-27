@@ -2110,13 +2110,30 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
                                            cmd-freq-ergo))
                           (if (not tmp)
                               (progn
-                                (goto-char (point-min))
-                                (while (re-search-forward (format ">[ABCDE]%s<" i) nil t)
-                                  (replace-match "><"))
-                                (goto-char (point-min))
-                                (when (re-search-forward (format "id=\"key%s\"" i) nil t)
-                                  (when (re-search-backward "fill:.*?;" nil t)
-                                    (replace-match "fill:#FFFF00;"))))
+                                ;; Try to figure out if this is a
+                                ;; prefix, or not...
+                                (setq tmp (all-completions
+                                           (format "%s%s " prefix (nth (+ (if shift 60 0) i) lay))
+                                           cmd-freq-ergo))
+                                (if tmp
+                                    (progn
+                                      (goto-char (point-min))
+                                      (while (re-search-forward (format ">A%s<" i) nil t)
+                                        (replace-match ">♦<"))
+                                      (goto-char (point-min))
+                                      (while (re-search-forward (format ">[BCDE]%s<" i) nil t)
+                                        (replace-match "><"))
+                                      (goto-char (point-min))
+                                      (when (re-search-forward (format "id=\"key%s\"" i) nil t)
+                                        (when (re-search-backward "fill:.*?;" nil t)
+                                          (replace-match "fill:#00FFFF;"))))
+                                  (goto-char (point-min))
+                                  (while (re-search-forward (format ">[ABCDE]%s<" i) nil t)
+                                    (replace-match "><"))
+                                  (goto-char (point-min))
+                                  (when (re-search-forward (format "id=\"key%s\"" i) nil t)
+                                    (when (re-search-backward "fill:.*?;" nil t)
+                                      (replace-match "fill:#FFFF00;")))))
                             (goto-char (point-min))
                             (when (search-forward (format "id=\"key%s\"" i) nil t)
                               (when (re-search-backward "fill:.*?;" nil t)
@@ -2166,25 +2183,6 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
                           (goto-char (point-min))
                           (when (search-forward ">AA-SPC<" nil t)
                             (replace-match (format ">Tot: %s<" (nth 5 tmp)) t t)))
-                        ;; (setq cmd-freq (sort cmd-freq #'(lambda(x y) (< (car x) (car y)))))
-                        ;; (setq i2 (/ (* 1e0 (length cmd-freq)) 2.0))
-                        ;; (setq i 0)
-                        ;; (mapc
-                        ;;  (lambda(x)
-                        ;;    (let (tmp color)
-                        ;;      (cond
-                        ;;       ((< i i2)
-                        ;;        (setq tmp (* 255e0 (/ (* 1e0 i) (* 1e0 i2))))
-                        ;;        (setq color (format "#%02X%02Xff" tmp tmp)))
-                        ;;       (t
-                        ;;        (setq tmp (* 255e0 (- 1e0 (/ (- (* 1e0 i) (* 1e0 i2)) (* 1e0 i2)) )))
-                        ;;        (setq color (format "#ff%02X%02X" tmp tmp))))
-                        ;;      (goto-char (point-min))
-                        ;;      (when (search-forward (cdr x) nil t)
-                        ;;        (when (re-search-backward "fill:.*?;" nil t)
-                        ;;          (replace-match (format "fill:%s;" color) nil t))))
-                        ;;    (setq i (+ i 1)))
-                        ;;  cmd-freq)
                         (goto-char (point-min))
                         (when (search-forward ">title<" nil t)
                           (replace-match (format ">Frequency Heatmap for %s<" text)))
@@ -2309,7 +2307,14 @@ Files are generated in the dir 〔ergoemacs-extras〕 at `user-emacs-directory'.
           
           (setq file (expand-file-name  "keyfreq-ctrl-shift-map.svg" extra-dir))
           (gen-img file "C-" "Ctrl+⇧Shift+" t)
-          (message "Generated Ctrl+⇧Shift+ frequency heatmap"))))))
+          (message "Generated Ctrl+⇧Shift+ frequency heatmap")
+
+          (setq file (expand-file-name  "keyfreq-menu-map.svg" extra-dir))
+          (gen-img file (if (eq system-type 'windows-nt)
+                            "<apps> "
+                          "<menu> ") "▤ Menu/Apps" nil)
+          (message "Generated ▤ Menu/Apps")
+          )))))
 
 ;; Allow the SVN prefixes to be specified by the following:
 (setq ergoemacs-svn-prefixes
