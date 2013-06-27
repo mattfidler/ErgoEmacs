@@ -15,24 +15,25 @@
 
 ;;; HISTORY
 
-; 2013-05-10 improved on “xhm-make-citation”
-; 2013-04-29 added xhm-change-current-tag
-;; version 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
-;; version 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
-;; version 0.6.1, 2013-04-21 added xhm-pre-source-code.
-;; version 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
-;; version 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
-;; version 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
-;; version 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
-;; version 0.5.6, 2013-02-16 added xhm-replace-html-named-entities
-;; version 0.5.5, 2013-02-03 added xhm-replace-html-&<>-to-entities, xhm-replace-html-chars-to-unicode
-;; version 0.5.4, 2013-01-26 lots additions and changes. added xhm-wrap-html-tag xhm-wrap-p-tag xhm-lines-to-html-list xhm-make-html-table xhm-wikipedia-linkify xhm-wrap-url xhm-wikipedia-url-linkify xhm-source-url-linkify xhm-make-link-defunct xhm-make-citation xhm-update-title xhm-extract-url xhm-remove-html-tags xhm-remove-span-tag-region xhm-htmlize-keyboard-shortcut-notation
-;; version 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work.
-;; version 0.5.2, 2012-09-25 added a color for curly quoted text.
-;; version 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
-;; version 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
-;; version 0.3, 2012-05-13 added comment handling. improved syntax coloring. Added keymap and syntax table."
-;; version 0.2, 2012-05-12 first version
+;; 0.6.6, 2013-06-20 critical bug-fix on xhm-htmlize-or-de-precode. Before, it'll just remove html entities for & < >.
+;; 0.6.5, 2013-05-10 improved on “xhm-make-citation”
+;; 0.6.4, 2013-04-29 added xhm-change-current-tag
+;; 0.6.3, 2013-04-23 now xhm-wrap-html-tag will smartly decide to wrap tag around word or line or text block, depending on the tag given, when there's no text selection.
+;; 0.6.2, 2013-04-22 now, ‘single curly quoted text’ also colored.
+;; 0.6.1, 2013-04-21 added xhm-pre-source-code.
+;; 0.6.0, 2013-04-17 added feature to htmlize <pre> code block. ⁖ xhm-htmlize-or-de-precode and xhm-get-precode-make-new-file. The function names may change in the future.
+;; 0.5.9, 2013-04-10 added “xhm-emacs-to-windows-kbd-notation” and improved “xhm-htmlize-keyboard-shortcut-notation” to take emacs notation.
+;; 0.5.8, 2013-03-19 now xhm-extract-url will also put result to kill-ring
+;; 0.5.7, 2013-03-03 removed the id option in xhm-wrap-html-tag
+;; 0.5.6, 2013-02-16 added xhm-replace-html-named-entities
+;; 0.5.5, 2013-02-03 added xhm-replace-html-&<>-to-entities, xhm-replace-html-chars-to-unicode
+;; 0.5.4, 2013-01-26 lots additions and changes. added xhm-wrap-html-tag xhm-wrap-p-tag xhm-lines-to-html-list xhm-make-html-table xhm-wikipedia-linkify xhm-wrap-url xhm-wikipedia-url-linkify xhm-source-url-linkify xhm-make-link-defunct xhm-make-citation xhm-update-title xhm-extract-url xhm-remove-html-tags xhm-remove-span-tag-region xhm-htmlize-keyboard-shortcut-notation
+;; 0.5.3, 2012-12-07 removed loading sgml-mode and all call to its functions. The sgml-mode seems to have bugs about keys. That is, global numberpad keys won't work.
+;; 0.5.2, 2012-09-25 added a color for curly quoted text.
+;; 0.5, 2012-05-13 fixed sgml-skip-tag-forward sgml-skip-tag-backward. But sgml-delete-tag still doesn't work.
+;; 0.4, 2012-05-13 added sgml-delete-tag sgml-skip-tag-forward sgml-skip-tag-backward.
+;; 0.3, 2012-05-13 added comment handling. improved syntax coloring. Added keymap and syntax table."
+;; 0.2, 2012-05-12 first version
 
 (require 'ido)
 (require 'xfrp_find_replace_pairs)
@@ -283,8 +284,16 @@
 ;(defvar xhm-lang-name-list nil "a alist that maps lang name. Each element has this form 「(‹lang code› . [‹emacs major mode name› ‹file_extension›])」")
 ; (mapcar (lambda (x) (car x)) xhm-lang-name-map)
 
+(defun xhm-precode-htmlized-p (p1 p2)
+  "Return true if region p1 p2 is htmlized code.
+WARNING: it just losely check if it contains span tag."
+  (progn
+    (goto-char p1)
+    (re-search-forward "<span class=" p2 "NOERROR")
+    ))
+
 (defun xhm-get-precode-langCode ()
-  "Get the langCode and boundary of current HTML pre block.
+  "Get the langCode and position boundary of current HTML pre block.
 A pre block is text of this form
  <pre class=\"‹langCode›\">…▮…</pre>.
 Your cursor must be between the tags.
@@ -296,7 +305,8 @@ Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the t
         (progn
           (setq p1 (region-beginning) )
           (setq p2 (region-end) )
-          (setq langCode (read-string "langcode:"))
+          ;; (setq langCode (read-string "langcode:"))
+          (setq langCode (ido-completing-read "langcode:" (mapcar (lambda (x) (car x)) xhm-lang-name-map) ))
           (vector langCode p1 p2)
           )
 
@@ -318,6 +328,7 @@ Returns a vector [langCode pos1 pos2], where pos1 pos2 are the boundary of the t
           (backward-char 1)
           (xhm-skip-tag-forward)
           (setq p2 (search-backward "<"))   ; text content end
+(message "thissss 「%s」" (vector langCode p1 p2)) ; todo xxxxxxxxx 2013-06-25
           (vector langCode p1 p2)
           ))
 
@@ -347,7 +358,7 @@ If there's a text selection, use that region as content."
       (split-window-vertically)
       (find-file (format "xx-testscript-%d.%s" (random 9008000 ) ξfileSuffix) )
       (insert ξtextContent)
-      (when (xhm-precode-htmlized-p ξtextContent)
+      (when (xhm-precode-htmlized-p (point-min) (point-max))
         (xhm-remove-span-tag-region (point-min) (point-max))
         )
 ;      (save-buffer )
@@ -389,70 +400,75 @@ This function requires the `htmlize-buffer' from 〔htmlize.el〕 by Hrvoje Niks
   (let (ξlangCode p1 p2 inputStr ξmodeName )
 
     (save-excursion
-      (let (( ξxx (xhm-get-precode-langCode)))
-        (setq ξlangCode (elt ξxx 0))
-        (setq p1 (elt ξxx 1))
-        (setq p2 (elt ξxx 2))
+      (let* (
+            (t78730 (xhm-get-precode-langCode))
+            (ξlangCode (elt t78730 0))
+            (p1 (elt t78730 1))
+            (p2 (elt t78730 2))
+            (ξmodeName (elt (cdr (assoc ξlangCode ξlangCodeMap)) 0))
+            )
+
+        ;; remove beginning or trailing whitespace
         (setq inputStr (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" (buffer-substring-no-properties p1 p2))) )
-        (setq ξmodeName (elt (cdr (assoc ξlangCode ξlangCodeMap)) 0))
-        )
-      (progn
-        (delete-region p1 p2 )
-        (goto-char p1)
-        (insert (xhm-htmlize-string inputStr ξmodeName))
-        )
-      )
-    ) )
+
+        (progn
+          (let ((t38838 (xhm-htmlize-string inputStr ξmodeName) ))
+            (if (equal inputStr t38838)
+                (progn (message "No change needed."))
+              (progn
+                (delete-region p1 p2 )
+                (goto-char p1)
+                (insert t38838) ) ) ) ) ) ) ) )
 
 (defun xhm-dehtmlize-precode ()
   "Delete span tags between pre tags.
-
 Note: only span tags of the form 「<span class=\"…\">…</span>」 are deleted.
-
-This command does the reverse of `xhm-htmlize-precode'."
+This command does the inverse of `xhm-htmlize-precode'."
   (interactive)
-  (let (( ξxx (xhm-get-precode-langCode)))
-    (xhm-remove-span-tag-region (elt ξxx 1) (elt ξxx 2))
-    )
-  )
+  (let ((t55238 (xhm-get-precode-langCode)))
+    (xhm-remove-span-tag-region (elt t55238 1) (elt t55238 2))
+    ) )
 
 (defun xhm-htmlize-or-de-precode (langCodeMap)
   "Call `xhm-htmlize-precode' or `xhm-dehtmlize-precode'."
   (interactive (list xhm-lang-name-map))
   (let* (
-         (ξxx (xhm-get-precode-langCode))
-         (langCode (elt ξxx 0))
-         (p1 (elt ξxx 1))
-         (p2 (elt ξxx 2))
-         (inputStr (buffer-substring-no-properties p1 p2) )
+         (t34342 (xhm-get-precode-langCode))
+         (p1 (elt t34342 1))
+         (p2 (elt t34342 2))
          )
-    (if (xhm-precode-htmlized-p inputStr)
-        (xhm-remove-span-tag-region p1 p2)
-      (progn               ;; do htmlize
-        (let (
-              langCodeResult
-              ξmode-name)
-          (setq langCodeResult (assoc langCode langCodeMap))
-          (if (null langCodeResult)
-              (progn (error "Your lang code 「%s」 is not recognized." langCode))
-            (progn
-              (save-excursion
-                (setq ξmode-name (elt (cdr langCodeResult) 0))
-                (let ((newInStr inputStr) resultStr)
-                  (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "" newInStr) ) ; trim beginning
-                  (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "" newInStr) ) ; trim trailing
-                  (setq resultStr (xhm-htmlize-string newInStr ξmode-name))
-                  (if (equal (length inputStr) (length resultStr))
-                      (message "%s" "htmlize done, but no change necessary.")
-                    (progn
-                      (delete-region p1 p2)
-                      (insert resultStr) ) ) ) )) )) )) ))
+    (if (xhm-precode-htmlized-p p1 p2)
+        (progn
+          (message "doing de-htmlizing")
+          ;; (xhm-remove-span-tag-region p1 p2)
+          (xhm-dehtmlize-precode)
+          )
+      
+      (progn
+        (message "doing htmlizing")
+        (xhm-htmlize-precode xhm-lang-name-map) )
+      ;; (progn               ;; do htmlize
+      ;;         (message "doing htmlizing")
+      ;;         (let (
+      ;;               langCodeResult
+      ;;               ξmode-name)
+      ;;           (setq langCodeResult (assoc langCode langCodeMap))
+      ;;           (if (null langCodeResult)
+      ;;               (progn (error "Your lang code 「%s」 is not recognized." langCode))
+      ;;             (progn
+      ;;               (save-excursion
+      ;;                 (setq ξmode-name (elt (cdr langCodeResult) 0))
+      ;;                 (let ((newInStr inputStr) resultStr)
+      ;;                   (setq newInStr (replace-regexp-in-string "\\`[ \t\n]*" "" newInStr) ) ; trim beginning
+      ;;                   (setq newInStr (replace-regexp-in-string "[ \t\n]+\\'" "" newInStr) ) ; trim trailing
+      ;;                   (setq resultStr (xhm-htmlize-string newInStr ξmode-name))
+      ;;                   (if (equal (length inputStr) (length resultStr))
+      ;;                       (message "%s" "htmlize done, but no change necessary.")
+      ;;                     (progn
+      ;;                       (delete-region p1 p2)
+      ;;                       (insert resultStr) ) ) ) )) )) )
 
-(defun xhm-precode-htmlized-p (inputStr)
-  "return true if inputStr is htmlized code."
-  (let ()
-    (string-match "<span class=\\|&amp;\\|&lt;\\|&gt;" inputStr)
-  ))
+      ) ))
 
 
 ;; syntax table
@@ -544,6 +560,27 @@ This command does the reverse of `xhm-htmlize-precode'."
 ;  (define-key xhm-keymap (kbd "C-c <delete>") 'xhm-delete-tag)
   (define-key xhm-keymap (kbd "<C-right>") 'xhm-skip-tag-forward)
   (define-key xhm-keymap (kbd "<C-left>") 'xhm-skip-tag-backward)
+
+  (define-key xhm-keymap (kbd "<menu> e 0") 'xhm-remove-html-tags)
+  (define-key xhm-keymap (kbd "<menu> e 7") 'xhm-htmlize-or-de-precode)
+  (define-key xhm-keymap (kbd "<menu> e 8") 'xhm-get-precode-make-new-file)
+  (define-key xhm-keymap (kbd "<menu> e c") 'xhm-make-citation)
+  (define-key xhm-keymap (kbd "<menu> e k") 'xhm-htmlize-keyboard-shortcut-notation)
+  (define-key xhm-keymap (kbd "<menu> e l 6") 'xhm-source-url-linkify)
+  (define-key xhm-keymap (kbd "<menu> e l .") 'xhm-lines-to-html-list)
+  (define-key xhm-keymap (kbd "<menu> e l u") 'xhm-wrap-url)
+  (define-key xhm-keymap (kbd "<menu> e l w") 'xhm-wikipedia-linkify)
+  (define-key xhm-keymap (kbd "<menu> e m") 'xhm-pre-source-code)
+  (define-key xhm-keymap (kbd "<menu> e p") 'xhm-wrap-p-tag)
+  (define-key xhm-keymap (kbd "<menu> e r ,") 'xhm-replace-html-chars-to-unicode)
+  (define-key xhm-keymap (kbd "<menu> e r .") 'xhm-replace-html-&<>-to-entities)
+  (define-key xhm-keymap (kbd "<menu> e r 3") 'xhm-update-title)
+  (define-key xhm-keymap (kbd "<menu> e r e") 'xhm-htmlize-elisp-keywords)
+  (define-key xhm-keymap (kbd "<menu> e r k") 'xhm-emacs-to-windows-kbd-notation)
+  (define-key xhm-keymap (kbd "<menu> e r m") 'xhm-make-html-table)
+  (define-key xhm-keymap (kbd "<menu> e t r") 'xhm-rename-html-inline-image)
+  (define-key xhm-keymap (kbd "<menu> e t u") 'xhm-extract-url)
+  (define-key xhm-keymap (kbd "<menu> e u") 'xhm-wrap-html-tag)
 )
 
 
@@ -955,7 +992,7 @@ with “*” as separator, becomes
   ))
 
 (defun xhm-make-html-table-undo ()
-  "reverse `xhm-make-html-table'."
+  "inverse of `xhm-make-html-table'."
   (interactive)
   (let ( p1 p2 myStr)
 (search-backward "<table")
@@ -1785,7 +1822,7 @@ This is heuristic based, does not remove ALL possible redundant whitespace."
           (goto-char (point-min))
           (while (search-forward-regexp "[ \t]+\n" nil "noerror")
             (replace-match "\n") ))
-        
+
         (progn
           (goto-char (point-min))
           (while (search-forward-regexp " *<p>\n+" nil "noerror")

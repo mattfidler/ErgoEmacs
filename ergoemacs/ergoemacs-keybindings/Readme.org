@@ -186,6 +186,19 @@ This converts the QWERTY M-m keybinding and the fixed keybinding s to
 save buffer
 
 *** Creating a keyboard variant
+* Ergoemacs-mode and starter-kits like prelude, emacs live, etc
+Ergoemacs-mode currently honors globally keys that are different from
+the standard emacs keys.  However, some starter kits, like prelude,
+may compete for these keys.  To make the ErgoEmacs keys dominate,
+load the starter kit and then add the following to your startup
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ergoemacs-mode)
+  (ergoemacs-ignore-prev-global) ; Do not honor previously defined
+                                 ; global keys.
+  (ergoemacs-mode 1)
+#+END_SRC
+
 * Ergoemacs interaction with specific modes
 ** 
 * Ergoemacs Keys System wide

@@ -193,7 +193,7 @@ Valid values are:
     (condition-case nil
         (progn
           ;; Fix shifted commands.
-          (when (and (string-match "\\(^\\|-\\)M-" (key-description (this-single-command-keys))) ;; Alt command
+          (when (and (string-match "\\(^\\|-\\)M-" (key-descrtion (this-single-command-keys))) ;; Alt command
                      (or (eq (get this-command 'CUA) 'move)
                          (memq this-command ergoemacs-movement-functions)))
             (setq do-it nil))
@@ -722,6 +722,9 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                 (ergoemacs-get-kbd-translation (nth 0 x)))
           (when (or (string-match "<\\(apps\\|menu\\)>" trans-key)
                     (not (ergoemacs-global-changed-p trans-key t)))
+            ;; Add M-O and M-o handling for globally defined M-O and
+            ;; M-o.
+            ;; Only works if ergoemacs-mode is on...
             (setq cmd (nth 1 x))
             (setq key (ergoemacs-kbd trans-key nil (nth 3 x)))
             (if (and ergoemacs-fix-M-O (string= (ergoemacs-kbd trans-key t t) "M-O"))
@@ -744,20 +747,53 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                         (define-key ergoemacs-M-o-keymap  [timeout] (symbol-value cmd))
                       (define-key ergoemacs-M-o-keymap  [timeout] cmd))
                     (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
-                        (message "Variable: %s (%s) -> %s %s via ergoemacs-M-o" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))
+                        (message "Variable: %s (%s) -> %s %s via ergoemacs-M-o" trans-key
+                                 (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))
                 (when (string-match "<\\(apps\\|menu\\)>" trans-key)
                   ;; Retain globally defined <apps> or <menu> defines.
                   (setq cmd-tmp (lookup-key (current-global-map) key t))
-                  (when (functionp cmd-tmp)
-                    (setq cmd cmd-tmp))) 
-                (if (condition-case err
-                        (keymapp (symbol-value cmd))
-                      (error nil))
-                    (define-key ,keymap  key (symbol-value cmd))
-                  (define-key ,keymap  key cmd))
-                (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
-                    (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key)))))))
-      (symbol-value (ergoemacs-get-variable-layout)))))
+                  (when (and ergoemacs-debug
+                             (eq ',keymap 'ergoemacs-keymap))
+                    (message "<apps>; %s -> cmd: %s; global cmd: %s" trans-key cmd cmd-tmp))
+                  (if (functionp cmd-tmp)
+                      (setq cmd cmd-tmp)
+                    (when (and cmd-tmp
+                               (or
+                                (not (string-match "<menu>" trans-key))
+                                (not (= cmd-tmp 1))
+                                (not (eq (lookup-key (current-global-map) (read-kbd-macro "<menu>"))
+                                         'execute-extended-command))))
+                      (unless (and (string-match "<apps>" trans-key)
+                                   (not (lookup-key (current-global-map) (read-kbd-macro "<apps>"))))
+                        (setq cmd nil)))))
+                (when cmd
+                  (if (condition-case err
+                          (keymapp (symbol-value cmd))
+                        (error nil))
+                      (define-key ,keymap  key (symbol-value cmd))
+                    (define-key ,keymap  key cmd))
+                  (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
+                      (message "Variable: %s (%s) -> %s %s" trans-key (ergoemacs-kbd trans-key t (nth 3 x)) cmd key))))))))
+      (symbol-value (ergoemacs-get-variable-layout)))
+     (when ergoemacs-fix-M-O
+       (let ((M-O (lookup-key ,keymap (read-kbd-macro "M-O")))
+             (g-M-O (lookup-key global-map (read-kbd-macro "M-O")))
+             (M-o (lookup-key ,keymap (read-kbd-macro "M-o")))
+             (g-M-o (lookup-key global-map (read-kbd-macro "M-o"))))
+         (when ergoemacs-debug
+           (message "M-O %s; Global M-O: %s; M-o %s; Global M-o: %s" M-O g-M-O M-o g-M-o))
+         (when (and (not (functionp M-O))
+                    (functionp g-M-O))
+           (when ergoemacs-debug
+             (message "Fixed M-O"))
+           (define-key ,keymap (read-kbd-macro "M-O") 'ergoemacs-M-O)
+           (define-key ergoemacs-M-O-keymap [timeout] g-M-O))
+         (when (and (not (functionp M-o))
+                    (functionp g-M-o))
+           (when ergoemacs-debug
+             (message "Fixed M-o"))
+           (define-key ,keymap (read-kbd-macro "M-o") 'ergoemacs-M-o)
+           (define-key ergoemacs-M-o-keymap [timeout] g-M-o))))))
 
 (defun ergoemacs-setup-keys-for-layout (layout &optional base-layout)
   "Setup keys based on a particular LAYOUT. All the keys are based on QWERTY layout."
@@ -790,7 +826,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
       ["Generate Documentation"
        (lambda()
          (interactive)
-         (ergoemacs-extras)) t]
+         (call-interactively 'ergoemacs-extras)) t]
       ["Customize Ergoemacs"
        (lambda()
          (interactive)
@@ -1345,10 +1381,22 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' ã
   (when ergoemacs-global-not-changed-cache
     (delete (key-description key) ergoemacs-global-not-changed-cache))
   (if (string-match "<\\(apps\\|menu\\)>" (key-description key))
-      (progn
-        (define-key ergoemacs-keymap key command))
       (let ((no-ergoemacs-advice t))
-    (define-key ergoemacs-keymap key nil))))
+        (define-key ergoemacs-keymap key nil);; Take care of prefix
+        ;; commands.
+        (define-key ergoemacs-keymap key command))
+    (if (and ergoemacs-fix-M-O
+             (string= "M-O" (key-description key)))
+        (let ((no-ergoemacs-advice t))
+          (define-key ergoemacs-keymap key 'ergoemacs-M-O)
+          (define-key ergoemacs-M-O-keymap [timeout] command))
+      (if (and ergoemacs-fix-M-O
+               (string= "M-o" (key-description key)))
+          (let ((no-ergoemacs-advice t))
+            (define-key ergoemacs-keymap key 'ergoemacs-M-o)
+            (define-key ergoemacs-M-o-keymap [timeout] command)))
+      (let ((no-ergoemacs-advice t))
+        (define-key ergoemacs-keymap key nil)))))
 
 (defadvice global-unset-key (around ergoemacs-global-unset-key-advice (key))
   "This let you use global-unset-key as usual when ergoemacs-mode is enabled."
