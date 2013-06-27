@@ -237,8 +237,7 @@
                            :help "Mark the whole buffer for a subsequent cut/copy"
                            :keys "Ctrl+A")
         (separator-search menu-item "--")
-        (blank-operations menu-item "Blank/Whitespace Operations"
-                          (keymap
+        (blank-operations menu-item "Blank/Whitespace Operations" (keymap
                            (trim-trailing-space menu-item
                                                 "Trim Trailing Space"
                                                 delete-trailing-whitespace
@@ -552,6 +551,28 @@
 
 ;;; `View' menu
 
+(defun ergoemacs-menu-tabbar-toggle ()
+  "Enables/Disables (and installs if not present) a tab-bar for emacs."
+  (interactive)
+  (if (not (fboundp 'tabbar-mode))
+      (progn
+        (require 'tabbar-ruler nil t)
+        (if (fboundp 'tabbar-install-faces)
+            (tabbar-install-faces)
+          (when (fboundp 'package-install)`
+            (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+            (when (< emacs-major-version 24)
+              (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+            (package-refresh-contents)
+            (package-install 'tabbar-ruler)
+            (require 'tabbar-ruler nil t)
+            (tabbar-install-faces))))
+    (if (not (featurep 'tabbar-ruler))
+        (require 'tabbar-ruler nil t)
+      (if tabbar-mode
+          (tabbar-mode -1)
+        (tabbar-mode 1)))))
+
 (setq ergoemacs-menu-bar-view-menu
       `(keymap
         (menu-font-size menu-item "Zoom"
@@ -584,16 +605,9 @@
         (blink-cursor menu-item "Cursor Blink" blink-cursor-mode
                       :button (:toggle . blink-cursor-mode))
 
-        ;; (tabbar-mode menu-item "Tabbar Mode" tabbar-mode
-        ;;              :button (:toggle . tabbar-mode))
-
-        ;; Need to figure out how to install tabbar-ruler easily.
-        ;; (tabbar-ruler menu-item "Tabbar"
-        ;;               (lambda()
-        ;;                 (interactive)
-        ;;                 (unless (package-installed-p 'tabbar-ruler)
-        ;;                   (package-install 'tabbar-ruler))
-        ;;                 ))
+        (tabbar-mode menu-item "Tabbar" ergoemacs-menu-tabbar-toggle
+                     :button (:toggle . (and (boundp 'tabbar-mode)
+                                             tabbar-mode)))
         
         
         ;; (showhide-tool-bar menu-item "Tool-bar" tool-bar-mode :help "Turn tool-bar on/off"
@@ -825,6 +839,8 @@
   (ergoemacs-menu-bar-file-menu )
   (ergoemacs-preprocess-menu-keybindings ergoemacs-menu-bar-edit-menu)
   (ergoemacs-preprocess-menu-keybindings ergoemacs-menu-bar-search-menu)
+  (ergoemacs-preprocess-menu-keybindings ergoemacs-menu-bar-view-menu)
+  (ergoemacs-preprocess-menu-keybindings ergoemacs-menu-bar-help-menu)
   ;; Remove help menu
   (define-key global-map [menu-bar help-menu]
     (cons "?" ergoemacs-menu-bar-help-menu))
