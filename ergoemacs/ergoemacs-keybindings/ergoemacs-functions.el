@@ -228,13 +228,13 @@ See: `ergoemacs-forward-block'"
 (defun ergoemacs-select-text-in-quote ()
   "Select text between the nearest left and right delimiters.
 Delimiters are paired characters:
- () [] {} «» ‹› “” 〖〗 【】 「」 『』 （） 〈〉 《》 〔〕 ⦗⦘ 〘〙 ⦅⦆ 〚〛 ⦃⦄
+ () [] {} «» ‹› “” 〖〗 【】 「」 『』 （） 〈〉 《》 〔〕 ⦗⦘ 〘〙 ⦅⦆ 〚〛 ⦃⦄ ⟨⟩
  For practical purposes, also: \"\", but not single quotes."
  (interactive)
  (let (p1)
-   (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃\"")
+   (skip-chars-backward "^<>([{“「『‹«（〈《〔【〖⦗〘⦅〚⦃⟨\"")
    (setq p1 (point))
-   (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄\"")
+   (skip-chars-forward "^<>)]}”」』›»）〉》〕】〗⦘〙⦆〛⦄⟩\"")
    (set-mark p1)))
 
 ;; by Nikolaj Schumacher, 2008-10-20. Released under GPL.
