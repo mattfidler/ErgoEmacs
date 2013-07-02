@@ -70,6 +70,10 @@
     (setq test (ergoemacs-test-119))
     (setq ret (and ret test))
     (message "Test repeated C-f: %s" test)
+
+    (setq test (ergoemacs-test-145))
+    (setq ret (and ret test))
+    (message "Test Backspace Isearch: %s" ret)
     
     (setq test (ergoemacs-test-global-key-set-before))
     (setq ret (and ret test))
@@ -101,6 +105,33 @@
                 'after "C-e" 'ergoemacs-key))
     
     (message "Overall test: %s" ret)))
+
+(defun ergoemacs-test-145 ()
+  "Backspace doesn't work in isearch-mode"
+  (let ((old-ergoemacs-variant ergoemacs-variant)
+        (old-ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
+        (macro (edmacro-parse-keys "C-f ars C-f <backspace> M-n" t))
+        (ret t))
+    (ergoemacs-mode -1)
+    (setq ergoemacs-variant nil)
+    (setq ergoemacs-keyboard-layout "colemak")
+    (ergoemacs-mode 1)
+    (cua-mode 1)
+    (let ((ergoemacs-debug t))
+      (save-excursion
+        (switch-to-buffer (get-buffer-create "*ergoemacs-test*"))
+        (insert "aars1\nars2\nars3\nars4")
+        (goto-char (point-min))
+        (execute-kbd-macro macro)
+        (when (looking-at ".*")
+          (unless (string= "s1" (match-string 0))
+            (setq ret nil)))
+        (kill-buffer (current-buffer))))
+    (ergoemacs-mode -1)
+    (setq ergoemacs-variant old-ergoemacs-variant)
+    (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
+    (ergoemacs-mode 1)
+    (symbol-value 'ret)))
 
 (defun ergoemacs-test-119 ()
   "C-f doesn't work in isearch-mode."
