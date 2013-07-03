@@ -261,14 +261,14 @@
     <table id=\"table_keys\"><tr><th>Type</th>><th>Key</th><th>Short Desc</th><th>Emacs Function</th></tr>")
            (extra-dir)
            (curr-dir)
-           (saved-variant ergoemacs-variant))
+           (saved-theme ergoemacs-theme))
       (setq extra-dir (expand-file-name "ergoemacs-extras" user-emacs-directory))
       (when (not (file-exists-p extra-dir))
         (make-directory extra-dir t))
       (mapc
        (lambda(x)
          (message "Generate Kbd table for %s" x)
-         (ergoemacs-set-default 'ergoemacs-variant nil)
+         (ergoemacs-set-default 'ergoemacs-theme nil)
          (ergoemacs-set-default 'ergoemacs-keyboard-layout x)
          (ergoemacs-mode 1)
          (setq curr-dir (expand-file-name "ergo-layouts" extra-dir))
@@ -289,9 +289,9 @@
           (lambda(y)
             (condition-case err
                 (progn
-                  (ergoemacs-set-default 'ergoemacs-variant y)
+                  (ergoemacs-set-default 'ergoemacs-theme y)
                   (ergoemacs-mode 1)
-                  (message "\tVariant %s" y)
+                  (message "\tTheme %s" y)
                   (setq curr-dir (expand-file-name y extra-dir))
                   (when (not (file-exists-p curr-dir))
                     (make-directory curr-dir t))
@@ -306,11 +306,11 @@
         setFilterGrid( \"table_keys\",table_keys_Props );
 //]]>
 </script></html>")))
-              (error (message "Error generating variant %s; %s" y err))))
-          (sort (ergoemacs-get-variants) 'string<)))
+              (error (message "Error generating theme %s; %s" y err))))
+          (sort (ergoemacs-get-themes) 'string<)))
        lay)
-      (message "Setting variant back to %s" saved-variant)
-      (ergoemacs-set-default 'ergoemacs-variant saved-variant)
+      (message "Setting theme back to %s" saved-theme)
+      (ergoemacs-set-default 'ergoemacs-theme saved-theme)
       (ergoemacs-set-default 'ergoemacs-keyboard-layout saved-layout)
       (ergoemacs-mode 1)
       t)))
@@ -1607,11 +1607,20 @@ div.inf a:hover{ text-decoration:none; }/*link appearence in .inf div*/
           (goto-char (point-min))
           (when (re-search-forward "^[*]" nil t)
             (beginning-of-line)
-            (insert "* Keybindings\n\n[[./ergo-layouts/ergoemacs-layout-us.png]]\n\n")))
+            (insert "\n\n#+BEGIN_SRC emacs-lisp
+  (setq ergoemacs-theme nil)
+  (setq ergoemacs-keyboard-layout \"us\")
+  (require 'ergoemacs-mode)
+  (ergoemacs-mode 1)
+#+END_SRC
+\n\n[[./ergo-layouts/ergoemacs-layout-us.png]]\n\n")))
         (find-file (expand-file-name "index.org" extra-dir))
         (execute-kbd-macro (edmacro-parse-keys "C-c C-e h"))
         (kill-buffer (current-buffer))
         (find-file (expand-file-name "index.html" extra-dir))
+        (when (serach-forward "<pre class=\"example\"" nil t)
+          (insert "id=\"dot_emacs\""))
+        (goto-char (point-min))
         (when (search-forward "ergoemacs-layout-us.png")
           (delete-region
            (progn (re-search-backward "<" nil t)
@@ -1632,13 +1641,21 @@ function change_layout() {
   var select = document.getElementById('select_layout');
   var selection = select.selectedIndex;
   var img = select.options[selection].value;
-  select = document.getElementById('select_variant');
+  select = document.getElementById('select_theme');
   selection = select.selectedIndex;
   var dir = select.options[selection].value;  
   document.getElementById('ergo_image').src = dir + \"/ergoemacs-layout-\" + img + \".png\";
   if (dir == \"kbd-layouts\"){
     dir = \"ergo-layouts\";
-  }
+  } else {
+    var dir2 = dir;
+    if (dir2 == \"ergo-layouts\"){
+       dir2 = \"nil\";
+    } else {
+       dir2 = '\"'+dir2+'\"';
+    }
+    document.getElementById('dot_emacs').innerHTML = '(setq ergoemacs-theme '+dir2+')\n(setq ergoemacs-keyboard-layout \"' + img + '\")\n(require \'ergoemacs-mode)\n(ergoemacs-mode 1)';
+    }
   document.getElementById('ergo_kbd').src = dir + \"/ergoemacs-layout-\" + img + \".html\";
 }
     </script><form><strong>Layout:</strong><select onchange=\"change_layout()\" id=\"select_layout\">\n"
@@ -1659,11 +1676,11 @@ function change_layout() {
                   (if is-alias ", alias" "")
                   "</option>")))
       lays "\n")
-     "\n</select><br/><strong>Variant:</strong><select onchange=\"change_layout()\" id=\"select_variant\"><option value=\"kbd-layouts\">Keyboard Layout</option><option value=\"ergo-layouts\" selected>Standard</option>"
-     (let ((lays (sort (ergoemacs-get-variants) 'string<)))
+     "\n</select><br/><strong>Theme:</strong><select onchange=\"change_layout()\" id=\"select_theme\"><option value=\"kbd-layouts\">Keyboard Layout</option><option value=\"ergo-layouts\" selected>Standard</option>"
+     (let ((lays (sort (ergoemacs-get-themes) 'string<)))
              (mapconcat
               (lambda(lay)
-                (let* ((variable (intern (concat "ergoemacs-" lay "-variant")))
+                (let* ((variable (intern (concat "ergoemacs-" lay "-theme")))
                        (alias (condition-case nil
                                   (indirect-variable variable)
                                 (error variable)))
@@ -1898,15 +1915,15 @@ Currently only supports two modifier plus key."
       (insert "\n")
       (buffer-string))))
 
-(defun ergoemacs-get-variants-ahk-ini ()
-  "Gets the list of all known variants and the documentation associated with the variants."
+(defun ergoemacs-get-themes-ahk-ini ()
+  "Gets the list of all known themes and the documentation associated with the themes."
   (with-temp-buffer
-    (insert "[Variants]\n")
-    (insert "Standard=Standard Variant\n")
-    (let ((lays (sort (ergoemacs-get-variants) 'string<)))
+    (insert "[Themes]\n")
+    (insert "Standard=Standard Theme\n")
+    (let ((lays (sort (ergoemacs-get-themes) 'string<)))
       (mapc
        (lambda(lay)
-         (let* ((variable (intern (concat "ergoemacs-" lay "-variant")))
+         (let* ((variable (intern (concat "ergoemacs-" lay "-theme")))
                 (alias (condition-case nil
                            (indirect-variable variable)
                          (error variable)))
@@ -1924,7 +1941,7 @@ Currently only supports two modifier plus key."
     (buffer-string)))
 
 (defun ergoemacs-get-ahk-keys-ini ()
-  "Get ahk keys for all variants/ahk combinations and put into INI file."
+  "Get ahk keys for all themes/ahk combinations and put into INI file."
   (flet ((ergoemacs-unset-redundant-global-keys ()))
     (let ((re "")
           lst)
@@ -1935,8 +1952,8 @@ Currently only supports two modifier plus key."
           (add-to-list 'lst (match-string 1))))
       (setq re (format "^%s$" (regexp-opt lst 't)))
       (with-temp-buffer
-        (let ((old-lay ergoemacs-variant))
-          (ergoemacs-set-default 'ergoemacs-variant nil)
+        (let ((old-lay ergoemacs-theme))
+          (ergoemacs-set-default 'ergoemacs-theme nil)
           (mapc
            (lambda(x)
              (ergoemacs-setup-keys-for-layout x)
@@ -1955,7 +1972,7 @@ Currently only supports two modifier plus key."
            (ergoemacs-get-layouts))
           (mapc
            (lambda(z)
-             (ergoemacs-set-default 'ergoemacs-variant z)
+             (ergoemacs-set-default 'ergoemacs-theme z)
              (mapc
               (lambda(x)
                 (ergoemacs-setup-keys-for-layout x)
@@ -1971,13 +1988,13 @@ Currently only supports two modifier plus key."
                        (insert "\n"))))
                  (symbol-value (ergoemacs-get-variable-layout))))
               (ergoemacs-get-layouts)))
-           (ergoemacs-get-variants))
+           (ergoemacs-get-themes))
           (ergoemacs-setup-keys-for-layout ergoemacs-keyboard-layout)
-          (ergoemacs-set-default 'ergoemacs-variant old-lay))
+          (ergoemacs-set-default 'ergoemacs-theme old-lay))
         (buffer-string)))))
 
 (defun ergoemacs-gen-ahk (&optional extra)
-  "Generates autohotkey for all layouts and variants"
+  "Generates autohotkey for all layouts and themes"
   (interactive)
   (if (called-interactively-p 'any)
       (progn
@@ -1998,7 +2015,7 @@ Currently only supports two modifier plus key."
       (with-temp-file file-temp
         (set-buffer-file-coding-system 'utf-8)
         (insert (ergoemacs-get-layouts-ahk-ini))
-        (insert (ergoemacs-get-variants-ahk-ini))
+        (insert (ergoemacs-get-themes-ahk-ini))
         (insert (ergoemacs-get-ahk-keys-ini)))
       (setq file-temp (expand-file-name "ergoemacs.ahk" extra-dir))
       (with-temp-file file-temp
@@ -2536,9 +2553,9 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
           (if is-prefix
               (replace-match ">Continuation of Emacs Command Sequences:<")
             (replace-match (format
-                            ">Layout: %s; Variant %s<"
+                            ">Layout: %s; Theme %s<"
                             layout
-                            (or ergoemacs-variant "Standard"))))))
+                            (or ergoemacs-theme "Standard"))))))
       (when ergoemacs-inkscape
         (message "Converting to png")
         (shell-command (format "%s -z -f \"%s\" -e \"%s\"" ergoemacs-inkscape
@@ -2564,7 +2581,7 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
 (defun ergoemacs-curr-svg ()
   "Generates the current ergoemacs layout, unless it already exists."
   (interactive)
-  (let ((var ergoemacs-variant)
+  (let ((var ergoemacs-theme)
         (layout ergoemacs-keyboard-layout)
         (extra "ergo-layouts")
         (dir "")
@@ -2586,29 +2603,29 @@ IS-PREFIX tell ergoemacs if this is a prefix diagram."
 
 ;;;###autoload
 (defun ergoemacs-svgs (&optional layouts)
-  "Generate SVGs for all the defined layouts and variants."
+  "Generate SVGs for all the defined layouts and themes."
   (interactive)
   (let* ((lay (or layouts (ergoemacs-get-layouts)))
-         (saved-variant ergoemacs-variant))
+         (saved-theme ergoemacs-theme))
     (mapc
      (lambda(x)
        (message "Generate SVG for %s" x)
        (condition-case err
            (progn
              (ergoemacs-gen-svg x)
-             (ergoemacs-set-default 'ergoemacs-variant nil)
+             (ergoemacs-set-default 'ergoemacs-theme nil)
              (ergoemacs-gen-svg x "kbd-ergo.svg" "ergo-layouts")) 
          (error (message "Error generating base SVG for %s; %s" x err)))
        (mapc
         (lambda(y)
           (condition-case err
               (progn
-                (ergoemacs-set-default 'ergoemacs-variant y)
+                (ergoemacs-set-default 'ergoemacs-theme y)
                 (ergoemacs-gen-svg x "kbd-ergo.svg" (concat y)))
-            (error (message "Error generating variant %s; %s" y err))))
-        (sort (ergoemacs-get-variants) 'string<))
-       (message "Setting variant back to %s" saved-variant)
-       (ergoemacs-set-default 'ergoemacs-variant saved-variant))
+            (error (message "Error generating theme %s; %s" y err))))
+        (sort (ergoemacs-get-themes) 'string<))
+       (message "Setting theme back to %s" saved-theme)
+       (ergoemacs-set-default 'ergoemacs-theme saved-theme))
      lay)))
 
 (provide 'ergoemacs-extras)

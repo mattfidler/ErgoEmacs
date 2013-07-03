@@ -7,67 +7,13 @@ interface familiar to most people today, such as using 【Ctrl+C】 key
 for Copy,【Ctrl+Z】 for undo, 【Ctrl+O】 for Open file, and also
 bundles many elisp packages that are not in GNU Emacs.
 
-* Standard Keyboard Shortcuts
+#+BEGIN_SRC emacs-lisp
+  (setq ergoemacs-theme nil)
+  (setq ergoemacs-keyboard-layout "us")
+  (require 'ergoemacs-mode)
+  (ergoemacs-mode 1)
+#+END_SRC
 
-Common keyboard shortcut are supported, so you don't have to change
-your mindset when you switch in and out of emacs. The following are
-supported standard keys in Windows, Mac OS X, and Linux. (Mac uses Cmd
-instead of Ctrl.)
-
-|---------------+-----------------+----------------------|
-| Standard name | Key press       | Emacs command name   |
-|---------------+-----------------+----------------------|
-| Copy          | Ctrl+c          | kill-ring-save       |
-| Cut           | Ctrl+x          | kill-region          |
-| Paste         | Ctrl+v          | yank                 |
-| Undo          | Ctrl+z          | undo                 |
-| Undo          | Alt+<backspace> | undo                 |
-| Redo          | Ctrl+Shift+z    | redo                 |
-| Redo          | Ctrl+y          | redo                 |
-| Open New File | Ctrl+n          | new-empty-buffer     |
-| Open          | Ctrl+o          | find-file            |
-| Close         | Ctrl+w          | close-current-buffer |
-| Save          | Ctrl+s          | save-buffer          |
-| Save As       | Ctrl+Shift+s    | write-file           |
-| Print         | Ctrl+p          | print-buffer         |
-| Select All    | Ctrl+a          | mark-whole-buffer    |
-| Find          | Ctrl+f          | search-forward       |
-|---------------+-----------------+----------------------|
-
-Standard shortcuts for cursor navigation are also supported. Example:
-【Ctrl+Left】 ⇒ go to previous word, Home ⇒ beginning of line, 【⇧
-Shift+Down】 ⇒ selecting text downward
-
-* Window/Tab Switching
-The following are some new commands that lets you easily switch
-windows or buffers.
-
-|-----------------+----------------------------+--------------------------|
-| Standard name   | Key press                  | Emacs command name       |
-|-----------------+----------------------------+--------------------------|
-| Next Window     | 【Alt+`】                  | switch-to-next-frame     |
-| Previous Window | 【Alt+~】                  | switch-to-previous-frame |
-| Next Tab        | 【Ctrl+⇟PageDown▽】        | next-user-buffer         |
-| Previous Tab    | 【Ctrl+⇞PageUp△】          | previous-user-buffer     |
-| NA              | 【Ctrl+⇧Shift+⇟PageDown▽】 | next-emacs-buffer        |
-| NA              | 【Ctrl+⇧Shift+⇞PageUp △】  | previous-emacs-buffer    |
-|-----------------+----------------------------+--------------------------|
-
-* Shrink-whitespaces, compact/uncompact-block, toggle-letter-case
-The following are new commands that combine the functionality of
-several similar commands into one. This way, you have one single
-command with one single shortcut to remember. They do what you want
-depending on context.
-
-|-------------------------+-----------+-----------------------------------------|
-| Name                    | Shortcut  | Description                             |
-|-------------------------+-----------+-----------------------------------------|
-| shrink-whitespaces      | 【Alt+w】 | Takes out spaces/tabs around cursor     |
-| compact-uncompact-block | 【Alt+q】 | Hard Wraps or unwraps text             u |
-| toggle-letter-case      | 【Alt+/】 | Change capitilzation (ALL, First,lower) |
-|-------------------------+-----------+-----------------------------------------|
-
-* Layouts Supported
 * Tips for adopting ErgoEmacs Keybindings
 If you are a long time emacs user, you may find it painful to adopt
 this setup.
@@ -93,10 +39,10 @@ Here's some tips that may help you adopt.
 *** Level 1
 If you find it too painful to switch, don't use the whole package. Instead, start off with just the arrow key movements.
 #+BEGIN_SRC emacs-lisp
-  (setq ergoemacs-variant "lvl1")
+  (setq ergoemacs-theme "lvl1")
   (ergoemacs-mode 1)
 #+END_SRC
-Either put the above in your emacs init file (usually at “~/.emacs”), or customize ergoemacs-mode to set the variant to lvl1.
+Either put the above in your emacs init file (usually at “~/.emacs”), or customize ergoemacs-mode to set the theme to lvl1.
 
 With only the above change, you will increase your emacs productivity, especially if you are a touch typist. These single char cursor moving commands are the top 4 most frequently used emacs commands by statistics, roughly accounting for 43% of commands that have a shortcut.
 
@@ -107,50 +53,50 @@ Once you used the above for a couple of weeks, you may add more keys to adopt.
 Adding keys for moving around words and deleting words.
 
 #+BEGIN_SRC emacs-lisp
-  (setq ergoemacs-variant "lvl2")
+  (setq ergoemacs-theme "lvl2")
   (ergoemacs-mode 1)
 #+END_SRC
 *** Level 3
 Full ergoemacs keyset without the <menu> unchorded keys.
 #+BEGIN_SRC emacs-lisp
-  (setq ergoemacs-variant "lvl3")
+  (setq ergoemacs-theme "lvl3")
   (ergoemacs-mode 1)
 #+END_SRC
 
-*** Full Ergoemacs Keys
+*** Full Ergoemacs Keys~
 Try to use the full ergoemacs mode.
 #+BEGIN_SRC emacs-lisp
-  (setq ergoemacs-variant nil)
+  (setq ergoemacs-theme nil)
   (ergoemacs-mode 1)
 #+END_SRC
 *** Guru
-The guru variant takes away the arrow keys and page up/page down keys.
+The guru theme takes away the arrow keys and page up/page down keys.
 
 #+BEGIN_SRC emacs-lisp
-  (setq ergoemacs-variant "guru")
+  (setq ergoemacs-theme "guru")
   (ergoemacs-mode 1)
 #+END_SRC
 *** Master
-The Master variant takes away the backspace.  This key is not
+The Master theme takes away the backspace.  This key is not
 particularly ergonomic, and can cause possible pinky issues.
 Changing this means that you may wish to try to get ergoemacs
 bindings everywhere.
 
 #+BEGIN_SRC emacs-lisp
-  (setq ergoemacs-variant "master")
+  (setq ergoemacs-theme "master")
   (ergoemacs-mode 1)
 #+END_SRC
 
-* Changing key layouts or adding variants
+* Changing key layouts or adding themes
 ** Globally defined keys
 These keys are defined on the global keymap and should be retained
-regardless of the variant or layout used.  However, these keys will
+regardless of the theme or layout used.  However, these keys will
 not show up on keyboard documentation generated by ergoemacs.
 Additionally, these keys may be masked or remapped by other programs.
 ** Ergoemacs defined keys
 These keys are defined in the ergoemacs-keymap.  When the layout
 changes by changing options, these keys are lost.  However, you may
-create your own variant to allow these keys to be saved.
+create your own theme to allow these keys to be saved.
 *** Adding a ergonomic key
 Ergonomic keys can be added by:
 #+BEGIN_SRC emacs-lisp
@@ -158,7 +104,7 @@ Ergonomic keys can be added by:
 #+END_SRC
 
 This adds the Alt-a command to all keyboards based on the QWERTY
-layout.  This only applies to the currently selected keyboard variant.
+layout.  This only applies to the currently selected keyboard theme.
 
 
 Note the last parameter is optional and allows Ergoemacs to document
@@ -169,14 +115,14 @@ Fixed keys can be added by:
   (ergoemacs-fixed-key "C-o" 'ido-find-file "Open File")
 #+END_SRC
 
-This adds the fixed key to the currently selected emacs variant
+This adds the fixed key to the currently selected emacs theme
 
 Note the last parameter is optional and allows Ergoemacs to document
 that this is an "Open" command when generating keyboard layout diagrams.
 
 *** Adding an ergonomic key map with fixed mappings
 When you want to add an ergonomic keymap with fixed mappings such as
-the ergoprog variant you can add them as follows:
+the ergoprog theme you can add them as follows:
 
 #+BEGIN_SRC emacs-lisp
   (ergoemacs-key "M-m s" 'save-buffer "" t)
@@ -185,7 +131,7 @@ the ergoprog variant you can add them as follows:
 This converts the QWERTY M-m keybinding and the fixed keybinding s to
 save buffer
 
-*** Creating a keyboard variant
+*** Creating a keyboard theme
 * Ergoemacs-mode and starter-kits like prelude, emacs live, etc
 Ergoemacs-mode currently honors globally keys that are different from
 the standard emacs keys.  However, some starter kits, like prelude,
@@ -261,7 +207,7 @@ Note that if you use an alternative layout on a QWERTY keyboard (such
 as colemak), and use the portable colemak layout, to use ergoemacs
 keys use the us layout not the colemak layout.  However, if you
 installed the colemak keyboard layout to your system, use the colemak
-not the US layout variant.
+not the US layout theme.
 
 ** Updating Ergoemacs for the latest version of emacs
 To tell if a key was a globally defined emacs key, ergoemacs needs to

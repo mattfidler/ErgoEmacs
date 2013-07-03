@@ -719,7 +719,7 @@ With a prefix, force regeneration. "
     (setq png-tmp (expand-file-name (concat "ergoemacs-layout-" layout "-tmp.png") dir))
     (setq png-prefix (expand-file-name (concat "ergoemacs-layout-" layout "-prefix.png") dir))
     
-    (unless (and (not arg) (file-exists-p file))
+    (unless (and (not current-prefix-arg) (file-exists-p file))
       (if (called-interactively-p 'any)
           (let ((temp-file (make-temp-file "ergoemacs-gen" nil ".el")))
             (with-temp-file temp-file
