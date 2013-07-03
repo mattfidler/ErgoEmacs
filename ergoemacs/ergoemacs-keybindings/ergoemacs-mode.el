@@ -1181,11 +1181,41 @@ C-k S-a     -> k S-a           not defined
     (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c")))
     (message "C-c-")))
 
+(defcustom ergoemacs-repeat-ctl-c-ctl-c t
+  "Allow [Ctl+c] [Ctl+c] to be repeated."
+  :group 'ergoemacs-mode
+  :type 'boolean)
+
+(defvar ergoemacs-repeat-ctl-c-ctl-c-keymap (make-keymap)
+  "Keymap for repeating Ctl-c Ctl-c.")
+
+(defvar ergoemacs-repeat-ctl-c-ctl-c-msg ""
+  "Message for repeating [Ctl-c] [Ctl-c]")
+
+(defun ergoemacs-ctl-c-ctl-c-timeout ()
+  (message ergoemacs-repeat-ctl-c-ctl-c-msg)
+  (set-temporary-overlay-map ergoemacs-repeat-ctl-c-ctl-c-keymap))
+
 (defun ergoemacs-ctl-c-ctl-c (&optional arg)
-  "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
+  "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】.
+Optionally binds a temporary repeat keymap when `ergoemacs-repeat-ctl-c-ctl-c' is non-nil"
   (interactive "P")
-  (setq prefix-arg current-prefix-arg)
-  (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c C-c"))))
+  (let ((ctl-c-keys (key-description (this-command-keys))))
+    (setq prefix-arg current-prefix-arg)
+    (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c C-c")))
+    (when ergoemacs-repeat-ctl-c-ctl-c
+      (when (and (key-binding (read-kbd-macro "C-c C-c"))
+                 (string-match "[A-Za-z]$" ctl-c-keys))
+        (setq ctl-c-keys (match-string 0 ctl-c-keys))
+        (setq ergoemacs-repeat-ctl-c-ctl-c-keymap (make-keymap))
+        (define-key ergoemacs-repeat-ctl-c-ctl-c-keymap (read-kbd-macro ctl-c-keys)
+          'ergoemacs-ctl-c-ctl-c)
+        (setq ergoemacs-repeat-ctl-c-ctl-c-msg
+              (format "Repeat 【Ctl+c】 【Ctl+c】 with `%s'"
+                      ctl-c-keys))
+        ;; Allow time to process the unread command events before
+        ;; installing temporary keymap
+        (run-with-timer ergoemacs-M-O-delay nil #'ergoemacs-ctl-c-ctl-c-timeout)))))
 
 
 (require 'cus-edit)
