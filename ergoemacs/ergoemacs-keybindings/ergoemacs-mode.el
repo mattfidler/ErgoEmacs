@@ -9,7 +9,7 @@
 ;;     Matthew Fidler <matthew.fidler@gmail.com> ( http://github.com/mlf176f2/ )
 ;; Maintainer: Matthew Fidler, Xah Lee, David Capello
 ;; Created: August 01 2007
-;; Version: 5.8.0
+;; Version: 5.8.0.1
 ;; Keywords: convenience, qwerty, dvorak, keybinding, ergonomic, colemak
 ;; Package-Requires: ((org-cua-dwim "0.5"))
 
@@ -183,7 +183,7 @@ Valid values are:
           (const :tag "Do not allow fast repeat commands." nil)
           (const :tag "Allow fast repeat for <apps> menu." 'apps)))
 
-;; Movement commands need to be defined before ergoemacs-variants is
+;; Movement commands need to be defined before ergoemacs-themes is
 ;; called to get the correct movement commands for isearch.
 (defadvice cua--pre-command-handler (around ergoemacs-fix-shifted-commands activate)
   "Fixes shifted movement problems"
@@ -426,7 +426,7 @@ May install a fast repeat key based on `ergoemacs-repeat-movement-commands',  `e
   (interactive "P")
   (ergoemacs-M-o arg ergoemacs-M-O-keymap))
 
-(require 'ergoemacs-variants)
+(require 'ergoemacs-themes)
 (require 'ergoemacs-unbind)
 
 
@@ -689,7 +689,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
      (setq ,keymap (make-sparse-keymap))
      
      (if (and ergoemacs-debug (eq ',keymap 'ergoemacs-keymap))
-         (message "Variant: %s" ergoemacs-variant))
+         (message "Theme: %s" ergoemacs-theme))
      ;; Fixed layout keys
      (mapc
       (lambda(x)
@@ -822,7 +822,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
     "ErgoEmacs menu"
     `("ErgoEmacs"
       ,(ergoemacs-get-layouts-menu)
-      ,(ergoemacs-get-variants-menu)
+      ,(ergoemacs-get-themes-menu)
       ["Generate Documentation"
        (lambda()
          (interactive)
@@ -834,7 +834,7 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
       ["Save Settings for next session"
        (lambda()
          (interactive)
-         (customize-save-variable 'ergoemacs-variant ergoemacs-variant)
+         (customize-save-variable 'ergoemacs-theme ergoemacs-theme)
          (customize-save-variable 'ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
          (customize-save-customized)) t]
       ["Exit ErgoEmacs"
@@ -853,11 +853,11 @@ If JUST-TRANSLATE is non-nil, just return the KBD code, not the actual emacs key
                   (if (not (eq 'ergoemacs-mode (nth 0 x)))
                       x
                     `(ergoemacs-mode ,(concat
-                                       (if (not ergoemacs-variant)
+                                       (if (not ergoemacs-theme)
                                            " ErgoEmacs"
                                          (concat " Ergo"
-                                                 (upcase (substring ergoemacs-variant 0 1))
-                                                 (substring ergoemacs-variant 1)))
+                                                 (upcase (substring ergoemacs-theme 0 1))
+                                                 (substring ergoemacs-theme 1)))
                                        "[" ergoemacs-keyboard-layout "]"))))
                 minor-mode-alist))
   (ergoemacs-setup-backward-compatability))
@@ -1020,7 +1020,7 @@ will change."
   (interactive)
   (when ergoemacs-debug
     (message "Ergoemacs layout: %s" ergoemacs-keyboard-layout)
-    (message "Ergoemacs variant: %s" ergoemacs-variant)
+    (message "Ergoemacs theme: %s" ergoemacs-theme)
     (message "Emacs Version: %s" (emacs-version) ))
   (let ((ergoemacs-state (if (boundp 'ergoemacs-mode) ergoemacs-mode nil))
         (cua-state cua-mode)
@@ -1181,11 +1181,41 @@ C-k S-a     -> k S-a           not defined
     (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c")))
     (message "C-c-")))
 
+(defcustom ergoemacs-repeat-ctl-c-ctl-c t
+  "Allow [Ctl+c] [Ctl+c] to be repeated."
+  :group 'ergoemacs-mode
+  :type 'boolean)
+
+(defvar ergoemacs-repeat-ctl-c-ctl-c-keymap (make-keymap)
+  "Keymap for repeating Ctl-c Ctl-c.")
+
+(defvar ergoemacs-repeat-ctl-c-ctl-c-msg ""
+  "Message for repeating [Ctl-c] [Ctl-c]")
+
+(defun ergoemacs-ctl-c-ctl-c-timeout ()
+  (message ergoemacs-repeat-ctl-c-ctl-c-msg)
+  (set-temporary-overlay-map ergoemacs-repeat-ctl-c-ctl-c-keymap))
+
 (defun ergoemacs-ctl-c-ctl-c (&optional arg)
-  "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】."
+  "Creates a function that looks up and binds 【Ctl+c】 【Ctl+c】.
+Optionally binds a temporary repeat keymap when `ergoemacs-repeat-ctl-c-ctl-c' is non-nil"
   (interactive "P")
-  (setq prefix-arg current-prefix-arg)
-  (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c C-c"))))
+  (let ((ctl-c-keys (key-description (this-command-keys))))
+    (setq prefix-arg current-prefix-arg)
+    (setq unread-command-events (listify-key-sequence (read-kbd-macro "C-c C-c")))
+    (when ergoemacs-repeat-ctl-c-ctl-c
+      (when (and (key-binding (read-kbd-macro "C-c C-c"))
+                 (string-match "[A-Za-z]$" ctl-c-keys))
+        (setq ctl-c-keys (match-string 0 ctl-c-keys))
+        (setq ergoemacs-repeat-ctl-c-ctl-c-keymap (make-keymap))
+        (define-key ergoemacs-repeat-ctl-c-ctl-c-keymap (read-kbd-macro ctl-c-keys)
+          'ergoemacs-ctl-c-ctl-c)
+        (setq ergoemacs-repeat-ctl-c-ctl-c-msg
+              (format "Repeat 【Ctl+c】 【Ctl+c】 with `%s'"
+                      ctl-c-keys))
+        ;; Allow time to process the unread command events before
+        ;; installing temporary keymap
+        (run-with-timer ergoemacs-M-O-delay nil #'ergoemacs-ctl-c-ctl-c-timeout)))))
 
 
 (require 'cus-edit)
@@ -1202,7 +1232,7 @@ C-k S-a     -> k S-a           not defined
           (ergoemacs-mode 1))
          (when (and
                (custom-file t) ;; Make sure a custom file exists.
-               (not ergoemacs-variant) ;; Ergoemacs default used.
+               (not ergoemacs-theme) ;; Ergoemacs default used.
                (or (not ergoemacs-mode-used)
                    (not (string= ergoemacs-mode-used ergoemacs-mode-version))))
           (if (yes-or-no-p (format "Ergoemacs keybindings changed, %s; Would you like to change as well?"
@@ -1210,13 +1240,13 @@ C-k S-a     -> k S-a           not defined
               (progn
                 (setq ergoemacs-mode-used ergoemacs-mode-version)
                 (customize-save-variable 'ergoemacs-mode-used (symbol-value 'ergoemacs-mode-used))
-                (customize-save-variable 'ergoemacs-variant (symbol-value 'ergoemacs-variant))
+                (customize-save-variable 'ergoemacs-theme (symbol-value 'ergoemacs-theme))
                 (customize-save-customized))
             (when (not ergoemacs-mode-used)
               (setq ergoemacs-mode-used "5.7.5"))
-            (setq ergoemacs-variant ergoemacs-mode-used)
+            (setq ergoemacs-theme ergoemacs-mode-used)
             (customize-save-variable 'ergoemacs-mode-used (symbol-value 'ergoemacs-mode-used))
-            (customize-save-variable 'ergoemacs-variant (symbol-value 'ergoemacs-variant))
+            (customize-save-variable 'ergoemacs-theme (symbol-value 'ergoemacs-theme))
             (customize-save-customized))))
     (error nil)))
 
@@ -1330,7 +1360,7 @@ For the standard layout, with A QWERTY keyboard the `execute-extended-command' �
                   (symbol-value (ergoemacs-get-variable-layout)))))
           (unless found
             (add-to-list (ergoemacs-get-fixed-layout) `(,(key-description key) ,command ""))))
-        (message "Only changed ergoemacs-keybinding for current variant, %s" (or ergoemacs-variant "which happens to be the default key-binding"))
+        (message "Only changed ergoemacs-keybinding for current theme, %s" (or ergoemacs-theme "which happens to be the default key-binding"))
         (when (and (boundp 'ergoemacs-mode) ergoemacs-mode)
           (let ((no-ergoemacs-advice t))
             (define-key ergoemacs-keymap key def))))

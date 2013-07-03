@@ -70,6 +70,10 @@
     (setq test (ergoemacs-test-119))
     (setq ret (and ret test))
     (message "Test repeated C-f: %s" test)
+
+    (setq test (ergoemacs-test-145))
+    (setq ret (and ret test))
+    (message "Test Backspace Isearch: %s" ret)
     
     (setq test (ergoemacs-test-global-key-set-before))
     (setq ret (and ret test))
@@ -110,6 +114,33 @@
     
     (message "Overall test: %s" ret)))
 
+(defun ergoemacs-test-145 ()
+  "Backspace doesn't work in isearch-mode"
+  (let ((old-ergoemacs-theme ergoemacs-theme)
+        (old-ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
+        (macro (edmacro-parse-keys "C-f ars C-f <backspace> M-n" t))
+        (ret t))
+    (ergoemacs-mode -1)
+    (setq ergoemacs-theme nil)
+    (setq ergoemacs-keyboard-layout "colemak")
+    (ergoemacs-mode 1)
+    (cua-mode 1)
+    (let ((ergoemacs-debug t))
+      (save-excursion
+        (switch-to-buffer (get-buffer-create "*ergoemacs-test*"))
+        (insert "aars1\nars2\nars3\nars4")
+        (goto-char (point-min))
+        (execute-kbd-macro macro)
+        (when (looking-at ".*")
+          (unless (string= "s1" (match-string 0))
+            (setq ret nil)))
+        (kill-buffer (current-buffer))))
+    (ergoemacs-mode -1)
+    (setq ergoemacs-theme old-ergoemacs-theme)
+    (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
+    (ergoemacs-mode 1)
+    (symbol-value 'ret)))
+
 (defvar ergoemacs-test-lorem-ipsum
   "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
 do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
@@ -119,14 +150,15 @@ reprehenderit in voluptate velit esse cillum dolore eu fugiat
 nulla pariatur. Excepteur sint occaecat cupidatat non proident,
 sunt in culpa qui officia deserunt mollit anim id est laborum.")
 
+
 (defun ergoemacs-test-119 ()
   "C-f doesn't work in isearch-mode."
-  (let ((old-ergoemacs-variant ergoemacs-variant)
+  (let ((old-ergoemacs-theme ergoemacs-theme)
         (old-ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
         (macro (edmacro-parse-keys "C-f ars C-f C-f" t))
         (ret t))
     (ergoemacs-mode -1)
-    (setq ergoemacs-variant nil)
+    (setq ergoemacs-theme nil)
     (setq ergoemacs-keyboard-layout "colemak")
     (ergoemacs-mode 1)
     (cua-mode 1)
@@ -141,19 +173,19 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.")
             (setq ret nil)))
         (kill-buffer (current-buffer))))
     (ergoemacs-mode -1)
-    (setq ergoemacs-variant old-ergoemacs-variant)
+    (setq ergoemacs-theme old-ergoemacs-theme)
     (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
     (ergoemacs-mode 1)
     (symbol-value 'ret)))
 
 (defun ergoemacs-test-shifted-move-no-mark ()
   "Tests another shifted selection bug."
-  (let ((old-ergoemacs-variant ergoemacs-variant)
+  (let ((old-ergoemacs-theme ergoemacs-theme)
         (old-ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
         (macro (edmacro-parse-keys "M-S-h" t))
         (ret t))
     (ergoemacs-mode -1)
-    (setq ergoemacs-variant nil)
+    (setq ergoemacs-theme nil)
     (setq ergoemacs-keyboard-layout "colemak")
     (ergoemacs-mode 1)
     (cua-mode 1)
@@ -167,19 +199,19 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.")
         (setq ret (not mark-active)) ;;  Shouldn't be selected
         (kill-buffer (current-buffer))))
     (ergoemacs-mode -1)
-    (setq ergoemacs-variant old-ergoemacs-variant)
+    (setq ergoemacs-theme old-ergoemacs-theme)
     (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
     (ergoemacs-mode 1)
     (symbol-value 'ret)))
 
 (defun ergoemacs-test-shifted-move-keep-mark ()
   "Test the shifted selection bug."
-  (let ((old-ergoemacs-variant ergoemacs-variant)
+  (let ((old-ergoemacs-theme ergoemacs-theme)
         (old-ergoemacs-keyboard-layout ergoemacs-keyboard-layout)
         (macro (edmacro-parse-keys "C-SPC M-h M-S-i" t))
         (ret))
     (ergoemacs-mode -1)
-    (setq ergoemacs-variant nil)
+    (setq ergoemacs-theme nil)
     (setq ergoemacs-keyboard-layout "colemak")
     (ergoemacs-mode 1)
     (cua-mode 1)
@@ -193,7 +225,7 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.")
         (setq ret mark-active) ;; Should be selected.
         (kill-buffer (current-buffer))))
     (ergoemacs-mode -1)
-    (setq ergoemacs-variant old-ergoemacs-variant)
+    (setq ergoemacs-theme old-ergoemacs-theme)
     (setq ergoemacs-keyboard-layout old-ergoemacs-keyboard-layout)
     (ergoemacs-mode 1)
     (symbol-value 'ret)))
@@ -231,7 +263,7 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.")
       (unless after
         (insert sk))
       (insert (format "(add-to-list 'load-path \"%s\")" ergoemacs-dir))
-      (insert "(setq ergoemacs-variant nil)")
+      (insert "(setq ergoemacs-theme nil)")
       (insert "(setq ergoemacs-keyboard-layout \"us\")")
       (insert "(require 'ergoemacs-mode)(ergoemacs-mode 1)")
       (insert (format
