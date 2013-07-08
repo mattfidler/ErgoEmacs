@@ -1,2 +1,2 @@
 #+TITLE: Ergoemacs-mode
-Ergoemacs-mode has moved to http://github.com/mlf176f2/ergoemacs-mode/
+Ergoemacs-mode has moved to http://github.com/ergoemacs/ergoemacs-mode/
